@@ -30,7 +30,7 @@ test:
   stage: testing
   script:
     - npm test
-  coverage: "Statements.*?(\d+(?:\.\d+)?)%"
+  coverage: 'Statements.*?(\d+(?:\.\d+)?)%'
   allow_failure: true
 
 codecov:
