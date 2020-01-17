@@ -1,0 +1,60 @@
+<div class="wrapper">
+  <div *ngIf="dataSource; else noRules">
+    <div class="toolbar">
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                    title="Select">
+          </mat-checkbox>
+          <span class="divider"></span>
+          <div fxLayoutAlign="center center">
+            <button mat-icon-button (click)="refresh()" title="Refresh">
+              <mat-icon>autorenew</mat-icon>
+            </button>
+            <button mat-icon-button (click)="moveToFront($event)" [disabled]="selection.selected.length < 1" title="Move to the front">
+              <mat-icon>vertical_align_top</mat-icon>
+            </button>
+            <button mat-icon-button (click)="moveToBack($event);" [disabled]="selection.selected.length < 1" title="Move to the back">
+              <mat-icon>vertical_align_bottom</mat-icon>
+            </button>
+            <button mat-icon-button (click)="swap($event)" [disabled]="selection.selected.length != 2" title="Swap">
+              <mat-icon>swap_vert</mat-icon>
+            </button>
+            <button mat-icon-button (click)="remove($event)" [disabled]="selection.selected.length < 1" title="Remove">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-toolbar-row>
+      </mat-toolbar>
+    </div>
+    <mat-table #table [dataSource]="dataSource">
+      <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(element) : null"
+                        [checked]="selection.isSelected(element)">
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="groupId">
+        <mat-header-cell *matHeaderCellDef> Group ID </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element?.groupId}} </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns"
+              (click)="selection.toggle(row)">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [length]="paginatorLength"
+                   [pageSize]="10"
+                   [pageSizeOptions]="[10, 20, 50]"
+                   (page)="pageEvent = pageChange($event)">
+    </mat-paginator>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<div class='page-content-inner'>
+<div class="mat-typography" *ngIf="!authService.isAuthenticated(); else isAuthenticated">
+  <p align="center">Log in above to start uploading worlds!</p>
+</div>
+
+<ng-template #isAuthenticated>
+
+  <form fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start" class="content"
+        (ngSubmit)=verifyBeforeUpload()>
+
+    <mat-form-field fxFill>
+      <input matInput
+             placeholder="World name"
+             [formControl]="worldNameInputForm" required/>
+      <mat-error>{{getWorldNameError()}}</mat-error>
+    </mat-form-field>
+
+    <ign-description [description]="description"
+                     [edit]="true"
+                     [disabled]="uploading"
+                     (onModify)="onModifyDescription($event)"
+                     fxFill>
+    </ign-description>
+
+    <ign-tags [tags]="tags"
+              [edit]="true"
+              [disabled]="uploading"
+              fxFill>
+    </ign-tags>
+
+    <div fxLayout="row" fxFill fxLayoutGap="20px" fxLayoutAlign="space-between start">
+      <mat-form-field fxFlex="50%">
+        <mat-select [(ngModel)]="owner"
+                    name="ownerList"
+                    placeholder="Owner"
+                    [disabled]="uploading"
+                    required>
+          <mat-option *ngFor="let owner of ownerList; let i = index"
+                      [value]="i">{{owner}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="50%">
+        <mat-select [(ngModel)]="license"
+                    name="licenses"
+                    placeholder="License"
+                    [disabled]="uploading"
+                    required>
+          <mat-option *ngFor="let l of licenses; let i = index"
+                      [value]="i">{{l}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="column" fxFill>
+      <p>Select if your world is public or private:</p>
+      <mat-radio-group [formControl]="privacyInputForm">
+        <mat-radio-button *ngFor="let p of permissionList; let i = index"
+          [value]="i">{{p}}</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <ign-file-upload (files)="onReceiveFiles($event)"
+                     [allowedExtensions]="allowedExtensions"
+                     [uploading]="uploading"
+                     [resourceType]="'world'"
+                     fxFill>
+    </ign-file-upload>
+
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxFill *ngIf="!uploading; else isUploading">
+      <button mat-raised-button (click)="location.back()">Cancel</button>
+      <button mat-raised-button color="accent" type="submit">Upload</button>
+    </div>
+
+    <ng-template #isUploading>
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+        <button mat-raised-button color="accent" (click)="cancelUpload()">Cancel</button>
+        <button mat-raised-button disabled>Uploading</button>
+      </div>
+    </ng-template>
+
+    <div fxLayout="row" fxLayoutAlign="center center" fxFill>
+      <div fxLayout="column" fxLayoutAlign="center center" class="contentRules">
+        <h2>A world may be taken down if it</h2>
+
+        <ul>
+          <li>contains thumbnails that do not represent the actual world,</li>
+          <li>violates copyright law, or</li>
+          <li>contains inappropriate material including but not limited to spam, marketing material, or sexually explicit content.</li>
+        </ul>
+
+        <p>
+          Please refer to our <a href='https://openrobotics.freshdesk.com/support/solutions/articles/43000011292-data-and-privacy-policy'>data and privacy policy</a> for information regarding manual content deletion.
+        </p>
+      </div>
+    </div>
+  </form>
+
+</ng-template>
+</div>

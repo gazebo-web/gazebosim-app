@@ -1,0 +1,27 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.filename-container {
+  padding-bottom: 12px;
+
+  input {
+    display: none;
+  }
+}
+
+.filename {
+  min-width: 20em;
+  margin: 0px 20px;
+
+  .placeholder {
+    color: #424242;
+  }
+}
+
+.action-buttons {
+  padding-top: 20px;
+}
+
+.error {
+  color: mat-color($custom-theme-warn);
+}

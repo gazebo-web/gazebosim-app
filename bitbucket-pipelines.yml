@@ -1,0 +1,132 @@
+image: markadams/chromium-xvfb
+
+pipelines:
+
+  branches:
+    integration:
+      - step:
+          script:
+            # Note: Environment variables are stored in the Repository settings.
+            # AWS Related Env Variables.
+            - export APPLICATION_ENVIRONMENT=integration-app.ignitionrobotics.org
+            - export CLOUDFRONT_DISTRIBUTION_ID=$CLOUDFRONT_DISTRIBUTION_ID_INTEGRATION
+            # Auth0 Related Env Variables.
+            - export AUTH0_AUDIENCE=$AUTH0_INTEGRATION_AUDIENCE
+            - export AUTH0_CLIENT_DOMAIN=$AUTH0_INTEGRATION_CLIENT_DOMAIN
+            - export AUTH0_CLIENT_ID=$AUTH0_INTEGRATION_CLIENT_ID
+            - export AUTH0_LOGOUT_REDIRECT=$AUTH0_INTEGRATION_LOGOUT_REDIRECT
+            - export AUTH0_REDIRECT=$AUTH0_INTEGRATION_REDIRECT
+            # Other Env Variables.
+            - export API_HOST=https://integration-fuel.ignitionrobotics.org
+            - export API_VERSION=1.0
+            - export CLOUDSIM_HOST=https://integration-cloudsim.ignitionrobotics.org
+            - export CLOUDSIM_VERSION=1.0
+            - export SUBT_PORTAL_URL=$SUBT_PORTAL_INTEGRATION_URL
+            - export AWS_GZ_LOGS_BUCKET=$AWS_INTEGRATION_GZ_LOGS_BUCKET
+            - export PATH=~/.local/bin:$PATH
+            - export PRODUCTION_DEPLOY=false
+            - apt-get clean
+            - apt-get update
+            - apt-get install zip python-pip -y
+            - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+            - apt-get install -y nodejs mercurial
+            - pip install --upgrade --user awscli
+            - aws configure set preview.cloudfront true
+            - npm -v
+            - node -v
+            - npm install
+            - npm test
+            - npm run codecov
+            - npm run build:prod
+            - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
+            - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+
+    staging:
+      - step:
+          script:
+            # Note: Environment variables are stored in the Repository settings.
+            # AWS Related Env Variables.
+            - export APPLICATION_ENVIRONMENT=staging-app.ignitionrobotics.org
+            - export CLOUDFRONT_DISTRIBUTION_ID=$CLOUDFRONT_DISTRIBUTION_ID_STAGING
+            # Auth0 Related Env Variables.
+            - export AUTH0_AUDIENCE=$AUTH0_STAGING_AUDIENCE
+            - export AUTH0_CLIENT_DOMAIN=$AUTH0_STAGING_CLIENT_DOMAIN
+            - export AUTH0_CLIENT_ID=$AUTH0_STAGING_CLIENT_ID
+            - export AUTH0_LOGOUT_REDIRECT=$AUTH0_STAGING_LOGOUT_REDIRECT
+            - export AUTH0_REDIRECT=$AUTH0_STAGING_REDIRECT
+            # Other Env Variables.
+            - export API_HOST=https://staging-fuel.ignitionrobotics.org
+            - export API_VERSION=1.0
+            - export CLOUDSIM_HOST=https://staging-cloudsim.ignitionrobotics.org
+            - export CLOUDSIM_VERSION=1.0
+            - export SUBT_PORTAL_URL=$SUBT_PORTAL_STAGING_URL
+            - export AWS_GZ_LOGS_BUCKET=$AWS_STAGING_GZ_LOGS_BUCKET
+            - export PATH=~/.local/bin:$PATH
+            - export PRODUCTION_DEPLOY=false
+            - apt-get clean
+            - apt-get update
+            - apt-get install zip python-pip -y
+            - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+            - apt-get install -y nodejs mercurial
+            - pip install --upgrade --user awscli
+            - aws configure set preview.cloudfront true
+            - npm -v
+            - node -v
+            - npm install
+            - npm test
+            - npm run codecov
+            - npm run build:prod
+            - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
+            - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+
+    production:
+      - step:
+          script:
+            # Note: Environment variables are stored in the Repository settings.
+            # AWS Related Env Variables.
+            - export APPLICATION_ENVIRONMENT=app.ignitionrobotics.org
+            - export CLOUDFRONT_DISTRIBUTION_ID=$CLOUDFRONT_DISTRIBUTION_ID_PRODUCTION
+            # Auth0 Related Env Variables.
+            - export AUTH0_AUDIENCE=$AUTH0_PRODUCTION_AUDIENCE
+            - export AUTH0_CLIENT_DOMAIN=$AUTH0_PRODUCTION_CLIENT_DOMAIN
+            - export AUTH0_CLIENT_ID=$AUTH0_PRODUCTION_CLIENT_ID
+            - export AUTH0_LOGOUT_REDIRECT=$AUTH0_PRODUCTION_LOGOUT_REDIRECT
+            - export AUTH0_REDIRECT=$AUTH0_PRODUCTION_REDIRECT
+            # Other Env Variables.
+            - export API_HOST=https://fuel.ignitionrobotics.org
+            - export API_VERSION=1.0
+            - export CLOUDSIM_HOST=https://cloudsim.ignitionrobotics.org
+            - export CLOUDSIM_VERSION=1.0
+            - export SUBT_PORTAL_URL=$SUBT_PORTAL_PRODUCTION_URL
+            - export AWS_GZ_LOGS_BUCKET=$AWS_PRODUCTION_GZ_LOGS_BUCKET
+            - export PATH=~/.local/bin:$PATH
+            - export PRODUCTION_DEPLOY=true
+            - apt-get clean
+            - apt-get update
+            - apt-get install zip python-pip mercurial -y
+            - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+            - apt-get install -y nodejs
+            - pip install --upgrade --user awscli
+            - aws configure set preview.cloudfront true
+            - npm -v
+            - node -v
+            - npm install
+            - npm test
+            - npm run codecov
+            - npm run build:prod
+            - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
+            - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+
+  default:
+    - step:
+        script:
+          - apt-get clean
+          - apt-get update
+          - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+          - apt-get install -y nodejs mercurial
+          - npm -v
+          - node -v
+          - npm install
+          - npm test
+          - npm run codecov
+          - npm run build:prod # generate environment files

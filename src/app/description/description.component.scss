@@ -1,0 +1,15 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.hide-element {
+  display: none;
+}
+
+#description-field ::ng-deep a {
+  color: mat-color($custom-theme-primary, 800);
+}
+
+#description-field {
+  overflow-wrap: break-word;
+  overflow: overlay;
+}

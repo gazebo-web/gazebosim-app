@@ -1,0 +1,10 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.page-content {
+  margin: 20px 20px;
+
+  a {
+    color: mat-color($custom-theme-primary, 700);
+  }
+}

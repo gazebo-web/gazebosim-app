@@ -1,0 +1,26 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+ign-page-title {
+  padding-left: 20px;
+}
+
+div ::ng-deep .mat-tab-header {
+  align-self: center;
+  width: 85%;
+}
+
+div ::ng-deep .mat-tab-labels {
+  justify-content: space-evenly;
+}
+
+div ::ng-deep .mat-tab-label {
+  flex-grow: 1;
+  mat-icon {
+    margin-right: 10px;
+  }
+}
+
+.tab-content {
+  margin: 0 20px;
+}

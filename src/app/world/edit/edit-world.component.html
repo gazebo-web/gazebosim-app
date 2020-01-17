@@ -1,0 +1,70 @@
+<div class="page-content-inner mat-typography">
+
+  <div *ngIf="!canEdit; else isAuthorized">
+    <p>You are not authorized to edit this world.</p>
+  </div>
+
+  <ng-template #isAuthorized>
+
+    <ign-page-title title="Editing {{world.owner}}'s {{world.name}} world" svgIcon="ign-world"></ign-page-title>
+
+    <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
+      (ngSubmit)=onEdit()>
+
+      <h2>Edit World details</h2>
+
+      <ign-description [description]="world.description"
+                       [edit]="true"
+                       [disabled]="updating"
+                       (onModify)="onModifyDescription($event)"
+                       fxFill>
+      </ign-description>
+
+      <ign-tags [tags]="world.tags"
+                [edit]="true"
+                [disabled]="updating"
+                (onModify)="onModifyTags()"
+                fxFill>
+      </ign-tags>
+
+      <h2>Replace files</h2>
+
+      <ign-file-upload (files)="onReceiveFiles($event)"
+                       [allowedExtensions]="allowedExtensions"
+                       [uploading]="updating"
+                       [resourceType]="'world'"
+                       [message]="'<h3>Select or drag and drop new files to upload.</h3><br/>
+                                   Leave empty to keep the current files.<br/>
+                                   If any files are uploaded, a new world version will be created with those files.<br/>'"
+                       fxFill>
+      </ign-file-upload>
+
+      <div class="save-buttons" fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+        <button mat-raised-button type="button" (click)="back()">Cancel</button>
+
+        <button mat-raised-button color="accent" type="submit">
+          Save changes
+        </button>
+      </div>
+
+      <div fxFill>
+        <h2 class="danger">Dangerous Zone!</h2>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+          <div>
+            <a (click)="onDelete()" mat-raised-button color="warn">
+              Delete world
+            </a>
+          </div>
+
+          <div>
+            <p>Be mindful when deleting a world, other users could be counting on it. Once deleted, the world can't be restored.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </form>
+
+  </ng-template>
+
+</div>

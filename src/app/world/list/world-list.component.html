@@ -1,0 +1,9 @@
+<div class="page-content-inner mat-typography" fxLayout="column">
+
+  <ign-fuel-resource-list [resources]="worlds"
+                          [finished]="!paginatedWorlds.hasNextPage()"
+                          (onLoadMore)="loadNextPage()"
+                          resourceType="worlds"
+                          fxFlex>
+  </ign-fuel-resource-list>
+</div>

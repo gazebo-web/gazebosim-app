@@ -1,0 +1,50 @@
+<h1 mat-dialog-title class="mat-typography">
+  {{data.title}}
+</h1>
+
+<div *ngIf="!busy else busyAnimation">
+  <div mat-dialog-content class="mat-typography">
+    <div [innerHtml]="data.message"></div>
+
+    <form fxLayout="column">
+      <mat-form-field>
+        <input matInput
+                placeholder="{{data.namePlaceholder}}"
+                [(ngModel)]="data.name"
+                [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select [(ngModel)]="data.owner"
+                    name="ownerList"
+                    placeholder="Owner">
+          <mat-option *ngFor="let owner of data.ownerList"
+                      [value]="owner">{{owner}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">
+      Cancel
+    </button>
+
+    <button mat-raised-button color="primary" (click)="submit()">
+      Submit
+    </button>
+  </div>
+</div>
+
+<ng-template #busyAnimation>
+  <div fxLayout="column" fxLayoutAlign="center center">
+    <img class="loading-gif" src="assets/images/ign.gif" alt="Loading">
+    <p class="mat-typography" *ngIf="!data.busyMessage else busyMessage">
+      Please wait...
+    </p>
+
+    <ng-template #busyMessage>
+      <div class="mat-typography" [innerHtml]="data.busyMessage"></div>
+    </ng-template>
+  </div>
+</ng-template>

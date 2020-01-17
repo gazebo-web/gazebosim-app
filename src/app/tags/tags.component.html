@@ -1,0 +1,44 @@
+<div *ngIf="edit; else tagsDisplay">
+  <mat-form-field fxFill hintLabel="Separate your tags by commas.">
+    <!-- This div was needed for our tag "jump" preventation <div>-->
+      <mat-placeholder>Tags</mat-placeholder>
+    <!-- Ditto: end div for the above comment </div>-->
+
+    <mat-chip-list class="chip-list-input" #chipList [disabled]="disabled">
+      <mat-chip *ngFor="let tag of tags; let i=index"
+                [removable]="!disabled"
+                selectable="false"
+                [disabled]="disabled"
+                (remove)="removeTag(i)">
+                  {{tag}}
+                  <mat-icon matChipRemove *ngIf="!disabled">cancel</mat-icon>
+      </mat-chip>
+
+      <input matInput [matChipInputFor]="chipList"
+             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+             (matChipInputTokenEnd)="addTagChip($event)"
+             [disabled]="disabled"
+             (blur)="closeTagOnBlur($event)"/>
+    </mat-chip-list>
+  </mat-form-field>
+</div>
+
+<ng-template #tagsDisplay>
+  <div fxLayout="row" fxLayoutGap="10px" fxFill>
+    <mat-icon title="Tags" svgIcon="tag-multiple"></mat-icon>
+
+    <div *ngIf="tags && tags.length > 0; else noTagsBlock">
+      <mat-chip-list>
+        <mat-chip *ngFor="let tag of tags">
+          {{tag}}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+
+    <ng-template #noTagsBlock>
+      <div>
+        <span>No tags.</span>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>

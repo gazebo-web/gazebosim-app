@@ -1,0 +1,128 @@
+@import '~@angular/material/theming';
+@import '../styles/custom-theme.scss';
+
+// Local variables.
+$sidenav-width: 170px;
+
+mat-sidenav {
+  width: $sidenav-width;
+}
+
+mat-sidenav .title {
+  padding: 10px;
+  font-weight: 400;
+  font-size: 20px;
+  text-align: center;
+  align-self: center;
+  color: #fefefe;
+}
+
+mat-sidenav img {
+  display: block;
+  margin: auto;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 100%;
+}
+
+mat-sidenav-container {
+  width: 100%;
+  align-self: stretch;
+}
+
+mat-sidenav .copyright {
+  margin-top: auto;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: #fefefe;
+}
+
+.sidenav-list a.mat-list-item {
+  color:#fefefe;
+}
+
+.sidenav-list .indent {
+  padding-left: 20px;
+}
+
+.sidenav-list .mat-icon {
+  padding-right: 10px;
+}
+
+.mat-drawer {
+  background-color: mat-color($custom-theme-primary);
+}
+
+ign-page-title {
+  padding-left: 20px;
+}
+
+.mat-toolbar {
+  color: #6e6e6e;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  z-index: 3000;
+  // Since the toolbar is fixed to the top, we need to adjust its width when
+  // the sidenav is hidden.
+  @media screen and (min-width: 600px) {
+    width: calc(100% - #{$sidenav-width});
+  }
+}
+
+// The toolbar height changes when the screen is small. We need to adjust the
+// margin of the content to avoid overlap.
+.page-content {
+  margin-top: 64px;
+  @media screen and (max-width: 600px) {
+    margin-top: 56px;
+  }
+}
+
+.toolbar-space {
+  flex: 1 1 2em;
+}
+
+#search-icon {
+  vertical-align: text-top;
+}
+
+.add-button {
+  margin-right: 1em;
+}
+
+#profile-icon {
+  font-size: 36px;
+  width: 100%;
+}
+
+.profile-img {
+  max-width: 100%;
+  border-radius: 50%;
+}
+
+#progress-bar {
+  height: 4px;
+  position: fixed;
+  overflow: visible;
+  z-index: 10;
+}
+
+#progress-bar ::ng-deep > div.mat-progress-bar-primary.mat-progress-bar-fill.mat-progress-bar-element::after {
+  box-shadow: 0 0 10px 0 mat-color($custom-theme-accent, 500);
+  background-color: mat-color($custom-theme-accent, 500);
+}
+
+#progress-bar ::ng-deep > div.mat-progress-bar-buffer.mat-progress-bar-element {
+  opacity: 0;
+}
+
+.title > small {
+  color: #7e7e7e;
+  font-weight: 400;
+}

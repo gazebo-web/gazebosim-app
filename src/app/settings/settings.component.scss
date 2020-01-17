@@ -1,0 +1,47 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+ign-page-title {
+  padding-left: 20px;
+}
+
+.tab-content {
+  padding: 1.5em;
+}
+
+div ::ng-deep .mat-tab-labels {
+  justify-content: space-evenly;
+}
+
+div ::ng-deep .mat-tab-label {
+  flex-grow: 1;
+}
+
+mat-slide-toggle {
+  padding-right: 1em;
+}
+
+.list-divider {
+  border-bottom: 1px solid #dedede;
+}
+
+.list-divider:last-child {
+  border: none;
+  margin-bottom: 1em;
+}
+
+a {
+  color: mat-color($custom-theme-primary, 700);
+}
+
+.hover-display {
+  display: none;
+}
+
+mat-list-item:hover .hover-display {
+  display: block;
+}
+
+.delete-button {
+  padding-top: 2em;
+}

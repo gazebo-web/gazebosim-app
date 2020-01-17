@@ -1,0 +1,8 @@
+<div class="page-content-inner mat-typography" fxLayout="row">
+  <ign-fuel-resource-list [resources]="collections"
+                          resourceType="collections"
+                          [finished]="!paginatedCollections?.hasNextPage()"
+                          (onLoadMore)="loadNextCollectionsPage()"
+                          fxFlex>
+  </ign-fuel-resource-list>
+</div>

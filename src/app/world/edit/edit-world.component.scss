@@ -1,0 +1,24 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.content {
+  width: 60%;
+  margin: auto;
+  padding-bottom: 2em;
+}
+
+ign-page-title {
+  padding-left: 20px;
+}
+
+h2 {
+  padding-top: 2em;
+}
+
+.save-buttons {
+  padding-top: 20px;
+}
+
+.danger {
+  color: mat-color($custom-theme-warn)
+}
