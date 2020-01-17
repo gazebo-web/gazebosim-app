@@ -1,0 +1,50 @@
+image: node:6.17.1
+
+stages:
+  - linting
+  - testing
+  - building
+  - packaging
+  - deploying
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+  policy: pull
+
+before_script:
+  - apt-get clean
+  - apt-get update
+  - npm -v
+  - node -v
+  - npm install --silent
+
+lint:
+  stage: linting
+  script:
+    - npm run tslint
+  
+test:
+  stage: testing
+  script:
+    - npm test
+
+codecov:
+  stage: testing
+  script:
+    - npm run codecov
+
+e2e:
+  stage: testing
+  script:
+    - npm run e2e
+
+build:
+  stage: building
+  script:
+    - npm run build:prod
+  artifacts:
+    name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/
