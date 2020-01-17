@@ -27,10 +27,11 @@ lint:
     - npm run lint
   
 test:
-  image: markadams/chromium-xvfb
   stage: testing
   script:
     - npm test
+  coverage: "Statements.*?(\d+(?:\.\d+)?)%"
+  allow_failure: true
 
 codecov:
   stage: testing
@@ -41,6 +42,7 @@ e2e:
   stage: testing
   script:
     - npm run e2e
+  allow_failure: true
 
 build:
   stage: building
