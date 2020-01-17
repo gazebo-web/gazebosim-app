@@ -23,7 +23,7 @@ before_script:
 lint:
   stage: linting
   script:
-    - npm run tslint --project
+    - npm run lint
   
 test:
   stage: testing
