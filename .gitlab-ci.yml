@@ -31,17 +31,15 @@ test:
   script:
     - npm test
   allow_failure: true
+  environment:
+    name: testing
 
 codecov:
   stage: testing
   script:
     - npm run codecov
-
-e2e:
-  stage: testing
-  script:
-    - npm run e2e
-  allow_failure: true
+  environment:
+    name: testing
 
 build:
   stage: building
