@@ -15,14 +15,15 @@ cache:
     - node_modules/
 
 # Aliases
-.deployment_aws: &deployment_aws
+## Deployment
+.deployment_before_script: &deployment_before_script
+  - pip install awscli
+  - export PATH=~/.local/bin:$PATH
+.deployment_script: &deployment_script
   - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
   - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 
-#####################################
-
-# Install dependencies
-before_script:
+.dependencies_before_script: &dependencies_before_script
   - apt-get clean
   - apt-get update
   - curl -sL https://deb.nodesource.com/setup_6.x | bash -
@@ -31,15 +32,22 @@ before_script:
   - node -v
   - npm install --silent
 
+
+#####################################
+
 ## Linting stage jobs:
 lint:
   stage: linting
+  before_script:
+    - *dependencies_before_script
   script:
     - npm run lint
 
 ## Testing stage jobs:
 test:
   stage: testing
+  before_script:
+    - *dependencies_before_script
   script:
     - npm test
   environment:
@@ -47,6 +55,8 @@ test:
 
 codecov:
   stage: testing
+  before_script:
+    - *dependencies_before_script
   script:
     - npm run codecov
   environment:
@@ -55,6 +65,8 @@ codecov:
 ## Building stage jobs:
 build:
   stage: building
+  before_script:
+    - *dependencies_before_script
   script:
     - npm run build:prod
   artifacts:
@@ -64,9 +76,14 @@ build:
 
 ## Deploying stage jobs:
 integration:
+  image: python:3.5
   stage: deploying
+  dependencies:
+    - build
+  before_script:
+    - *deployment_before_script
   script:
-    - *deployment_aws
+    - *deployment_script
   environment:
     name: integration
     url: https://integration-app.ignitionrobotics.org/
@@ -77,11 +94,14 @@ integration:
   when: manual
 
 staging:
+  image: python:3.5
   stage: deploying
+  dependencies:
+    - build
   before_script:
-    - echo "Deploying to staging"
+    - *deployment_before_script
   script:
-    - *deployment_aws
+    - *deployment_script
   environment:
     name: staging
     url: https://staging-app.ignitionrobotics.org/
@@ -91,9 +111,12 @@ staging:
   when: manual
 
 production:
+  image: python:3.5
   stage: deploying
+  before_script:
+    - *deployment_before_script
   script:
-    - *deployment_aws
+    - *deployment_script
   environment:
     name: production
     url: https://app.ignitionrobotics.org/
