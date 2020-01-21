@@ -23,6 +23,7 @@ cache:
   - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
   - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 
+## Dependencies
 .dependencies_before_script: &dependencies_before_script
   - apt-get clean
   - apt-get update
