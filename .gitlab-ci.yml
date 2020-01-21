@@ -1,5 +1,6 @@
 image: markadams/chromium-xvfb
 
+# Stages declaration
 stages:
   - linting
   - testing
@@ -7,11 +8,20 @@ stages:
   - packaging
   - deploying
 
+# Cache policy configuration
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
 
+# Aliases
+.deployment_aws: &deployment_aws
+  - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
+  - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+
+#####################################
+
+# Install dependencies
 before_script:
   - apt-get clean
   - apt-get update
@@ -21,16 +31,17 @@ before_script:
   - node -v
   - npm install --silent
 
+## Linting stage jobs:
 lint:
   stage: linting
   script:
     - npm run lint
-  
+
+## Testing stage jobs:
 test:
   stage: testing
   script:
     - npm test
-  allow_failure: true
   environment:
     name: testing
 
@@ -41,6 +52,7 @@ codecov:
   environment:
     name: testing
 
+## Building stage jobs:
 build:
   stage: building
   script:
@@ -49,3 +61,42 @@ build:
     name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
     paths:
       - dist/
+
+## Deploying stage jobs:
+integration:
+  stage: deploying
+  script:
+    - *deployment_aws
+  environment:
+    name: integration
+    url: https://integration-app.ignitionrobotics.org/
+  except:
+    - master
+    - develop
+    - /^release\/.*$/i
+  when: manual
+
+staging:
+  stage: deploying
+  before_script:
+    - echo "Deploying to staging"
+  script:
+    - *deployment_aws
+  environment:
+    name: staging
+    url: https://staging-app.ignitionrobotics.org/
+  only:
+    - develop
+    - /^release\/.*$/i
+  when: manual
+
+production:
+  stage: deploying
+  script:
+    - *deployment_aws
+  environment:
+    name: production
+    url: https://app.ignitionrobotics.org/
+  only:
+    - master
+  when: manual
