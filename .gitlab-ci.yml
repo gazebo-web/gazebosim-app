@@ -5,7 +5,7 @@ stages:
   - linting
   - testing
   - building
-  - packaging
+  - packaging   # TODO: Add job to packaging stage to build and push a docker image.
   - deploying
 
 # Cache policy configuration
@@ -15,6 +15,7 @@ cache:
     - node_modules/
 
 # Aliases
+
 ## Deployment
 .deployment_before_script: &deployment_before_script
   - pip install awscli
