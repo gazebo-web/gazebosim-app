@@ -94,8 +94,8 @@ build_staging:
     paths:
       - dist/
   environment:
-    name: production
-    url: https://app.ignitionrobotics.org/
+    name: staging
+    url: https://staging-app.ignitionrobotics.org/
   only:
     - develop
     - /^release\/.*$/i
@@ -112,8 +112,8 @@ build_production:
     paths:
       - dist/
   environment:
-    name: integration
-    url: https://integration-app.ignitionrobotics.org/
+    name: production
+    url: https://app.ignitionrobotics.org/
   only:
     - master
 
