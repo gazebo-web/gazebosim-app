@@ -37,9 +37,6 @@ npm-debug.log
 # Coverage #
 /coverage/
 
-# Utils
-utils/
-
 # Typing #
 /src/typings/tsd/
 /typings/
