@@ -136,6 +136,7 @@ export class SimulationTableComponent implements OnChanges {
     this.getSimulations({
       status: this.statusFilter,
       errorStatus: this.errorStatusFilter,
+      circuit: this.circuitFilter,
       page
     });
   }
