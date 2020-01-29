@@ -1,8 +1,12 @@
-# Ignition Robotics Web App
+<div align="center">
+  <img src="./assets/logo.png" width="200" alt="Ignition Robotics" />
+  <h1>Ignition Robotics</h1>
+  <p>Ignition web application</p>
+</div>
 
 * Framework: Angular 5
-* CI: Bitbucket pipelines
-* CD: Bitbucket pipelines + AWS CloudFront
+* CI: GitLab pipelines
+* CD: GitLab pipelines + AWS CloudFront
 
 ---
 
