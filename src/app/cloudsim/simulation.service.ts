@@ -68,6 +68,9 @@ export class SimulationService {
       if (params['children']) {
         httpParams = httpParams.set('children', params['children']);
       }
+      if (params['circuit']) {
+        httpParams = httpParams.set('circuit', params['circuit']);
+      }
     }
     httpParams = httpParams.set('per_page', '10');
     return this.http.get<PaginatedSimulation>(url, {params: httpParams, observe: 'response'})

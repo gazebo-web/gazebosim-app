@@ -36,6 +36,27 @@ export class SimulationTableComponent implements OnChanges {
   ];
 
   /**
+   * The dropdown circuit list
+   */
+  public circuitList: string[] = [
+    'Tunnel Circuit',
+    'Tunnel Practice 1',
+    'Tunnel Practice 2',
+    'Tunnel Practice 3',
+    'Simple Tunnel 1',
+    'Simple Tunnel 2',
+    'Simple Tunnel 3',
+    'Urban Qualification',
+    'Urban Simple 1',
+    'Urban Simple 2',
+    'Urban Simple 3',
+    'Urban Practice 1',
+    'Urban Practice 2',
+    'Urban Practice 3',
+    'Urban Circuit',
+  ];
+
+  /**
    * The columns of the table.
    */
   public columns = [
@@ -56,6 +77,11 @@ export class SimulationTableComponent implements OnChanges {
    * The selected Error Status for filtering.
    */
   public errorStatusFilter: string;
+
+  /**
+   * The selected circuit for filtering.
+   */
+  public circuitFilter: string;
 
   /**
    * Simulation instances to be used as the table's data source.
@@ -92,10 +118,11 @@ export class SimulationTableComponent implements OnChanges {
   /**
    * Callback from the Status dropdown. Get the simulations of the selected status.
    */
-  public filterByStatus() {
+  public filter() {
     this.getSimulations({
       status: this.statusFilter,
-      errorStatus: this.errorStatusFilter
+      errorStatus: this.errorStatusFilter,
+      circuit: this.circuitFilter,
     });
   }
 
@@ -109,6 +136,7 @@ export class SimulationTableComponent implements OnChanges {
     this.getSimulations({
       status: this.statusFilter,
       errorStatus: this.errorStatusFilter,
+      circuit: this.circuitFilter,
       page
     });
   }
