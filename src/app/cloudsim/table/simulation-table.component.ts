@@ -118,10 +118,11 @@ export class SimulationTableComponent implements OnChanges {
   /**
    * Callback from the Status dropdown. Get the simulations of the selected status.
    */
-  public filterByStatus() {
+  public filter() {
     this.getSimulations({
       status: this.statusFilter,
-      errorStatus: this.errorStatusFilter
+      errorStatus: this.errorStatusFilter,
+      circuit: this.circuitFilter,
     });
   }
 
