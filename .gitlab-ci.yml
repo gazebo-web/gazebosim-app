@@ -122,7 +122,7 @@ integration:
   image: python:3.5
   stage: deploying
   dependencies:
-    - build
+    - build_integration
   before_script:
     - *deployment_before_script
   script:
@@ -140,7 +140,7 @@ staging:
   image: python:3.5
   stage: deploying
   dependencies:
-    - build
+    - build_staging
   before_script:
     - *deployment_before_script
   script:
@@ -157,6 +157,8 @@ staging:
 production:
   image: python:3.5
   stage: deploying
+  dependencies:
+    - build_production
   before_script:
     - *deployment_before_script
   script:
