@@ -78,6 +78,10 @@ build_integration:
   environment:
     name: integration
     url: https://integration-app.ignitionrobotics.org/
+  except:
+    - master
+    - develop
+    - /^release\/.*$/i
 
 build_staging:
   stage: building
@@ -92,6 +96,10 @@ build_staging:
   environment:
     name: production
     url: https://app.ignitionrobotics.org/
+  only:
+    - develop
+    - /^release\/.*$/i
+    - /^hotfix\/.*$/i
 
 build_production:
   stage: building
@@ -106,6 +114,8 @@ build_production:
   environment:
     name: integration
     url: https://integration-app.ignitionrobotics.org/
+  only:
+    - master
 
 ## Deploying stage jobs:
 integration:
@@ -141,6 +151,7 @@ staging:
   only:
     - develop
     - /^release\/.*$/i
+    - /^hotfix\/.*$/i
   when: manual
 
 production:
