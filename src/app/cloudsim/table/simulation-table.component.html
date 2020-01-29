@@ -1,15 +1,22 @@
 <div fxLayout="row" fxLayoutGap="20px" class="filter">
   <mat-form-field>
-    <mat-select [(ngModel)]="statusFilter" placeholder="Status" (selectionChange)="filterByStatus()">
+    <mat-select [(ngModel)]="statusFilter" placeholder="Status" (selectionChange)="filter()">
       <mat-option>Not specified</mat-option>
       <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field>
-    <mat-select [(ngModel)]="errorStatusFilter" placeholder="Error Status" (selectionChange)="filterByStatus()">
+    <mat-select [(ngModel)]="errorStatusFilter" placeholder="Error Status" (selectionChange)="filter()">
       <mat-option>Not specified</mat-option>
       <mat-option *ngFor="let status of errorStatusList" [value]="status">{{status}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select [(ngModel)]="circuitFilter" placeholder="Circuit" (selectionChange)="filter()">
+      <mat-option>Not specified</mat-option>
+      <mat-option *ngFor="let circuit of circuitList" [value]="circuit">{{circuit}}</mat-option>
     </mat-select>
   </mat-form-field>
 </div>
