@@ -65,7 +65,7 @@ codecov:
     name: testing
 
 ## Building stage jobs:
-build:
+build_integration:
   stage: building
   before_script:
     - *dependencies_before_script
@@ -75,13 +75,54 @@ build:
     name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
     paths:
       - dist/
+  environment:
+    name: integration
+    url: https://integration-app.ignitionrobotics.org/
+  except:
+    - master
+    - develop
+    - /^release\/.*$/i
+
+build_staging:
+  stage: building
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run build:prod
+  artifacts:
+    name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/
+  environment:
+    name: staging
+    url: https://staging-app.ignitionrobotics.org/
+  only:
+    - develop
+    - /^release\/.*$/i
+    - /^hotfix\/.*$/i
+
+build_production:
+  stage: building
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run build:prod
+  artifacts:
+    name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/
+  environment:
+    name: production
+    url: https://app.ignitionrobotics.org/
+  only:
+    - master
 
 ## Deploying stage jobs:
 integration:
   image: python:3.5
   stage: deploying
   dependencies:
-    - build
+    - build_integration
   before_script:
     - *deployment_before_script
   script:
@@ -99,7 +140,7 @@ staging:
   image: python:3.5
   stage: deploying
   dependencies:
-    - build
+    - build_staging
   before_script:
     - *deployment_before_script
   script:
@@ -110,11 +151,14 @@ staging:
   only:
     - develop
     - /^release\/.*$/i
+    - /^hotfix\/.*$/i
   when: manual
 
 production:
   image: python:3.5
   stage: deploying
+  dependencies:
+    - build_production
   before_script:
     - *deployment_before_script
   script:
