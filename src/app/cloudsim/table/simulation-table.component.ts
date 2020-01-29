@@ -58,6 +58,11 @@ export class SimulationTableComponent implements OnChanges {
   public errorStatusFilter: string;
 
   /**
+   * The selected circuit for filtering.
+   */
+  public circuitFilter: string;
+
+  /**
    * Simulation instances to be used as the table's data source.
    * This should be created when this component's Input value changes.
    */
