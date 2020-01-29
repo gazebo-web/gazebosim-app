@@ -1,0 +1,100 @@
+<div fxLayout="column" class='page-content-inner'>
+  <ign-page-title title="User: {{user.username}}"></ign-page-title>
+
+  <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-model"></mat-icon>
+          <span>Models Created ({{paginatedModels?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="models"
+                                resourceType="models"
+                                [disabled]="activeTab !== 'models'"
+                                [finished]="!paginatedModels?.hasNextPage()"
+                                (onLoadMore)="loadNextModelsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-model"></mat-icon>
+          <span>Models Liked ({{paginatedLikedModels?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="modelsLiked"
+                                resourceType="models"
+                                [disabled]="activeTab !== 'modelsLiked'"
+                                [finished]="!paginatedLikedModels?.hasNextPage()"
+                                (onLoadMore)="loadNextLikedModelsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-world"></mat-icon>
+          <span>Worlds Created ({{paginatedWorlds?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="worlds"
+                                resourceType="worlds"
+                                [disabled]="activeTab !== 'worlds'"
+                                [finished]="!paginatedWorlds?.hasNextPage()"
+                                (onLoadMore)="loadNextWorldsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-world"></mat-icon>
+          <span>Worlds Liked ({{paginatedLikedWorlds?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="worldsLiked"
+                                resourceType="worlds"
+                                [disabled]="activeTab !== 'worldsLiked'"
+                                [finished]="!paginatedLikedWorlds?.hasNextPage()"
+                                (onLoadMore)="loadNextLikedWorldsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon>collections</mat-icon>
+          <span>Collections ({{paginatedCollections?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="collections"
+                                resourceType="collections"
+                                [disabled]="activeTab !== 'collections'"
+                                [finished]="!paginatedCollections?.hasNextPage()"
+                                (onLoadMore)="loadNextCollectionsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

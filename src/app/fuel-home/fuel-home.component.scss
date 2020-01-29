@@ -1,0 +1,30 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.section {
+  padding: 40px 0;
+}
+
+.section-title {
+  color: rgb(110, 110, 110);
+  font-weight: 300;
+  font-size: 1.8em !important;
+}
+
+.section-title h2 {
+  margin: 10px 0 !important;
+}
+
+.section p a {
+  color: mat-color($custom-theme-primary, 700);
+}
+
+.card {
+  min-width: 8em;
+  max-width: 12em;
+  width: 25%;
+}
+
+.more-button {
+  margin-top: 16px;
+}

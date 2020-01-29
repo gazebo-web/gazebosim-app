@@ -1,0 +1,46 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+/* This styles the first chip. Taken from the Angular Material repository. */
+.mat-chip {
+  margin-left: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* To style subsequent chips. Taken from the Angular Material repository. */
+.mat-chip:not(.mat-basic-chip) + .mat-chip:not(.mat-basic-chip) {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* The following prevents the form field jumping after a chip is added.
+ * A lot of this css was copied from the angular material css style in
+ * order to correctly position the mat-placeholder, with transitions, in
+ * an input field that has a min-height: 40px
+mat-placeholder {
+  color: rgba(0, 0, 0, 0.54);
+  position: absolute;
+  top: 30px;
+  font-size: 100%;
+}
+
+.mat-focused mat-placeholder {
+  transform-origin: 0 0;
+  transition: transform .4s cubic-bezier(.25,.8,.25,1),color .4s cubic-bezier(.25,.8,.25,1),width .4s cubic-bezier(.25,.8,.25,1);
+  transition-property: transform, color, width;
+  transition-duration: 0.4s, 0.4s, 0.4s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1), cubic-bezier(0.25, 0.8, 0.25, 1), cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-delay: initial, initial, initial;
+
+  color: mat-color($custom-theme-primary);
+}
+
+.mat-form-field-should-float mat-placeholder{
+  transform: translateY(-3.28125em) scale(0.75) perspective(100px) translateZ(0.00103px);
+}
+
+.chip-list-input ::ng-deep div.mat-chip-list-wrapper {
+  min-height: 40px;
+}
+End custom css for tag input */

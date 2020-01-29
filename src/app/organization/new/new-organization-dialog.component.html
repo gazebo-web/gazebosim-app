@@ -1,0 +1,111 @@
+<div fxLayout="column">
+  <h1 mat-dialog-title>Create an Organization</h1>
+  <form [formGroup]="newOrganizationForm" (ngSubmit)="onSubmit()">
+    <mat-horizontal-stepper linear>
+      <mat-step label="Account information" [stepControl]="newOrganizationForm">
+        <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.lt-sm="2.5em">
+          <mat-form-field class="form-field">
+            <input matInput required placeholder="Organization name" [formControl]="organizationName">
+            <mat-hint *ngIf="organizationName.value.trim() === ''; else organizationLink">
+              This will be the organization name on Ignition Fuel
+            </mat-hint>
+            <ng-template #organizationLink>
+              <mat-hint>The organization will be accesible on https://ignitionfuel.org/{{organizationName.value}}</mat-hint>
+            </ng-template>
+            <mat-error>{{getNameError()}}</mat-error>
+          </mat-form-field>
+
+          <!-- Billing email to be added soon.
+          <mat-form-field class="form-field">
+            <input matInput required placeholder="Billing Email" [formControl]="organizationEmail">
+            <mat-hint>We will send receipts to this email address</mat-hint>
+            <mat-error>{{getEmailError()}}</mat-error>
+          </mat-form-field>
+          -->
+
+          <div fxLayoutAlign="space-between" class="stepper-buttons">
+            <button
+              mat-button
+              mat-dialog-close
+              type="button">
+              Cancel
+            </button>
+
+            <button
+              mat-raised-button
+              matStepperNext
+              [disabled]="!newOrganizationForm.valid"
+              color="accent"
+              type="button">
+              Next
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+      <!-- Invite people to be done in the future
+      <mat-step label="Invite people" optional>
+        <mat-form-field class="form-field">
+          <textarea matInput placeholder="Invitations" [formControl]="invitationList"></textarea>
+          <mat-hint>Comma separated email addresses</mat-hint>
+        </mat-form-field>
+
+        <p>Your teammates will get a confirmation email once they join the organization.</p>
+
+        <div fxLayoutAlign="space-between" class="stepper-buttons">
+          <button
+            mat-button
+            mat-dialog-close
+            type="button">
+            Cancel
+          </button>
+
+          <button
+            mat-raised-button
+            matStepperNext
+            color="accent"
+            type="button">
+            Next
+          </button>
+        </div>
+      </mat-step>
+      -->
+
+      <mat-step label="Done">
+        <div class="mat-typography">
+          <h2>Choose your plan</h2>
+        </div>
+
+        <mat-radio-group [formControl]="organizationPlan">
+          <mat-radio-button *ngFor="let option of planOptions"
+            [value]="option"
+            class="form-field">
+            {{option}}
+          </mat-radio-button>
+          <mat-radio-button *ngFor="let option of disabledPlanOptions"
+            disabled
+            [value]="option"
+            class="form-field">
+            {{option}}
+          </mat-radio-button>
+        </mat-radio-group>
+
+        <div fxLayoutAlign="space-between" class="stepper-buttons">
+          <button
+            mat-dialog-close
+            mat-button
+            type="button">
+            Cancel
+          </button>
+
+          <button
+            mat-raised-button
+            color="accent"
+            type="submit">
+            Create
+          </button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </form>
+</div>

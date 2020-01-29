@@ -1,0 +1,38 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.page-content {
+  padding: 0 20px;
+}
+
+ign-page-title {
+  padding-left: 20px;
+}
+
+.content {
+  width: 60%;
+  margin: auto;
+  padding-bottom: 2em;
+}
+
+a {
+  color: mat-color($custom-theme-primary, 700);
+}
+
+.contentRules {
+  margin-top: 40px;
+  padding: 10px;
+  border: 1px solid #cecece;
+}
+
+.contentRules h2 {
+  color: #424242;
+  font-size: 100%;
+  font-weight: bold;
+}
+
+mat-radio-group {
+  mat-radio-button:not(:first-child) {
+    padding-left: 10px;
+  }
+}

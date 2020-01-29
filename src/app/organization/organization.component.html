@@ -1,0 +1,139 @@
+<div fxLayout="column" class='page-content-inner'>
+  <ign-page-title title="Organization: {{organization.name}}"></ign-page-title>
+
+  <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-model"></mat-icon>
+          <span>Models ({{paginatedModels?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="models"
+                                resourceType="models"
+                                [disabled]="activeTab !== 'models'"
+                                [finished]="!this.paginatedModels?.hasNextPage()"
+                                (onLoadMore)="loadNextModelsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-world"></mat-icon>
+          <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="worlds"
+                                resourceType="worlds"
+                                [disabled]="activeTab !== 'worlds'"
+                                [finished]="!this.paginatedWorlds?.hasNextPage()"
+                                (onLoadMore)="loadNextWorldsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon>collections</mat-icon>
+          <span>Collections ({{paginatedCollections?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="collections"
+                                resourceType="collections"
+                                [disabled]="activeTab !== 'collections'"
+                                [finished]="!this.paginatedCollections?.hasNextPage()"
+                                (onLoadMore)="loadNextCollectionsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon>group</mat-icon>
+          <span>Users ({{users?.length}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <form fxLayoutAlign="center"
+              (ngSubmit)=addUser()
+              *ngIf="authService.hasWriteAccess(organization.name)">
+          <div fxFill
+               fxFlex.gt-xs="60%"
+               fxFlex.lt-sm="80%"
+               fxLayout="row"
+               fxLayoutAlign="center"
+               fxLayoutGap="1em"
+               fxLayout.lt-md="row wrap"
+               fxLayoutAlign.lt-md="space-between"
+               fxLayoutGap.lt-md="0">
+            <mat-form-field fxFill fxFlex="grow">
+              <input matInput
+                     placeholder="Add username"
+                     [formControl]="usernameInputForm"
+                     required/>
+              <mat-error *ngIf="usernameInputForm.hasError('required')">
+                Please enter a username
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-select placeholder="Role"
+                          [formControl]="roleDropdownForm"
+                          required>
+                <mat-option *ngFor="let role of roles" [value]="role">
+                  {{role}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="roleDropdownForm.hasError('required')">
+                Please select a role
+              </mat-error>
+            </mat-form-field>
+
+            <button fxFlexAlign="start"
+                    mat-raised-button
+                    color="primary"
+                    type="submit">
+              Add User
+            </button>
+          </div>
+        </form>
+
+        <div fxFill fxLayout="row" fxLayoutAlign="center">
+          <mat-list fxFlex.gt-xs="60%" fxFlex.lt-sm="80%">
+            <mat-list-item *ngFor="let user of users" class="list-divider">
+              <div fxLayout="row" fxLayoutAlign="start baseline" fxLayoutGap="10px" matLine>
+                <a routerLink='/{{user.username}}'>{{user.username}}</a>
+                <mat-chip-list>
+                  <mat-chip color='primary' selected *ngIf="user.orgRoles">{{user.orgRoles[organization.name]}}</mat-chip>
+                </mat-chip-list>
+              </div>
+
+              <button mat-button
+                      color="primary"
+                      (click)="removeUser(user)"
+                      [disabled]="disableRemoveButton(user)"
+                      [title]="getRemoveButtonTooltip(user)"
+                      *ngIf="canDisplayRemoveButton(user)">
+                {{getRemoveButtonLabel(user)}}
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

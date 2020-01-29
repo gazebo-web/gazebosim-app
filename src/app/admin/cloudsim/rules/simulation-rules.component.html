@@ -1,0 +1,108 @@
+<h3>Add a new custom rule</h3>
+
+<div fxLayout="row" fxLayoutAlign="center center">
+  <form (ngSubmit)="create($event)">
+    <mat-form-field>
+      <mat-select name="circuitInputForm"
+                  placeholder="Circuit"
+                  [formControl]="circuitInputForm"
+                  required>
+        <mat-option value="Tunnel Circuit">Tunnel Circuit</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select name="typeInputForm"
+                  placeholder="Rule Type"
+                  [formControl]="typeInputForm"
+                  required>
+        <mat-option *ngFor="let type of typeList" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             placeholder="Owner"
+             [formControl]="ownerInputForm"
+             required/>
+      <mat-error *ngIf="ownerInputForm.hasError('required')">
+        Please enter a username
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             placeholder="Value"
+             [formControl]="valueInputForm"
+             required/>
+      <mat-error *ngIf="valueInputForm.hasError('required')">
+        Please enter a value
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">
+      Add Rule
+    </button>
+  </form>
+</div>
+
+<div *ngIf="paginatedRules && paginatedRules.rules && paginatedRules.rules.length > 0; else noRules">
+
+  <mat-table [dataSource]="dataSource">
+
+    <!-- Circuit Column -->
+    <ng-container matColumnDef="circuit">
+      <mat-header-cell *matHeaderCellDef>Circuit</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.circuit}}</mat-cell>
+    </ng-container>
+
+    <!-- Owner Column -->
+    <ng-container matColumnDef="owner">
+      <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.owner}}</mat-cell>
+    </ng-container>
+
+    <!-- Rule Type Column -->
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef>Rule Type</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.typeName}}</mat-cell>
+    </ng-container>
+
+    <!-- Value Column -->
+    <ng-container matColumnDef="value">
+      <mat-header-cell *matHeaderCellDef>Value</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.value}}</mat-cell>
+    </ng-container>
+
+    <!-- Control Column -->
+    <ng-container matColumnDef="control">
+      <mat-header-cell *matHeaderCellDef>Control</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="edit(element)" title="Edit this rule">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="delete(element)" title="Delete this rule">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator [length]="paginatedRules.totalCount"
+                  [pageSize]="10"
+                  [pageSizeOptions]="[10]"
+                  (page)="pageEvent = pageChange($event)">
+  </mat-paginator>
+</div>
+
+<ng-template #noRules>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <h3>Currently there are no rules.</h3>
+  </div>
+</ng-template>

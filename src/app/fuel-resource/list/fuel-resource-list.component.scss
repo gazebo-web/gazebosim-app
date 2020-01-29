@@ -1,0 +1,21 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.item-card {
+  min-width: 12em;
+  width: 25%;
+  max-width: 20em;
+}
+
+/* At this breakpoint, Angular Flexbox API flex overrides the max-width.
+   We don't want this behavior*/
+   @media screen and (min-width: 1280px) {
+    .item-card {
+      flex: none !important;
+    }
+  }
+
+.loading-footer {
+  padding: 2em;
+  align-items: center;
+}

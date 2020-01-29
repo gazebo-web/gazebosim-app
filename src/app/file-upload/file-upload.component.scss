@@ -1,0 +1,72 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.button-row {
+  margin-bottom: 20px;
+}
+
+.button-row input {
+  display: none;
+}
+
+.button-row .add-button-files {
+  margin-right: 3em;
+}
+
+.button-row .add-button-folders {
+  margin-right: 0.5em;
+}
+
+.dropzone-list {
+  height: 100%;
+  border-width: 1px;
+  border-color: #c3c3c3;
+  border-style: dashed;
+  margin: 1em;
+}
+
+.dropzone-msg {
+  height: 100%;
+  text-align: center;
+  /* Chrome needs a min height */
+  min-height: 20em;
+}
+
+.file {
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.file:hover {
+  background-color: mat-color($custom-theme-accent, A100);
+}
+
+.file > i {
+  cursor: pointer;
+}
+
+.file > i:hover {
+  color: mat-color($custom-theme-accent, A700);
+}
+
+.uploading-gif {
+  height: 5em;
+}
+
+.viewer-wrapper {
+  position: relative;
+  min-height: 20em;
+  min-width: 20em;
+}
+
+.sdfviewer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+}
+

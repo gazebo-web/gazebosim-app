@@ -1,0 +1,61 @@
+<h1 mat-dialog-title class="mat-typography">
+  Simulation metadata
+</h1>
+<div>
+  <div mat-dialog-content class="mat-typography">
+    <div fxLayout="row">
+      <div>
+        <h3 mat-dialog-title class="mat-typography">
+          Simulation summary
+        </h3>
+        <mat-list role="list">
+          <mat-list-item role="listitem">
+            <mat-icon>bookmark</mat-icon> 
+            <b class="label">GroupID:</b> {{data.groupId}}
+          </mat-list-item>
+          <mat-list-item role="listitem">
+            <mat-icon>label</mat-icon> 
+            <b class="label">Name:</b> {{data.name}}
+          </mat-list-item>
+          <mat-list-item role="listitem">
+            <mat-icon>apps</mat-icon> 
+            <b class="label">Application:</b> {{data.application}}
+          </mat-list-item>
+          <mat-list-item role="listitem">
+            <mat-icon>supervised_user_circle</mat-icon> 
+            <b class="label">Owner:</b> {{data.owner}}
+          </mat-list-item>
+          <mat-list-item role="listitem">
+            <mat-icon>person</mat-icon> 
+            <b class="label">Creator:</b> {{data.creator}}
+          </mat-list-item>
+          <mat-list-item role="listitem">
+            <mat-icon>flag</mat-icon> 
+            <b class="label">Status:</b> {{data.status}}
+          </mat-list-item>
+          <mat-list-item role="listitem">
+            <mat-icon>date_range</mat-icon> 
+            <b class="label">Started at:</b> {{data.startedAt}}
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div>
+        <h3>Circuit: {{data.extra.circuit}}</h3>
+        <mat-list role="list" dense>
+          <mat-list-item *ngFor="let robot of data.extra.robots" role="listitem">
+            <span matLine><b>Name:</b> {{robot.Name}}</span>
+            <span matLine><b>Type:</b> {{robot.Type}}</span>
+            <span matLine><b>Image:</b> {{robot.Image}}</span>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+    
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">
+      Ok
+    </button>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+:host {
+  display: inline-block;
+  box-sizing: border-box;
+  color: mat-color($custom-theme-primary);
+}
+
+h1 {
+  text-align: left;
+  margin: 10px 0;
+}
+
+mat-icon {
+  margin-right: 10px;
+}
