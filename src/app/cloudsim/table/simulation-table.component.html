@@ -1,0 +1,99 @@
+<div fxLayout="row" fxLayoutGap="20px" class="filter">
+  <mat-form-field>
+    <mat-select [(ngModel)]="statusFilter" placeholder="Status" (selectionChange)="filter()">
+      <mat-option>Not specified</mat-option>
+      <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select [(ngModel)]="errorStatusFilter" placeholder="Error Status" (selectionChange)="filter()">
+      <mat-option>Not specified</mat-option>
+      <mat-option *ngFor="let status of errorStatusList" [value]="status">{{status}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select [(ngModel)]="circuitFilter" placeholder="Circuit" (selectionChange)="filter()">
+      <mat-option>Not specified</mat-option>
+      <mat-option *ngFor="let circuit of circuitList" [value]="circuit">{{circuit}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div *ngIf="paginatedSimulations && paginatedSimulations.simulations && paginatedSimulations.simulations.length > 0; else noSimulations">
+
+  <mat-table [dataSource]="dataSource">
+
+    <!-- Start time Column -->
+    <ng-container matColumnDef="startedAt">
+      <mat-header-cell *matHeaderCellDef> Started At </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.startedAt | date:'short'}} </mat-cell>
+    </ng-container>
+
+    <!-- Status -->
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <p>{{element.status}}</p>
+        <p *ngIf="element.errorStatus; else noErrors">Error: {{element.errorStatus}}</p>
+
+        <ng-template #noErrors>
+          <p>With no errors</p>
+        </ng-template>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span>{{element?.name || "N/A"}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- GroupId Column -->
+    <ng-container matColumnDef="groupId">
+      <mat-header-cell *matHeaderCellDef> Group Id </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span>{{element?.groupId}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Creator Column -->
+    <ng-container matColumnDef="creator">
+      <mat-header-cell *matHeaderCellDef> Creator </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.creator}} </mat-cell>
+    </ng-container>
+
+    <!-- Owner Column -->
+    <ng-container matColumnDef="owner">
+      <mat-header-cell *matHeaderCellDef> Owner </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.owner}} </mat-cell>
+    </ng-container>
+
+    <!-- Buttons Column -->
+    <ng-container matColumnDef="controlButtons">
+      <mat-header-cell *matHeaderCellDef style='text-align:center'> Control </mat-header-cell>
+      <mat-cell *matCellDef="let element" style='text-align:center'>
+        <ign-simulation-actions [simulation]=element></ign-simulation-actions>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator [length]="paginatedSimulations.totalCount"
+                  [pageSize]="10"
+                  [pageSizeOptions]="[10]"
+                  (page)="pageEvent = pageChange($event)">
+  </mat-paginator>
+</div>
+
+<ng-template #noSimulations>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <h3 *ngIf="!statusFilter && !errorStatusFilter">Currently there are no simulations.</h3>
+    <h3 *ngIf="statusFilter || errorStatusFilter">Currently there are no simulations matching your filter criteria.</h3>
+  </div>
+</ng-template>

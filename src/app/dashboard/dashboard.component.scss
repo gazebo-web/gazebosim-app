@@ -1,0 +1,92 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.section {
+  padding: 40px 0;
+}
+
+.section-title {
+  color: rgb(110, 110, 110);
+  font-weight: 300;
+  font-size: 1.8em !important;
+}
+
+.section-title h2 {
+  margin: 10px 0 !important;
+}
+
+.section p a {
+  color: mat-color($custom-theme-primary, 700);
+}
+
+.card {
+  min-width: 8em;
+  max-width: 12em;
+  width: 25%;
+}
+
+.more-button {
+  margin-top: 16px;
+}
+
+.hero .title {
+  font-weight: 400;
+  text-shadow: 2px 2px #6e6e6e;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(46, 97, 137, 0.6));
+  padding: 20px;
+}
+
+.hero p {
+  margin-top: 20px;
+  color: #fefefe;
+  text-align: center;
+  font-size: 24px;
+}
+
+.hero h1 {
+  margin-top: 20px;
+  font-size: 52px;
+  font-weight: 400;
+  color: #fefefe;
+  text-align: center;
+}
+
+.hero {
+  height: 200px;
+  min-height: 200px;
+  background-image: url("../../assets/images/home_hero.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media screen and (min-width: 960px) {
+  .hero h1 {
+    font-size: 72px;
+  }
+
+  .hero p {
+    margin-top: 40px;
+    color: #fefefe;
+    text-align: center;
+    font-size: 32px;
+  }
+
+  .hero {
+    height: 500px;
+    min-height: 500px;
+  }
+}
+
+.stats-box {
+  // background-color: #ff0000;
+}
+
+.stats-box > table {
+  width: 100%;
+}
+
+.stats-table-bold {
+  font-weight: 500;
+  color: #636363;
+}

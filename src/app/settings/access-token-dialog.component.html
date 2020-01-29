@@ -1,0 +1,20 @@
+<div fxLayout="column" fxFlex="1 0">
+  <h1 mat-dialog-title class="mat-typography">Your New Access Token</h1>
+  
+  <div fxFlex="1 0" fxFill mat-dialog-content class="mat-typography">
+    <form fxLayout="row" >
+      <mat-form-field style='width: 470px'>
+        <input matInput value="{{data.key}}" readonly #tokenInput>
+      </mat-form-field>
+      <button mat-icon-button title="Copy Token" (click)='copy(tokenInput)'><mat-icon>file_copy</mat-icon></button>
+    </form>
+    <p>Make sure to save this token. You won't be able to access it again!</p>
+  </div>
+  
+  <div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary"
+      [mat-dialog-close]="true">
+      Close
+    </button>
+  </div>
+</div>

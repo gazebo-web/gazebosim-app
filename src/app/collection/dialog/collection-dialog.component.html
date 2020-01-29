@@ -1,0 +1,75 @@
+<div class="content">
+  <h1 mat-dialog-title class="mat-typography">
+    Add to collection
+  </h1>
+
+  <form>
+    <div fxLayout="row" mat-dialog-content class="mat-typography">
+      <div fxFill
+           fxLayout.gt-xs="row"
+           fxLayout.xs="column">
+        <mat-form-field class="collection-input">
+          <input matInput placeholder="Collection"
+            [matAutocomplete]="auto" [formControl]="collectionAddInputForm">
+
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getCollectionName">
+            <mat-option *ngFor="let collection of (collectionList | async)"
+              [value]="collection">{{collection.name}} by {{collection.owner}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <button fxFlexAlign.xs="end"
+                fxFlexAlign.gt-xs="center"
+                mat-raised-button (click)="add()" color="primary">
+          Add
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <h1 mat-dialog-title class="mat-typography">
+    Create a new collection
+  </h1>
+
+  <form>
+    <div fxLayout="column" mat-dialog-content class="mat-typography">
+
+      <mat-form-field>
+        <input matInput
+          placeholder="Collection name"
+          [formControl]="collectionNameInputForm" required/>
+        <mat-error>{{getCollectionNameError()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select [(ngModel)]="owner"
+          name="ownerList"
+          placeholder="Owner"
+          [disabled]="uploading"
+          required>
+          <mat-option *ngFor="let owner of collectionOwnerList; let i = index"
+            [value]="i">{{owner}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea [(ngModel)]="collectionDescription"
+          name="description"
+          matInput
+          placeholder="Description">
+        </textarea>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="primary">
+      Cancel
+    </button>
+
+    <button mat-raised-button (click)="create()" color="primary">
+      Create
+    </button>
+  </div>
+</div>

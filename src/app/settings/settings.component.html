@@ -1,0 +1,146 @@
+<div fxLayout="row" fxLayoutAlign="center start" class='page-content-inner'>
+  <div fxFlex.gt-xs="60%" fxFlex.lt-sm="100%">
+    <mat-tab-group dynamicHeight [selectedIndex]='selected.value'>
+      <mat-tab label="Account">
+        <div class="tab-content">
+          <div fxLayout="column" fxLayoutAlign="space-between start">
+            <mat-form-field fxFill>
+              <input matInput placeholder="Full name" [(ngModel)]="authService.userProfile.name" [disabled]="true">
+            </mat-form-field>
+
+            <mat-form-field fxFill>
+              <input matInput placeholder="Username" [(ngModel)]="authService.userProfile.username" [disabled]="true">
+            </mat-form-field>
+
+            <mat-form-field fxFill>
+              <input matInput placeholder="Email" [(ngModel)]="authService.userProfile.email" [disabled]="true">
+            </mat-form-field>
+
+            <div class="delete-button" fxFlexAlign="end">
+              <button mat-raised-button color="warn" (click)="confirmationDeleteAccount()">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label='Access Tokens'>
+        <div class='tab-content' fxLayout='column' fxLayoutGap='20px'>
+          <div>
+            <p>Access tokens can be used by your applications to gain access to the Ignition API.</p>
+          </div>
+          <form [formGroup]='createAccessTokenForm' (ngSubmit)='createAccessToken()'
+                fxLayoutAlign='start' fxLayoutGap='20px' fxlayout='row' fxFlex.gt-sm='80%' fxFlex.lt-md='100%' fxFill>
+            <mat-form-field>
+              <input matInput placeholder='Name' formControlName='tokenNameInputForm' required/>
+                <mat-error *ngIf="createAccessTokenForm.get('tokenNameInputForm').hasError('required')">
+                  Please enter a value.
+                </mat-error>
+                <mat-error *ngIf="createAccessTokenForm.get('tokenNameInputForm').hasError('minlength')">
+                  Please use at least 3 characters.
+                </mat-error>
+                <mat-error *ngIf="createAccessTokenForm.get('tokenNameInputForm').hasError('pattern')">
+                  Only alphanumeric characters please.
+                </mat-error>
+            </mat-form-field>
+            <button fxFlexAlign='start' mat-raised-button color="primary" type='submit' [disabled]='!createAccessTokenForm.valid'>Create Token</button>
+          </form>
+          <div>
+            <h2>Active Access Tokens</h2>
+            <mat-table [dataSource]='activeAccessTokens'>
+              <ng-container matColumnDef='name'>
+                <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                <mat-cell *matCellDef='let element'>{{element.name}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef='created'>
+                <mat-header-cell *matHeaderCellDef>Created</mat-header-cell>
+                <mat-cell *matCellDef='let element'>{{element.created | date:'short'}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef='lastUsed'>
+                <mat-header-cell *matHeaderCellDef>Last Used</mat-header-cell>
+                <mat-cell *matCellDef='let element'>
+                  {{element.lastUsed !== undefined && element.lastUsed !== null ? (element.lastUsed | date:'short') : "n/a"}}
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef='prefix'>
+                <mat-header-cell *matHeaderCellDef>Prefix</mat-header-cell>
+                <mat-cell *matCellDef='let element'>{{element.prefix}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef='revoke'>
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef='let element'><button fxAlign="start" mat-raised-button color="warn" (click)='revokeAccessToken(element)'>Revoke</button></mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef='activeAccessTokensColumns'></mat-header-row>
+              <mat-row *matRowDef='let row; columns: activeAccessTokensColumns'></mat-row>
+            </mat-table>
+            <mat-paginator [length]="paginatedAccessTokens.totalCount"
+                           [pageSize]="10"
+                           [pageSizeOptions]="[10]"
+                           (page)="pageEvent = accessTokensPageChange($event)">
+            </mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Organizations">
+        <div class="tab-content">
+          <div *ngIf="authService.userProfile.orgs && authService.userProfile.orgs.length !== 0; else noOrganizations">
+            <h3>Organizations I belong to</h3>
+            <mat-list>
+              <mat-list-item *ngFor="let org of organizationList" class="list-divider">
+                <h4 matLine>
+                  <a routerLink="/{{org}}">
+                    {{org}}
+                  </a>
+                </h4>
+                <button class="hover-display"
+                  mat-button color="accent"
+                  (click)="promptOrgLeave(org)"
+                  *ngIf="!authService.isOwner(org); else ownerLeave">
+                  Leave
+                </button>
+
+                <ng-template #ownerLeave>
+                  <button class="hover-display"
+                    mat-button color="accent"
+                    disabled
+                    title="You can't leave this organization">
+                    Leave
+                  </button>
+                </ng-template>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <ng-template #noOrganizations>
+            <h3>You don't belong to any organization.</h3>
+          </ng-template>
+
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="newOrganizationDialog()">
+            Create Organization
+          </button>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Labs">
+        <div class="tab-content">
+          <p>
+          Try out these experimental features, and <a href="https://openrobotics.freshdesk.com/support/home">let us know what you think</a>. Remember, these are experimental features and may change, break or disappear at any time.
+          </p>
+          <mat-slide-toggle
+            color="primary"
+            [checked]="experimentalGzWeb"
+            (change)="onToggleGzWebFeature($event)">
+          </mat-slide-toggle>
+          <span>Enable <a href="http://gazebosim.org/gzweb" target="_blank">GzWeb</a> for model visualization.</span>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

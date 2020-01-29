@@ -1,0 +1,11 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.content {
+  max-width: 25em;
+}
+
+.collection-input {
+  width: 100%;
+  margin-right: 1rem;
+}

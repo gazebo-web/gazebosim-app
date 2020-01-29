@@ -1,0 +1,75 @@
+<div fxLayout="column" fxLayoutAlign="start center">
+  <div class="banner" *ngIf="collection?.getThumbnail()">
+    <img *ngIf="(collection?.getThumbnail().url | ignAuthHeader | async) as result"
+      [src]="result" alt="Collection Banner">
+  </div>
+
+  <div class="header" fxLayout="row" fxLayoutAlign="space-between" fxFill>
+    <div>
+      <div>
+        <ign-page-title [title]="collection.name" icon="collections"></ign-page-title>
+        <h4>
+          By <a class="color-link" routerLink="/{{collection?.owner}}" routerLinkActive="active">{{collection?.owner}}</a>
+        </h4>
+      </div>
+
+      <div>
+        <ign-description [description]="collection?.description"></ign-description>
+      </div>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="end" class="buttons" *ngIf="canEdit">
+      <button mat-icon-button title="Edit collection" *ngIf="canEdit"
+        routerLink="/{{collection?.owner}}/collections/{{collection?.name}}/edit">
+        <mat-icon>mode_edit</mat-icon>
+      </button>
+      <button mat-icon-button title="Remove this collection" (click)="removeCollection()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+          <mat-icon svgIcon="ign-model"></mat-icon>
+          <span>Models ({{paginatedModels?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="collection.models"
+                                resourceType="models"
+                                [removable]="canEdit"
+                                [disabled]="activeTab !== 'models'"
+                                [finished]="!this.paginatedModels?.hasNextPage()"
+                                (onLoadMore)="loadNextModelsPage()"
+                                (onRemoveItem)="removeItem($event)"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+          <mat-icon svgIcon="ign-world"></mat-icon>
+          <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="collection.worlds"
+                                resourceType="worlds"
+                                [removable]="canEdit"
+                                [disabled]="activeTab !== 'worlds'"
+                                [finished]="!this.paginatedWorlds?.hasNextPage()"
+                                (onLoadMore)="loadNextWorldsPage()"
+                                (onRemoveItem)="removeItem($event)"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

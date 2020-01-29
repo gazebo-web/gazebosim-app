@@ -1,0 +1,60 @@
+<div fxLayout="column" fxLayoutAlign="space-between start">
+  <div class="button-row" fxLayout="row" fxLayoutAlign="left">
+    <div class="add-button-files">
+      <label for="browse-files">
+        <a mat-raised-button [disabled]="uploading">Add files</a>
+      </label>
+
+      <input type="file" id="browse-files" class="input-file" (change)="onFileInput($event)"/>
+    </div>
+
+    <div class="add-button-folder">
+      <label for="browse-dirs">
+        <a mat-raised-button [disabled]="uploading">Add folders</a>
+      </label>
+
+      <input type="file" id="browse-dirs" class="input-file" (change)="onFileInput($event)" webkitdirectory directory multiple/>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="center center" fxFill fxLayout.xs="column">
+    <div fxFlex ignDnd class="dropzone-list"
+      (newValidFilesEmitter)="onValidFiles($event)"
+      (newInvalidFilesEmitter)="onInvalidFiles($event)"
+      [allowedExtensions]="allowedExtensions"
+      [disabled]="disabled">
+
+      <div *ngIf="!fileList || fileList.length == 0; else hasFiles"
+           class="mat-typography dropzone-msg"
+           fxLayout="column"
+           fxLayoutAlign="center center"
+           [innerHtml]="message">
+      </div>
+
+      <ng-template #hasFiles>
+        <div fxLayout="column" fxLayoutAlign="start stretch">
+          <div *ngFor="let file of fileList" class="file" fxLayout="row" fxLayoutAlign="space-between">
+            <span *ngIf="file.fullPath">{{file.fullPath}}</span>
+
+            <span *ngIf="!file.fullPath">{{file.name}}</span>
+
+            <i class="material-icons" button type="button" matSuffix (click)="removeFile(file)">
+              delete
+            </i>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div *ngIf="hasGzWeb" fxFlex="50" class="viewer-wrapper">
+      <ign-sdfviewer
+        class="sdfviewer"
+        [fileList]="fileList">
+       </ign-sdfviewer>
+    </div>
+  </div>
+
+  <div *ngIf="uploading" fxLayout="row" fxLayoutAlign="center center" fxFill>
+    <img class="uploading-gif" src="assets/images/ign.gif">
+  </div>
+</div>

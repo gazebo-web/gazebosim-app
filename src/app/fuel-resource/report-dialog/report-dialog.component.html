@@ -1,0 +1,30 @@
+<h1 mat-dialog-title class="mat-typography">
+    {{data.title}}
+</h1>
+<div>
+    <div mat-dialog-content class="mat-typography">
+        <mat-radio-group
+            fxLayout="column"
+            class="report-radio-group"
+            [(ngModel)]="selectedOption"
+        >
+            <mat-radio-button
+                class="report-radio-button"
+                *ngFor="let reason of reasons"
+                [value]="reason"
+            >
+                {{reason}}
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    
+    <div mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close color="primary">
+            Cancel
+        </button>
+    
+        <button mat-raised-button color="primary" (click)="report()" [disabled]="!selectedOption">
+            Report
+        </button>
+    </div>
+</div>

@@ -1,0 +1,130 @@
+<div class="wrapper">
+  <mat-progress-bar
+    id="progress-bar"
+    mode="determinate"
+    [value]="progressBarValue"
+    *ngIf="resolvingRoute"></mat-progress-bar>
+
+  <!-- According to Angular Material, a sidenav container must take up the full space -->
+  <mat-sidenav-container class="mat-typography">
+    <mat-sidenav #sidenav mode="side" fixedInViewport>
+      <div fxLayout="column" fxLayoutAlign="start left" fxFill>
+        <div class="mat-typography title">
+          <a routerLink="/dashboard" (click)="closeSidenav()">
+            <img src="assets/images/ignition_icon_white_48x48.png">
+          </a>
+        </div>
+
+        <mat-nav-list class="sidenav-list">
+          <a mat-list-item routerLink='/' (click)="closeSidenav()">Dashboard</a>
+          <a mat-list-item routerLink='/fuel'>Fuel</a>
+          <mat-nav-list class="sidenav-list indent">
+            <a mat-list-item routerLink="/models" (click)="closeSidenav()">
+              <mat-icon svgIcon='ign-model'></mat-icon> Models
+            </a>
+            <a mat-list-item routerLink="/worlds" (click)="closeSidenav()">
+              <mat-icon svgIcon='ign-world'></mat-icon> Worlds
+            </a>
+            <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
+              <mat-icon>collections</mat-icon> Collections
+            </a>
+          </mat-nav-list>
+          <a mat-list-item routerLink="/portal" (click)="closeSidenav()">
+            Portals
+          </a>
+          <a mat-list-item href="https://openrobotics.freshdesk.com" (click)="closeSidenav()">
+            Information
+          </a>
+          <!-- Add link to System Admin page if the user is a system admin -->
+          <a *ngIf='authService.userProfile?.sysAdmin' mat-list-item routerLink="/admin" (click)="closeSidenav()">
+            System Admin
+          </a>
+        </mat-nav-list>
+
+        <div class="copyright">&copy; 2018 Open Robotics</div>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <mat-toolbar class="mat-elevation-z1" fxLayout="row" fxLayoutAlign="space-between center">
+        <!-- Hamburger menu button -->
+        <button fxHide fxShow.xs="true" mat-icon-button (click)="sidenav.open('mouse')">
+          <mat-icon>
+            menu
+          </mat-icon>
+        </button>
+
+        <div class="title">{{titlebarTitle}} <small>{{titlebarSubtitle}}</small></div>
+
+        <div class="toolbar-space"></div>
+
+        <mat-form-field [floatLabel]="'never'" fxFlex="2 0 100px">
+          <mat-label>Search</mat-label>
+          <input #search matInput type="search" (keyup.enter)="onSearch(search.value)">
+          <mat-icon matPrefix id="search-icon">search</mat-icon>
+        </mat-form-field>
+
+        <div class="toolbar-space"></div>
+
+        <!-- Add resource button -->
+        <button *ngIf="deviceService.isDesktop()" class="add-button"
+          mat-icon-button [matMenuTriggerFor]="addAssetMenu" title="Add Resource">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+
+        <mat-menu #addAssetMenu="matMenu" xPosition="before"
+          yPosition="below" overlapTrigger="false">
+          <button mat-menu-item routerLink="/models/upload"
+            routerLinkActive="active">Model</button>
+
+          <button mat-menu-item routerLink="/worlds/upload"
+            routerLinkActive="active">World</button>
+        </mat-menu>
+
+        <!-- Login/logout and other user options -->
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon *ngIf="!authService.isAuthenticated(); else personIcon" id="profile-icon">
+            account_circle
+          </mat-icon>
+          <ng-template #personIcon>
+            <img class="profile-img" [src]="authService.userProfile?.picture">
+          </ng-template>
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before"
+          yPosition="below" overlapTrigger="false">
+          <button mat-menu-item *ngIf="!authService.isAuthenticated()"
+            (click)="authService.login()">Log in</button>
+
+          <button mat-menu-item [matMenuTriggerFor]="orgMenu"
+            *ngIf="authService.isAuthenticated() && authService.userProfile?.orgs.length > 0">
+            Organizations
+          </button>
+
+          <button mat-menu-item *ngIf="authService.isAuthenticated()"
+            routerLink="/{{authService.userProfile.username}}" routerLinkActive="active">Profile</button>
+
+          <button mat-menu-item *ngIf="authService.isAuthenticated()"
+            routerLink="/settings" routerLinkActive="active">Settings</button>
+
+          <button mat-menu-item *ngIf="authService.isAuthenticated()"
+            (click)="authService.logout()">Log out</button>
+        </mat-menu>
+
+        <mat-menu #orgMenu="matMenu" xPosition="before"
+          yPosition="below" overlapTrigger="false">
+          <button mat-menu-item *ngFor="let org of authService.userProfile?.orgs"
+            routerLink="/{{org}}" routerLinkActive="active">{{org}}</button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item
+            routerLink="/settings" fragment="organizations" routerLinkActive="active">Add Organization</button>
+        </mat-menu>
+      </mat-toolbar>
+
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</div>

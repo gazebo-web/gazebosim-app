@@ -1,0 +1,171 @@
+image: markadams/chromium-xvfb
+
+# Stages declaration
+stages:
+  - linting
+  - testing
+  - building
+  - packaging   # TODO: Add job to packaging stage to build and push a docker image.
+  - deploying
+
+# Cache policy configuration
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+# Aliases
+
+## Deployment
+.deployment_before_script: &deployment_before_script
+  - pip install awscli
+  - export PATH=~/.local/bin:$PATH
+.deployment_script: &deployment_script
+  - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
+  - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+
+## Dependencies
+.dependencies_before_script: &dependencies_before_script
+  - apt-get clean
+  - apt-get update
+  - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+  - apt-get install -y nodejs git
+  - npm -v
+  - node -v
+  - npm install --silent
+
+
+#####################################
+
+## Linting stage jobs:
+lint:
+  stage: linting
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run lint
+
+## Testing stage jobs:
+test:
+  stage: testing
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm test
+  environment:
+    name: testing
+
+codecov:
+  stage: testing
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run codecov
+  environment:
+    name: testing
+
+## Building stage jobs:
+build_integration:
+  stage: building
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run build:prod
+  artifacts:
+    name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/
+  environment:
+    name: integration
+    url: https://integration-app.ignitionrobotics.org/
+  except:
+    - master
+    - develop
+    - /^release\/.*$/i
+
+build_staging:
+  stage: building
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run build:prod
+  artifacts:
+    name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/
+  environment:
+    name: staging
+    url: https://staging-app.ignitionrobotics.org/
+  only:
+    - develop
+    - /^release\/.*$/i
+    - /^hotfix\/.*$/i
+
+build_production:
+  stage: building
+  before_script:
+    - *dependencies_before_script
+  script:
+    - npm run build:prod
+  artifacts:
+    name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
+    paths:
+      - dist/
+  environment:
+    name: production
+    url: https://app.ignitionrobotics.org/
+  only:
+    - master
+
+## Deploying stage jobs:
+integration:
+  image: python:3.5
+  stage: deploying
+  dependencies:
+    - build_integration
+  before_script:
+    - *deployment_before_script
+  script:
+    - *deployment_script
+  environment:
+    name: integration
+    url: https://integration-app.ignitionrobotics.org/
+  except:
+    - master
+    - develop
+    - /^release\/.*$/i
+  when: manual
+
+staging:
+  image: python:3.5
+  stage: deploying
+  dependencies:
+    - build_staging
+  before_script:
+    - *deployment_before_script
+  script:
+    - *deployment_script
+  environment:
+    name: staging
+    url: https://staging-app.ignitionrobotics.org/
+  only:
+    - develop
+    - /^release\/.*$/i
+    - /^hotfix\/.*$/i
+  when: manual
+
+production:
+  image: python:3.5
+  stage: deploying
+  dependencies:
+    - build_production
+  before_script:
+    - *deployment_before_script
+  script:
+    - *deployment_script
+  environment:
+    name: production
+    url: https://app.ignitionrobotics.org/
+  only:
+    - master
+  when: manual

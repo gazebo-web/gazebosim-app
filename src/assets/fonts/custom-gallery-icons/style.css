@@ -1,0 +1,72 @@
+@font-face {
+  font-family: 'custom-gallery-icons';
+  src:  url('fonts/custom-gallery-icons.eot?jol2lt');
+  src:  url('fonts/custom-gallery-icons.eot?jol2lt#iefix') format('embedded-opentype'),
+    url('fonts/custom-gallery-icons.ttf?jol2lt') format('truetype'),
+    url('fonts/custom-gallery-icons.woff?jol2lt') format('woff'),
+    url('fonts/custom-gallery-icons.svg?jol2lt#custom-gallery-icons') format('svg');
+  font-style: normal;
+}
+
+[class^="gallery-"], [class*=" gallery-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'custom-gallery-icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: bold;
+  font-size: larger;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.circle-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background: #6E6E6E;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+}
+
+.gallery-ic_arrow_back:before {
+  content: "\e900";
+  color: #fff;
+}
+.gallery-ic_arrow_forward:before {
+  content: "\e901";
+  color: #fff;
+}
+.gallery-ic_cancel:before {
+  content: "\e902";
+  color: #fff;
+}
+.gallery-ic_chevron_left:before {
+  content: "\e903";
+  color: #fff;
+}
+.gallery-ic_chevron_right:before {
+  content: "\e904";
+  color: #fff;
+}
+.gallery-ic_close:before {
+  content: "\e905";
+  color: #fff;
+}
+.gallery-ic_fullscreen:before {
+  content: "\e906";
+  color: #fff;
+}
+.gallery-ic_fullscreen_exit:before {
+  content: "\e907";
+  color: #fff;
+}
+.gallery-ic_refresh:before {
+  content: "\e908";
+  color: #fff;
+}

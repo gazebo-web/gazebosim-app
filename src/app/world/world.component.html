@@ -1,0 +1,205 @@
+<div class="page-content-inner" fxFlex fxLayoutAlign='center'>
+  <div class="content mat-typography">
+    <!-- Header -->
+    <div fxLayoutAlign="space-between">
+      <div fxLayout="row" fxAlign="start">
+        <div fxLayout="column">
+          <ign-page-title [title]="world.name" svgIcon="ign-world"></ign-page-title>
+          <h4>
+            By <a class="color-link" routerLink="/{{world?.owner}}">{{world?.owner}}</a>
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery and Stats -->
+    <div fxLayout.gt-sm="row" fxLayout.lt-md="column">
+      <div class="row-left padding">
+        <div class="gallery-container-outer">
+          <div class="gallery-container-inner" fxLayoutAlign="center center">
+
+            <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!galleryImages">
+              <img class="loading-gif" src="assets/images/ign.gif">
+              <span class="mat-typography">Fetching images from server</span>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="galleryImages && galleryImages.length == 0">
+              <span class="mat-typography font-x-large">This world has no thumbnails.</span>
+            </div>
+
+            <ngx-gallery *ngIf="galleryImages && galleryImages.length != 0"
+              [options]="galleryOptions"
+              [images]="galleryImages">
+            </ngx-gallery>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row-right padding">
+        <div class="action-buttons">
+          <button mat-icon-button [disabled]="!authService.isAuthenticated() || disableLike"
+            [title]="getLikeButtonTitle()"
+            [color]="world.isLiked? 'accent' : 'none'"
+            (click)="likeClick()">
+            <mat-icon>favorite</mat-icon>
+          </button>
+          <button mat-icon-button title="Download this world"
+            (click)="downloadClick()">
+            <mat-icon>file_download</mat-icon>
+          </button>
+          <button mat-icon-button
+            [disabled]="!authService.isAuthenticated() || currentVersion != latestVersion"
+            [title]="getCopyButtonTitle()"
+            (click)="copyWorld()">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button
+            [disabled]="!authService.isAuthenticated()"
+            [title]="authService.isAuthenticated()? 'Add to a Collection' : 'Log in to add this to a Collection'"
+            (click)="addToCollection()">
+            <mat-icon>collections</mat-icon>
+          </button>
+          <button 
+            mat-icon-button
+            title="Report this world"
+            (click)="report()"
+          >
+            <mat-icon>flag</mat-icon>
+          </button>
+        <button mat-icon-button title="Edit world" *ngIf="canEdit"
+            routerLink="/{{world?.owner}}/worlds/{{world?.name}}/edit">
+            <mat-icon>mode_edit</mat-icon>
+          </button>
+        </div>
+
+        <mat-list>
+          <mat-list-item>
+            <div class="stat-item">
+              <span class="stat-field">Liked</span>
+              <span class="stat-value">{{world?.likes}}</span>
+            </div>
+          </mat-list-item>
+          <mat-list-item>
+            <div class="stat-item">
+              <span class="stat-field">Downloaded</span>
+              <span class="stat-value">{{world?.downloads}}</span>
+            </div>
+          </mat-list-item>
+          <mat-list-item>
+            <div class="stat-item">
+              <span>File size</span>
+              <span>{{world?.filesize | ignFileSize}}</span>
+            </div>
+          </mat-list-item>
+          <mat-list-item>
+            <div class="stat-item">
+              <span class="stat-field">Upload date</span>
+              <div class="stat-value">{{world?.uploadDate | date}}</div>
+            </div>
+          </mat-list-item>
+          <mat-list-item>
+            <div class="stat-item">
+              <span class="stat-field">Last modified</span><br>
+              <span class="stat-value">{{world?.modifyDate | date}}</span>
+            </div>
+          </mat-list-item>
+          <mat-list-item>
+            <div class="stat-item">
+              <span class="stat-field">Version</span><br>
+              <mat-select [(ngModel)]="currentVersion"
+                          (ngModelChange)="onVersion()"
+                          class="header-dropdown"
+                          name="versions"
+                          title="Display another version"
+                          placeholder="Version"
+                          required>
+                <mat-option *ngFor="let version of world.versions" [value]="version">
+                  {{version}}
+                </mat-option>
+              </mat-select>
+            </div>
+          </mat-list-item>
+        </mat-list>
+
+      </div>
+    </div>
+
+    <!-- Description, Files and Tags -->
+    <div class="bottom-row-container" fxLayout="row">
+      <mat-tab-group dynamicHeight fxFlex class="tab-container" color="accent">
+        <mat-tab label="World Description">
+          <div fxLayout="column" fxLayoutGap="20px" class="tab-body">
+
+            <ign-description [description]="world.description"></ign-description>
+
+            <ign-tags [tags]="world.tags"></ign-tags>
+
+            <div fxLayout="row"
+                 fxLayoutAlign="start center"
+                 fxLayoutGap="10px">
+              <a class="color-link" rel="license"
+                href="{{world?.license.url}}"
+                title="{{world?.license.name}}"
+                target="_blank">
+                <img alt="{{world?.license.name}}"
+                     src="{{world?.license.image}}">
+              </a>
+
+              <a class="color-link" rel="license"
+                href="{{world?.license.url}}"
+                title="{{world?.license.name}}"
+                target="_blank">
+                <span>
+                  This world is licensed under {{world?.license.name}}
+                </span>
+              </a>
+            </div>
+
+          </div>
+        </mat-tab>
+
+        <mat-tab label="World Files">
+          <div *ngIf="world?.files && world.files.length > 0; else noFilesBlock"
+               class="list-container tab-body">
+            <mat-list dense>
+              <mat-list-item *ngFor="let file of world.files" class="list-divider">
+                <mat-icon mat-list-icon>insert_drive_file</mat-icon>
+                <h4 matLine>{{file.name}}</h4>
+                <span matLine>{{file.displayPath}}</span>
+                <button mat-icon-button title="Download {{file.name}}"
+                  (click)="downloadIndividualFile(file)">
+                  <mat-icon>file_download</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <ng-template #noFilesBlock>
+            <div class="tab-body">
+              <span>There was a problem getting the files of this world.</span>
+            </div>
+          </ng-template>
+        </mat-tab>
+
+        <mat-tab label="Collections">
+          <div *ngIf="collections && collections.length > 0; else noCollections"
+               class="tab-body">
+            <ign-fuel-resource-list [resources]="collections"
+                                    resourceType="collections"
+                                    [finished]="!paginatedCollections.hasNextPage()"
+                                    (onLoadMore)="loadNextCollections()"
+                                    fxFlex>
+            </ign-fuel-resource-list>
+          </div>
+          <ng-template #noCollections>
+            <div class="tab-body">
+              <span>This world doesn't belong to any collection yet.</span>
+            </div>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<!-- Display information only when the user logged from Auth0 -->
+<div class="mat-typography page-content">
+  <div *ngIf="needValidation && !validationSuccess">
+    <h1>Email validation required</h1>
+    <p>Please check your inbox and validate your email.</p>
+    <p>If you have problems validating your account, please contact us on
+      <a href="https://openrobotics.freshdesk.com">Ignition Fuel Help</a>.</p>
+  </div>
+
+  <div *ngIf="!needValidation && validationSuccess">
+    <h1>Your email was validated</h1>
+    <p>Please <a [routerLink]="" [skipLocationChange]="false"
+      (click)="authService.login()">log in</a> again to complete the process.</p>
+  </div>
+
+  <div *ngIf="loggedIn && needAccount">
+    <!-- Username not found, therefore create a new account. -->
+    <h2>Welcome to Ignition Fuel</h2>
+
+    <p>Please pick a username.</p>
+
+    <form (ngSubmit)="createAccount()">
+      <mat-form-field>
+        <input matInput placeholder="username" [formControl]="username"/>
+        <mat-error>{{getErrorMessage()}}</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button type="submit">Create account</button>
+    </form>
+  </div>
+</div>

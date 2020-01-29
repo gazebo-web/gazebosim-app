@@ -1,0 +1,77 @@
+<div class="mat-typography" fxLayout="row" fxLayoutAlign="start center">
+
+    <mat-tab-group dynamicHeight fxFlex class="tab-container" color="accent">
+      <mat-tab label="Simulation Instances">
+        <a class="margin" mat-raised-button color="primary"
+           [href]="simulationsBucketLink" target="_blank" rel="noopener" title="Link to the S3 bucket">
+          <mat-icon>link</mat-icon>
+          S3 Bucket
+        </a>
+        <ign-simulation-table [paginatedSimulations]="paginatedSimulations"></ign-simulation-table>
+      </mat-tab>
+
+      <!-- Machine Instances tab -->
+      <mat-tab label="Machine Instances">
+
+        <div fxLayout="row" fxLayoutGap="20px" class="margin">
+          <mat-form-field>
+            <mat-select placeholder="Status" (selectionChange)="filterByStatus($event)">
+              <mat-option>Not specified</mat-option>
+              <mat-option *ngFor="let status of machineStatusList" [value]="status">{{status}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Group Id" (keyup)="filterByGroupId($event.target.value)">
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="paginatedMachines && paginatedMachines.machines && paginatedMachines.machines.length > 0; else noMachines">
+          <mat-table [dataSource]="machineDataSource">
+            <!-- Start time Column -->
+            <ng-container matColumnDef="startedAt">
+              <mat-header-cell *matHeaderCellDef> Started At </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.createdAt | date:'short'}} </mat-cell>
+            </ng-container>
+
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+              <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+            </ng-container>
+
+            <!-- GroupId Column -->
+            <ng-container matColumnDef="groupId">
+              <mat-header-cell *matHeaderCellDef> Group Id </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element?.groupId}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="machineDisplayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: machineDisplayedColumns;"></mat-row>
+          </mat-table>
+
+          <mat-paginator [length]="paginatedMachines.totalCount"
+                         [pageSize]="10"
+                         [pageSizeOptions]="[10]"
+                         (page)="pageEvent = pageChange($event)">
+          </mat-paginator>
+        </div>
+
+        <ng-template #noMachines>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <h3 *ngIf="machineStatusFilter">Currently there are no machines with the status "{{machineStatusFilter}}".</h3>
+            <h3 *ngIf="!machineStatusFilter">Currently there are no machines.</h3>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <!-- End Machine Instances tab -->
+
+      <mat-tab label="Simulation rules">
+        <ign-simulation-rules [paginatedRules]="paginatedRules"></ign-simulation-rules>
+      </mat-tab>
+
+      <mat-tab label="Launch Queue">
+        <ign-launch-queue></ign-launch-queue>
+      </mat-tab>
+    </mat-tab-group>
+  </div>

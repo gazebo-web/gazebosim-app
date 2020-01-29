@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+h1 {
+  font-size: 10em;
+  line-height: 1em;
+  font-weight: 400;
+  color: #6e6e6e;
+}
+
+h2 {
+  font-size: 42px;
+  font-weight: 300;
+}
+
+h5 {
+  font-size: 20px;
+  text-transform: uppercase;
+}

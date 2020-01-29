@@ -1,0 +1,30 @@
+<div class="mat-typography">
+  <div fxLayout="column" fxLayoutAlign="start center" >
+    <div #infiniteScroll infiniteScroll fxLayout="row wrap" fxFill
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="500"
+      [infiniteScrollDisabled]="disabled"
+      (scrolled)="onScroll()">
+      <ign-item-card class="item-card"
+        fxFlex.xs="100%"
+        fxFlex.sm="50%"
+        fxFlex.md="25%"
+        [removable]=removable
+        (removeClicked)="remove($event)"
+        [resource]=res [type]="resourceType" *ngFor="let res of resources">
+      </ign-item-card>
+    </div>
+
+    <div class="loading-footer mat-typography">
+      <img src="assets/images/ign.gif" *ngIf="loading || !resources">
+
+      <h3 *ngIf="finished && resources && resources.length !== 0">
+        No more {{resourceType}} to load.
+      </h3>
+
+      <h3 *ngIf="resources && resources.length === 0">
+        No {{resourceType}} found.
+      </h3>
+    </div>
+  </div>
+</div>

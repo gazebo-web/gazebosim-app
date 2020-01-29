@@ -1,0 +1,25 @@
+<div fxLayoutAlign="center center">
+  <button mat-icon-button (click)="$event.stopPropagation()">
+    <mat-icon>play_arrow</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="$event.stopPropagation()">
+    <mat-icon>pause</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="stop($event)" *ngIf="simulation.isLaunching() || simulation.status === 'Running'">
+    <mat-icon>stop</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="restart($event)" *ngIf="simulation.canBeRestarted()" title="Restart this simulation">
+    <mat-icon>replay</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="download($event)">
+    <mat-icon>file_download</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="showMetadata($event)">
+    <mat-icon>info</mat-icon>
+  </button>
+</div>
