@@ -406,6 +406,9 @@ export class AuthService {
           profile.username = response['username'];
           profile.orgs = response['orgs'];
           profile.orgRoles = response['orgRoles'];
+          if (response['sysAdmin']) {
+            profile.sysAdmin = response['sysAdmin'];
+          }
           localStorage.setItem('profile', JSON.stringify(profile));
 
           // Updates the Profile.
