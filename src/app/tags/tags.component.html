@@ -25,7 +25,7 @@
 
 <ng-template #tagsDisplay>
   <div fxLayout="row" fxLayoutGap="10px" fxFill>
-    <mat-icon title="Tags" svgIcon="tag-multiple"></mat-icon>
+    <mat-icon class="margin-align" title="Tags" svgIcon="tag-multiple"></mat-icon>
 
     <div *ngIf="tags && tags.length > 0; else noTagsBlock">
       <mat-chip-list>
@@ -36,7 +36,7 @@
     </div>
 
     <ng-template #noTagsBlock>
-      <div>
+      <div class="margin-align" fxLayout="row" fxLayoutAlign="start center">
         <span>No tags.</span>
       </div>
     </ng-template>

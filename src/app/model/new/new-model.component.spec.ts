@@ -19,6 +19,7 @@ import {
 import { MarkdownModule } from 'ngx-markdown';
 
 import { AuthService } from '../../auth/auth.service';
+import { CategoriesComponent } from '../../fuel-resource/categories/categories.component';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog';
 import { DescriptionComponent } from '../../description/description.component';
 import { DndDirective } from '../../dnd/dnd.directive';
@@ -66,6 +67,7 @@ describe('NewModelComponent', () => {
         RouterTestingModule,
         ],
       declarations: [
+        CategoriesComponent,
         ConfirmationDialogComponent,
         DescriptionComponent,
         DndDirective,

@@ -69,6 +69,8 @@ import { AuthGuard } from './auth/auth-guard.service';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { AuthPipe } from './auth/auth.pipe';
 import { AuthService } from './auth/auth.service';
+import { CategoriesComponent } from './fuel-resource/categories/categories.component';
+import { CategoryService } from './fuel-resource/categories/category.service';
 import { CollectionComponent } from './collection/collection.component';
 import { CollectionDialogComponent } from './collection/dialog/collection-dialog.component';
 import { CollectionListComponent } from './collection/list/collection-list.component';
@@ -152,6 +154,7 @@ const APP_PROVIDERS = [
   AppState,
   AuthGuard,
   AuthService,
+  CategoryService,
   CollectionResolver,
   CollectionService,
   FuelResourceService,
@@ -207,6 +210,7 @@ interface StoreType  {
     AssetDisplayComponent,
     AuthCallbackComponent,
     AuthPipe,
+    CategoriesComponent,
     CollectionComponent,
     CollectionDialogComponent,
     CollectionListComponent,

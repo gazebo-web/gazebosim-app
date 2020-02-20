@@ -1,0 +1,30 @@
+<div *ngIf="edit; else categoriesDisplay">
+  <mat-form-field hintLabel="Select up to two categories." fxFill>
+    <mat-select placeholder="Categories"
+                [formControl]="categorySelectionForm"
+                multiple
+                (selectionChange)="selectionChange($event)">
+      <mat-option *ngFor="let category of availableCategories"
+                  [value]="category"
+                  [disabled]="categorySelectionForm.value.indexOf(category) === -1 && categorySelectionForm.value.length >= 2">
+        {{category}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<ng-template #categoriesDisplay>
+  <div fxLayout="row" fxLayoutGap="10px" fxFill>
+    <mat-icon class="margin-align" title="Categories" svgIcon="shape"></mat-icon>
+
+    <div *ngIf="categories && categories.length > 0; else noCategoriesBlock" fxLayoutAlign="start center" class="category-list">
+      <span>{{selectedCategories}}</span>
+    </div>
+
+    <ng-template #noCategoriesBlock>
+      <div class="margin-align" fxLayout="row" fxLayoutAlign="start center" class="category-list">
+        <span>No categories.</span>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>
