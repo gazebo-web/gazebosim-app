@@ -73,6 +73,11 @@ export class NewModelComponent implements OnInit {
   public tags: string[] = [];
 
   /**
+   * List of categories.
+   */
+  public categories: string[] = [];
+
+  /**
    * Model description.
    */
   public description: string = '';
@@ -159,6 +164,15 @@ export class NewModelComponent implements OnInit {
    */
   public onModifyDescription(description: string): void {
     this.description = description;
+  }
+
+  /**
+   * Modify the Categories based on the event received.
+   *
+   * @param categories The modified categories.
+   */
+  public onModifyCategories(categories: string[]): void {
+    this.categories = categories;
   }
 
   /**
@@ -256,6 +270,7 @@ export class NewModelComponent implements OnInit {
     formData.append('URLName', this.urlName.trim());
     formData.append('description', this.description.trim());
     formData.append('tags', this.tags.join());
+    formData.append('categories', this.categories.join());
     formData.append('license', (this.license + 1).toString());
     formData.append('owner', this.ownerList[this.owner]);
 
