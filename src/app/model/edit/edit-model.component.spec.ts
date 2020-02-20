@@ -14,21 +14,23 @@ import {
   MatDialog,
   MatDialogModule,
   MatIconModule,
+  MatSelectModule,
   MatInputModule,
   MatSnackBar,
   MatSnackBarModule,
 } from '@angular/material';
 import { MarkdownModule } from 'ngx-markdown';
 
-import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
-import { EditModelComponent } from './edit-model.component';
+import { AuthService } from '../../auth/auth.service';
+import { CategoriesComponent } from '../../fuel-resource/categories/categories.component';
 import {
   ConfirmationDialogComponent
 } from '../../confirmation-dialog/confirmation-dialog.component';
-import { AuthService } from '../../auth/auth.service';
 import { DescriptionComponent } from '../../description/description.component';
 import { DndDirective } from '../../dnd/dnd.directive';
+import { EditModelComponent } from './edit-model.component';
 import { FileUploadComponent } from '../../file-upload/file-upload.component';
+import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { Model } from '../model';
 import { ModelService } from '../model.service';
 import { PageTitleComponent } from '../../page-title';
@@ -71,11 +73,13 @@ describe('EditModelComponent', () => {
         MatDialogModule,
         MatIconModule,
         MatInputModule,
+        MatSelectModule,
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterTestingModule,
         ],
       declarations: [
+        CategoriesComponent,
         ConfirmationDialogComponent,
         DescriptionComponent,
         DndDirective,

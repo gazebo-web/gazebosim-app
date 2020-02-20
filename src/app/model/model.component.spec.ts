@@ -15,6 +15,8 @@ import * as FileSaver from 'file-saver';
 
 import { AuthPipe } from '../auth/auth.pipe';
 import { AuthService } from '../auth/auth.service';
+import { CategoriesComponent } from '../fuel-resource/categories/categories.component';
+import { CategoryService } from '../fuel-resource/categories/category.service';
 import { CollectionService, PaginatedCollection, Collection } from '../collection';
 import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
 import { DescriptionComponent } from '../description/description.component';
@@ -101,6 +103,7 @@ describe('ModelComponent', () => {
         ],
       declarations: [
         AuthPipe,
+        CategoriesComponent,
         CopyDialogComponent,
         DescriptionComponent,
         FileSizePipe,
@@ -113,6 +116,7 @@ describe('ModelComponent', () => {
         ],
       providers: [
         AuthService,
+        CategoryService,
         CollectionService,
         JsonClassFactoryService,
         ModelService,

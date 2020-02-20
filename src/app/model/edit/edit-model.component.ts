@@ -33,6 +33,11 @@ export class EditModelComponent implements OnInit {
   public canEdit: boolean = false;
 
   /**
+   * Whether categories have been modified or not. Notified by a CategoriesComponent event.
+   */
+  public categoriesModified: boolean = false;
+
+  /**
    * Whether tags have been modified or not. Notified by a TagsComponent event.
    */
   public tagsModified: boolean = false;
@@ -97,6 +102,17 @@ export class EditModelComponent implements OnInit {
   }
 
   /**
+   * Callback to the CategoriesComponent's onModify event. Set the categories as 'dirty',
+   * so they can be included in the form data to edit the model.
+   *
+   * @param categories The event that contains the modified categories.
+   */
+  public onModifyCategories(categories: string[]): void {
+    this.categoriesModified = true;
+    this.model.categories = categories;
+  }
+
+  /**
    * Callback to the TagsComponent's onModify event. Set the tags as 'dirty'.
    */
   public onModifyTags(): void {
@@ -135,6 +151,11 @@ export class EditModelComponent implements OnInit {
     // Check if the Tags have been modified.
     if (this.tagsModified) {
       formData.append('tags', this.model.tags.join());
+    }
+
+    // Check if the Tags have been modified.
+    if (this.categoriesModified) {
+      formData.append('categories', this.model.categories.join());
     }
 
     // Check if there are files to upload and analyze them.
@@ -180,6 +201,7 @@ export class EditModelComponent implements OnInit {
         (response) => {
           // Update the model.
           this.model = response;
+          this.categoriesModified = false;
           this.tagsModified = false;
           this.descriptionModified = false;
 

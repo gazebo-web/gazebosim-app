@@ -20,6 +20,13 @@
                        fxFill>
       </ign-description>
 
+      <ign-categories [categories]="model.categories"
+                      [edit]="true"
+                      [disabled]="updating"
+                      (onModify)="onModifyCategories($event)"
+                      fxFill>
+      </ign-categories>
+
       <ign-tags [tags]="model.tags"
                 [edit]="true"
                 [disabled]="updating"

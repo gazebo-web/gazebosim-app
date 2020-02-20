@@ -77,6 +77,11 @@ export abstract class FuelResource {
   public tags: string[] = [];
 
   /**
+   * Array of Categories the resource has.
+   */
+  public categories: string[] = [];
+
+  /**
    * Array of Versions of the resource.
    */
   public versions: number[] = [];
@@ -117,6 +122,9 @@ export abstract class FuelResource {
     }
     if (json['tags']) {
       this.tags = json['tags'];
+    }
+    if (json['categories']) {
+      this.categories = json['categories'];
     }
     if (json['version']) {
       for (let v = 1; v <= json['version']; v++) {
