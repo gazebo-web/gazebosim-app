@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import {HttpClient, HttpResponse, HttpErrorResponse, HttpParams} from '@angular/common/http';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
@@ -9,6 +9,7 @@ import { AuthService } from '../auth/auth.service';
 
 import { FuelResource } from './fuel-resource';
 import { FuelPaginatedResource } from './fuel-paginated-resource';
+import { SearchOperator } from "../search/search-operator";
 
 import 'rxjs/add/operator/catch';
 import * as linkParser from 'parse-link-header';
@@ -75,15 +76,28 @@ export abstract class FuelResourceService {
    * @param search Optional search string.
    * @returns An observable of the paginated resources.
    */
-  public getList(search: string = ''): Observable<FuelPaginatedResource> {
+  public getList(search: string = '', operators: SearchOperator[] = null): Observable<FuelPaginatedResource> {
     let url = this.getListUrl();
+    let params = new HttpParams();
 
     // Append the optional search string to the url.
     if (search !== '') {
-      url += '?q=' + search;
+      params = params.append("q", search)
     }
 
-    return this.http.get(url, {observe: 'response'})
+    if (operators !== null) {
+      let operator: SearchOperator;
+      for (operator of operators) {
+        params = params.append(operator.keyword, operator.value)
+      }
+    }
+
+    return this.http.get(url,
+        {
+          observe: 'response',
+          params: params,
+        },
+      )
       .map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
