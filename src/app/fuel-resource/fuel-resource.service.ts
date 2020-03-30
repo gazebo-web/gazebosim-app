@@ -74,28 +74,33 @@ export abstract class FuelResourceService {
    * Get the first page of all the resources from the Backend.
    *
    * @param search Optional search string.
+   * @param categories Optional list to filter by categories.
    * @returns An observable of the paginated resources.
    */
-  public getList(search: string = '', operators: SearchOperator[] = null): Observable<FuelPaginatedResource> {
-    let url = this.getListUrl();
+  public getList(
+    search: string = '',
+    categories: string[] = null,
+  ): Observable<FuelPaginatedResource> {
+
+    const url = this.getListUrl();
     let params = new HttpParams();
 
     // Append the optional search string to the url.
     if (search !== '') {
-      params = params.append("q", search)
+      params = params.append('q', search);
     }
 
-    if (operators !== null) {
-      let operator: SearchOperator;
-      for (operator of operators) {
-        params = params.append(operator.keyword, operator.value)
+    if (!categories && categories.length > 0) {
+      let category: string;
+      for (category of categories) {
+        params = params.append('category', category);
       }
     }
 
     return this.http.get(url,
         {
           observe: 'response',
-          params: params,
+          params,
         },
       )
       .map((response) => {

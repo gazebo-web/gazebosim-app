@@ -70,25 +70,10 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     let search: string;
-    const categoryRegex: RegExp = new RegExp('(?<=(category:\\"))(\\w|\\d|\\n|[().,\\-:;@#$%^&*\\[\\]"\'+–\\/\\/®°⁰!?{}|`~]| )+?(?=(\\"))');
-
-
-
     // This subscription makes the search re-run if the user changes params.
     this.activatedRoute.params.subscribe((params: Params) => {
-      let match = null;
-      const operators: SearchOperator[] = [];
-
       search = params['q'];
-      match = search.match(categoryRegex);
-
-      while(match != null) {
-        operators.push(new SearchOperator("category", match[0]));
-        search = search.replace(`category:"${match[0]}"`, '');
-        match = search.match(categoryRegex);
-      }
-
-      this.modelService.getList(search, operators).subscribe(
+      this.modelService.getList(search).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
