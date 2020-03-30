@@ -1,0 +1,21 @@
+<mat-card class="wrapper" fxLayout="row" fxLayoutGap="20px">
+    <mat-form-field>
+      <mat-label>Search</mat-label>
+      <input id="search" #search matInput type="search">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="Categories"
+                  [formControl]="categorySelectionForm"
+                  multiple
+                  (selectionChange)="selectionChange($event)">
+        <mat-option *ngFor="let key of categoryKeys()"
+                    [value]="key"
+                    [disabled]="categorySelectionForm.value.indexOf(key) === -1 && categorySelectionForm.value.length >= 5">
+          {{categoryValue(key)}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button aria-label="search" mat-icon-button (click)="onSearch(search.value)">
+      <mat-icon id="search-icon">search</mat-icon>
+    </button>
+</mat-card>
