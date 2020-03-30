@@ -320,6 +320,7 @@ interface StoreType  {
     NewOrganizationDialogComponent,
     RegistrationDialogComponent,
     ReportDialogComponent,
+    SearchbarComponent,
     TextInputDialogComponent,
   ]
 })
