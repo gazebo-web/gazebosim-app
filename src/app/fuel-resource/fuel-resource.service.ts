@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import {HttpClient, HttpResponse, HttpErrorResponse, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
@@ -9,7 +9,6 @@ import { AuthService } from '../auth/auth.service';
 
 import { FuelResource } from './fuel-resource';
 import { FuelPaginatedResource } from './fuel-paginated-resource';
-import { SearchOperator } from "../search/search-operator";
 
 import 'rxjs/add/operator/catch';
 import * as linkParser from 'parse-link-header';
@@ -90,7 +89,7 @@ export abstract class FuelResourceService {
       params = params.append('q', search);
     }
 
-    if (!categories && categories.length > 0) {
+    if (categories && categories.length > 0) {
       let category: string;
       for (category of categories) {
         params = params.append('category', category);

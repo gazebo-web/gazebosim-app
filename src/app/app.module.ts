@@ -128,6 +128,7 @@ import { RegistrationDialogComponent } from './portal';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
 import { SearchComponent } from './search/search.component';
+import { SearchbarComponent } from './searchbar/searchbar.component';
 import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
 import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
@@ -246,6 +247,7 @@ interface StoreType  {
     ReportDialogComponent,
     SdfViewerComponent,
     SearchComponent,
+    SearchbarComponent,
     SettingsComponent,
     SimulationActionsComponent,
     SimulationRulesComponent,

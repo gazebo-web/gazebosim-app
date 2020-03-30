@@ -9,7 +9,6 @@ import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
-import {SearchOperator} from "./search-operator";
 
 @Component({
   selector: 'ign-search',
@@ -70,10 +69,18 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     let search: string;
+    let selectedCategories: string;
+    let categories: string[] | null = null;
     // This subscription makes the search re-run if the user changes params.
     this.activatedRoute.params.subscribe((params: Params) => {
       search = params['q'];
-      this.modelService.getList(search).subscribe(
+      selectedCategories = params['c'];
+
+      if (selectedCategories.length > 0) {
+        categories = selectedCategories.split(',');
+      }
+
+      this.modelService.getList(search, categories).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
