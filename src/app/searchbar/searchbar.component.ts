@@ -10,12 +10,24 @@ import { MatSelectChange } from '@angular/material';
   templateUrl: 'searchbar.component.html',
   styleUrls: ['searchbar.component.scss'],
 })
+/**
+ * Searchbar Component is that allows the user search for models.
+ * It includes a category dropdown to filter by categories.
+ */
 export class SearchbarComponent implements OnInit {
-
+  /**
+   * listCategories represents the key-value pairs (slug and name) for the list of categories.
+   */
   public listCategories: Map<string, string>;
 
+  /**
+   * selectedCategories represents the array of slugs for categories that were selected.
+   */
   public selectedCategories: string[];
 
+  /**
+   * The Form Control element to handle the selection of categories.
+   */
   public categorySelectionForm = new FormControl(this.listCategories);
 
   constructor(
@@ -23,6 +35,9 @@ export class SearchbarComponent implements OnInit {
     private router: Router,
   ) {}
 
+  /**
+   * OnInit lifecycle hook.
+   */
   public ngOnInit(): void {
     this.selectedCategories = [];
     this.listCategories = new Map<string, string>();
@@ -47,10 +62,17 @@ export class SearchbarComponent implements OnInit {
     this.selectedCategories.push(event.value);
   }
 
+  /**
+   * categoryKeys returns the array of keys from the list of current categories.
+   */
   public categoryKeys(): string[] {
     return Array.from(this.listCategories.keys());
   }
 
+  /**
+   * categoryValue returns the value from the list of categories by the given key
+   * @param key the element's key that will return
+   */
   public categoryValue(key: string): string {
     return this.listCategories.get(key);
   }
