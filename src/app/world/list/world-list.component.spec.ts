@@ -10,6 +10,7 @@ import {
   MatSelectModule,
   MatOptionModule,
 } from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -64,6 +65,7 @@ describe('WorldListComponent', () => {
         MatFormFieldModule,
         MatSelectModule,
         MatOptionModule,
+        ReactiveFormsModule,
         RouterTestingModule,
         HttpModule,
         HttpClientTestingModule,

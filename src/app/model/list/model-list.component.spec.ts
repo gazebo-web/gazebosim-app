@@ -9,6 +9,7 @@ import { MatIconModule,
   MatInputModule,
   MatOptionModule,
 } from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -63,6 +64,7 @@ describe('ModelListComponent', () => {
         MatFormFieldModule,
         MatSelectModule,
         MatOptionModule,
+        ReactiveFormsModule,
         RouterTestingModule,
         HttpModule,
         HttpClientTestingModule,
