@@ -2,7 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
-import { MatIconModule, MatCardModule } from '@angular/material';
+import {
+  MatIconModule,
+  MatCardModule,
+  MatInputModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatOptionModule,
+} from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -50,8 +57,12 @@ describe('WorldListComponent', () => {
       imports: [
         BrowserAnimationsModule,
         InfiniteScrollModule,
-        MatIconModule,
         MatCardModule,
+        MatInputModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
         RouterTestingModule,
         HttpModule,
         HttpClientTestingModule,
