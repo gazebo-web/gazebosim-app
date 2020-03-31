@@ -31,8 +31,15 @@ export class SearchbarComponent implements OnInit {
   public categorySelectionForm = new FormControl(this.listCategories);
 
   @Input()
+  /**
+   * The filters that are being used in the searchbar.
+   * - Categories: 'categories' || 'CATEGORIES'
+   */
   public filters: string[] = [];
 
+  /**
+   * Show categories filter.
+   */
   private showCategories: boolean = false;
 
   constructor(
@@ -55,7 +62,7 @@ export class SearchbarComponent implements OnInit {
       }
     );
     this.categorySelectionForm.setValue(Array.from(this.listCategories));
-    this.parseFilters(this.filters);
+    this.setFilters(this.filters);
   }
 
   /**
@@ -92,7 +99,11 @@ export class SearchbarComponent implements OnInit {
     this.router.navigate(['search', {q: search, c: this.selectedCategories.join(',')}]);
   }
 
-  private parseFilters(filters: string[]): void {
+  /**
+   * Parse filters array and set which filters are being shown.
+   * @param filters The given array of filters
+   */
+  private setFilters(filters: string[]): void {
     let filter: string;
     for (filter of filters) {
       switch (filter) {
