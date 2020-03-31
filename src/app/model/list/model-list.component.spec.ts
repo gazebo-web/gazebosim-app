@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
-import { MatIconModule, MatCardModule, MatFormFieldModule } from '@angular/material';
+import { MatIconModule, MatCardModule, MatFormFieldModule, MatSelectModule, MatInputModule, MatOptionModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -52,8 +52,11 @@ describe('ModelListComponent', () => {
         BrowserAnimationsModule,
         InfiniteScrollModule,
         MatCardModule,
-        MatFormFieldModule,
+        MatInputModule,
         MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
         RouterTestingModule,
         HttpModule,
         HttpClientTestingModule,
