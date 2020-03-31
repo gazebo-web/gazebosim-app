@@ -18,6 +18,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { AuthService } from '../../auth/auth.service';
+import { CategoryService } from '../../fuel-resource/categories/category.service';
 import { FuelResourceListComponent } from '../../fuel-resource';
 import { ItemCardComponent } from '../../item-card/item-card.component';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
@@ -79,6 +80,7 @@ describe('ModelListComponent', () => {
         ],
       providers: [
         AuthService,
+        CategoryService,
         ModelService,
         Ng2DeviceService,
         JsonClassFactoryService,

@@ -18,6 +18,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthPipe } from '../../auth/auth.pipe';
+import { CategoryService } from '../../fuel-resource/categories/category.service';
 import { AuthService } from '../../auth/auth.service';
 import { FuelResourceListComponent } from '../../fuel-resource';
 import { ItemCardComponent } from '../../item-card/item-card.component';
@@ -80,6 +81,7 @@ describe('WorldListComponent', () => {
         ],
       providers: [
         AuthService,
+        CategoryService,
         WorldService,
         Ng2DeviceService,
         JsonClassFactoryService,
