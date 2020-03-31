@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from '../fuel-resource/categories/category.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Category } from '../fuel-resource/categories/category';
 import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
@@ -30,6 +30,11 @@ export class SearchbarComponent implements OnInit {
    */
   public categorySelectionForm = new FormControl(this.listCategories);
 
+  @Input()
+  public filters: string[] = [];
+
+  private showCategories: boolean = false;
+
   constructor(
     public categoryService: CategoryService,
     private router: Router,
@@ -50,6 +55,7 @@ export class SearchbarComponent implements OnInit {
       }
     );
     this.categorySelectionForm.setValue(Array.from(this.listCategories));
+    this.parseFilters(this.filters);
   }
 
   /**
@@ -84,5 +90,16 @@ export class SearchbarComponent implements OnInit {
    */
   private onSearch(search: string): void {
     this.router.navigate(['search', {q: search, c: this.selectedCategories.join(',')}]);
+  }
+
+  private parseFilters(filters: string[]): void {
+    let filter: string;
+    for (filter of filters) {
+      switch (filter) {
+        case 'categories' || 'CATEGORIES':
+          this.showCategories = true;
+          break;
+      }
+    }
   }
 }

@@ -1,12 +1,12 @@
 <mat-card class="wrapper background">
-    <div fxLayout="row" fxLayoutGap="15px">
+    <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center center">
       <div fxFlex="45">
         <mat-form-field>
           <mat-label>Search</mat-label>
           <input id="search" #search matInput type="search">
         </mat-form-field>
       </div>
-      <div fxFlex="45">
+      <div *ngIf="showCategories" fxFlex="45">
         <mat-form-field>
           <mat-select placeholder="Categories"
                       [formControl]="categorySelectionForm"
