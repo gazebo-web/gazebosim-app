@@ -20,6 +20,7 @@ import { ModelService } from '../model.service';
 import { Ng2DeviceService } from '../../device-detector';
 import { PageTitleComponent } from '../../page-title';
 import { PaginatedModels } from '../paginated-models';
+import { SearchbarComponent } from '../../searchbar/searchbar.component';
 
 describe('ModelListComponent', () => {
   let fixture: ComponentFixture<ModelListComponent>;
@@ -62,6 +63,7 @@ describe('ModelListComponent', () => {
         ItemCardComponent,
         ModelListComponent,
         PageTitleComponent,
+        SearchbarComponent,
         ],
       providers: [
         AuthService,
