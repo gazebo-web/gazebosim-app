@@ -31,11 +31,11 @@ export class SearchbarComponent implements OnInit {
    */
   public categorySelectionForm = new FormControl(this.listCategories);
 
-  @Input()
   /**
    * The filters that are being used in the searchbar.
    * - Categories: 'categories' || 'CATEGORIES'
    */
+  @Input()
   public filters: string[] = [];
 
   /**
