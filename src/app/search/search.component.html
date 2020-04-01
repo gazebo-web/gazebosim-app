@@ -10,6 +10,7 @@
       </ng-template>
 
       <div class="tab-content">
+        <ign-searchbar [filters]="['categories']" fxFlex fxLayoutAlign="center center"></ign-searchbar>
         <ign-fuel-resource-list [resources]="models"
                                 resourceType="models"
                                 [disabled]="activeTab !== 'models'"
@@ -29,6 +30,7 @@
       </ng-template>
 
       <div class="tab-content">
+        <ign-searchbar fxFlex fxLayoutAlign="center center"></ign-searchbar>
         <ign-fuel-resource-list [resources]="worlds"
                                 resourceType="worlds"
                                 [disabled]="activeTab !== 'worlds'"

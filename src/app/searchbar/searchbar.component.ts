@@ -33,7 +33,6 @@ export class SearchbarComponent implements OnInit {
 
   /**
    * The filters that are being used in the searchbar.
-   * - Categories: 'categories' || 'CATEGORIES'
    */
   @Input()
   public filters: string[] = [];
@@ -75,7 +74,8 @@ export class SearchbarComponent implements OnInit {
 
   /**
    * categoryValue returns the value from the list of categories by the given key
-   * @param key the element's key that will return
+   *
+   * @param key The element's key that will be returned
    */
   public categoryValue(key: string): string {
     return this.listCategories.get(key);
