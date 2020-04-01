@@ -52,17 +52,7 @@ export class SearchbarComponent implements OnInit {
    * OnInit lifecycle hook.
    */
   public ngOnInit(): void {
-    this.selectedCategories = [];
-    this.listCategories = new Map<string, string>();
-    let category: Category;
-    this.categoryService.getAll().subscribe(
-      (result) => {
-        for (category of result) {
-          this.listCategories.set(category.slug, category.name);
-        }
-      }
-    );
-    this.categorySelectionForm.setValue(Array.from(this.listCategories));
+    this.populateCategoryList();
     this.setFilters(this.filters);
   }
 
@@ -113,5 +103,22 @@ export class SearchbarComponent implements OnInit {
           break;
       }
     }
+  }
+
+  /**
+   * Populate the category dropdown with the categories from the API.
+   */
+  private populateCategoryList(): void {
+    this.selectedCategories = [];
+    this.listCategories = new Map<string, string>();
+    let category: Category;
+    this.categoryService.getAll().subscribe(
+      (result) => {
+        for (category of result) {
+          this.listCategories.set(category.slug, category.name);
+        }
+      }
+    );
+    this.categorySelectionForm.setValue(Array.from(this.listCategories));
   }
 }
