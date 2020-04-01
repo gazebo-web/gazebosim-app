@@ -10,6 +10,7 @@ import { MatSelectChange } from '@angular/material';
   templateUrl: 'searchbar.component.html',
   styleUrls: ['searchbar.component.scss'],
 })
+
 /**
  * Searchbar Component is that allows the user search for models.
  * It includes a category dropdown to filter by categories.
