@@ -78,7 +78,7 @@ export abstract class FuelResourceService {
    */
   public getList(
     search: string = '',
-    categories: string[] = null,
+    categories: string[],
   ): Observable<FuelPaginatedResource> {
 
     const url = this.getListUrl();
@@ -89,7 +89,7 @@ export abstract class FuelResourceService {
       params = params.append('q', search);
     }
 
-    if (categories && categories.length > 0) {
+    if (categories.length > 0) {
       let category: string;
       for (category of categories) {
         params = params.append('category', category);
