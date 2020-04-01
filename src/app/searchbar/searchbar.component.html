@@ -4,7 +4,7 @@
       <div>
         <mat-form-field>
           <mat-label>Search</mat-label>
-          <input id="search" #search matInput type="search">
+          <input id="search" #search matInput type="search" (keyup.enter)="onSearch(search.value)">
         </mat-form-field>
       </div>
       <div *ngIf="showCategories">
