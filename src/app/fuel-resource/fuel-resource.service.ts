@@ -78,7 +78,7 @@ export abstract class FuelResourceService {
    */
   public getList(
     search: string = '',
-    categories: string[],
+    categories: string[] = [],
   ): Observable<FuelPaginatedResource> {
 
     const url = this.getListUrl();
