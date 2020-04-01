@@ -70,7 +70,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     let search: string;
     let selectedCategories: string;
-    let categories: string[] | null = null;
+    let categories: string[];
     // This subscription makes the search re-run if the user changes params.
     this.activatedRoute.params.subscribe((params: Params) => {
       search = params['q'];
