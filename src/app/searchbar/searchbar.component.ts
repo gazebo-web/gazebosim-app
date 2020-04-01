@@ -97,8 +97,8 @@ export class SearchbarComponent implements OnInit {
   private setFilters(filters: string[]): void {
     let filter: string;
     for (filter of filters) {
-      switch (filter) {
-        case 'categories' || 'CATEGORIES':
+      switch (filter.toLowerCase()) {
+        case 'categories':
           this.showCategories = true;
           break;
       }
