@@ -96,8 +96,7 @@ export abstract class FuelResourceService {
       }
     }
 
-    return this.http.get(url,
-        {
+    return this.http.get(url, {
           observe: 'response',
           params,
         },
