@@ -1,12 +1,13 @@
-<mat-card class="wrapper background">
-    <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center center">
-      <div fxFlex="45">
+<mat-card class="wrapper background" fxFlex.gt-lg="60%" fxFlex.gt-md="70%" fxFlex.gt-sm="80%" fxFlex.gt-xs="90%">
+  <div fxFlex fxLayout="column" fxLayoutAlign="center center">
+    <div fxLayout="row wrap" fxLayoutGap="15px" fxLayoutAlign="center center">
+      <div>
         <mat-form-field>
           <mat-label>Search</mat-label>
           <input id="search" #search matInput type="search">
         </mat-form-field>
       </div>
-      <div *ngIf="showCategories" fxFlex="45">
+      <div *ngIf="showCategories">
         <mat-form-field>
           <mat-select placeholder="Categories"
                       [formControl]="categorySelectionForm"
@@ -20,10 +21,11 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div fxFlex="10">
+      <div>
         <button aria-label="search" mat-icon-button (click)="onSearch(search.value)">
           <mat-icon id="search-icon">search</mat-icon>
         </button>
       </div>
     </div>
+  </div>
 </mat-card>
