@@ -14,8 +14,7 @@
                       multiple
                       (selectionChange)="selectionChange($event)">
             <mat-option *ngFor="let key of categoryKeys()"
-                        [value]="key"
-                        [disabled]="categorySelectionForm.value.indexOf(key) === -1 && categorySelectionForm.value.length >= 5">
+                        [value]="key">
               {{categoryValue(key)}}
             </mat-option>
           </mat-select>
