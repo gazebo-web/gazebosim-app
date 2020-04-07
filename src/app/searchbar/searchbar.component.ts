@@ -62,7 +62,7 @@ export class SearchbarComponent implements OnInit {
    */
   public selectionChange(event: MatSelectChange) {
     // Change the categories.
-    this.selectedCategories.push(event.value);
+    this.selectedCategories = event.value;
   }
 
   /**
