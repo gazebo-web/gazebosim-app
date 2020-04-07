@@ -2,7 +2,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
-import { MatIconModule, MatCardModule } from '@angular/material';
+import {
+  MatIconModule,
+  MatCardModule,
+  MatInputModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatOptionModule,
+} from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -10,6 +18,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Observable } from 'rxjs/Observable';
 
 import { AuthPipe } from '../../auth/auth.pipe';
+import { CategoryService } from '../../fuel-resource/categories/category.service';
 import { AuthService } from '../../auth/auth.service';
 import { FuelResourceListComponent } from '../../fuel-resource';
 import { ItemCardComponent } from '../../item-card/item-card.component';
@@ -17,6 +26,7 @@ import { JsonClassFactoryService } from '../../factory/json-class-factory.servic
 import { Ng2DeviceService } from '../../device-detector';
 import { PageTitleComponent } from '../../page-title';
 import { PaginatedWorlds } from '../paginated-worlds';
+import { SearchbarComponent } from '../../searchbar/searchbar.component';
 import { World } from '../world';
 import { WorldListComponent } from './world-list.component';
 import { WorldService } from '../world.service';
@@ -50,8 +60,13 @@ describe('WorldListComponent', () => {
       imports: [
         BrowserAnimationsModule,
         InfiniteScrollModule,
-        MatIconModule,
         MatCardModule,
+        MatInputModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        ReactiveFormsModule,
         RouterTestingModule,
         HttpModule,
         HttpClientTestingModule,
@@ -61,10 +76,12 @@ describe('WorldListComponent', () => {
         FuelResourceListComponent,
         ItemCardComponent,
         PageTitleComponent,
+        SearchbarComponent,
         WorldListComponent,
         ],
       providers: [
         AuthService,
+        CategoryService,
         WorldService,
         Ng2DeviceService,
         JsonClassFactoryService,

@@ -1,4 +1,5 @@
 <div class="page-content-inner mat-typography" fxLayout="column">
+  <ign-searchbar fxFlex fxLayoutAlign="center center" [filters]="['categories']"></ign-searchbar>
   <ign-fuel-resource-list [resources]="models"
                           resourceType="models"
                           [finished]="!paginatedModels.hasNextPage()"

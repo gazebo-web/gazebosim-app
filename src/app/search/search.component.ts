@@ -68,12 +68,19 @@ export class SearchComponent implements OnInit, OnDestroy {
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-    let search;
-
+    let search: string;
+    let selectedCategories: string;
+    let categories: string[];
     // This subscription makes the search re-run if the user changes params.
     this.activatedRoute.params.subscribe((params: Params) => {
       search = params['q'];
-      this.modelService.getList(search).subscribe(
+      selectedCategories = params['c'];
+
+      if (selectedCategories.length > 0) {
+        categories = selectedCategories.split(',');
+      }
+
+      this.modelService.getList(search, categories).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
