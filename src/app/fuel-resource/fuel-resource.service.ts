@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
@@ -73,17 +73,34 @@ export abstract class FuelResourceService {
    * Get the first page of all the resources from the Backend.
    *
    * @param search Optional search string.
+   * @param categories Optional list to filter by categories.
    * @returns An observable of the paginated resources.
    */
-  public getList(search: string = ''): Observable<FuelPaginatedResource> {
-    let url = this.getListUrl();
+  public getList(
+    search: string = '',
+    categories: string[] = [],
+  ): Observable<FuelPaginatedResource> {
+
+    const url = this.getListUrl();
+    let params = new HttpParams();
 
     // Append the optional search string to the url.
     if (search !== '') {
-      url += '?q=' + search;
+      params = params.append('q', search);
     }
 
-    return this.http.get(url, {observe: 'response'})
+    if (categories.length > 0) {
+      let category: string;
+      for (category of categories) {
+        params = params.append('category', category);
+      }
+    }
+
+    return this.http.get(url, {
+          observe: 'response',
+          params,
+        },
+      )
       .map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(

@@ -153,7 +153,7 @@ export class EditModelComponent implements OnInit {
       formData.append('tags', this.model.tags.join());
     }
 
-    // Check if the Tags have been modified.
+    // Check if the Categories have been modified.
     if (this.categoriesModified) {
       formData.append('categories', this.model.categories.join());
     }

@@ -169,15 +169,6 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Callback when enter key is pressed on search input.
-   *
-   * @param search Search string.
-   */
-  private onSearch(search: string): void {
-    this.router.navigate(['search', {q: search}]);
-  }
-
-  /**
    * Raise the Progress Bar's value.
    *
    * Completes 5% of progress every 200ms. If the progress is at 90%, it completes the missing half.
