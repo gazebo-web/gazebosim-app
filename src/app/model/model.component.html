@@ -169,6 +169,11 @@
 
             <ign-tags [tags]="model.tags"></ign-tags>
 
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-icon class="material-icons">{{model.private ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <span>This model is {{model.private ? 'private' : 'public'}}.</span>
+            </div>
+
             <div fxLayout="row"
                  fxLayoutAlign="start center"
                  fxLayoutGap="10px">

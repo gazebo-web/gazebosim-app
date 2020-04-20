@@ -34,6 +34,15 @@
                 fxFill>
       </ign-tags>
 
+      <div fxLayout="column" fxFill>
+        <p>Select if your model is public or private:</p>
+        <mat-radio-group [formControl]="privacyInputForm">
+          <mat-radio-button *ngFor="let p of modelService.getPermissionList(); let i = index"
+            [value]="i"
+            [checked]="(p === 'Private' && model.private) || (p === 'Public' && !model.private)">{{p}}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
       <h2>Replace files</h2>
 
       <ign-file-upload (files)="onReceiveFiles($event)"
