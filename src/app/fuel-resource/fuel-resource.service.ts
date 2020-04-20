@@ -381,6 +381,15 @@ export abstract class FuelResourceService {
   }
 
   /**
+   * Get the list of available permission names.
+   *
+   * @returns A list of strings, one for each permission.
+   */
+  public getPermissionList(): string[] {
+    return ['Public', 'Private'];
+  }
+
+  /**
    * Server route of the public list of resources.
    * The route is apiUrl/apiVersion/resourceType
    *

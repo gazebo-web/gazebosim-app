@@ -62,7 +62,7 @@
     <div fxLayout="column" fxFill>
       <p>Select if your model is public or private:</p>
       <mat-radio-group [formControl]="privacyInputForm">
-        <mat-radio-button *ngFor="let p of permissionList; let i = index"
+        <mat-radio-button *ngFor="let p of modelService.getPermissionList(); let i = index"
           [value]="i">{{p}}</mat-radio-button>
       </mat-radio-group>
     </div>
