@@ -68,6 +68,11 @@ export class EditModelComponent implements OnInit {
   public updating: boolean = false;
 
   /**
+   * Form Input for the Model Privacy.
+   */
+  public privacyInputForm = new FormControl();
+
+  /**
    * Confirmation dialog reference for the deletion confirmation
    */
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
@@ -193,6 +198,13 @@ export class EditModelComponent implements OnInit {
     // Disable the input fields until we have a response.
     this.updating = true;
 
+    // Update the privacy and permissions.
+    if (this.privacyInputForm.value !== null && this.privacyInputForm.value !== undefined) {
+      const privacyBoolean = !!this.privacyInputForm.value;
+      formData.append('private', privacyBoolean.toString());
+      formData.append('permission', this.privacyInputForm.value.toString());
+    }
+
     this.modelService.edit(this.model.owner, this.model.name, formData)
       .finally(() => {
         this.updating = false;
@@ -214,7 +226,13 @@ export class EditModelComponent implements OnInit {
           this.back();
         },
         (error) => {
-          this.snackBar.open(`${error.message}`, 'Got it');
+          // The error code comes from ign-go and is specified by the fuelserver.
+          if (error.code === 4002) {
+            this.snackBar.open('Organization members cannot modify ' +
+            'this model\'s permissions.', 'Got it');
+          } else {
+            this.snackBar.open(`${error.message}`, 'Got it');
+          }
         });
   }
 
