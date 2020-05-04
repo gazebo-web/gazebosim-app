@@ -214,6 +214,10 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     this.scene = new GZ3D.Scene(shaders);
     this.sdfParser = new GZ3D.SdfParser(this.scene);
     const ogre2json = new GZ3D.Ogre2Json();
+    // Override the entity selection. This prevents showing the model's bounding box.
+    this.scene.selectEntity = () => {
+      return;
+    };
 
     // The domElement the renderer will be appended to.
     this.sceneElement = window.document.getElementById('container');
@@ -269,6 +273,10 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         // Convert material file to json
         pendingMaterials.push(ogre2json.LoadFromUrl(fileUrl));
       } else if (file.path.indexOf('.sdf') > 0) {
+        // Avoid example SDF files.
+        if (fileUrl.indexOf('example.sdf') > 0) {
+          continue;
+        }
         // Set SDF file
         this.sdfUrl = fileUrl;
       } else {
@@ -278,32 +286,32 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     Promise.all(pendingMaterials)
-          .then((results) => {
+      .then((results) => {
+        // Check if any materials failed to be parsed.
+        // ogre2json returns true if the material script was correctly parsed.
+        for (const success of results) {
+          if (success !== true) {
+            this.onMaterialLoadFail();
+            break;
+          }
+        }
 
-              // Check if any materials failed to be parsed
-              for (const success in results) {
-                if (success === '0') {
-                  this.onMaterialLoadFail();
-                  break;
-                }
-              }
+        // In any case, we load the model with the resources available
+        this.obj = this.sdfParser.loadSDF(this.sdfUrl);
 
-              // In any case, we load the model with the resources available
-              this.obj = this.sdfParser.loadSDF(this.sdfUrl);
+        if (!this.obj) {
+          this.snackBar.open(`Failed load SDF.`, `Got it`, {
+            duration: 2750
+          });
+          return;
+        }
 
-              if (!this.obj) {
-                this.snackBar.open(`Failed load SDF.`, `Got it`, {
-                  duration: 2750
-                });
-                return;
-              }
-
-              // Add the object to the scene
-              this.scene.add(this.obj);
-            })
-          .catch((error) => {
-              this.onMaterialLoadFail(error);
-            });
+        // Add the object to the scene
+        this.scene.add(this.obj);
+      })
+     .catch((error) => {
+       this.onMaterialLoadFail(error);
+      });
   }
 
   /**
