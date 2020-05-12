@@ -101,7 +101,7 @@ export class NewWorldComponent implements OnInit {
    * Form Input for the World Name. Allows better error handling.
    */
   public worldNameInputForm = new FormControl('',
-    {validators: [Validators.required, Validators.pattern('[^\/]*'), Validators.minLength(3)],
+    {validators: [Validators.required, Validators.pattern('[^\/%]*'), Validators.minLength(3)],
     updateOn: 'change' || 'submit'});
 
   /**
@@ -183,6 +183,10 @@ export class NewWorldComponent implements OnInit {
       return;
     } else if (this.worldNameInputForm.value.includes('/')) {
       this.snackBar.open('A world name cannot have a forward slash ("/").',
+        'Got it');
+      return;
+    } else if (this.worldNameInputForm.value.includes('%')) {
+      this.snackBar.open('A world name cannot have a percent ("%").',
         'Got it');
       return;
     }
