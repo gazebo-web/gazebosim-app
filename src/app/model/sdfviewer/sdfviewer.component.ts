@@ -64,6 +64,11 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   private sdfParser: any;
 
   /**
+   * Ogre Material script parser.
+   */
+  private ogre2json: any;
+
+  /**
    * ID of the Request Animation Frame method. Required to cancel the animation.
    */
   private cancelAnimation: number;
@@ -213,7 +218,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     const shaders = new GZ3D.Shaders();
     this.scene = new GZ3D.Scene(shaders);
     this.sdfParser = new GZ3D.SdfParser(this.scene);
-    const ogre2json = new GZ3D.Ogre2Json();
+    this.ogre2json = new GZ3D.Ogre2Json();
     // Override the entity selection. This prevents showing the model's bounding box.
     this.scene.selectEntity = () => {
       return;
@@ -258,6 +263,11 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     // Set usingFilesUrls to true to indicate that we will be supplying files URLs.
     this.sdfParser.usingFilesUrls = true;
 
+    // Receive events of included models.
+    this.sdfParser.emitter.on('includeModel', (modelSdf) => {
+      this.addIncludedModel(modelSdf);
+    });
+
     // If there's a model, push model file URLs
     const pendingMaterials = [];
     for (const file of this.model.files) {
@@ -271,12 +281,8 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
       } else if (file.path.indexOf('.material') > 0) {
 
         // Convert material file to json
-        pendingMaterials.push(ogre2json.LoadFromUrl(fileUrl));
-      } else if (file.path.indexOf('.sdf') > 0) {
-        // Avoid example SDF files.
-        if (fileUrl.indexOf('example.sdf') > 0) {
-          continue;
-        }
+        pendingMaterials.push(this.ogre2json.LoadFromUrl(fileUrl));
+      } else if (file.path.indexOf('model.sdf') >= 0) {
         // Set SDF file
         this.sdfUrl = fileUrl;
       } else {
@@ -454,5 +460,114 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         fileReader.readAsText(_file);
       }
     });
+  }
+
+  /**
+   * Callback received for each model included.
+   * Prepare the files and add them to the Gz3D parser scene.
+   *
+   * @param modelSdf The content of the include element in the model SDF file.
+   */
+  private addIncludedModel(modelSdf: any): void {
+    // Instantiate a model, in order to use it in the Model Service.
+    const model = new Model({
+      name: modelSdf.uri.split('/')[6],
+      owner: modelSdf.uri.split('/')[4],
+    });
+
+    // Get the files of the model.
+    this.modelService.getFileTree(model)
+      .subscribe((res) => {
+        const files = this.prepareFiles(res['file_tree']);
+        this.addFiles(files, model);
+      });
+  }
+
+  /**
+   * Get the files of the file tree obtained from the backend.
+   * Note: The model from the input already has the files parsed correctly,
+   * from the Model Component.
+   * TODO(germanmas): Avoid duplication (used in both Model Component and here)
+   *
+   * @param fileTree The file tree obtained from the server.
+   * @returns The file elements from the file tree in a single array.
+   */
+  private prepareFiles(fileTree: any): File[] {
+    const parsedFiles = [];
+    for (const file of fileTree) {
+      extractFile(file);
+    }
+    return parsedFiles;
+
+    // Helper function to extract the files from the file tree.
+    // Folder elements have children, while files don't.
+    function extractFile(el: any) {
+      if (!el.children) {
+        parsedFiles.push(el);
+      } else {
+        for (const child of el.children) {
+          extractFile(child);
+        }
+      }
+    }
+  }
+
+  /**
+   * Add files to the SDF parser.
+   * TODO(germanmas): The gz3d library should handle this internally.
+   *
+   * @param files The array of files to add to the parser.
+   * @param model The instance of the Fuel Model to include. Used to get the correct file URLs.
+   */
+  private addFiles(files: any, model: any): void {
+    const pendingMaterials = [];
+    let sdf: string;
+
+    for (const file of files) {
+      const url = this.modelService.getIndividualFileUrl(model, file);
+      if (file.path.indexOf('/thumbnails/') >= 0) {
+        continue;
+      } else if (file.path.indexOf('.material') >= 0) {
+        // Material to JSON
+        pendingMaterials.push(this.ogre2json.LoadFromUrl(url));
+      } else if (file.path.indexOf('model.sdf') >= 0) {
+        // Set SDF File.
+        sdf = url;
+        break;
+      }
+
+      // Add URLs to the rest of resources
+      this.sdfParser.addUrl(url);
+    }
+
+    // Add the model once the script is parsed.
+    Promise.all(pendingMaterials)
+      .then((results) => {
+        // Check if any materials failed to be parsed.
+        // ogre2json returns true if the material script was correctly parsed.
+        for (const success of results) {
+          if (success !== true) {
+            this.onMaterialLoadFail();
+            break;
+          }
+        }
+
+        // In any case, we load the model with the resources available.
+        this.obj = this.sdfParser.loadSDF(sdf);
+        this.objPositioned = false;
+
+        if (!this.obj) {
+          this.snackBar.open(`Failed load SDF.`, `Got it`, {
+            duration: 2750
+          });
+          return;
+        }
+
+        // Add the object to the scene.
+        this.scene.add(this.obj);
+      })
+      .catch((error) => {
+        this.onMaterialLoadFail(error);
+      });
   }
 }
