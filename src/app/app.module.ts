@@ -144,6 +144,7 @@ import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
+import { MetadataComponent } from './metadata';
 
 import '../styles/styles.scss';
 import '../styles/custom-theme.scss';
@@ -232,6 +233,7 @@ interface StoreType  {
     LaunchQueueComponent,
     LeaderBoardComponent,
     LogfileScoreDialogComponent,
+    MetadataComponent,
     ModelComponent,
     ModelListComponent,
     NewLogfileDialogComponent,

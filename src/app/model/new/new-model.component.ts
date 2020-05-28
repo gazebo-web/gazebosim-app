@@ -106,7 +106,7 @@ export class NewModelComponent implements OnInit {
    * Form Input for the Model Name. Allows better error handling.
    */
   public modelNameInputForm = new FormControl('',
-    {validators: [Validators.required, Validators.pattern('[^\/]*'), Validators.minLength(3)],
+    {validators: [Validators.required, Validators.pattern('[^\/%]*'), Validators.minLength(3)],
     updateOn: 'change' || 'submit'});
 
   /**
@@ -197,6 +197,10 @@ export class NewModelComponent implements OnInit {
       return;
     } else if (this.modelNameInputForm.value.includes('/')) {
       this.snackBar.open('A model name cannot have a forward slash ("/").',
+        'Got it');
+      return;
+    } else if (this.modelNameInputForm.value.includes('%')) {
+      this.snackBar.open('A model name cannot have a percent ("%").',
         'Got it');
       return;
     }

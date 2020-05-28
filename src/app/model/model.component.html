@@ -236,6 +236,11 @@
             </div>
           </ng-template>
         </mat-tab>
+
+        <mat-tab label="Metadata">
+          <ign-metadata [metadata]="model.metadata" [edit]="false" [disabled]="updating" fxFill>
+          </ign-metadata>
+        </mat-tab>
       </mat-tab-group>
 
     </div>
