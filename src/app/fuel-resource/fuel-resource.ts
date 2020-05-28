@@ -1,5 +1,6 @@
 import { Image } from '../model/image';
 import { License } from '../model/license';
+import { Metadatum } from '../metadata';
 
 /**
  * A class that represents a Fuel resource, such as a world or a model.
@@ -102,6 +103,11 @@ export abstract class FuelResource {
   public license: License;
 
   /**
+   * A resource can have metadata that consists in arbitrary key-value pairs.
+   */
+  public metadata: Metadatum[] = [];
+
+  /**
    * @param json A JSON that contains the required fields of the resource.
    */
   constructor(json: any) {
@@ -131,6 +137,10 @@ export abstract class FuelResource {
         this.versions.push(v);
       }
     }
+    if (json['metadata']) {
+      this.metadata = json['metadata'];
+    }
+
     this.images = [];
     this.files = [];
     this.license = new License(json);
@@ -189,5 +199,12 @@ export abstract class FuelResource {
    */
   public getThumbnail(): Image {
     return this.getImageAt(0);
+  }
+
+  /**
+   * Returns whether the resource has metadata or not.
+   */
+  public hasMetadata(): boolean {
+    return this.metadata && this.metadata.length !== 0;
   }
 }
