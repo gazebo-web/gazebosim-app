@@ -96,6 +96,7 @@
     "ngx-infinite-scroll": "0.5.2",
     "ngx-markdown": "^1.5.2",
     "parse-link-header": "1.0.1",
+    "protobufjs": "^6.9.0",
     "reflect-metadata": "0.1.10",
     "rxjs": "5.5.4",
     "zone.js": "0.8.18"

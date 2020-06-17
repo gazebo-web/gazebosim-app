@@ -1,0 +1,61 @@
+<div class="body mat-typography">
+  <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start start">
+    <h1>Status: {{ connectionStatus }}</h1>
+
+    <h3>Note: The information and messages are shown in the console, for testing purposes</h3>
+
+    <div fxLayoutAlign="start" fxLayoutGap="20px">
+
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+        <mat-form-field>
+          <input matInput [(ngModel)]="wsUrl" placeholder="Websocket URL">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="authKey" placeholder="Authorization Key">
+        </mat-form-field>
+
+        <button mat-raised-button (click)="connect()" *ngIf="connectionStatus === 'Disconnected'">
+          Connect
+        </button>
+
+        <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'Disconnected'">
+          Disconnect
+        </button>
+      </div>
+
+      <div>
+        <button mat-raised-button (click)="getAvailableTopics()" [disabled]="connectionStatus === 'Disconnected'">
+          Get available topics
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="availableTopics && availableTopics.length > 0; else noTopics">
+      <ul>
+        <li *ngFor="let topic of availableTopics">
+          <div fxLayoutAlign="space-between center" fxLayoutGap="20px">
+            <span>{{ topic }}</span>
+
+            <div>
+              <button mat-raised-button (click)="subscribe(topic)">
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noTopics>
+      <h4 *ngIf="connectionStatus === 'Disconnected'">No topics available yet</h4>
+      <h4 *ngIf="connectionStatus !== 'Disconnected'">Click above to get the topics available</h4>
+    </ng-template>
+  </div>
+</div>
+
+<div>
+  <div class="container">
+    <div id="scene">
+    </div>
+  </div>
+</div>
