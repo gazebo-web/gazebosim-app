@@ -98,6 +98,7 @@ import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { LogfileScoreDialogComponent } from './logfile';
 import { LogfileService } from './logfile';
+import { MetadataComponent } from './metadata';
 import { ModelComponent } from './model/model.component';
 import { ModelListComponent } from './model/list/model-list.component';
 import { ModelResolver } from './model/model.resolver';
@@ -127,24 +128,27 @@ import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { RegistrationDialogComponent } from './portal';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SearchComponent } from './search/search.component';
 import { SearchbarComponent } from './searchbar/searchbar.component';
+import { SearchComponent } from './search/search.component';
 import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
 import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
 import { SimulationService } from './cloudsim';
 import { SimulationTableComponent } from './cloudsim';
+import {
+  SimVisualizerComponent
+} from './admin/cloudsim/visualizer-tester/sim-visualizer-tester.component';
 import { TagsComponent } from './tags';
 import { TextInputDialogComponent } from './text-input-dialog/text-input-dialog.component';
 import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
+import { WebsocketService } from './cloudsim/websocket/sim-websocket.service';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
-import { MetadataComponent } from './metadata';
 
 import '../styles/styles.scss';
 import '../styles/custom-theme.scss';
@@ -184,6 +188,7 @@ const APP_PROVIDERS = [
   UserModelsResolver,
   UserService,
   UserWorldsResolver,
+  WebsocketService,
   WorldResolver,
   WorldService,
   {
@@ -248,12 +253,13 @@ interface StoreType  {
     RegistrationDialogComponent,
     ReportDialogComponent,
     SdfViewerComponent,
-    SearchComponent,
     SearchbarComponent,
+    SearchComponent,
     SettingsComponent,
     SimulationActionsComponent,
     SimulationRulesComponent,
     SimulationTableComponent,
+    SimVisualizerComponent,
     TagsComponent,
     TextInputDialogComponent,
     UserComponent,
