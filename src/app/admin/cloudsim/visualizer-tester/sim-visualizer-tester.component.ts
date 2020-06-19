@@ -112,7 +112,8 @@ export class SimVisualizerComponent implements OnDestroy {
           name: `/world/${this.ws.getWorld()}/dynamic_pose/info`,
           cb: (msg) => {
             msg['pose'].forEach((pose) => {
-              const entity = this.scene.getByName(pose['name']);
+              // Objects created by Gz3D have an unique name, which is the name plus the id.
+              const entity = this.scene.getByName(`${pose['name']}${pose['id']}`);
 
               if (entity) {
                 this.scene.setPose(entity, pose.position, pose.orientation);
