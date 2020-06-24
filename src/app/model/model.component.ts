@@ -19,12 +19,6 @@ import { NgxGalleryOptions,
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-/**
- * Flag to only show a warning the first time the user toggles the 3D view
- * feature. Placed in the global scope so it works across models.
- */
-let g3dWarningShown: boolean = false;
-
 declare let Detector: any;
 
 @Component({
@@ -148,14 +142,10 @@ export class ModelComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     // Check if the browser supports WebGL.
-    const hasWebGL = (typeof Detector === 'function' || Detector.webgl);
-    if (!hasWebGL) {
+    this.hasGzWeb = (typeof Detector === 'function' || Detector.webgl);
+    if (!this.hasGzWeb) {
       Detector.addGetWebGLMessage();
     }
-
-    // Enable GzWeb as an experimental feature.
-    const enabledFeature = (localStorage.getItem('experimental_gzweb') === 'true');
-    this.hasGzWeb = hasWebGL && enabledFeature;
 
     if (this.activatedRoute.snapshot.data['resolvedData'] !== undefined) {
       this.model = this.activatedRoute.snapshot.data['resolvedData'];
@@ -393,17 +383,6 @@ export class ModelComponent implements OnInit, OnDestroy {
    * is toggled.
    */
   public toggle3D(): void {
-
-    // Display warning only once per session
-    if (!g3dWarningShown) {
-      g3dWarningShown = true;
-      this.snackBar.open(
-        `Note: the 3D View is under active development, some models may not work.`,
-        `Got it`, {
-          duration: 2750
-        });
-    }
-
     this.view3d = !this.view3d;
   }
 
