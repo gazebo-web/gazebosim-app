@@ -84,13 +84,23 @@ export class SimulationService {
   }
 
   /**
-   * Get an specific simulation
+   * Get a specific simulation
    * @param groupId Contains the group id of the required simulation.
    */
   public getSimulation(groupId: string): Observable<Simulation> {
     const url: string = `${this.baseUrl}/simulations/${groupId}`;
     return this.http.get<Simulation>(url)
       .map((response) => this.factory.fromJson(response, Simulation))
+      .catch(this.handleError);
+  }
+
+  /**
+   * Get a specific simulation's websocket information.
+   * @param groupId Contains the group id of the required simulation.
+   */
+  public getSimulationWebsocket(groupId: string): Observable<any> {
+    const url: string = `${this.baseUrl}/simulations/${groupId}/websocket`;
+    return this.http.get<any>(url)
       .catch(this.handleError);
   }
 

@@ -2,8 +2,8 @@
 
 # Fuel Server related.
 # export API_HOST="https://integration-fuel.ignitionrobotics.org"
-# export API_HOST="https://staging-fuel.ignitionrobotics.org"
-export API_HOST="http://localhost:8000"
+export API_HOST="https://staging-fuel.ignitionrobotics.org"
+#export API_HOST="http://localhost:8000"
 export API_VERSION="1.0"
 
 # Cloudsim Server related.
