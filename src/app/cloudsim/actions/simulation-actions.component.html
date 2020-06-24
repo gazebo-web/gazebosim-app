@@ -1,11 +1,13 @@
 <div fxLayoutAlign="center center">
-  <button mat-icon-button (click)="$event.stopPropagation()">
+  <!-- Placeholder. Uncomment when implemented. -->
+  <!-- <button mat-icon-button (click)="$event.stopPropagation()">
     <mat-icon>play_arrow</mat-icon>
-  </button>
+  </button> -->
 
-  <button mat-icon-button (click)="$event.stopPropagation()">
+  <!-- Placeholder. Uncomment when implemented. -->
+  <!-- <button mat-icon-button (click)="$event.stopPropagation()">
     <mat-icon>pause</mat-icon>
-  </button>
+  </button> -->
 
   <button mat-icon-button (click)="stop($event)" *ngIf="simulation.isLaunching() || simulation.status === 'Running'">
     <mat-icon>stop</mat-icon>

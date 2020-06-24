@@ -1,0 +1,34 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.content {
+  max-width: 980px;
+  width: 100%;
+}
+
+.font-x-large {
+  width: 80%;
+  line-height: 1.2;
+  font-size: x-large;
+  text-align: center;
+}
+
+.visualizer {
+  .outer {
+    height: 0;
+    width: 100%;
+    /* Aspect Ratio: 16:9. 9/16 = 0.5625 */
+    padding-top: 56.25%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner, #scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: lightgray;
+  }
+}
