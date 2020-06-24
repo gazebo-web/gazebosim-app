@@ -34,14 +34,6 @@
                 fxFill>
       </ign-tags>
 
-      <h2>Metadata</h2>
-      <ign-metadata [metadata]="model.metadata"
-                [edit]="true"
-                [disabled]="updating"
-                (onModify)="onModifyMetadata()"
-                fxFill>
-      </ign-metadata>
-
       <div fxLayout="column" fxFill>
         <p>Select if your model is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
@@ -50,6 +42,14 @@
             [checked]="(p === 'Private' && model.private) || (p === 'Public' && !model.private)">{{p}}</mat-radio-button>
         </mat-radio-group>
       </div>
+
+      <h2>Metadata</h2>
+      <ign-metadata [metadata]="model.metadata"
+                [edit]="true"
+                [disabled]="updating"
+                (onModify)="onModifyMetadata()"
+                fxFill>
+      </ign-metadata>
 
       <h2>Replace files</h2>
 
