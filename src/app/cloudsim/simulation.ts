@@ -132,14 +132,15 @@ export class Simulation {
    * Return whether a simulation is considered to be in process of launching or not.
    */
   public isLaunching(): boolean {
-    let launching = false;
+    return Simulation.Status[this.status] <= Simulation.Status['Launching'];
+  }
 
-    if (this.status === 'Pending' ||
-        this.status === 'LaunchingNodes' ||
-        this.status === 'LaunchingPods') {
-      launching = true;
-    }
-    return launching;
+  /**
+   * Return whether a simulation is considered to be running.
+   */
+  public isRunning(): boolean {
+    return Simulation.Status[this.status] >= Simulation.Status['RunningWithErrors'] &&
+           Simulation.Status[this.status] <= Simulation.Status['TerminateRequested'];
   }
 
   /**

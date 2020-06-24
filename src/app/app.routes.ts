@@ -37,6 +37,8 @@ import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { SearchComponent } from './search';
 import { SettingsComponent } from './settings';
+import { SimulationComponent } from './cloudsim/detail/simulation.component';
+import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
@@ -73,11 +75,34 @@ export const ROUTES: Routes = [
       },
       {
         path: 'cloudsim',
-        component: AdminCloudsimComponent,
-        data: {
-          titlebarTitle: 'Admin',
-          titlebarSubtitle: 'Cloudsim',
-        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: AdminCloudsimComponent,
+            data: {
+              titlebarTitle: 'Admin',
+              titlebarSubtitle: 'Cloudsim',
+            },
+          },
+          {
+            path: ':groupId',
+            pathMatch: 'full',
+            component: AssetDisplayComponent,
+            resolve: {
+              resolvedData: SimulationResolver
+            },
+            data: {
+              component: SimulationComponent,
+
+              titlebarTitle: 'Cloudsim',
+              titlebarSubtitle: 'Simulation Details',
+              title: (route: ActivatedRoute) => {
+                return route.snapshot.params['groupId'];
+              }
+            },
+          }
+        ],
       },
     ]
   },

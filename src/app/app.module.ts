@@ -81,6 +81,7 @@ import { CopyDialogComponent } from './fuel-resource/copy-dialog/copy-dialog.com
 import { DashboardComponent } from './dashboard';
 import { DescriptionComponent } from './description';
 import { DndDirective } from './dnd/dnd.directive';
+import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
@@ -132,6 +133,8 @@ import { SearchbarComponent } from './searchbar/searchbar.component';
 import { SearchComponent } from './search/search.component';
 import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
+import { SimulationComponent } from './cloudsim/detail/simulation.component';
+import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
 import { SimulationService } from './cloudsim';
 import { SimulationTableComponent } from './cloudsim';
@@ -183,6 +186,7 @@ const APP_PROVIDERS = [
   PublicCollectionsResolver,
   PublicModelsResolver,
   PublicWorldsResolver,
+  SimulationResolver,
   SimulationService,
   Title,
   UserModelsResolver,
@@ -226,6 +230,7 @@ interface StoreType  {
     DashboardComponent,
     DescriptionComponent,
     DndDirective,
+    DurationPipe,
     EditCollectionComponent,
     EditModelComponent,
     EditWorldComponent,
@@ -257,6 +262,7 @@ interface StoreType  {
     SearchComponent,
     SettingsComponent,
     SimulationActionsComponent,
+    SimulationComponent,
     SimulationRulesComponent,
     SimulationTableComponent,
     SimVisualizerComponent,
