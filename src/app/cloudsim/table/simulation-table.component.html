@@ -48,7 +48,9 @@
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <span>{{element?.name || "N/A"}}</span>
+        <a [routerLink]="element.groupId">
+          <span>{{element?.name || "N/A"}}</span>
+        </a>
       </mat-cell>
     </ng-container>
 

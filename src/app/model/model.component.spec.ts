@@ -31,6 +31,7 @@ import { ModelService } from './model.service';
 import { PageTitleComponent } from '../page-title';
 import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../tags/tags.component';
+import { MetadataComponent } from '../metadata/metadata.component';
 
 import {
   MatButtonModule,
@@ -42,6 +43,7 @@ import {
   MatListModule,
   MatSelectModule,
   MatSnackBarModule,
+  MatTableModule,
   MatTabsModule,
 } from '@angular/material';
 
@@ -96,6 +98,7 @@ describe('ModelComponent', () => {
         MatListModule,
         MatSelectModule,
         MatSnackBarModule,
+        MatTableModule,
         MatTabsModule,
         NgxGalleryModule,
         ReactiveFormsModule,
@@ -109,6 +112,7 @@ describe('ModelComponent', () => {
         FileSizePipe,
         FuelResourceListComponent,
         ItemCardComponent,
+        MetadataComponent,
         ModelComponent,
         PageTitleComponent,
         SdfViewerComponent,

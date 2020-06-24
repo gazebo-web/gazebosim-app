@@ -16,9 +16,11 @@ import {
   MatIconModule,
   MatSelectModule,
   MatInputModule,
+  MatListModule,
   MatRadioModule,
   MatSnackBar,
   MatSnackBarModule,
+  MatTableModule,
 } from '@angular/material';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -37,6 +39,7 @@ import { ModelService } from '../model.service';
 import { PageTitleComponent } from '../../page-title';
 import { SdfViewerComponent } from '../sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../../tags/tags.component';
+import { MetadataComponent } from '../../metadata/metadata.component';
 
 describe('EditModelComponent', () => {
 
@@ -74,9 +77,11 @@ describe('EditModelComponent', () => {
         MatDialogModule,
         MatIconModule,
         MatInputModule,
+        MatListModule,
         MatRadioModule,
         MatSelectModule,
         MatSnackBarModule,
+        MatTableModule,
         ReactiveFormsModule,
         RouterTestingModule,
         ],
@@ -87,6 +92,7 @@ describe('EditModelComponent', () => {
         DndDirective,
         EditModelComponent,
         FileUploadComponent,
+        MetadataComponent,
         PageTitleComponent,
         SdfViewerComponent,
         TagsComponent

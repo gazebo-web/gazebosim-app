@@ -1,0 +1,53 @@
+<div *ngIf="edit; else metadataDisplay">
+  <mat-list>
+    <mat-list-item *ngFor='let metadatum of metadata; let i = index; last as isLast'>
+      <mat-form-field>
+        <input matInput
+               [(ngModel)]='metadata[i].key'
+               placeholder="Key"
+               (input)="onModify.emit(true);"/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput
+               [(ngModel)]='metadata[i].value'
+               placeholder="Value"
+               (input)="onModify.emit(true);"/>
+      </mat-form-field>
+
+      <button mat-icon-button type="button"
+              (click)="clear(i)"><mat-icon>clear</mat-icon></button>
+
+      <button *ngIf="isLast && metadatum.key !=='' && metadatum.value !== ''"
+              mat-icon-button type="button"
+              (click)="add()"><mat-icon>add</mat-icon></button>
+    </mat-list-item>
+  </mat-list>
+</div>
+
+<ng-template #metadataDisplay>
+  <div *ngIf="metadata.length !== 0; else noMetadata" class="tab-body">
+
+    <mat-table [dataSource]='dataSource'>
+      <ng-container matColumnDef="key">
+        <mat-header-cell *matHeaderCellDef>Key</mat-header-cell>
+        <mat-cell *matCellDef="let datum" class="key">{{datum.key}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <mat-header-cell *matHeaderCellDef class="val">Value</mat-header-cell>
+        <mat-cell *matCellDef="let datum" class="val">{{datum.value}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+
+  <ng-template #noMetadata>
+    <div class="tab-body">
+      <span>No metadata available.</span>
+    </div>
+  </ng-template>
+
+</ng-template>
