@@ -154,7 +154,7 @@ export class SimVisualizerComponent implements OnDestroy {
 
     // Remove the canvas. Helpful to disconnect and connect several times.
     const container = window.document.getElementById('scene');
-    if (container.childElementCount > 0) {
+    if (container && container.childElementCount > 0) {
       container.removeChild(this.scene.renderer.domElement);
     }
   }
