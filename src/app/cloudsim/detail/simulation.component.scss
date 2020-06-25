@@ -2,7 +2,6 @@
 @import '../../../styles/custom-theme.scss';
 
 .content {
-  max-width: 980px;
   width: 100%;
 }
 
@@ -31,4 +30,25 @@
     height: 100%;
     background-color: lightgray;
   }
+
+  .controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    color: white;
+  }
+}
+
+.status {
+  color: rgb(128, 134, 139);
+  font-size: 18px;
+}
+
+.statusTitle {
+  font-weight: 400;
+}
+
+.statusData {
+  font-weight: 300;
 }
