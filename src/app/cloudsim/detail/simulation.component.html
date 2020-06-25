@@ -13,64 +13,58 @@
     </div>
 
     <div fxLayout="row">
-      <div class="visualizer" fxFlex="0 1 70%">
+      <div class="status" fxLayout="row" fxLayoutAlign="left center" fxLayoutGap="20px" fxFill>
+          <div class="statusTitle">{{simulation.status}}</div>
+
+          <div>
+            <span class="statusTitle" *ngIf="simulation.errorStatus">Error</span>
+            <span class="statusTitle" *ngIf="simulation.errorStatus">{{simulation.errorStatus}}</span>
+
+            <span class="statusTitle" *ngIf="!simulation.errorStatus"></span>
+            <span class="statusTitle" *ngIf="!simulation.errorStatus">No errors</span>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="20px" *ngIf="simulation.status == 'Running'">
+          <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between">
+            <div class="statusTitle">Real Time</div>
+            <div class="statusData" *ngIf="realTime">{{realTime | ignDuration}}</div>
+          </div>
+
+          <div fxLayout="row"  fxLayoutGap="10px" fxLayoutAlign="space-between">
+            <div class="statusTitle">Simulation Time</div>
+            <div class="statusData" *ngIf="simTime">{{simTime | ignDuration}}</div>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="10px"  fxLayoutAlign="space-between">
+            <div class="statusTitle">Real Time Factor</div>
+            <div class="statusData" *ngIf="realTimeFactor">{{realTimeFactor*100 | number: '1.2-2'}}%</div>
+          </div>
+          </div>
+
+      </div>
+    </div>
+
+    <div fxLayout="row">
+      <div class="visualizer" fxFill>
         <div class="outer">
+          <div class="controls">
+            <a mat-icon-button (click)="openFullscreen()" title="Full Screen"><mat-icon>fullscreen</mat-icon></a>
+          </div>
           <div class="inner" fxLayoutAlign="center center">
+
             <div fxLayout="row" fxLayoutAlign="center center">
               <span *ngIf="!simulation.isRunning()"
                     class="mat-typography font-x-large">
                 Visualization only available while the simulation is running.
               </span>
 
-              <div *ngIf="simulation.isRunning()" id="scene" (window:resize)="resize()"></div>
+              <div *ngIf="simulation.isRunning()" id="scene" (window:resize)="resize()" #fullScreen></div>
             </div>
           </div>
         </div>
       </div>
-
-      <div fxFlex="0 0 30%">
-        <mat-list>
-          <mat-list-item>
-            <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-              <span>Status</span>
-              <span>{{simulation.status}}</span>
-            </div>
-          </mat-list-item>
-
-          <mat-list-item>
-            <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-              <span *ngIf="simulation.errorStatus">Error</span>
-              <span *ngIf="simulation.errorStatus">{{simulation.errorStatus}}</span>
-
-              <span *ngIf="!simulation.errorStatus"></span>
-              <span *ngIf="!simulation.errorStatus">No errors</span>
-            </div>
-          </mat-list-item>
-
-          <mat-list-item *ngIf="realTime">
-            <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-              <span>Real Time</span>
-              <span>{{realTime | ignDuration}}</span>
-            </div>
-          </mat-list-item>
-
-          <mat-list-item *ngIf="simTime">
-            <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-              <span>Simulation Time</span>
-              <span>{{simTime | ignDuration}}</span>
-            </div>
-          </mat-list-item>
-
-          <mat-list-item *ngIf="realTimeFactor">
-            <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
-              <span>Real Time Factor</span>
-              <span>{{realTimeFactor}}</span>
-            </div>
-          </mat-list-item>
-        </mat-list>
-
-        <!-- <ign-simulation-actions [simulation]=simulation></ign-simulation-actions> -->
-      </div>
     </div>
+    
+    <!-- <ign-simulation-actions [simulation]=simulation></ign-simulation-actions> -->
   </div>
 </div>
