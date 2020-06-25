@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -75,6 +75,11 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * ID of the Request Animation Frame method. Required to cancel the animation.
    */
   private cancelAnimation: number;
+
+  /**
+   * Reference to the <div> that can be toggled fullscreen.
+   */
+  @ViewChild('fullScreen') private divRef;
 
   /**
    * @param activatedRoute The current Activated Route to get the associated data.
@@ -231,6 +236,23 @@ export class SimulationComponent implements OnInit, OnDestroy {
     };
 
     animate();
+  }
+
+  /**
+   * Make the 3D viewport fullscreen
+   */
+  public openFullscreen() {
+    const elem = this.divRef.nativeElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
   }
 
   /**
