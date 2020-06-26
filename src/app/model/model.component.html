@@ -29,7 +29,9 @@
             (click)="toggle3D()">
             <mat-icon>3d_rotation</mat-icon>
           </a>
-          <div *ngIf="view3d">
+          <a *ngIf="view3d" mat-icon-button (click)="openFullscreen()" title="Full Screen" class="buttonFullscreen"><mat-icon>fullscreen</mat-icon></a>
+
+          <div *ngIf="view3d" #fullScreen>
             <ign-sdfviewer
               class="sdfviewer"
               [model]="model"

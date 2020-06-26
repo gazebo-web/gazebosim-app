@@ -61,7 +61,7 @@ doc/
 # IDE #
 .idea/
 *.swp
-
+*.orig
 
 # Angular #
 *.ngfactory.ts
