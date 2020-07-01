@@ -38,6 +38,15 @@
     z-index: 10;
     color: white;
   }
+
+  .follow-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    color: white;
+    padding-left: 10px;
+  }
 }
 
 .status {
@@ -51,4 +60,28 @@
 
 .statusData {
   font-weight: 300;
+}
+
+.gz3d-side-panel {
+  margin: 60px 0px;
+  background-color: #f3f3f7;
+  color: #3f3f3f;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  height: calc(100% - 120px);
+
+  h2 {
+    padding: 10px;
+  }
+
+  .entity-list  {
+    overflow-y: scroll;
+  }
+  
+  .entity-list .mat-list-item:hover {
+    background-color: #e3e3e7;
+    cursor: pointer;
+  }
 }
