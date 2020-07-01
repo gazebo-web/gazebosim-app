@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -113,6 +113,11 @@ export class ModelComponent implements OnInit, OnDestroy {
    * Dialog to add the model into a collection (or create one).
    */
   private collectionDialog: MatDialogRef<CollectionDialogComponent>;
+
+  /**
+   * Reference to the <div> that can be toggled fullscreen.
+   */
+  @ViewChild('fullScreen') private divRef;
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data
@@ -551,6 +556,23 @@ export class ModelComponent implements OnInit, OnDestroy {
     } else {
       // Model has no images. Set the gallery images accordingly.
       this.galleryImages = [];
+    }
+  }
+
+  /**
+   * Make the viewport fullscreen
+   */
+  public openFullscreen() {
+    const elem = this.divRef.nativeElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
     }
   }
 
