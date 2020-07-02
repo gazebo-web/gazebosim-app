@@ -321,6 +321,19 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
+   * Reset camera pose
+   */
+  public resetCameraPose(): void {
+    const cam = this.scene.camera;
+    cam.position.x = 1.1;
+    cam.position.y = -1.4;
+    cam.position.z = 0.6;
+    cam.rotation.x = 67 * Math.PI / 180;
+    cam.rotation.y = 33 * Math.PI / 180;
+    cam.rotation.z = 12 * Math.PI / 180;
+  }
+
+  /**
    * Render the 3D scene, this function recursively calls itself in a loop.
    */
   private animate(): void {
@@ -371,19 +384,6 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   private resize(): void {
     this.scene.setSize(this.sceneElement.clientWidth,
                        this.sceneElement.clientHeight);
-  }
-
-  /**
-   * Reset camera pose
-   */
-  private resetCameraPose(): void {
-    const cam = this.scene.camera;
-    cam.position.x = 1.1;
-    cam.position.y = -1.4;
-    cam.position.z = 0.6;
-    cam.rotation.x = 67 * Math.PI / 180;
-    cam.rotation.y = 33 * Math.PI / 180;
-    cam.rotation.z = 12 * Math.PI / 180;
   }
 
   /**

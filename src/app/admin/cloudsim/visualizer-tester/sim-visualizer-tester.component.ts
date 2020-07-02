@@ -270,4 +270,11 @@ export class SimVisualizerComponent implements OnDestroy {
       this.scene.emitter.emit('follow_entity', null);
     }
   }
+
+  /**
+   * Reset the camera view
+   */
+  private resetView() {
+    this.scene.resetView();
+  }
 }
