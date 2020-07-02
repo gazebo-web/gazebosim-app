@@ -10,6 +10,7 @@ import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.co
 import { Model } from './model';
 import { ModelService } from './model.service';
 import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dialog.component';
+import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 
 import 'rxjs/add/operator/finally';
 import * as FileSaver from 'file-saver';
@@ -118,6 +119,11 @@ export class ModelComponent implements OnInit, OnDestroy {
    * Reference to the <div> that can be toggled fullscreen.
    */
   @ViewChild('fullScreen') private divRef;
+
+  /**
+   * Reference to the <ign-sdfviewer>.
+   */
+  @ViewChild(SdfViewerComponent) private sdfViewer: SdfViewerComponent;
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data
@@ -562,7 +568,7 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * Make the viewport fullscreen
    */
-  public openFullscreen() {
+  private openFullscreen() {
     const elem = this.divRef.nativeElement;
 
     if (elem.requestFullscreen) {
@@ -574,6 +580,13 @@ export class ModelComponent implements OnInit, OnDestroy {
     } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
     }
+  }
+
+  /**
+   * Reset the camera view
+   */
+  private resetView() {
+    this.sdfViewer.resetCameraPose();
   }
 
   /**

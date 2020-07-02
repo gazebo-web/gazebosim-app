@@ -253,7 +253,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Make the 3D viewport fullscreen
    */
-  public openFullscreen() {
+  private openFullscreen() {
     const elem = this.divRef.nativeElement;
 
     if (elem.requestFullscreen) {
@@ -265,6 +265,13 @@ export class SimulationComponent implements OnInit, OnDestroy {
     } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
     }
+  }
+
+  /**
+   * Reset the camera view
+   */
+  private resetView() {
+    this.scene.resetView();
   }
 
   /**
