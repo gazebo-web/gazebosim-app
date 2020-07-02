@@ -52,7 +52,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * The Authorization Key to use.
    */
-  public authKey: string = 'auth_key';
+  public authKey: string = '';
 
   /**
    * Gz3D Scene.
@@ -68,6 +68,16 @@ export class SimVisualizerComponent implements OnDestroy {
    * ID of the Request Animation Frame method. Required to cancel the animation.
    */
   private cancelAnimation: number;
+
+  /**
+   * List of 3d models.
+   */
+  private models: any[] = [];
+
+  /**
+   * True if the camera is following a model
+   */
+  private following: boolean = false;
 
   /**
    * @param ws The Websocket Service used to get data from a Simulation.
@@ -137,6 +147,8 @@ export class SimVisualizerComponent implements OnDestroy {
 
       sceneInfo['model'].forEach((model) => {
         const modelObj = this.sdfParser.spawnFromObj({ model });
+        model['gz3dName'] = modelObj.name;
+        this.models.push(model);
         this.scene.add(modelObj);
       });
     });
@@ -229,6 +241,33 @@ export class SimVisualizerComponent implements OnDestroy {
 
     if (this.statusSubscription) {
       this.statusSubscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Select the given model
+   */
+  private select(model) {
+    this.scene.emitter.emit('select_entity',  model['gz3dName']);
+  }
+
+  /**
+   * Instruct the camera to move to the given model.
+   */
+  private moveTo(model) {
+    this.scene.emitter.emit('move_to_entity', model['gz3dName']);
+  }
+
+  /**
+   * Instruct the camera to follow the given model.
+   */
+  private follow(model) {
+    if (model !== undefined && model !== null) {
+        this.following = true;
+        this.scene.emitter.emit('follow_entity', model['gz3dName']);
+    } else {
+      this.following = false;
+      this.scene.emitter.emit('follow_entity', null);
     }
   }
 }

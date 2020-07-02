@@ -90,7 +90,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeUndefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(4);
+      expect(comp.scene.scene.children.length).toBe(3);
       expect(comp.scene.scene.getObjectByName('sun')).toBeDefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
@@ -122,7 +122,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeDefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(4);
+      expect(comp.scene.scene.children.length).toBe(3);
       expect(comp.scene.scene.getObjectByName('example_model')).toBeUndefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
@@ -159,13 +159,13 @@ describe('SdfViewerComponent', () => {
     comp.ngOnInit();
 
     waitsForAndRuns(() => {
-      return comp.scene.scene.children.length > 4;
+      return comp.scene.scene.children.length > 3;
     }, () => {
       // Check scene
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeDefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(5);
+      expect(comp.scene.scene.children.length).toBe(4);
       expect(comp.scene.scene.getObjectByName('example_model')).toBeDefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
