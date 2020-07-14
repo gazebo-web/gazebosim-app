@@ -140,6 +140,10 @@ export class SimulationComponent implements OnInit, OnDestroy {
     if (this.cancelAnimation) {
       cancelAnimationFrame(this.cancelAnimation);
     }
+
+    if (this.scene) {
+      this.scene.cleanup();
+    }
   }
 
   /**

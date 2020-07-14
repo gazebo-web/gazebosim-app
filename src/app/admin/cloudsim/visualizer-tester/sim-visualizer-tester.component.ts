@@ -94,6 +94,10 @@ export class SimVisualizerComponent implements OnDestroy {
     if (this.cancelAnimation) {
       cancelAnimationFrame(this.cancelAnimation);
     }
+
+    if (this.scene) {
+      this.scene.cleanup();
+    }
   }
 
   /**
