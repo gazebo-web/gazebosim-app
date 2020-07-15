@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { CollectionService } from '../collection';
+import { CollectionService, Collection } from '../collection';
+import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
 import { WorldService } from '../world/world.service';
+import { World } from '../world/world';
 
 @Component({
   selector: 'ign-dashboard',
@@ -15,19 +17,24 @@ import { WorldService } from '../world/world.service';
  */
 export class DashboardComponent implements OnInit {
   /**
-   * Total number of models.
+   * Latest models to display.
    */
-  private modelCount: number = 0;
+  private models: Model[];
 
   /**
-   * Total number of worlds.
+   * Latest worlds to display.
    */
-  private worldCount: number = 0;
+  private worlds: World[];
 
   /**
-   * Total number of collections.
+   * Latest collections to display.
    */
-  private collectionCount: number = 0;
+  private collections: Collection[];
+
+  /**
+   * Number of items to be displayed for each resource type.
+   */
+  private displayCount: number = 4;
 
   /**
    * @param collectionService Service to retrieve collections
@@ -48,24 +55,30 @@ export class DashboardComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.modelService.getList().subscribe(
-      (response) => {
-        this.modelCount = response.totalCount;
+      (models) => {
+        if (models !== undefined) {
+          this.models = models.resources.slice(0, this.displayCount);
+        }
       },
       (error) => {
         console.error('Error getting public models:', error);
       });
 
     this.worldService.getList().subscribe(
-      (response) => {
-        this.worldCount = response.totalCount;
+      (worlds) => {
+        if (worlds !== undefined) {
+          this.worlds = worlds.resources.slice(0, this.displayCount);
+        }
       },
       (error) => {
         console.error('Error getting public worlds:', error);
       });
 
     this.collectionService.getCollectionList().subscribe(
-      (response) => {
-        this.collectionCount = response.totalCount;
+      (collections) => {
+        if (collections !== undefined) {
+          this.collections = collections.collections.slice(0, this.displayCount);
+        }
       },
       (error) => {
         console.error('Error getting collections:', error);
