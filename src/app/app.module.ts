@@ -47,6 +47,9 @@ import {
   MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
+
+import { MatExpansionModule } from '@angular/material/expansion';
+
 import 'hammerjs';
 
 /*
@@ -296,6 +299,7 @@ interface StoreType  {
     MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
+    MatExpansionModule,
     MatIconModule,
     MatInputModule,
     MatListModule,

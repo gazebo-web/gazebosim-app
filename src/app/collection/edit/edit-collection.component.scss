@@ -17,3 +17,9 @@
 .banner-button {
   margin-right: 1em;
 }
+
+mat-radio-group {
+  mat-radio-button:not(:first-child) {
+    padding-left: 10px;
+  }
+}

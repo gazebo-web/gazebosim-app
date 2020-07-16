@@ -38,12 +38,18 @@ export class Collection {
   public thumbnails: Image[] = [];
 
   /**
+   * Whether the collection is private or not.
+   */
+  public private: boolean;
+
+  /**
    * @param json A JSON that contains the required fields of the collection.
    */
   constructor(json: any) {
     this.name = json['name'];
     this.owner = json['owner'];
     this.description = json['description'];
+    this.private = json['private'];
 
     // Append the given thumbnails.
     if (json['thumbnails']) {
