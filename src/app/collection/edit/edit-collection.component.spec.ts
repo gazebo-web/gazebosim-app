@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   MatIconModule,
   MatInputModule,
+  MatRadioModule,
   MatSnackBarModule,
 } from '@angular/material';
 import { MarkdownModule } from 'ngx-markdown';
@@ -43,6 +44,7 @@ describe('EditCollectionComponent', () => {
         MarkdownModule,
         MatIconModule,
         MatInputModule,
+        MatRadioModule,
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterTestingModule,

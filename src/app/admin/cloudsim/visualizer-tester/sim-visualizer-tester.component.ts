@@ -137,6 +137,50 @@ export class SimVisualizerComponent implements OnDestroy {
         };
 
         this.ws.subscribe(poseTopic);
+
+        // Subscribe to the 'scene/info' topic which sends scene changes.
+        const sceneTopic: Topic = {
+          name: `/world/${this.ws.getWorld()}/scene/info`,
+          cb: (sceneInfo) => {
+            if (!sceneInfo) {
+              return;
+            }
+
+            // Process each model in the scene.
+            sceneInfo['model'].forEach((model) => {
+
+              // Check to see if the model already exists in the scene. This
+              // could happen when a simulation level is loaded multiple times.
+              let foundIndex = -1;
+              for (let i = 0; i < this.models.length; ++i) {
+                // Simulation enforces unique names between models. The ID
+                // of a model may change. This occurs when levels are loaded,
+                // unloaded, and then reloaded.
+                if (this.models[i]['name'] === model['name']) {
+                  foundIndex = i;
+                  break;
+                }
+              }
+
+              // If the model was not found, then add the new model. Otherwise
+              // update the models ID and gz3dName.
+              if (foundIndex < 0) {
+                const entity = this.scene.getByName();
+                const modelObj = this.sdfParser.spawnFromObj({ model });
+                model['gz3dName'] = modelObj.name;
+                this.models.push(model);
+                this.scene.add(modelObj);
+              } else {
+                // Make sure to update the exisiting models so that future pose
+                // messages can update the model.
+                this.models[foundIndex]['gz3dName'] = `${model['name']}${model['id']}`;
+                this.models[foundIndex]['id'] = model['id'];
+              }
+            });
+          }
+        };
+
+        this.ws.subscribe(sceneTopic);
       }
     });
 
@@ -151,6 +195,7 @@ export class SimVisualizerComponent implements OnDestroy {
 
       sceneInfo['model'].forEach((model) => {
         const modelObj = this.sdfParser.spawnFromObj({ model });
+
         model['gz3dName'] = modelObj.name;
         this.models.push(model);
         this.scene.add(modelObj);

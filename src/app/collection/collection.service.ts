@@ -296,6 +296,15 @@ export class CollectionService {
   }
 
   /**
+   * Get the list of available permission names.
+   *
+   * @returns A list of strings, one for each permission.
+   */
+  public getPermissionList(): string[] {
+    return ['Public', 'Private'];
+  }
+
+  /**
    * Server route of the list of public collections.
    * Used to get a list of collections or create one.
    * The route is apiUrl/apiVersion/collections
