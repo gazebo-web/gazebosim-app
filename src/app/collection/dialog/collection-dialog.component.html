@@ -1,75 +1,87 @@
-<div class="content">
-  <h1 mat-dialog-title class="mat-typography">
-    Add to collection
-  </h1>
+<div class="mat-typography content" fxLayout="column" fxLayoutAlign="start center">
 
-  <form>
-    <div fxLayout="row" mat-dialog-content class="mat-typography">
-      <div fxFill
-           fxLayout.gt-xs="row"
-           fxLayout.xs="column">
-        <mat-form-field class="collection-input">
-          <input matInput placeholder="Collection"
-            [matAutocomplete]="auto" [formControl]="collectionAddInputForm">
+  <h1 mat-dialog-title>Add to collection</h1>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]='true' (opened)="openOption(0);">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Existing</mat-panel-title>
+        <mat-panel-description>
+          Add this model to an existing collection
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <form fxLayout="row">
+        <div fxFill
+            fxLayout.gt-xs="row"
+            fxLayout.xs="column">
+          <mat-form-field class="collection-input">
+            <input matInput placeholder="Collection"
+                            [matAutocomplete]="auto" [formControl]="collectionAddInputForm">
 
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="getCollectionName">
-            <mat-option *ngFor="let collection of (collectionList | async)"
-              [value]="collection">{{collection.name}} by {{collection.owner}}
-            </mat-option>
-          </mat-autocomplete>
+              <mat-option *ngFor="let collection of (collectionList | async)"
+                            [value]="collection">{{collection.name}} by {{collection.owner}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel (opened)="openOption(1);">
+      <mat-expansion-panel-header>
+        <mat-panel-title>New</mat-panel-title>
+        <mat-panel-description>
+          Create a new collection and include this model.
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <form fxLayout="column">
+        <mat-form-field>
+          <input matInput
+            placeholder="Collection name"
+            [formControl]="collectionNameInputForm" required/>
+          <mat-error>{{getCollectionNameError()}}</mat-error>
         </mat-form-field>
 
-        <button fxFlexAlign.xs="end"
-                fxFlexAlign.gt-xs="center"
-                mat-raised-button (click)="add()" color="primary">
-          Add
-        </button>
-      </div>
-    </div>
-  </form>
-
-  <h1 mat-dialog-title class="mat-typography">
-    Create a new collection
-  </h1>
-
-  <form>
-    <div fxLayout="column" mat-dialog-content class="mat-typography">
-
-      <mat-form-field>
-        <input matInput
-          placeholder="Collection name"
-          [formControl]="collectionNameInputForm" required/>
-        <mat-error>{{getCollectionNameError()}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-select [(ngModel)]="owner"
-          name="ownerList"
-          placeholder="Owner"
-          [disabled]="uploading"
-          required>
-          <mat-option *ngFor="let owner of collectionOwnerList; let i = index"
+        <mat-form-field>
+          <mat-select [(ngModel)]="owner"
+            name="ownerList"
+            placeholder="Owner"
+            [disabled]="uploading"
+            required>
+            <mat-option *ngFor="let owner of collectionOwnerList; let i = index"
             [value]="i">{{owner}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field>
-        <textarea [(ngModel)]="collectionDescription"
-          name="description"
-          matInput
-          placeholder="Description">
-        </textarea>
-      </mat-form-field>
-    </div>
-  </form>
+        <mat-form-field>
+          <textarea [(ngModel)]="collectionDescription"
+            name="description"
+            matInput
+            placeholder="Description">
+          </textarea>
+        </mat-form-field>
 
-  <div mat-dialog-actions align="end">
+        <div fxLayout="row" fxFill fxLayoutGap="20px">
+          <p>Privacy</p>
+          <mat-radio-group [formControl]="privacyInputForm">
+            <mat-radio-button *ngFor="let p of collectionService.getPermissionList(); let i = index"
+                                   [value]="i"
+                                   [checked]="p === 'Public'">{{p}}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between space-between" fxFill>
     <button mat-button mat-dialog-close color="primary">
       Cancel
     </button>
 
-    <button mat-raised-button (click)="create()" color="primary">
-      Create
+    <button mat-raised-button (click)="submit()" color="primary">
+      {{options[option]}}
     </button>
   </div>
 </div>

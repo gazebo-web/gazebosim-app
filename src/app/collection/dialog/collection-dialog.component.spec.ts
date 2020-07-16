@@ -10,10 +10,12 @@ import {
   MatDialogRef,
   MatIconModule,
   MatInputModule,
+  MatRadioModule,
   MatSelectModule,
   MatSnackBarModule,
 } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AuthService } from '../../auth/auth.service';
 import { Collection } from '../collection';
@@ -31,7 +33,8 @@ describe('CollectionDialogComponent', () => {
   const mockData = {
     name: 'testCollection',
     owner: 'testOwner',
-    description: 'testDescription'
+    description: 'testDescription',
+    private: false
   };
   const mockCollection = new Collection(mockData);
   const mockResource = new Model({});
@@ -44,8 +47,10 @@ describe('CollectionDialogComponent', () => {
         HttpClientModule,
         MatAutocompleteModule,
         MatDialogModule,
+        MatExpansionModule,
         MatIconModule,
         MatInputModule,
+        MatRadioModule,
         MatSelectModule,
         MatSnackBarModule,
         ReactiveFormsModule,

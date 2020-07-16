@@ -1,6 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import {
+  MatDialogRef,
+  MatRadioButton,
+  MatRadioGroup,
+  MAT_DIALOG_DATA,
+  MatSnackBar
+} from '@angular/material';
+
 import { switchMap, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 
@@ -59,6 +66,21 @@ export class CollectionDialogComponent implements OnInit {
    * the HTML subscribes to it using the "async" pipe.
    */
   public collectionList: Observable<Collection[]>;
+
+  /**
+   * Form Input for the Model Privacy.
+   */
+  private privacyInputForm = new FormControl();
+
+  /**
+   * Which option (add or create).
+   */
+  private option = 0;
+
+  /**
+   * The set of available options.
+   */
+  private options = ['Add', 'Create'];
 
   /**
    * @param authService Service used to get the authenticated user information.
@@ -152,7 +174,8 @@ export class CollectionDialogComponent implements OnInit {
     const data = {
       name: this.collectionNameInputForm.value,
       owner: this.collectionOwnerList[this.owner],
-      description: this.collectionDescription
+      description: this.collectionDescription,
+      private: !!this.privacyInputForm.value
     };
 
     // Create the Collection.
@@ -209,5 +232,23 @@ export class CollectionDialogComponent implements OnInit {
 
     // No error.
     return '';
+  }
+
+  /**
+   * Handle form submission.
+   */
+  private submit(): void {
+    if (this.option === 0) {
+      this.add();
+    } else {
+      this.create();
+    }
+  }
+
+  /**
+   * Set the option
+   */
+  private openOption(index: number): void {
+    this.option = index;
   }
 }
