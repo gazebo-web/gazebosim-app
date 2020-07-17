@@ -69,18 +69,19 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     let search: string;
-    let selectedCategories: string;
-    let categories: string[];
     // This subscription makes the search re-run if the user changes params.
     this.activatedRoute.params.subscribe((params: Params) => {
       search = params['q'];
-      selectedCategories = params['c'];
 
-      if (selectedCategories.length > 0) {
-        categories = selectedCategories.split(',');
+      // Replace ampersand with %26 so that it gets sent over the wire
+      // correctly.
+      // todo: Consider supporting form search, instead of only a single "?q"
+      // parameter.
+      if (search !== null && search !== undefined) {
+        search = search.replace(/&/gi, '%26');
       }
 
-      this.modelService.getList(search, categories).subscribe(
+      this.modelService.getList(search).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;

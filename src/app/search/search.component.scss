@@ -5,16 +5,12 @@ ign-page-title {
   padding-left: 20px;
 }
 
-ign-searchbar {
-  padding: 10px 0px 10px 0px;
-}
-
 div ::ng-deep .mat-tab-header {
   align-self: center;
 
   // This maintains the Tab header's size.
   @media screen and (min-width: 600px) {
-    width: 67.5%;
+    width: 60%;
   }
   @media screen and (max-width: 599px) {
     width: 80%;

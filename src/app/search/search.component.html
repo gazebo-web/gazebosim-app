@@ -10,22 +10,13 @@
       </ng-template>
 
       <div class="tab-content">
-        <div fxLayout="column">
-          <div fxLayout="row">
-            <ign-searchbar [filters]="['categories']" fxFlex fxLayoutAlign="center center"></ign-searchbar>
-          </div>
-          <div fxLayout="row">
-            <ign-fuel-resource-list [resources]="models"
-                                    resourceType="models"
-                                    [disabled]="activeTab !== 'models'"
-                                    [finished]="!paginatedModels?.hasNextPage()"
-                                    (onLoadMore)="loadNextModelsPage()"
-                                    fxFlex>
-            </ign-fuel-resource-list>
-          </div>
-        </div>
-        
-        
+        <ign-fuel-resource-list [resources]="models"
+                                resourceType="models"
+                                [disabled]="activeTab !== 'models'"
+                                [finished]="!paginatedModels?.hasNextPage()"
+                                (onLoadMore)="loadNextModelsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
       </div>
     </mat-tab>
 
@@ -38,20 +29,13 @@
       </ng-template>
 
       <div class="tab-content">
-        <div fxLayout="column">
-          <div fxLayout="row">
-            <ign-searchbar fxFlex fxLayoutAlign="center center"></ign-searchbar>
-          </div>
-          <div fxLayout="row">
-            <ign-fuel-resource-list [resources]="worlds"
-                                    resourceType="worlds"
-                                    [disabled]="activeTab !== 'worlds'"
-                                    [finished]="!paginatedWorlds?.hasNextPage()"
-                                    (onLoadMore)="loadNextWorldsPage()"
-                                    fxFlex>
-            </ign-fuel-resource-list>
-          </div>
-        </div>
+        <ign-fuel-resource-list [resources]="worlds"
+                                resourceType="worlds"
+                                [disabled]="activeTab !== 'worlds'"
+                                [finished]="!paginatedWorlds?.hasNextPage()"
+                                (onLoadMore)="loadNextWorldsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
       </div>
     </mat-tab>
   </mat-tab-group>

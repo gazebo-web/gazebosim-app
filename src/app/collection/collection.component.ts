@@ -275,6 +275,52 @@ export class CollectionComponent implements OnInit {
   }
 
   /**
+   * Callback when enter key is pressed on search input.
+   *
+   * @param search Search string.
+   */
+  private onSearch(search: string): void {
+    let searchFinal = 'collections:' + this.collection.name;
+
+    // Replace ampersand with %26 so that it gets sent over the wire
+    // correctly.
+    // todo: Consider supporting form search, instead of only a single "?q"
+    // parameter.
+    if (search !== null && search !== undefined && search !== '') {
+      search = search.replace(/&/gi, '%26');
+      searchFinal += '%26' + search;
+    }
+
+    // Get the searched models.
+    this.modelService.getList(searchFinal).subscribe(
+        (models) => {
+          if (models !== undefined) {
+            this.paginatedModels = models;
+            this.collection.models = models.resources;
+          }
+        },
+        (error) => {
+          console.error('Error searching models', error);
+          this.snackBar.open(error.message, 'Got it');
+        }
+      );
+
+    // Get the searched worlds.
+    this.worldService.getList(searchFinal).subscribe(
+        (worlds) => {
+          if (worlds !== undefined) {
+            this.paginatedWorlds = worlds;
+            this.collection.worlds = worlds.resources;
+          }
+        },
+        (error) => {
+          console.error('Error searching worlds', error);
+          this.snackBar.open(error.message, 'Got it');
+        }
+      );
+  }
+
+  /**
    * Title of the Copy Button.
    *
    * @returns The title of the copy button, whether the collection can be copied or not.
