@@ -18,12 +18,19 @@
       </div>
     </div>
 
-    <div fxLayout="row wrap" fxLayoutAlign="end" class="buttons" *ngIf="canEdit">
+    <div fxLayout="row wrap" fxLayoutAlign="end" class="buttons">
+        <button mat-icon-button
+          [disabled]="!authService.isAuthenticated()"
+          [title]="getCopyButtonTitle()"
+          (click)="copyCollection()">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+
       <button mat-icon-button title="Edit collection" *ngIf="canEdit"
         routerLink="/{{collection?.owner}}/collections/{{collection?.name}}/edit">
         <mat-icon>mode_edit</mat-icon>
       </button>
-      <button mat-icon-button title="Remove this collection" (click)="removeCollection()">
+      <button mat-icon-button title="Remove this collection" *ngIf="canEdit" (click)="removeCollection()">
         <mat-icon>delete</mat-icon>
       </button>
     </div>

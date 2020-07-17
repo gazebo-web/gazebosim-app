@@ -12,6 +12,7 @@ import { WorldService } from '../world/world.service';
 import {
   ConfirmationDialogComponent
 } from '../confirmation-dialog/confirmation-dialog.component';
+import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
 
 @Component({
   selector: 'ign-collection',
@@ -53,6 +54,11 @@ export class CollectionComponent implements OnInit {
    * Confirmation dialog reference used to confirm when a collection is removed.
    */
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
+
+  /**
+   * Dialog to prompt the user about the collection name and owner for copying.
+   */
+  private copyNameDialog: MatDialogRef<CopyDialogComponent>;
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data
@@ -266,5 +272,60 @@ export class CollectionComponent implements OnInit {
         break;
       }
     }
+  }
+
+  /**
+   * Title of the Copy Button.
+   *
+   * @returns The title of the copy button, whether the collection can be copied or not.
+   */
+  private getCopyButtonTitle(): string {
+    if (!this.authService.isAuthenticated()) {
+      return 'Log in to copy this collection';
+    }
+    return 'Copy this collection';
+  }
+
+  /**
+   * Callback for the Collection Copy button.
+   */
+  private copyCollection(): void {
+    const dialogOps = {
+      disableClose: true,
+      data: {
+        title: 'Copy collection',
+        message: `<p>Add a copy of the collection to your account or into an organization.</p>
+          <p>Please enter a new name and owner for the copied collection.</p>`,
+        name: this.collection.name,
+        namePlaceholder: 'Collection name',
+        owner: this.authService.userProfile.username,
+        ownerList: [this.authService.userProfile.username,
+          ...this.authService.userProfile.orgs.sort()],
+        busyMessage: `<p>Copying the collection into the account.</p>`,
+      }
+    };
+
+    this.copyNameDialog = this.dialog.open(CopyDialogComponent, dialogOps);
+
+    // Subscribe to the dialog's submit method.
+    this.copyNameDialog.componentInstance.onSubmit.subscribe(
+      (result) => {
+        if (result !== undefined && result.copyName.trim() !== '') {
+          this.copyNameDialog.componentInstance.busy = true;
+          this.collectionService.copy(this.collection, result.copyName.trim(), result.copyOwner)
+            .subscribe(
+              (response) => {
+                this.copyNameDialog.close();
+
+                this.snackBar.open(`${response.name} was created`, 'Got it', { duration: 2750 });
+                this.router.navigate([`/${response.owner}/collections/${response.name}`]);
+              },
+              (error) => {
+                this.snackBar.open(error.message, 'Got it');
+              });
+        } else {
+          this.copyNameDialog.componentInstance.busy = false;
+        }
+      });
   }
 }
