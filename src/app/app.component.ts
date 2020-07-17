@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router,
          ActivatedRoute,
          Event,
@@ -8,6 +8,7 @@ import { Router,
          NavigationCancel } from '@angular/router';
 import { MatDialog, MatSnackBar, MatSidenav } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+import { SearchComponent } from './search';
 
 import { AuthService } from './auth/auth.service';
 import { Ng2DeviceService } from './device-detector';
@@ -28,6 +29,8 @@ export class AppComponent implements OnInit {
    * The sidenav element. Used to control it's behavior from the component.
    */
   @ViewChild('sidenav') public sidenav: MatSidenav;
+
+  @ViewChild('search') public searchBar: ElementRef;
 
   /**
    * Title of the Web Application.
@@ -169,6 +172,15 @@ export class AppComponent implements OnInit {
   }
 
   /**
+   * Callback when enter key is pressed on search input.
+   *
+   * @param search Search string.
+   */
+  private onSearch(search: string): void {
+    this.router.navigate(['search', {q: search}]);
+  }
+
+  /**
    * Raise the Progress Bar's value.
    *
    * Completes 5% of progress every 200ms. If the progress is at 90%, it completes the missing half.
@@ -184,5 +196,15 @@ export class AppComponent implements OnInit {
         this.makeProgress();
       }
     }, 200);
+  }
+
+  /**
+   * On deactivate event handler.
+   */
+  private onDeactivate(event): void {
+    // Clear the search text
+    if (event instanceof SearchComponent) {
+      this.searchBar.nativeElement.value = '';
+    }
   }
 }

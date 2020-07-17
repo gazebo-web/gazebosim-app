@@ -54,6 +54,15 @@
 
         <div class="toolbar-space"></div>
 
+        <mat-form-field [floatLabel]="'never'" fxFlex="2 0 100px">
+          <mat-label>Search</mat-label>
+          <input #search matInput type="search" (keyup.enter)="onSearch(search.value)">
+          <mat-icon matPrefix id="search-icon">search</mat-icon>
+        </mat-form-field>
+
+        <div class="toolbar-space"></div>
+
+
         <!-- Add resource button -->
         <button *ngIf="deviceService.isDesktop()" class="add-button"
           mat-icon-button [matMenuTriggerFor]="addAssetMenu" title="Add Resource">
@@ -110,7 +119,7 @@
       </mat-toolbar>
 
       <div class="page-content">
-        <router-outlet></router-outlet>
+        <router-outlet (deactivate)="onDeactivate($event)"></router-outlet>
       </div>
     </mat-sidenav-content>
 
