@@ -132,7 +132,6 @@ import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { RegistrationDialogComponent } from './portal';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SearchbarComponent } from './searchbar/searchbar.component';
 import { SearchComponent } from './search/search.component';
 import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
@@ -261,7 +260,6 @@ interface StoreType  {
     RegistrationDialogComponent,
     ReportDialogComponent,
     SdfViewerComponent,
-    SearchbarComponent,
     SearchComponent,
     SettingsComponent,
     SimulationActionsComponent,
@@ -338,7 +336,6 @@ interface StoreType  {
     NewOrganizationDialogComponent,
     RegistrationDialogComponent,
     ReportDialogComponent,
-    SearchbarComponent,
     TextInputDialogComponent,
   ]
 })

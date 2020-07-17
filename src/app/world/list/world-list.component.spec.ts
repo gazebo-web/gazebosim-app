@@ -26,7 +26,6 @@ import { JsonClassFactoryService } from '../../factory/json-class-factory.servic
 import { Ng2DeviceService } from '../../device-detector';
 import { PageTitleComponent } from '../../page-title';
 import { PaginatedWorlds } from '../paginated-worlds';
-import { SearchbarComponent } from '../../searchbar/searchbar.component';
 import { World } from '../world';
 import { WorldListComponent } from './world-list.component';
 import { WorldService } from '../world.service';
@@ -76,7 +75,6 @@ describe('WorldListComponent', () => {
         FuelResourceListComponent,
         ItemCardComponent,
         PageTitleComponent,
-        SearchbarComponent,
         WorldListComponent,
         ],
       providers: [

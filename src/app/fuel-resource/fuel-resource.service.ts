@@ -76,11 +76,7 @@ export abstract class FuelResourceService {
    * @param categories Optional list to filter by categories.
    * @returns An observable of the paginated resources.
    */
-  public getList(
-    search: string = '',
-    categories: string[] = [],
-  ): Observable<FuelPaginatedResource> {
-
+   public getList(search: string = ''): Observable<FuelPaginatedResource> {
     const url = this.getListUrl();
     let params = new HttpParams();
 
@@ -89,18 +85,7 @@ export abstract class FuelResourceService {
       params = params.append('q', search);
     }
 
-    if (categories.length > 0) {
-      let category: string;
-      for (category of categories) {
-        params = params.append('category', category);
-      }
-    }
-
-    return this.http.get(url, {
-          observe: 'response',
-          params,
-        },
-      )
+    return this.http.get(url, {observe: 'response', params})
       .map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
