@@ -61,6 +61,11 @@ export class CollectionComponent implements OnInit {
   private copyNameDialog: MatDialogRef<CopyDialogComponent>;
 
   /**
+   * Bibtex for this model.
+   */
+  private bibTex: string;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param authService The Authentication Service to determine the user's permissions
    * @param collectionService Service used to handle collection-related requests to the Server.
@@ -120,6 +125,22 @@ export class CollectionComponent implements OnInit {
     this.canEdit = this.authService.isAuthenticated() &&
       (this.collection.owner === this.authService.userProfile.username ||
       this.authService.userProfile['orgs'].includes(this.collection.owner));
+
+    // Create the bibtex
+    const date = new Date(this.collection.modifyDate);
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+
+    this.bibTex = `@online{IgnitionFuel-` +
+    `${this.collection.owner.split(' ').join('-')}-` +
+    `${this.collection.name.split(' ').join('-')},`;
+    this.bibTex += `\n\ttitle={${this.collection.name}},`;
+    this.bibTex += `\n\torganization={Open Robotics},`;
+    this.bibTex += `\n\tdate={${date.getFullYear()}},`;
+    this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
+    this.bibTex += `\n\tday={${date.getDay()}},`;
+    this.bibTex += `\n\tauthor={${this.collection.owner}},`;
+    this.bibTex += `\n\turl={${this.collectionService.baseUrl + this.router.url}},\n}`;
   }
 
   /**
@@ -318,6 +339,26 @@ export class CollectionComponent implements OnInit {
           this.snackBar.open(error.message, 'Got it');
         }
       );
+  }
+
+  /**
+   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   */
+  private copyBibtex(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.bibTex;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
   }
 
   /**
