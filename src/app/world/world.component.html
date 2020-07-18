@@ -156,6 +156,14 @@
               </a>
             </div>
 
+            <div fxLayout="row"
+                 fxLayoutAlign="start start"
+                 fxLayoutGap="10px">
+
+              <mat-icon title="Bibtex">library_books</mat-icon>
+              <pre (click)="copyBibtex()" class='bibtex' title="Copy Bibtex to clipboard"><code>{{bibTex}}</code></pre>
+            </div>
+
           </div>
         </mat-tab>
 

@@ -61,3 +61,20 @@ div ::ng-deep .mat-tab-label {
 #search-icon {
   vertical-align: text-top;
 }
+
+.bibtex {
+  margin: 0px!important;
+}
+
+.bibtex:hover {
+  cursor: pointer;
+  color: mat-color($custom-theme-primary);
+}
+
+.mat-expansion-panel {
+  background-color: transparent;
+}
+
+.mat-expansion-panel-header {
+  padding-left: 0;
+}

@@ -116,6 +116,11 @@ export class ModelComponent implements OnInit, OnDestroy {
   private collectionDialog: MatDialogRef<CollectionDialogComponent>;
 
   /**
+   * Bibtex for this model.
+   */
+  private bibTex: string;
+
+  /**
    * Reference to the <div> that can be toggled fullscreen.
    */
   @ViewChild('fullScreen') private divRef;
@@ -183,6 +188,22 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.loadCollections();
 
     this.canEdit = this.authService.canWriteResource(this.model);
+
+    // Create the bibtex
+    const date = new Date(this.model.modifyDate);
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+
+    this.bibTex = `@online{IgnitionFuel-` +
+    `${this.model.owner.split(' ').join('-')}-` +
+    `${this.model.name.split(' ').join('-')},`;
+    this.bibTex += `\n\ttitle={${this.model.name}},`;
+    this.bibTex += `\n\torganization={Open Robotics},`;
+    this.bibTex += `\n\tdate={${date.getFullYear()}},`;
+    this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
+    this.bibTex += `\n\tday={${date.getDay()}},`;
+    this.bibTex += `\n\tauthor={${this.model.owner}},`;
+    this.bibTex += `\n\turl={${this.modelService.baseUrl + this.router.url}},\n}`;
   }
 
   /**
@@ -607,5 +628,25 @@ export class ModelComponent implements OnInit, OnDestroy {
         this.extractFile(child);
       }
     }
+  }
+
+  /**
+   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   */
+  private copyBibtex(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.bibTex;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
   }
 }

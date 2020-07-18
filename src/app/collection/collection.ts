@@ -43,6 +43,11 @@ export class Collection {
   public private: boolean;
 
   /**
+   * The date the resource has been modified.
+   */
+  public modifyDate: Date;
+
+  /**
    * @param json A JSON that contains the required fields of the collection.
    */
   constructor(json: any) {
@@ -60,6 +65,8 @@ export class Collection {
         this.thumbnails.push(image);
       });
     }
+
+    this.modifyDate = json['UpdatedAt'];
   }
 
   /**
