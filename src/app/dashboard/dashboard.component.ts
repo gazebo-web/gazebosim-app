@@ -22,14 +22,29 @@ export class DashboardComponent implements OnInit {
   private models: Model[];
 
   /**
+   * The number of models in the Fuel Server.
+   */
+  private modelsQuantity: number;
+
+  /**
    * Latest worlds to display.
    */
   private worlds: World[];
 
   /**
+   * The number of worlds in the Fuel Server.
+   */
+  private worldsQuantity: number;
+
+  /**
    * Latest collections to display.
    */
   private collections: Collection[];
+
+  /**
+   * The number of collections in the Fuel Server.
+   */
+  private collectionsQuantity: number;
 
   /**
    * Number of items to be displayed for each resource type.
@@ -58,6 +73,7 @@ export class DashboardComponent implements OnInit {
       (models) => {
         if (models !== undefined) {
           this.models = models.resources.slice(0, this.displayCount);
+          this.modelsQuantity = models.totalCount;
         }
       },
       (error) => {
@@ -68,6 +84,7 @@ export class DashboardComponent implements OnInit {
       (worlds) => {
         if (worlds !== undefined) {
           this.worlds = worlds.resources.slice(0, this.displayCount);
+          this.worldsQuantity = worlds.totalCount;
         }
       },
       (error) => {
@@ -78,6 +95,7 @@ export class DashboardComponent implements OnInit {
       (collections) => {
         if (collections !== undefined) {
           this.collections = collections.collections.slice(0, this.displayCount);
+          this.collectionsQuantity = collections.totalCount;
         }
       },
       (error) => {
