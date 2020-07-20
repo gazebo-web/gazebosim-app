@@ -59,7 +59,11 @@ div ::ng-deep .mat-tab-label {
 }
 
 #search-icon {
-  vertical-align: text-top;
+  vertical-align: text-bottom;
+}
+
+input.search {
+  line-height: 1em;
 }
 
 .bibtex {

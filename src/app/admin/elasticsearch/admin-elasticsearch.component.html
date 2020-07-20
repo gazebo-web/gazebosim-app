@@ -1,0 +1,62 @@
+<div class="mat-typography" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px" fxFill>
+
+  <div class="padding" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px"fxFill>
+    <h2>Configurations</h2>
+
+    <mat-table [dataSource]="dataSource" fxFill>
+      <!-- Id Column -->
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+      </ng-container>
+
+      <!-- Address Column -->
+      <ng-container matColumnDef="address">
+        <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+      </ng-container>
+
+      <!-- Username Column -->
+      <ng-container matColumnDef="username">
+        <mat-header-cell *matHeaderCellDef> Username </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.username}} </mat-cell>
+      </ng-container>
+
+      <!-- Password Column -->
+      <ng-container matColumnDef="password">
+        <mat-header-cell *matHeaderCellDef> Password </mat-header-cell>
+
+        <mat-cell *matCellDef="let element">{{hide ? '*'.repeat(element.password.length) : element.password}} <mat-icon matSuffix (click)="hide = !hide" style="vertical-align:bottom">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></mat-cell>
+      </ng-container>
+
+      <!-- Primary Column -->
+      <ng-container matColumnDef="primary">
+        <mat-header-cell *matHeaderCellDef> Primary </mat-header-cell>
+        <mat-cell *matCellDef="let element"><mat-checkbox [(ngModel)]="element.primary" (click)="setPrimary(element.id)"></mat-checkbox></mat-cell>
+      </ng-container>
+
+      <!-- Buttons Column -->
+      <ng-container matColumnDef="controlButtons">
+        <mat-header-cell *matHeaderCellDef style='text-align:center'> Control </mat-header-cell>
+        <mat-cell *matCellDef="let element" style='text-align:center'>
+          <button mat-icon-button [matMenuTriggerFor]="controlMenu">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+
+          <mat-menu #controlMenu="matMenu">
+            <button mat-menu-item (click)="reconnect()" *ngIf="element.primary">Reconnect</button>
+            <button mat-menu-item (click)="rebuild()" *ngIf="element.primary">Rebuild</button>
+            <button mat-menu-item (click)="update()" *ngIf="element.primary">Update</button>
+            <button mat-menu-item (click)="modify(element)">Modify</button>
+            <button mat-menu-item (click)="delete(element.id)">Delete</button>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+    </mat-table>
+
+    <button mat-raised-button color="primary" (click)="addConfig()">Add</button>
+  </div>
+</div>
