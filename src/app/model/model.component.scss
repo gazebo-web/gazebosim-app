@@ -202,3 +202,12 @@
   border-radius: 20%;
   padding: 0.5em;
 }
+
+pre.bibtex {
+  margin: 0px;
+}
+
+.bibtex:hover {
+  cursor: pointer;
+  color: mat-color($custom-theme-primary);
+}
