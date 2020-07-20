@@ -308,8 +308,7 @@ export class CollectionComponent implements OnInit {
     // todo: Consider supporting form search, instead of only a single "?q"
     // parameter.
     if (search !== null && search !== undefined && search !== '') {
-      search = search.replace(/&/gi, '%26');
-      searchFinal += '%26' + search;
+      searchFinal += '&' + search;
     }
 
     // Get the searched models.

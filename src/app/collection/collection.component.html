@@ -17,7 +17,7 @@
     <div fxFlex="40%" fxLayoutAlign="center center">
       <mat-form-field [floatLabel]="'never'" fxFill>
           <mat-label>Search in collection</mat-label>
-          <input #search matInput type="search" (keyup.enter)="onSearch(search.value)">
+          <input #search matInput class='search' type="search" (keyup.enter)="onSearch(search.value)">
           <mat-icon matPrefix id="search-icon">search</mat-icon>
       </mat-form-field>
     </div>
