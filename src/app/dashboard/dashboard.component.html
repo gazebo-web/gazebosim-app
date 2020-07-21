@@ -2,7 +2,7 @@
 
   <div fxLayout="row" fxLayoutGap="10px"
        fxLayoutAlign='space-around' fxFill class="section">
- 
+
       <a routerLink="/models">
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
@@ -10,10 +10,10 @@
             <mat-icon svgIcon='ign-model'></mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Models</h2>
           </div>
-          <div><h2>{{modelCount}}</h2></div>
+          <div><h2>{{modelsQuantity}}</h2></div>
         </div>
       </a>
-  
+
       <a routerLink="/worlds">
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
@@ -21,10 +21,10 @@
             <mat-icon svgIcon='ign-world'></mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Worlds</h2>
           </div>
-          <div><h2>{{worldCount}}</h2></div>
+          <div><h2>{{worldsQuantity}}</h2></div>
         </div>
       </a>
-  
+
       <a routerLink="/collections">
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
@@ -32,15 +32,15 @@
             <mat-icon>collections</mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Collections</h2>
           </div>
-          <div><h2>{{collectionCount}}</h2></div>
+          <div><h2>{{collectionsQuantity}}</h2></div>
         </div>
       </a>
   </div>
-  
+
   <!-- Enable this after the release of the portal code(sometime in Dec 2018)
   <div fxShow.gt-sm fxHide.lt-md fxLayout="column" fxLayout="row"
        fxLayoutGap="20px" fxLayoutAlign='space-around' fxFill class="section">
-  
+
       <div class='stats-box' fxFlex='0 1 250px'>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon='ign-model'></mat-icon>
@@ -58,7 +58,7 @@
           </tr>
         </table>
       </div>
-  
+
       <div class='stats-box' fxFlex="0 1 250px">
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon='ign-world'></mat-icon>
@@ -76,7 +76,7 @@
           </tr>
         </table>
       </div>
-  
+
       <div class='stats-box' fxFlex="0 1 250px">
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon>collections</mat-icon>
@@ -93,51 +93,109 @@
       </div>
   </div>
   -->
-  
-  <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"></div>
-  
-    <div fxLayout="column" fxFlex="1 1 90%">
-      <div class='model-container section-title'
-           fxLayout="row" fxLayoutAlign="start center">
-        <h2>Highlights</h2>
-      </div>
 
-      <div style="padding-left: 20px">
-        <!-- Put this in on Dec 3rd 
-        <h3>Dec 3, 2018</h3>
-        <p>
-        The <a href='https://subtchallenge.com'>DARPA Subterranean Challenge</a> Portal is live! Use this portal to register for the SubT Challenge, get the latested developments, and submit your solutions.
-        </p>
-        -->
+<div fxFlexLayout="row" class="section" fxFill>
+  <div fxFlex="1 1 5%"></div>
 
-        <h3>Nov 30, 2018</h3>
-        <p>
-        Welcome to the new Ignition Robotics application. Here you will find an ever growing set of online resources designed to simplify and speed up your next robotics project. This site combines a couple development efforts including <a href='https://ignitionfuel.org'>Ignition Fuel</a> and <a href="https://cloudsim.io">CloudSim (coming soon)</a>. Both of the afore mentioned projects are now part of the Ignition Robotics project.
-        </p>
-      </div>
+  <div fxLayout="column" fxFlex="1 1 90%">
+
+    <div class="section-title mat-typography">
+      <a href='#' routerLink='/models'
+        fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <mat-icon svgIcon="ign-model"></mat-icon>
+        <h2>Latest models</h2>
+      </a>
+    </div>
+
+    <div *ngIf='!models || models.length === 0' class='mat-typography'>
+      <h3>There are no models yet.</h3>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="center center">
+      <ign-item-card class="card"
+        fxFlex.xs="100%"
+        fxFlex.gt-xs="50%"
+        fxFlex.gt-md="25%"
+        [resource]="model" type="models" *ngFor="let model of models">
+      </ign-item-card>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <a *ngIf="models && models.length > 0" mat-raised-button color="primary" routerLink='/models'
+        class="more-button">
+        Discover more
+      </a>
     </div>
   </div>
-  
-  <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"></div>
-  
-    <!-- Disabling for now
-    <div fxLayout="column" fxFlex="1 1 90%">
-      <div class='model-container section-title'
-           fxLayout="row" fxLayoutAlign="start center">
-        <h2>About</h2>
-      </div>
-  
-      <p>Ignition Fuel is brought to you by <a href="https://openrobotics.org" target="_blank">Open Robotics</a>. Ignition Fuel is a place for you to share your simulation resources and use them in simulation environments like <a href="http://gazebosim.org" target="_blank">Gazebo</a>. Share anything from a complex, high degree of freedom robot, to a model of a building, a tool, or a tree. By providing a database for freely-available 3D models, we hope to advance the state of robotic simulation by decreasing the barrier to entry for simulating a robot in a realistic simulation environment.</p>
-  
-      <div fxLayout="row" fxLayoutAlign="center center">
-        <a href='https://openrobotics.freshdesk.com' mat-raised-button color="primary"
-          class="more-button">
-          Learn more
-        </a>
-      </div>
+</div>
+
+<div fxFlexLayout="row" class="section" fxFill>
+  <div fxFlex="1 1 5%"> </div>
+
+  <div fxLayout="column" fxFlex="1 1 90%">
+
+    <div class="section-title mat-typography">
+      <a href='#' routerLink='/worlds'
+        fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <mat-icon svgIcon="ign-world"></mat-icon>
+        <h2>Latest worlds</h2>
+      </a>
     </div>
-  </div>  
-    -->
+
+    <div *ngIf='!worlds || worlds.length === 0' class='mat-typography'>
+      <h3>There are no worlds yet.</h3>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="center center">
+      <ign-item-card class="card"
+        fxFlex.xs="100%"
+        fxFlex.gt-xs="50%"
+        fxFlex.gt-md="25%"
+        [resource]="world" type="worlds" *ngFor="let world of worlds">
+      </ign-item-card>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <a *ngIf="worlds && worlds.length > 0" mat-raised-button color="primary" routerLink='/worlds'
+        class="more-button">
+        Discover more
+      </a>
+    </div>
+  </div>
+</div>
+
+<div fxFlexLayout="row" class="section" fxFill>
+  <div fxFlex="1 1 5%"> </div>
+
+  <div fxLayout="column" fxFlex="1 1 90%">
+
+    <div class="section-title mat-typography">
+      <a href='#' routerLink='/collections'
+         fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <mat-icon>collections</mat-icon>
+        <h2>Latest collections</h2>
+      </a>
+    </div>
+
+    <div *ngIf='!collections || collections.length === 0' class='mat-typography'>
+      <h3>There are no collections yet.</h3>
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="center center">
+      <ign-item-card class="card"
+        fxFlex.xs="100%"
+        fxFlex.gt-xs="50%"
+        fxFlex.gt-md="25%"
+        [resource]="collection" type="collections" *ngFor="let collection of collections">
+      </ign-item-card>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <a *ngIf="collections && collections.length > 0" mat-raised-button color="primary" routerLink='/collections'
+        class="more-button">
+        Discover more
+      </a>
+    </div>
+  </div>
+</div>
 </div>

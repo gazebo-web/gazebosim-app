@@ -16,19 +16,15 @@
         </div>
 
         <mat-nav-list class="sidenav-list">
-          <a mat-list-item routerLink='/' (click)="closeSidenav()">Dashboard</a>
-          <a mat-list-item routerLink='/fuel'>Fuel</a>
-          <mat-nav-list class="sidenav-list indent">
-            <a mat-list-item routerLink="/models" (click)="closeSidenav()">
-              <mat-icon svgIcon='ign-model'></mat-icon> Models
-            </a>
-            <a mat-list-item routerLink="/worlds" (click)="closeSidenav()">
-              <mat-icon svgIcon='ign-world'></mat-icon> Worlds
-            </a>
-            <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
-              <mat-icon>collections</mat-icon> Collections
-            </a>
-          </mat-nav-list>
+          <a mat-list-item routerLink="/models" (click)="closeSidenav()">
+            <mat-icon svgIcon='ign-model'></mat-icon> Models
+          </a>
+          <a mat-list-item routerLink="/worlds" (click)="closeSidenav()">
+            <mat-icon svgIcon='ign-world'></mat-icon> Worlds
+          </a>
+          <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
+            <mat-icon>collections</mat-icon> Collections
+          </a>
           <a mat-list-item routerLink="/portal" (click)="closeSidenav()">
             Portals
           </a>
@@ -57,6 +53,15 @@
         <div class="title">{{titlebarTitle}} <small>{{titlebarSubtitle}}</small></div>
 
         <div class="toolbar-space"></div>
+
+        <mat-form-field [floatLabel]="'never'" fxFlex="2 0 100px">
+          <mat-label>Search</mat-label>
+          <input #search matInput type="search" (keyup.enter)="onSearch(search.value)">
+          <mat-icon matPrefix id="search-icon">search</mat-icon>
+        </mat-form-field>
+
+        <div class="toolbar-space"></div>
+
 
         <!-- Add resource button -->
         <button *ngIf="deviceService.isDesktop()" class="add-button"
@@ -114,7 +119,7 @@
       </mat-toolbar>
 
       <div class="page-content">
-        <router-outlet></router-outlet>
+        <router-outlet (deactivate)="onDeactivate($event)"></router-outlet>
       </div>
     </mat-sidenav-content>
 

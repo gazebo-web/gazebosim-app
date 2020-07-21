@@ -12,6 +12,7 @@ import { WorldService } from '../world/world.service';
 import {
   ConfirmationDialogComponent
 } from '../confirmation-dialog/confirmation-dialog.component';
+import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
 
 @Component({
   selector: 'ign-collection',
@@ -53,6 +54,16 @@ export class CollectionComponent implements OnInit {
    * Confirmation dialog reference used to confirm when a collection is removed.
    */
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
+
+  /**
+   * Dialog to prompt the user about the collection name and owner for copying.
+   */
+  private copyNameDialog: MatDialogRef<CopyDialogComponent>;
+
+  /**
+   * Bibtex for this model.
+   */
+  private bibTex: string;
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data
@@ -114,6 +125,22 @@ export class CollectionComponent implements OnInit {
     this.canEdit = this.authService.isAuthenticated() &&
       (this.collection.owner === this.authService.userProfile.username ||
       this.authService.userProfile['orgs'].includes(this.collection.owner));
+
+    // Create the bibtex
+    const date = new Date(this.collection.modifyDate);
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+
+    this.bibTex = `@online{IgnitionFuel-` +
+    `${this.collection.owner.split(' ').join('-')}-` +
+    `${this.collection.name.split(' ').join('-')},`;
+    this.bibTex += `\n\ttitle={${this.collection.name}},`;
+    this.bibTex += `\n\torganization={Open Robotics},`;
+    this.bibTex += `\n\tdate={${date.getFullYear()}},`;
+    this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
+    this.bibTex += `\n\tday={${date.getDay()}},`;
+    this.bibTex += `\n\tauthor={${this.collection.owner}},`;
+    this.bibTex += `\n\turl={${this.collectionService.baseUrl + this.router.url}},\n}`;
   }
 
   /**
@@ -266,5 +293,125 @@ export class CollectionComponent implements OnInit {
         break;
       }
     }
+  }
+
+  /**
+   * Callback when enter key is pressed on search input.
+   *
+   * @param search Search string.
+   */
+  private onSearch(search: string): void {
+    let searchFinal = 'collections:' + this.collection.name;
+
+    // Replace ampersand with %26 so that it gets sent over the wire
+    // correctly.
+    // todo: Consider supporting form search, instead of only a single "?q"
+    // parameter.
+    if (search !== null && search !== undefined && search !== '') {
+      searchFinal += '&' + search;
+    }
+
+    // Get the searched models.
+    this.modelService.getList(searchFinal).subscribe(
+        (models) => {
+          if (models !== undefined) {
+            this.paginatedModels = models;
+            this.collection.models = models.resources;
+          }
+        },
+        (error) => {
+          console.error('Error searching models', error);
+          this.snackBar.open(error.message, 'Got it');
+        }
+      );
+
+    // Get the searched worlds.
+    this.worldService.getList(searchFinal).subscribe(
+        (worlds) => {
+          if (worlds !== undefined) {
+            this.paginatedWorlds = worlds;
+            this.collection.worlds = worlds.resources;
+          }
+        },
+        (error) => {
+          console.error('Error searching worlds', error);
+          this.snackBar.open(error.message, 'Got it');
+        }
+      );
+  }
+
+  /**
+   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   */
+  private copyBibtex(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.bibTex;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
+  }
+
+  /**
+   * Title of the Copy Button.
+   *
+   * @returns The title of the copy button, whether the collection can be copied or not.
+   */
+  private getCopyButtonTitle(): string {
+    if (!this.authService.isAuthenticated()) {
+      return 'Log in to copy this collection';
+    }
+    return 'Copy this collection';
+  }
+
+  /**
+   * Callback for the Collection Copy button.
+   */
+  private copyCollection(): void {
+    const dialogOps = {
+      disableClose: true,
+      data: {
+        title: 'Copy collection',
+        message: `<p>Add a copy of the collection to your account or into an organization.</p>
+          <p>Please enter a new name and owner for the copied collection.</p>`,
+        name: this.collection.name,
+        namePlaceholder: 'Collection name',
+        owner: this.authService.userProfile.username,
+        ownerList: [this.authService.userProfile.username,
+          ...this.authService.userProfile.orgs.sort()],
+        busyMessage: `<p>Copying the collection into the account.</p>`,
+      }
+    };
+
+    this.copyNameDialog = this.dialog.open(CopyDialogComponent, dialogOps);
+
+    // Subscribe to the dialog's submit method.
+    this.copyNameDialog.componentInstance.onSubmit.subscribe(
+      (result) => {
+        if (result !== undefined && result.copyName.trim() !== '') {
+          this.copyNameDialog.componentInstance.busy = true;
+          this.collectionService.copy(this.collection, result.copyName.trim(), result.copyOwner)
+            .subscribe(
+              (response) => {
+                this.copyNameDialog.close();
+
+                this.snackBar.open(`${response.name} was created`, 'Got it', { duration: 2750 });
+                this.router.navigate([`/${response.owner}/collections/${response.name}`]);
+              },
+              (error) => {
+                this.snackBar.open(error.message, 'Got it');
+              });
+        } else {
+          this.copyNameDialog.componentInstance.busy = false;
+        }
+      });
   }
 }

@@ -296,6 +296,39 @@ export class CollectionService {
   }
 
   /**
+   * Get the list of available permission names.
+   *
+   * @returns A list of strings, one for each permission.
+   */
+  public getPermissionList(): string[] {
+    return ['Public', 'Private'];
+  }
+
+  /**
+   * Copy a collection.
+   *
+   * @param resource The collection to copy.
+   * @param newName The new name for the copied collection.
+   * @param newName The new owner for the copied collection.
+   * @returns An observable of the copied collection.
+   */
+  public copy(collection: Collection, newName, newOwner): Observable<Collection> {
+    const encodedName = encodeURIComponent(collection.name);
+    const url = `${this.baseUrl}/${collection.owner}/collections/${encodedName}/clone`;
+
+    const data = {
+      name: newName,
+      owner: newOwner
+    };
+
+    return this.http.post<Collection>(url, data)
+      .map((response) => {
+        return this.factory.fromJson(response, Collection);
+      })
+      .catch(this.handleError);
+  }
+
+  /**
    * Server route of the list of public collections.
    * Used to get a list of collections or create one.
    * The route is apiUrl/apiVersion/collections
