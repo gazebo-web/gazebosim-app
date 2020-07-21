@@ -2,7 +2,7 @@
 
   <div fxLayout="row" fxLayoutGap="10px"
        fxLayoutAlign='space-around' fxFill class="section">
- 
+
       <a routerLink="/models">
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
@@ -10,10 +10,10 @@
             <mat-icon svgIcon='ign-model'></mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Models</h2>
           </div>
-          <div><h2>{{models.length}}</h2></div>
+          <div><h2>{{modelsQuantity}}</h2></div>
         </div>
       </a>
-  
+
       <a routerLink="/worlds">
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
@@ -21,10 +21,10 @@
             <mat-icon svgIcon='ign-world'></mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Worlds</h2>
           </div>
-          <div><h2>{{worlds.length}}</h2></div>
+          <div><h2>{{worldsQuantity}}</h2></div>
         </div>
       </a>
-  
+
       <a routerLink="/collections">
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
@@ -32,15 +32,15 @@
             <mat-icon>collections</mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Collections</h2>
           </div>
-          <div><h2>{{collections.length}}</h2></div>
+          <div><h2>{{collectionsQuantity}}</h2></div>
         </div>
       </a>
   </div>
-  
+
   <!-- Enable this after the release of the portal code(sometime in Dec 2018)
   <div fxShow.gt-sm fxHide.lt-md fxLayout="column" fxLayout="row"
        fxLayoutGap="20px" fxLayoutAlign='space-around' fxFill class="section">
-  
+
       <div class='stats-box' fxFlex='0 1 250px'>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon='ign-model'></mat-icon>
@@ -58,7 +58,7 @@
           </tr>
         </table>
       </div>
-  
+
       <div class='stats-box' fxFlex="0 1 250px">
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon='ign-world'></mat-icon>
@@ -76,7 +76,7 @@
           </tr>
         </table>
       </div>
-  
+
       <div class='stats-box' fxFlex="0 1 250px">
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon>collections</mat-icon>
@@ -93,7 +93,7 @@
       </div>
   </div>
   -->
-  
+
 <div fxFlexLayout="row" class="section" fxFill>
   <div fxFlex="1 1 5%"></div>
 
