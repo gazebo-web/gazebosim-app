@@ -47,6 +47,9 @@ import {
   MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
+
+import { MatExpansionModule } from '@angular/material/expansion';
+
 import 'hammerjs';
 
 /*
@@ -62,6 +65,8 @@ import { AppState, InternalStateType } from './app.service';
 import { AccessTokenDialogComponent } from './settings/access-token-dialog.component';
 import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
 import { AdminComponent } from './admin';
+import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
+import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
@@ -85,6 +90,9 @@ import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
+import {
+  ElasticsearchConfigDialogComponent
+} from './admin/elasticsearch/config-dialog/config-dialog.component';
 import { ExtraDialogComponent } from './cloudsim/extra-dialog/extra-dialog.component';
 import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
@@ -129,7 +137,6 @@ import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { RegistrationDialogComponent } from './portal';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SearchbarComponent } from './searchbar/searchbar.component';
 import { SearchComponent } from './search/search.component';
 import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
@@ -159,6 +166,7 @@ import '../styles/custom-theme.scss';
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
+  AdminElasticsearchService,
   AdminGuard,
   AppState,
   AuthGuard,
@@ -217,6 +225,7 @@ interface StoreType  {
     AccessTokenDialogComponent,
     AdminCloudsimComponent,
     AdminComponent,
+    AdminElasticsearchComponent,
     AppComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
@@ -234,6 +243,7 @@ interface StoreType  {
     EditCollectionComponent,
     EditModelComponent,
     EditWorldComponent,
+    ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
     FileSizePipe,
     FileUploadComponent,
@@ -258,7 +268,6 @@ interface StoreType  {
     RegistrationDialogComponent,
     ReportDialogComponent,
     SdfViewerComponent,
-    SearchbarComponent,
     SearchComponent,
     SettingsComponent,
     SimulationActionsComponent,
@@ -296,6 +305,7 @@ interface StoreType  {
     MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
+    MatExpansionModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
@@ -328,13 +338,13 @@ interface StoreType  {
     CollectionDialogComponent,
     ConfirmationDialogComponent,
     CopyDialogComponent,
+    ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
     LogfileScoreDialogComponent,
     NewLogfileDialogComponent,
     NewOrganizationDialogComponent,
     RegistrationDialogComponent,
     ReportDialogComponent,
-    SearchbarComponent,
     TextInputDialogComponent,
   ]
 })

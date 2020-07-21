@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 import { AuthService } from '../../auth/auth.service';
@@ -40,6 +41,11 @@ export class EditCollectionComponent implements OnInit {
    * Indicates whether the current user has permission to edit this collection.
    */
   public canEdit: boolean = false;
+
+  /**
+   * Form Input for the Model Privacy.
+   */
+  private privacyInputForm = new FormControl();
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data
@@ -117,6 +123,12 @@ export class EditCollectionComponent implements OnInit {
     // Check if there are files to upload.
     if (this.bannerFile) {
       formData.append('file', this.bannerFile, this.bannerFile['fullPath']);
+    }
+
+    // Update the privacy and permissions.
+    if (this.privacyInputForm.value !== null && this.privacyInputForm.value !== undefined) {
+      const privacyBoolean = !!this.privacyInputForm.value;
+      formData.append('private', privacyBoolean.toString());
     }
 
     this.updating = true;

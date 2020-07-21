@@ -1,5 +1,4 @@
 <div class="page-content-inner mat-typography" fxLayout="column">
-  <ign-searchbar fxFlex fxLayoutAlign="center center"></ign-searchbar>
   <ign-fuel-resource-list [resources]="worlds"
                           [finished]="!paginatedWorlds.hasNextPage()"
                           (onLoadMore)="loadNextPage()"

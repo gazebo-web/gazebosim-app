@@ -5,29 +5,50 @@
   </div>
 
   <div class="header" fxLayout="row" fxLayoutAlign="space-between" fxFill>
-    <div>
-      <div>
-        <ign-page-title [title]="collection.name" icon="collections"></ign-page-title>
-        <h4>
-          By <a class="color-link" routerLink="/{{collection?.owner}}" routerLinkActive="active">{{collection?.owner}}</a>
-        </h4>
-      </div>
+    <div fxFlex="30%">
+      
+      <ign-page-title [title]="collection.name" icon="collections"></ign-page-title>
+      <h4>
+        By <a class="color-link" routerLink="/{{collection?.owner}}" routerLinkActive="active">{{collection?.owner}}</a>
+      </h4>
 
-      <div>
-        <ign-description [description]="collection?.description"></ign-description>
-      </div>
     </div>
 
-    <div fxLayout="row wrap" fxLayoutAlign="end" class="buttons" *ngIf="canEdit">
+    <div fxFlex="40%" fxLayoutAlign="center center">
+      <mat-form-field [floatLabel]="'never'" fxFill>
+          <mat-label>Search in collection</mat-label>
+          <input #search matInput class='search' type="search" (keyup.enter)="onSearch(search.value)">
+          <mat-icon matPrefix id="search-icon">search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div fxFlex="30%" fxLayout="row wrap" fxLayoutAlign="end" class="buttons">
+      <button mat-icon-button
+        [disabled]="!authService.isAuthenticated()"
+        [title]="getCopyButtonTitle()"
+        (click)="copyCollection()">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button title="Copy Bibtex to clipboard"
+        (click)="copyBibtex()">
+        <mat-icon>library_books</mat-icon>
+      </button>
+
       <button mat-icon-button title="Edit collection" *ngIf="canEdit"
         routerLink="/{{collection?.owner}}/collections/{{collection?.name}}/edit">
         <mat-icon>mode_edit</mat-icon>
       </button>
-      <button mat-icon-button title="Remove this collection" (click)="removeCollection()">
+      <button mat-icon-button title="Remove this collection" *ngIf="canEdit" (click)="removeCollection()">
         <mat-icon>delete</mat-icon>
       </button>
     </div>
   </div>
+
+    <div class="header" fxLayout="row" fxFill>
+    <ign-description [description]="collection?.description"></ign-description>
+  </div>
+
 
   <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
     <mat-tab>

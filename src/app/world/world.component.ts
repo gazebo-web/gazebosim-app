@@ -102,6 +102,11 @@ export class WorldComponent implements OnInit, OnDestroy {
   private reportWorldDialog: MatDialogRef<ReportDialogComponent>;
 
   /**
+   * Bibtex for this world.
+   */
+  private bibTex: string;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param authService Service to get authentication details
    * @param collectionsService Service used to get related collections from the Server
@@ -153,6 +158,22 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.loadCollections();
 
     this.canEdit = this.authService.canWriteResource(this.world);
+
+    // Create the bibtex
+    const date = new Date(this.world.modifyDate);
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+
+    this.bibTex = `@online{IgnitionFuel-` +
+    `${this.world.owner.split(' ').join('-')}-` +
+    `${this.world.name.split(' ').join('-')},`;
+    this.bibTex += `\n\ttitle={${this.world.name}},`;
+    this.bibTex += `\n\torganization={Open Robotics},`;
+    this.bibTex += `\n\tdate={${date.getFullYear()}},`;
+    this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
+    this.bibTex += `\n\tday={${date.getDay()}},`;
+    this.bibTex += `\n\tauthor={${this.world.owner}},`;
+    this.bibTex += `\n\turl={${this.worldService.baseUrl + this.router.url}},\n}`;
   }
 
   /**
@@ -513,5 +534,25 @@ export class WorldComponent implements OnInit, OnDestroy {
         this.extractFile(child);
       }
     }
+  }
+
+  /**
+   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   */
+  private copyBibtex(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.bibTex;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
   }
 }
