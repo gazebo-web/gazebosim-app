@@ -2,6 +2,7 @@ import { Routes, ActivatedRoute } from '@angular/router';
 
 import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
 import { AdminComponent } from './admin';
+import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
@@ -102,6 +103,20 @@ export const ROUTES: Routes = [
               }
             },
           }
+        ],
+      },
+      {
+        path: 'elasticsearch',
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            component: AdminElasticsearchComponent,
+            data: {
+              titlebarTitle: 'Admin',
+              titlebarSubtitle: 'Elasticsearch',
+            },
+          },
         ],
       },
     ]
