@@ -177,14 +177,6 @@
   color: mat-color($custom-theme-accent, A700);
 }
 
-.buttonResetView {
-  top: 2em;
-  right: 10em;
-  position: absolute;
-  z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
-}
-
 
 /* Media query to increase the size of the gallery in mobile views.
    Otherwise, the gallery images are too small. */
