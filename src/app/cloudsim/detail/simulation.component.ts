@@ -162,6 +162,10 @@ export class SimulationComponent implements OnInit, OnDestroy {
     this.statusSubscription = this.ws.status$.subscribe((response) => {
       this.connectionStatus = response;
 
+      if (response === 'Error') {
+        this.snackBar.open('Too many connections. Please try again later', 'Got it');
+      }
+
       // We can start setting up the visualization after we are Connected.
       // We still don't have scene and world information at this step.
       if (response === 'Connected') {
