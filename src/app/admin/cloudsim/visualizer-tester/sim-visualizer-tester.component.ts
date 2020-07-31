@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+import { MatSnackBar } from '@angular/material';
 
 import { WebsocketService } from '../../../cloudsim/websocket/sim-websocket.service';
 import { Topic } from '../../../cloudsim/websocket/topic';
@@ -80,9 +81,12 @@ export class SimVisualizerComponent implements OnDestroy {
   private following: boolean = false;
 
   /**
+   * @param snackbar Snackbar used to show notifications.
    * @param ws The Websocket Service used to get data from a Simulation.
    */
-  constructor(private ws: WebsocketService) {
+   constructor(
+     public snackBar: MatSnackBar,
+     private ws: WebsocketService) {
   }
 
   /**
@@ -111,6 +115,11 @@ export class SimVisualizerComponent implements OnDestroy {
 
     // Websocket Connection status.
     this.statusSubscription = this.ws.status$.subscribe((response) => {
+
+      if (response === 'Error') {
+        this.snackBar.open('Too many connections. Please try again later', 'Got it');
+      }
+
       this.connectionStatus = response;
 
       // We can start setting up the visualization after we are Connected.
