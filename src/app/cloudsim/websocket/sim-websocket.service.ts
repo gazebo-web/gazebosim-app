@@ -248,6 +248,7 @@ export class WebsocketService {
    * Handler for the error event of a Websocket.
    */
   private onError(event: Event): void {
+    this.status$.next('Error');
     this.disconnect();
     console.error(event);
   }
