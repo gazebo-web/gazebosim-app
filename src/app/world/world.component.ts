@@ -164,6 +164,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
 
+    const url = decodeURIComponent(this.worldService.getBaseUrl(this.world.owner, this.world.name));
+
     this.bibTex = `@online{IgnitionFuel-` +
     `${this.world.owner.split(' ').join('-')}-` +
     `${this.world.name.split(' ').join('-')},`;
@@ -173,7 +175,7 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.world.owner}},`;
-    this.bibTex += `\n\turl={${this.worldService.baseUrl + this.router.url}},\n}`;
+    this.bibTex += `\n\turl={${url}},\n}`;
   }
 
   /**
