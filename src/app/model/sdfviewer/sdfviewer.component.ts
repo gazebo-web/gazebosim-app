@@ -248,13 +248,8 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     // Start at strategic camera pose
     this.resetCameraPose();
 
-    // And sun orientation
-    const sunLight = this.scene.scene.getObjectByName('sun').children[0];
-    const sunDir = new THREE.Vector3(-0.4, 0.4, -0.4);
-
-    sunLight.direction = new THREE.Vector3();
-    sunLight.direction.copy(sunDir);
-    sunLight.target.position.copy(sunDir);
+    // Add model lighting.
+    this.scene.addModelLighting();
 
     // Start rendering.
     this.animate();

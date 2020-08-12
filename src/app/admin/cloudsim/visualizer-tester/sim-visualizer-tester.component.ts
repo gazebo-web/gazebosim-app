@@ -209,6 +209,20 @@ export class SimVisualizerComponent implements OnDestroy {
         this.models.push(model);
         this.scene.add(modelObj);
       });
+
+      sceneInfo['light'].forEach((light) => {
+        const lightObj = this.sdfParser.spawnLight(light);
+        this.scene.add(lightObj);
+      });
+
+      // Set the ambient color, if present
+      if (this.sceneInfo.ambient !== undefined &&
+          this.sceneInfo.ambient !== null) {
+        this.scene.ambient.color = new THREE.Color(
+          this.sceneInfo.ambient.r,
+          this.sceneInfo.ambient.g
+          this.sceneInfo.ambient.b);
+      }
     });
   }
 
