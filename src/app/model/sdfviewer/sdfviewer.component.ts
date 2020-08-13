@@ -74,6 +74,12 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   private cancelAnimation: number;
 
   /**
+   * Scaling basis value, which is used to resize models to fit within the
+   * camera's view.
+   */
+  private scalingBasis: number = 1.0;
+
+  /**
    * Flag to track whether object has already been moved to fit the camera.
    * This only happens after the object has been fully loaded and has a
    * valid bounding box.
@@ -329,9 +335,10 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
    */
   public resetCameraPose(): void {
     const cam = this.scene.camera;
-    cam.position.x = 1.1;
-    cam.position.y = -1.4;
-    cam.position.z = 0.6;
+
+    cam.position.x = this.scalingBasis * 1.1;
+    cam.position.y = -this.scalingBasis * 1.4;
+    cam.position.z =  this.scalingBasis * 0.6;
     cam.rotation.x = 67 * Math.PI / 180;
     cam.rotation.y = 33 * Math.PI / 180;
     cam.rotation.z = 12 * Math.PI / 180;
@@ -359,8 +366,19 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         const center = new THREE.Vector3();
         bb.getCenter(center);
 
+        const max = Math.max(size.x, size.y, size.z);
+
+        // Choose a scaling basis value based on the bounding box.
+        if (max >= 10000) {
+          this.scalingBasis = 1000;
+        } else if (max >= 1000) {
+          this.scalingBasis = 100;
+        } else if (max >= 100) {
+          this.scalingBasis = 10;
+        }
+
         // Normalize scale
-        const scaling = 1.0 / Math.max(Math.max(size.x, size.y), size.z);
+        const scaling = this.scalingBasis / max;
 
         this.obj.scale.x = scaling;
         this.obj.scale.y = scaling;
@@ -373,6 +391,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         this.obj.position.z = center.z;
 
         this.objPositioned = true;
+        this.resetCameraPose();
       }
     }
 
