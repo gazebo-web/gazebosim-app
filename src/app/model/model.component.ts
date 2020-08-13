@@ -194,6 +194,8 @@ export class ModelComponent implements OnInit, OnDestroy {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
 
+    const url = decodeURIComponent(this.modelService.getBaseUrl(this.model.owner, this.model.name));
+
     this.bibTex = `@online{IgnitionFuel-` +
     `${this.model.owner.split(' ').join('-')}-` +
     `${this.model.name.split(' ').join('-')},`;
@@ -203,7 +205,7 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.model.owner}},`;
-    this.bibTex += `\n\turl={${this.modelService.baseUrl + this.router.url}},\n}`;
+    this.bibTex += `\n\turl={${url}},\n}`;
   }
 
   /**
