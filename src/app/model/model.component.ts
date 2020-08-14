@@ -61,7 +61,7 @@ export class ModelComponent implements OnInit, OnDestroy {
   public galleryImages: NgxGalleryImage[];
 
   /**
-   * Experimental feature: GzWeb.
+   * GzWeb visualizer flag.
    */
   public hasGzWeb: boolean;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
@@ -10,6 +10,7 @@ import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.co
 import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dialog.component';
 import { World } from './world';
 import { WorldService } from './world.service';
+import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
 
 import * as FileSaver from 'file-saver';
 import { NgxGalleryOptions,
@@ -17,6 +18,8 @@ import { NgxGalleryOptions,
          NgxGalleryImageSize } from 'ngx-gallery';
 import { Subscription } from 'rxjs/Subscription';
 import { forkJoin } from 'rxjs/observable/forkJoin';
+
+declare let Detector: any;
 
 @Component({
   selector: 'ign-world',
@@ -107,6 +110,26 @@ export class WorldComponent implements OnInit, OnDestroy {
   private bibTex: string;
 
   /**
+   * GzWeb visualizer flag.
+   */
+  private hasGzWeb: boolean;
+
+  /**
+   * Are we rendering sdfviewer scene.
+   */
+  private view3d: boolean;
+
+  /**
+   * Reference to the <div> that can be toggled fullscreen.
+   */
+  @ViewChild('fullScreen') private divRef;
+
+  /**
+   * Reference to the <ign-sdfviewer>.
+   */
+  @ViewChild(SdfViewerComponent) private sdfViewer: SdfViewerComponent;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param authService Service to get authentication details
    * @param collectionsService Service used to get related collections from the Server
@@ -133,6 +156,12 @@ export class WorldComponent implements OnInit, OnDestroy {
    * It retrieves the world obtained from the Route Resolver, and gets its URL and files.
    */
   public ngOnInit(): void {
+    // Check if the browser supports WebGL.
+    this.hasGzWeb = (typeof Detector === 'function' || Detector.webgl);
+    if (!this.hasGzWeb) {
+      Detector.addGetWebGLMessage();
+    }
+
     if (this.activatedRoute.snapshot.data['resolvedData'] !== undefined) {
       this.world = this.activatedRoute.snapshot.data['resolvedData'];
     }
@@ -428,6 +457,7 @@ export class WorldComponent implements OnInit, OnDestroy {
    * Callback when version is changed
    */
   public onVersion(): void {
+    this.view3d = false;
     this.getFiles();
     this.location.go(`${this.world.owner}/worlds/${this.world.name}/${this.currentVersion}`);
   }
@@ -536,6 +566,39 @@ export class WorldComponent implements OnInit, OnDestroy {
         this.extractFile(child);
       }
     }
+  }
+
+  /**
+   * Make the viewport fullscreen
+   */
+  private openFullscreen() {
+    const elem = this.divRef.nativeElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
+  }
+
+  /**
+   * Reset the camera view
+   */
+  private resetView() {
+    this.sdfViewer.resetCameraPose();
+  }
+
+  /**
+   * Open / close SDF viewer.
+   * Note: since we're using ngIf, a new <ign-sdfviewer> is created each time this
+   * is toggled.
+   */
+  private toggle3D(): void {
+    this.view3d = !this.view3d;
   }
 
   /**
