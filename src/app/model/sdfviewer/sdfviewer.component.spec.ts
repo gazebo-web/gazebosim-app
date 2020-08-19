@@ -93,7 +93,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeUndefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(3);
+      expect(comp.scene.scene.children.length).toBe(6);
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
       // loop to end
@@ -124,7 +124,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeDefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(3);
+      expect(comp.scene.scene.children.length).toBe(6);
       expect(comp.scene.scene.getObjectByName('example_model')).toBeUndefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
@@ -167,7 +167,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.resource).toBeDefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(4);
+      expect(comp.scene.scene.children.length).toBe(7);
       expect(comp.scene.scene.getObjectByName('example_model')).toBeDefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
