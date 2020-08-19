@@ -94,7 +94,6 @@ describe('SdfViewerComponent', () => {
       expect(comp.model).toBeUndefined();
       expect(comp.scene).toBeDefined();
       expect(comp.scene.scene.children.length).toBe(3);
-      expect(comp.scene.scene.getObjectByName('sun')).toBeDefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
       // loop to end
