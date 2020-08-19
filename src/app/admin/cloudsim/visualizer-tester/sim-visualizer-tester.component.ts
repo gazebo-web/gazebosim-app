@@ -246,12 +246,12 @@ export class SimVisualizerComponent implements OnDestroy {
       });
 
       // Set the ambient color, if present
-      if (this.sceneInfo.ambient !== undefined &&
-          this.sceneInfo.ambient !== null) {
+      if (sceneInfo['ambient'] !== undefined &&
+          sceneInfo['ambient'] !== null) {
         this.scene.ambient.color = new THREE.Color(
-          this.sceneInfo.ambient.r,
-          this.sceneInfo.ambient.g
-          this.sceneInfo.ambient.b);
+          sceneInfo['ambient']['r'],
+          sceneInfo['ambient']['g'],
+          sceneInfo['ambient']['b']);
       }
     });
   }
