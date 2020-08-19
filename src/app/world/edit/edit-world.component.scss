@@ -22,3 +22,9 @@ h2 {
 .danger {
   color: mat-color($custom-theme-warn)
 }
+
+mat-radio-group {
+  mat-radio-button:not(:first-child) {
+    padding-left: 10px;
+  }
+}
