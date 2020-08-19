@@ -63,6 +63,11 @@ export class EditWorldComponent implements OnInit {
   public updating: boolean = false;
 
   /**
+   * Form Input for the Model Privacy.
+   */
+  public privacyInputForm = new FormControl();
+
+  /**
    * Confirmation dialog reference for the deletion confirmation
    */
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
@@ -161,6 +166,13 @@ export class EditWorldComponent implements OnInit {
 
     // Disable the input fields until we have a response.
     this.updating = true;
+
+    // Update the privacy and permissions.
+    if (this.privacyInputForm.value !== null && this.privacyInputForm.value !== undefined) {
+      const privacyBoolean = !!this.privacyInputForm.value;
+      formData.append('private', privacyBoolean.toString());
+      formData.append('permission', this.privacyInputForm.value.toString());
+    }
 
     this.worldService.edit(this.world.owner, this.world.name, formData)
       .finally(() => {
