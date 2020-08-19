@@ -67,6 +67,11 @@ export class SimulationComponent implements OnInit, OnDestroy {
   private sceneElement: HTMLElement;
 
   /**
+   * True if fullscreen is enabled.
+   */
+  private fullscreen: boolean = false;
+
+  /**
    * Gz3D SDF parser used to build the models for the scene.
    */
   private sdfParser: any;
@@ -304,18 +309,38 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Make the 3D viewport fullscreen
    */
-  private openFullscreen() {
+  private toggleFullscreen() {
     const elem = this.divRef.nativeElement;
 
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
+    if (!this.fullscreen) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      const docWithBrowsersExitFunctions = document as Document & {
+        mozCancelFullScreen(): Promise<void>;
+        webkitExitFullscreen(): Promise<void>;
+        msExitFullscreen(): Promise<void>;
+      };
+
+      if (docWithBrowsersExitFunctions.exitFullscreen) {
+        docWithBrowsersExitFunctions.exitFullscreen();
+      } else if (docWithBrowsersExitFunctions.msExitFullscreen) {
+        docWithBrowsersExitFunctions.msExitFullscreen();
+      } else if (docWithBrowsersExitFunctions.mozCancelFullScreen) {
+        docWithBrowsersExitFunctions.mozCancelFullScreen();
+      } else if (docWithBrowsersExitFunctions.webkitExitFullscreen) {
+        docWithBrowsersExitFunctions.webkitExitFullscreen();
+      }
     }
+    this.fullscreen = !this.fullscreen;
+
   }
 
   /**

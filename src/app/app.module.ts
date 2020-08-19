@@ -49,6 +49,7 @@ import {
 } from '@angular/material';
 
 import { MatExpansionModule } from '@angular/material/expansion';
+import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overlay';
 
 import 'hammerjs';
 
@@ -332,6 +333,10 @@ interface StoreType  {
   providers: [
     ENV_PROVIDERS,
     APP_PROVIDERS,
+    {
+      provide: OverlayContainer,
+      useClass: FullscreenOverlayContainer
+    }
   ],
   entryComponents: [
     AccessTokenDialogComponent,
