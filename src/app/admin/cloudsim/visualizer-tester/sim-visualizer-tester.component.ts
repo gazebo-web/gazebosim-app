@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { MatSnackBar } from '@angular/material';
 
@@ -84,6 +84,21 @@ export class SimVisualizerComponent implements OnDestroy {
    * A sun directional light for global illumination
    */
   private sunLight: object;
+
+  /**
+   * The container of the GZ3D scene.
+   */
+  private sceneElement: HTMLElement;
+
+  /**
+   * True if fullscreen is enabled.
+   */
+  private fullscreen: boolean = false;
+
+  /**
+   * Reference to the <div> that can be toggled fullscreen.
+   */
+  @ViewChild('fullScreen') private divRef;
 
   /**
    * @param snackbar Snackbar used to show notifications.
@@ -252,9 +267,9 @@ export class SimVisualizerComponent implements OnDestroy {
     this.unsubscribe();
 
     // Remove the canvas. Helpful to disconnect and connect several times.
-    const container = window.document.getElementById('scene');
-    if (container && container.childElementCount > 0) {
-      container.removeChild(this.scene.renderer.domElement);
+    this.sceneElement = window.document.getElementById('scene');
+    if (this.sceneElement && this.sceneElement.childElementCount > 0) {
+      this.sceneElement.removeChild(this.scene.renderer.domElement);
     }
   }
 
@@ -290,10 +305,10 @@ export class SimVisualizerComponent implements OnDestroy {
     this.sdfParser = new GZ3D.SdfParser(this.scene);
     this.sdfParser.usingFilesUrls = true;
 
-    const sceneContainer = window.document.getElementById('scene');
-    sceneContainer.appendChild(this.scene.renderer.domElement);
+    this.sceneElement = window.document.getElementById('scene');
+    this.sceneElement.appendChild(this.scene.renderer.domElement);
 
-    this.scene.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+    this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
   }
 
   public startVisualization() {
@@ -356,6 +371,49 @@ export class SimVisualizerComponent implements OnDestroy {
       this.following = false;
       this.scene.emitter.emit('follow_entity', null);
     }
+  }
+
+  /**
+   * Make the 3D viewport fullscreen
+   */
+  private toggleFullscreen() {
+    const elem = this.divRef.nativeElement;
+
+    if (!this.fullscreen) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      const docWithBrowsersExitFunctions = document as Document & {
+        mozCancelFullScreen(): Promise<void>;
+        webkitExitFullscreen(): Promise<void>;
+        msExitFullscreen(): Promise<void>;
+      };
+
+      if (docWithBrowsersExitFunctions.exitFullscreen) {
+        docWithBrowsersExitFunctions.exitFullscreen();
+      } else if (docWithBrowsersExitFunctions.msExitFullscreen) {
+        docWithBrowsersExitFunctions.msExitFullscreen();
+      } else if (docWithBrowsersExitFunctions.mozCancelFullScreen) {
+        docWithBrowsersExitFunctions.mozCancelFullScreen();
+      } else if (docWithBrowsersExitFunctions.webkitExitFullscreen) {
+        docWithBrowsersExitFunctions.webkitExitFullscreen();
+      }
+    }
+    this.fullscreen = !this.fullscreen;
+  }
+
+  /**
+   * Change the width and height of the visualization upon a resize event.
+   */
+  private resize() {
+    this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
   }
 
   /**
