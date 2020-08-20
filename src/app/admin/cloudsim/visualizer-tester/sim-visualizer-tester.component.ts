@@ -166,19 +166,36 @@ export class SimVisualizerComponent implements OnDestroy {
         };
         this.ws.subscribe(poseTopic);
 
+        const pointsGeom = new THREE.BufferGeometry();
+        const points = new THREE.Points(pointsGeom);
+        this.scene.add(points);
+
         // Subscribe to the pose topic and modify the models' poses.
         const pointsTopic: Topic = {
         name: `/world/${this.ws.getWorld()}/model/X1/link/base_link/sensor/front_laser/scan/points`,
           cb: (msg) => {
-          console.log(msg.field);
           const view = new DataView(msg.data.buffer);
 
+          let vertices = new Float32Array(msg.width * 3);
+          let vertexIdx = 0;
+
+          console.log(msg.data, msg.data.length, msg.data.buffer.byteLength);
+          diff = msg.data.buffer.byteLength - msg.data.length;
+          let vertX = 0.0;
           for (let i = 0; i < msg.width; ++i) {
-            const x = view.getFloat32(i * msg.point_step); 
-            const y = view.getFloat32(i * msg.point_step + 8); 
-            const z = view.getFloat32(i * msg.point_step + 16); 
-            console.log(x, y, z);
+            vertX = view.getFloat32(diff + i * msg.point_step, !msg.is_bigendian); 
+            const y = view.getFloat32(diff + i * msg.point_step + 4, !msg.is_bigendian); 
+            const z = view.getFloat32(diff + i * msg.point_step + 8, !msg.is_bigendian); 
+            vertices[vertexIdx] = vertX;
+            vertexIdx += 1;
+            vertices[vertexIdx] = y;
+            vertexIdx += 1;
+            vertices[vertexIdx] = z;
+            vertexIdx += 1;
+
+            // console.log(i*msg.point_step, vertX);
           }
+          pointsGeom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
           }
         };
         this.ws.subscribe(pointsTopic);
@@ -192,7 +209,6 @@ export class SimVisualizerComponent implements OnDestroy {
 
         this.scene.add(this.sunLight);
         this.scene.ambient.color = new THREE.Color(0x666666);
-
 
         // Subscribe to the 'scene/info' topic which sends scene changes.
         const sceneTopic: Topic = {
