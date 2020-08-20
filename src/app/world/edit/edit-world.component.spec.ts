@@ -15,6 +15,7 @@ import {
   MatDialog,
   MatIconModule,
   MatInputModule,
+  MatRadioModule,
   MatSnackBar,
   MatSnackBarModule,
 } from '@angular/material';
@@ -72,6 +73,7 @@ describe('EditWorldComponent', () => {
         MatDialogModule,
         MatIconModule,
         MatInputModule,
+        MatRadioModule,
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterTestingModule,

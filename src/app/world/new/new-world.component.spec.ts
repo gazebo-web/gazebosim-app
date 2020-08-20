@@ -41,8 +41,8 @@ describe('NewWorldComponent', () => {
   const testFile2 = new File([], 'file2.dae');
   testFile2['fullPath'] = 'file2.dae';
 
-  const testWorldFile = new File([], 'file.world');
-  testWorldFile['fullPath'] = 'file.world';
+  const testWorldFile = new File([], 'file.sdf');
+  testWorldFile['fullPath'] = 'file.sdf';
 
   const testThumbnails = new File([], 'img0.jpg');
   testThumbnails['fullPath'] = 'thumbnails/img0.jpg';
@@ -143,7 +143,7 @@ describe('NewWorldComponent', () => {
     expect(snackBar._openedSnackBarRef).toBeTruthy();
   }));
 
-  it('should NOT upload without a .world or .sdf file', async(() => {
+  it('should NOT upload without a .sdf file', async(() => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 

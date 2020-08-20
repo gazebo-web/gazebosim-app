@@ -15,6 +15,22 @@
     <!-- Gallery and Stats -->
     <div fxLayout.gt-sm="row" fxLayout.lt-md="column">
       <div class="row-left padding">
+        <div *ngIf="hasGzWeb && world?.files.length > 0">
+          <a mat-icon-button title="View in 3D" class="button3d"
+            (click)="toggle3D()">
+            <mat-icon>3d_rotation</mat-icon>
+          </a>
+          <a *ngIf="view3d" mat-icon-button (click)="openFullscreen()" title="Full Screen" class="buttonFullscreen"><mat-icon>fullscreen</mat-icon></a>
+          <a *ngIf="view3d" mat-icon-button (click)="resetView()" title="Reset view" class="buttonResetView"><mat-icon>home</mat-icon></a>
+
+          <div *ngIf="view3d" #fullScreen>
+            <ign-sdfviewer
+              class="sdfviewer"
+              [resource]="world"
+              [currentVersion]="currentVersion">
+             </ign-sdfviewer>
+          </div>
+        </div>
         <div class="gallery-container-outer">
           <div class="gallery-container-inner" fxLayoutAlign="center center">
 
@@ -60,7 +76,7 @@
             (click)="addToCollection()">
             <mat-icon>collections</mat-icon>
           </button>
-          <button 
+          <button
             mat-icon-button
             title="Report this world"
             (click)="report()"
@@ -135,6 +151,11 @@
 
             <ign-tags [tags]="world.tags"></ign-tags>
 
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+              <mat-icon class="material-icons">{{world.private ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <span>This world is {{world.private ? 'private' : 'public'}}.</span>
+            </div>
+
             <div fxLayout="row"
                  fxLayoutAlign="start center"
                  fxLayoutGap="10px">
@@ -204,6 +225,11 @@
               <span>This world doesn't belong to any collection yet.</span>
             </div>
           </ng-template>
+        </mat-tab>
+
+        <mat-tab label="Metadata">
+          <ign-metadata [metadata]="world.metadata" [edit]="false" [disabled]="updating" fxFill>
+          </ign-metadata>
         </mat-tab>
       </mat-tab-group>
 

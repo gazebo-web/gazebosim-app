@@ -210,18 +210,18 @@ export class NewWorldComponent implements OnInit {
         hasThumbnails = true;
       }
 
-      // A world needs either a .world or a .sdf file.
+      // A world needs a .sdf file. A .world file is no longer allowed.
       // TODO(german-mas) Provide a class to handle Files and their extensions in a simpler way.
       // Avoid duplicated toLowerCase calls in Edit and New components.
       // See: https://app.asana.com/0/660089940802243/729343249232870/f
       const filename = path[path.length - 1].toLowerCase();
-      if (filename.indexOf('.world') > 0 || filename.indexOf('.sdf') > 0) {
+      if (filename.indexOf('.sdf') > 0) {
         hasRequiredFile = true;
       }
     }
 
     if (!hasRequiredFile) {
-      this.snackBar.open('Missing a world file or a sdf file.', 'Got it');
+      this.snackBar.open('Missing a SDF file.', 'Got it');
       return;
     }
 

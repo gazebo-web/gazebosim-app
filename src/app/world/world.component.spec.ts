@@ -23,7 +23,9 @@ import { FuelResourceListComponent } from '../fuel-resource';
 import { Image } from '../model/image';
 import { ItemCardComponent } from '../item-card/item-card.component';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
+import { MetadataComponent } from '../metadata/metadata.component';
 import { PageTitleComponent } from '../page-title';
+import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../tags/tags.component';
 import { World } from './world';
 import { WorldComponent } from './world.component';
@@ -39,6 +41,7 @@ import {
   MatListModule,
   MatSelectModule,
   MatSnackBarModule,
+  MatTableModule,
   MatTabsModule,
 } from '@angular/material';
 
@@ -93,6 +96,7 @@ describe('WorldComponent', () => {
         MatListModule,
         MatSelectModule,
         MatSnackBarModule,
+        MatTableModule,
         MatTabsModule,
         NgxGalleryModule,
         ReactiveFormsModule,
@@ -105,7 +109,9 @@ describe('WorldComponent', () => {
         FileSizePipe,
         FuelResourceListComponent,
         ItemCardComponent,
+        MetadataComponent,
         PageTitleComponent,
+        SdfViewerComponent,
         TagsComponent,
         WorldComponent,
         ],
