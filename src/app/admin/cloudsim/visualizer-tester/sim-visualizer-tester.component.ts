@@ -164,6 +164,24 @@ export class SimVisualizerComponent implements OnDestroy {
             });
           }
         };
+        this.ws.subscribe(poseTopic);
+
+        // Subscribe to the pose topic and modify the models' poses.
+        const pointsTopic: Topic = {
+        name: `/world/${this.ws.getWorld()}/model/X1/link/base_link/sensor/front_laser/scan/points`,
+          cb: (msg) => {
+          console.log(msg.field);
+          const view = new DataView(msg.data.buffer);
+
+          for (let i = 0; i < msg.width; ++i) {
+            const x = view.getFloat32(i * msg.point_step); 
+            const y = view.getFloat32(i * msg.point_step + 8); 
+            const z = view.getFloat32(i * msg.point_step + 16); 
+            console.log(x, y, z);
+          }
+          }
+        };
+        this.ws.subscribe(pointsTopic);
 
         // create a sun light
         this.sunLight = this.scene.createLight(3,
@@ -175,7 +193,6 @@ export class SimVisualizerComponent implements OnDestroy {
         this.scene.add(this.sunLight);
         this.scene.ambient.color = new THREE.Color(0x666666);
 
-        this.ws.subscribe(poseTopic);
 
         // Subscribe to the 'scene/info' topic which sends scene changes.
         const sceneTopic: Topic = {
