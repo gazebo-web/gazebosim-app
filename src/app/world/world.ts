@@ -11,10 +11,13 @@ export class World extends FuelResource {
    * The extensions allowed by World files.
    */
   public static allowedExtensions: string[] = [
-    'world',
-    'world.erb',
+    'erb',
     'png',
     'sdf',
+    /* tsv, dot, and dat files are used by SubT */
+    'tsv',
+    'dot',
+    'dat',
     ];
 
   /**

@@ -2,11 +2,13 @@ import { TestBed, async } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SdfViewerComponent } from './sdfviewer.component';
-import { Model } from '../model';
-import { ModelService } from '../model.service';
+
 import { AuthService } from '../../auth/auth.service';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
+import { Model } from '../model';
+import { ModelService } from '../model.service';
+import { SdfViewerComponent } from './sdfviewer.component';
+import { WorldService } from '../../world/world.service';
 
 import {
   MatSnackBarModule,
@@ -58,6 +60,7 @@ describe('SdfViewerComponent', () => {
         AuthService,
         JsonClassFactoryService,
         ModelService,
+        WorldService,
       ]
     });
   });
@@ -90,8 +93,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeUndefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(3);
-      expect(comp.scene.scene.getObjectByName('sun')).toBeDefined();
+      expect(comp.scene.scene.children.length).toBe(6);
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
       // loop to end
@@ -122,7 +124,7 @@ describe('SdfViewerComponent', () => {
       expect(comp.sceneElement).toBeDefined();
       expect(comp.model).toBeDefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(3);
+      expect(comp.scene.scene.children.length).toBe(6);
       expect(comp.scene.scene.getObjectByName('example_model')).toBeUndefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
@@ -149,7 +151,7 @@ describe('SdfViewerComponent', () => {
         path: '/model.sdf'
       },
     ];
-    comp.model = model;
+    comp.resource = model;
 
     // Change the API server
     const modelService = TestBed.get(ModelService);
@@ -163,9 +165,9 @@ describe('SdfViewerComponent', () => {
     }, () => {
       // Check scene
       expect(comp.sceneElement).toBeDefined();
-      expect(comp.model).toBeDefined();
+      expect(comp.resource).toBeDefined();
       expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(4);
+      expect(comp.scene.scene.children.length).toBe(7);
       expect(comp.scene.scene.getObjectByName('example_model')).toBeDefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate

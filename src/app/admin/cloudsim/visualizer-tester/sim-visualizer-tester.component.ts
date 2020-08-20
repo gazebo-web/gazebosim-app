@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { MatSnackBar } from '@angular/material';
 
@@ -81,6 +81,26 @@ export class SimVisualizerComponent implements OnDestroy {
   private following: boolean = false;
 
   /**
+   * A sun directional light for global illumination
+   */
+  private sunLight: object;
+
+  /**
+   * The container of the GZ3D scene.
+   */
+  private sceneElement: HTMLElement;
+
+  /**
+   * True if fullscreen is enabled.
+   */
+  private fullscreen: boolean = false;
+
+  /**
+   * Reference to the <div> that can be toggled fullscreen.
+   */
+  @ViewChild('fullScreen') private divRef;
+
+  /**
    * @param snackbar Snackbar used to show notifications.
    * @param ws The Websocket Service used to get data from a Simulation.
    */
@@ -145,6 +165,16 @@ export class SimVisualizerComponent implements OnDestroy {
           }
         };
 
+        // create a sun light
+        this.sunLight = this.scene.createLight(3,
+          new THREE.Color(0.8, 0.8, 0.8), 0.9,
+          {position: {x: 0, y: 0, z: 10},
+           orientation: {x: 0, y: 0, z: 0, w: 1}},
+          null, true, 'sun', {x: 0.5, y: 0.1, z: -0.9});
+
+        this.scene.add(this.sunLight);
+        this.scene.ambient.color = new THREE.Color(0x666666);
+
         this.ws.subscribe(poseTopic);
 
         // Subscribe to the 'scene/info' topic which sends scene changes.
@@ -175,7 +205,7 @@ export class SimVisualizerComponent implements OnDestroy {
               // update the models ID and gz3dName.
               if (foundIndex < 0) {
                 const entity = this.scene.getByName();
-                const modelObj = this.sdfParser.spawnFromObj({ model });
+                const modelObj = this.sdfParser.spawnFromObj({ model }, false);
                 model['gz3dName'] = modelObj.name;
                 this.models.push(model);
                 this.scene.add(modelObj);
@@ -203,12 +233,26 @@ export class SimVisualizerComponent implements OnDestroy {
       this.startVisualization();
 
       sceneInfo['model'].forEach((model) => {
-        const modelObj = this.sdfParser.spawnFromObj({ model });
+        const modelObj = this.sdfParser.spawnFromObj({ model }, false);
 
         model['gz3dName'] = modelObj.name;
         this.models.push(model);
         this.scene.add(modelObj);
       });
+
+      sceneInfo['light'].forEach((light) => {
+        const lightObj = this.sdfParser.spawnLight(light);
+        this.scene.add(lightObj);
+      });
+
+      // Set the ambient color, if present
+      if (sceneInfo['ambient'] !== undefined &&
+          sceneInfo['ambient'] !== null) {
+        this.scene.ambient.color = new THREE.Color(
+          sceneInfo['ambient']['r'],
+          sceneInfo['ambient']['g'],
+          sceneInfo['ambient']['b']);
+      }
     });
   }
 
@@ -223,9 +267,9 @@ export class SimVisualizerComponent implements OnDestroy {
     this.unsubscribe();
 
     // Remove the canvas. Helpful to disconnect and connect several times.
-    const container = window.document.getElementById('scene');
-    if (container && container.childElementCount > 0) {
-      container.removeChild(this.scene.renderer.domElement);
+    this.sceneElement = window.document.getElementById('scene');
+    if (this.sceneElement && this.sceneElement.childElementCount > 0) {
+      this.sceneElement.removeChild(this.scene.renderer.domElement);
     }
   }
 
@@ -261,10 +305,10 @@ export class SimVisualizerComponent implements OnDestroy {
     this.sdfParser = new GZ3D.SdfParser(this.scene);
     this.sdfParser.usingFilesUrls = true;
 
-    const sceneContainer = window.document.getElementById('scene');
-    sceneContainer.appendChild(this.scene.renderer.domElement);
+    this.sceneElement = window.document.getElementById('scene');
+    this.sceneElement.appendChild(this.scene.renderer.domElement);
 
-    this.scene.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+    this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
   }
 
   public startVisualization() {
@@ -330,9 +374,75 @@ export class SimVisualizerComponent implements OnDestroy {
   }
 
   /**
+   * Make the 3D viewport fullscreen
+   */
+  private toggleFullscreen() {
+    const elem = this.divRef.nativeElement;
+
+    if (!this.fullscreen) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      const docWithBrowsersExitFunctions = document as Document & {
+        mozCancelFullScreen(): Promise<void>;
+        webkitExitFullscreen(): Promise<void>;
+        msExitFullscreen(): Promise<void>;
+      };
+
+      if (docWithBrowsersExitFunctions.exitFullscreen) {
+        docWithBrowsersExitFunctions.exitFullscreen();
+      } else if (docWithBrowsersExitFunctions.msExitFullscreen) {
+        docWithBrowsersExitFunctions.msExitFullscreen();
+      } else if (docWithBrowsersExitFunctions.mozCancelFullScreen) {
+        docWithBrowsersExitFunctions.mozCancelFullScreen();
+      } else if (docWithBrowsersExitFunctions.webkitExitFullscreen) {
+        docWithBrowsersExitFunctions.webkitExitFullscreen();
+      }
+    }
+    this.fullscreen = !this.fullscreen;
+  }
+
+  /**
+   * Change the width and height of the visualization upon a resize event.
+   */
+  private resize() {
+    this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
+  }
+
+  /**
    * Reset the camera view
    */
   private resetView() {
     this.scene.resetView();
+  }
+
+  /**
+   * Toggle lights
+   */
+  private toggleLights() {
+    // Return if the light has not been created yet.
+    if (this.sunLight === null || this.sunLight === undefined) {
+      return;
+    }
+
+    this.sunLight['visible'] = !this.sunLight['visible'];
+
+    // Toggle ambient light
+    if (this.sunLight['visible']) {
+      this.scene.ambient.color = new THREE.Color(0x666666);
+    } else {
+      this.scene.ambient.color = new THREE.Color(0x191919);
+    }
+
+    for (const model of this.models) {
+      this.scene.toggleLights(model['gz3dName']);
+    }
   }
 }
