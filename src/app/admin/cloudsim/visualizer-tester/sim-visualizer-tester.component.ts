@@ -81,6 +81,11 @@ export class SimVisualizerComponent implements OnDestroy {
   private following: boolean = false;
 
   /**
+   * A sun directional light for global illumination
+   */
+  private sunLight: object;
+
+  /**
    * The container of the GZ3D scene.
    */
   private sceneElement: HTMLElement;
@@ -160,6 +165,16 @@ export class SimVisualizerComponent implements OnDestroy {
           }
         };
 
+        // create a sun light
+        this.sunLight = this.scene.createLight(3,
+          new THREE.Color(0.8, 0.8, 0.8), 0.9,
+          {position: {x: 0, y: 0, z: 10},
+           orientation: {x: 0, y: 0, z: 0, w: 1}},
+          null, true, 'sun', {x: 0.5, y: 0.1, z: -0.9});
+
+        this.scene.add(this.sunLight);
+        this.scene.ambient.color = new THREE.Color(0x666666);
+
         this.ws.subscribe(poseTopic);
 
         // Subscribe to the 'scene/info' topic which sends scene changes.
@@ -190,7 +205,7 @@ export class SimVisualizerComponent implements OnDestroy {
               // update the models ID and gz3dName.
               if (foundIndex < 0) {
                 const entity = this.scene.getByName();
-                const modelObj = this.sdfParser.spawnFromObj({ model });
+                const modelObj = this.sdfParser.spawnFromObj({ model }, false);
                 model['gz3dName'] = modelObj.name;
                 this.models.push(model);
                 this.scene.add(modelObj);
@@ -218,12 +233,26 @@ export class SimVisualizerComponent implements OnDestroy {
       this.startVisualization();
 
       sceneInfo['model'].forEach((model) => {
-        const modelObj = this.sdfParser.spawnFromObj({ model });
+        const modelObj = this.sdfParser.spawnFromObj({ model }, false);
 
         model['gz3dName'] = modelObj.name;
         this.models.push(model);
         this.scene.add(modelObj);
       });
+
+      sceneInfo['light'].forEach((light) => {
+        const lightObj = this.sdfParser.spawnLight(light);
+        this.scene.add(lightObj);
+      });
+
+      // Set the ambient color, if present
+      if (sceneInfo['ambient'] !== undefined &&
+          sceneInfo['ambient'] !== null) {
+        this.scene.ambient.color = new THREE.Color(
+          sceneInfo['ambient']['r'],
+          sceneInfo['ambient']['g'],
+          sceneInfo['ambient']['b']);
+      }
     });
   }
 
@@ -392,5 +421,28 @@ export class SimVisualizerComponent implements OnDestroy {
    */
   private resetView() {
     this.scene.resetView();
+  }
+
+  /**
+   * Toggle lights
+   */
+  private toggleLights() {
+    // Return if the light has not been created yet.
+    if (this.sunLight === null || this.sunLight === undefined) {
+      return;
+    }
+
+    this.sunLight['visible'] = !this.sunLight['visible'];
+
+    // Toggle ambient light
+    if (this.sunLight['visible']) {
+      this.scene.ambient.color = new THREE.Color(0x666666);
+    } else {
+      this.scene.ambient.color = new THREE.Color(0x191919);
+    }
+
+    for (const model of this.models) {
+      this.scene.toggleLights(model['gz3dName']);
+    }
   }
 }
