@@ -60,6 +60,7 @@
       <a class="follow-button" *ngIf="following" mat-icon-button (click)="follow(null)" title="Stop following">Stop following</a>
 
       <div class="controls">
+        <a mat-icon-button (click)="toggleLights()" title="Toggle lights"><mat-icon>highlight</mat-icon></a>
         <a mat-icon-button (click)="resetView()" title="Reset view"><mat-icon>home</mat-icon></a>
         <a mat-icon-button (click)="toggleFullscreen()" title="Full screen"><mat-icon>fullscreen</mat-icon></a>
       </div>
