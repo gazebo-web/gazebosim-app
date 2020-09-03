@@ -228,12 +228,12 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
    * Initialize GZ3D scene and adds the model to it.
    */
   public initializeGZ3DScene(): void {
-
+    const jwt = localStorage.getItem('token');
     // Initialize GZ3D objects.
     const shaders = new GZ3D.Shaders();
-    this.scene = new GZ3D.Scene(shaders);
-    this.sdfParser = new GZ3D.SdfParser(this.scene);
-    this.ogre2json = new GZ3D.Ogre2Json();
+    this.scene = new GZ3D.Scene(shaders, jwt);
+    this.sdfParser = new GZ3D.SdfParser(this.scene, null, null, jwt);
+    this.ogre2json = new GZ3D.Ogre2Json(jwt);
     // Override the entity selection. This prevents showing the model's bounding box.
     this.scene.selectEntity = () => {
       return;
@@ -244,10 +244,14 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     this.sceneElement.appendChild(this.scene.renderer.domElement);
     this.resize();
 
-    // Hide sun visual
-    const sunHelper = this.scene.scene.getObjectByName('sun_lightHelper');
-    if (sunHelper) {
+    if (this.resource.type === 'model') {
+      // Hide sun visual
+      const sunHelper = this.scene.scene.getObjectByName('sun_lightHelper');
+      if (sunHelper) {
       sunHelper.visible = false;
+      }
+      // Add model lighting.
+      this.scene.addModelLighting();
     }
 
     // Delete ground plane
@@ -258,9 +262,6 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
 
     // Start at strategic camera pose
     this.resetCameraPose();
-
-    // Add model lighting.
-    this.scene.addModelLighting();
 
     // Start rendering.
     this.animate();
@@ -361,7 +362,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   private animate(): void {
 
     // Reposition object
-    if (this.obj && !this.objPositioned) {
+    if (this.resource.type === 'model' && this.obj && !this.objPositioned) {
 
       // Get object's bounding box
       const bb = new THREE.Box3();
