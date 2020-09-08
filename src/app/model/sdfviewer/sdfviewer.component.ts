@@ -361,7 +361,8 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   private animate(): void {
 
     // Reposition object
-    if (this.obj && !this.objPositioned) {
+    if (this.resource && this.resource.type === 'models' &&
+        this.obj && !this.objPositioned) {
 
       // Get object's bounding box
       const bb = new THREE.Box3();
