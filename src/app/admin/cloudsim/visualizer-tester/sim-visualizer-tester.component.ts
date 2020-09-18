@@ -137,7 +137,7 @@ export class SimVisualizerComponent implements OnDestroy {
     this.statusSubscription = this.ws.status$.subscribe((response) => {
 
       if (response === 'Error') {
-        this.snackBar.open('Too many connections. Please try again later', 'Got it');
+        this.snackBar.open('Connection failed. Please contact an administrator.', 'Got it');
       }
 
       this.connectionStatus = response;
