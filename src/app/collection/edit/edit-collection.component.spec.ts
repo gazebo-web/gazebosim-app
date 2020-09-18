@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
+  MatDialog,
+  MatDialogModule,
   MatIconModule,
   MatInputModule,
   MatRadioModule,
@@ -12,6 +14,9 @@ import {
 } from '@angular/material';
 import { MarkdownModule } from 'ngx-markdown';
 import { Observable } from 'rxjs/Observable';
+import {
+  ConfirmationDialogComponent
+} from '../../confirmation-dialog/confirmation-dialog.component';
 
 import { AuthService } from '../../auth/auth.service';
 import { Collection, CollectionService } from '../../collection';
@@ -25,6 +30,7 @@ describe('EditCollectionComponent', () => {
   let authService: AuthService;
   let collectionService: CollectionService;
   let router: Router;
+  let dialog: MatDialog;
 
   // Test Collection
   const testCollectionJson = {
@@ -42,6 +48,7 @@ describe('EditCollectionComponent', () => {
         FormsModule,
         HttpClientTestingModule,
         MarkdownModule,
+        MatDialogModule,
         MatIconModule,
         MatInputModule,
         MatRadioModule,
@@ -50,6 +57,7 @@ describe('EditCollectionComponent', () => {
         RouterTestingModule,
         ],
       declarations: [
+        ConfirmationDialogComponent,
         DescriptionComponent,
         EditCollectionComponent
         ],
@@ -79,6 +87,7 @@ describe('EditCollectionComponent', () => {
     authService.userProfile = { orgs: [] };
     collectionService = TestBed.get(CollectionService);
     router = TestBed.get(Router);
+    dialog = TestBed.get(MatDialog);
   });
 
   it('should obtain the collection to edit from the route during OnInit', async(() => {
