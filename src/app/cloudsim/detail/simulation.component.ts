@@ -174,7 +174,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
       this.connectionStatus = response;
 
       if (response === 'Error') {
-        this.snackBar.open('Too many connections. Please try again later', 'Got it');
+        this.snackBar.open('Connection failed. Please contact an administrator.', 'Got it');
       }
 
       // We can start setting up the visualization after we are Connected.
