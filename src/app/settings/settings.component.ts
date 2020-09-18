@@ -122,10 +122,12 @@ export class SettingsComponent implements OnInit {
     this.route.fragment.subscribe((fragment) => {
       if (fragment === 'account') {
         this.selected.setValue(0);
-      } else if (fragment === 'organizations') {
+      } else if (fragment === 'access_tokens') {
         this.selected.setValue(1);
-      } else if (fragment === 'labs') {
+      } else if (fragment === 'organizations') {
         this.selected.setValue(2);
+      } else if (fragment === 'labs') {
+        this.selected.setValue(3);
       }
       });
     if (window.screen.width <= 600) {
