@@ -12,14 +12,37 @@
 
 ## Quickstart
 
+### Prerequisite
+
+1. Install nodejs and npm (be sure you have `npm` version 3 and `nodejs` version 6):
+
+        # Install node. Note you'll need root access
+        curl -sL https://deb.nodesource.com/setup_6.x | bash -
+        apt-get install -y nodejs
+
+1. If you run into issues with installing `npm` using the above commands, another option is to use node's version manager [nvm](https://github.com/nvm-sh/nvm). For example, here are the commands for installing nvm and node:
+
+        # install nvm
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+
+        # source .bashrc so we can use the nvm cmd
+        source ~/.bashrc
+
+        # install node version 6 and npm version 3
+        nvm install 6
+
+
 ### One-time setup
 
 1. Clone this repo and move to the clone:
 
-        hg clone https://bitbucket.org/ignitionrobotics/web-app
-        cd web-app
+        git clone https://gitlab.com/ignitionrobotics/web/app.git
+        cd app
 
-1. Install (be sure you have `npm` version 3 and `nodejs` version 6)
+        # For development, use the `develop` branch
+        git checkout develop
+
+1. Install
 
         npm install
 
@@ -27,7 +50,7 @@
 
 1. Make sure you have set your environment variables.
 
-    This repository comes with an example `setup.bash` file which works with the API at https://staging-api.ignitionfuel.org. Edit that file with your own Auth0 and backend information.
+    This repository comes with an example `setup.bash` file which works with the API at https://staging-fuel.ignitionrobotics.org. Edit that file with your own Auth0 and backend information.
 
     You can source this file by doing:
 
@@ -45,11 +68,11 @@
 
 ## Deploy
 
-The deploy process is done by Bitbucket pipelines, whenever there is a change in the `staging` or `production` branches.
+The deploy process is done by gitlab pipelines, whenever there is a change in the `staging` or `production` branches.
 
 The pipeline is in charge of setting the required environment variables, syncing the built app into the corresponding S3 bucket and invalidating the Cloudfront distribution.
 
-For in-depth details, you can check the `bitbucket-pipelines.yml` file.
+For in-depth details, you can check the `.gitlab-ci.yml` file.
 
 ### Manual process
 
