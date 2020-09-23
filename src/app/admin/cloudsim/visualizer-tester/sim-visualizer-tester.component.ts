@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { MatSnackBar } from '@angular/material';
 
@@ -443,6 +443,17 @@ export class SimVisualizerComponent implements OnDestroy {
 
     for (const model of this.models) {
       this.scene.toggleLights(model['gz3dName']);
+    }
+  }
+
+  /**
+   * Listen to the Escape key to stop following.
+   */
+  @HostListener('window:keydown', ['$event'])
+  private keyEscape(event: KeyboardEvent) {
+    if (event.keyCode === 27) {
+      this.following = false;
+      this.scene.emitter.emit('follow_entity', null);
     }
   }
 }
