@@ -19,6 +19,7 @@ export class Model extends FuelResource {
     'mtl',
     'obj',
     'png',
+    'pbtxt',
     'sdf',
     'sdf.erb',
     'stl',
