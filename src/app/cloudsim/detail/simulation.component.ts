@@ -174,7 +174,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
       this.connectionStatus = response;
 
       if (response === 'Error') {
-        this.snackBar.open('Too many connections. Please try again later', 'Got it');
+        this.snackBar.open('Connection failed. Please contact an administrator.', 'Got it');
       }
 
       // We can start setting up the visualization after we are Connected.
@@ -251,7 +251,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
               // update the models ID and gz3dName.
               if (foundIndex < 0) {
                 const entity = this.scene.getByName();
-                const modelObj = this.sdfParser.spawnFromObj({ model }, false);
+                const modelObj = this.sdfParser.spawnFromObj({ model }, { enableLights: false });
                 model['gz3dName'] = modelObj.name;
                 this.models.push(model);
                 this.scene.add(modelObj);
@@ -277,7 +277,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
       this.startVisualization();
 
       sceneInfo['model'].forEach((model) => {
-        const modelObj = this.sdfParser.spawnFromObj({ model }, false);
+        const modelObj = this.sdfParser.spawnFromObj({ model }, { enableLights: false });
         model['gz3dName'] = modelObj.name;
         this.models.push(model);
         this.scene.add(modelObj);

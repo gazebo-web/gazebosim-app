@@ -270,6 +270,15 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
+    // If the resource is private, pass the Authorization header to gz3d.
+    if (this.resource.private) {
+      const token = localStorage.getItem('token');
+
+      this.scene.setRequestHeader('Authorization', `Bearer ${token}`);
+      this.sdfParser.setRequestHeader('Authorization', `Bearer ${token}`);
+      this.ogre2json.setRequestHeader('Authorization', `Bearer ${token}`);
+    }
+
     // Set usingFilesUrls to true to indicate that we will be supplying files URLs.
     this.sdfParser.usingFilesUrls = true;
 
@@ -361,7 +370,8 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   private animate(): void {
 
     // Reposition object
-    if (this.obj && !this.objPositioned) {
+    if (this.resource && this.resource.type === 'models' &&
+        this.obj && !this.objPositioned) {
 
       // Get object's bounding box
       const bb = new THREE.Box3();
