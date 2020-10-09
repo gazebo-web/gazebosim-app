@@ -33,12 +33,20 @@
 
             <button
               mat-raised-button
+              color="accent"
+              type="submit">
+              Create
+            </button>
+<!-- Disabled until we add more features. See other comment blocks.
+            <button
+              mat-raised-button
               matStepperNext
               [disabled]="!newOrganizationForm.valid"
               color="accent"
               type="button">
               Next
             </button>
+-->
           </div>
         </div>
       </mat-step>
@@ -70,7 +78,7 @@
         </div>
       </mat-step>
       -->
-
+<!-- Disabled because we don't have billing.
       <mat-step label="Done">
         <div class="mat-typography">
           <h2>Choose your plan</h2>
@@ -106,6 +114,7 @@
           </button>
         </div>
       </mat-step>
+-->
     </mat-horizontal-stepper>
   </form>
 </div>

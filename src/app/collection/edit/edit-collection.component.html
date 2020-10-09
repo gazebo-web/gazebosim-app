@@ -52,6 +52,23 @@
           Save changes
         </button>
       </div>
+
+      <div fxFill>
+        <h2 class="danger">Dangerous Zone!</h2>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+          <div>
+            <a (click)="onDelete()" mat-raised-button color="warn">
+              Delete collection
+            </a>
+          </div>
+
+          <div>
+            <p>Be mindful when deleting a collection, other users could be counting on it.</p>
+          </div>
+
+        </div>
+      </div>
+
     </form>
   </ng-template>
 </div>
