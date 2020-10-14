@@ -343,8 +343,11 @@ export class OrganizationComponent implements OnInit {
    * @returns A boolean whether the button should be shown or not.
    */
   public canDisplayRemoveButton(user: any): boolean {
-    return this.authService.userProfile.username === user.username ||
-           this.authService.hasWriteAccess(this.organization.name);
+    if (this.authService.userProfile) {
+      return this.authService.userProfile.username === user.username ||
+      this.authService.hasWriteAccess(this.organization.name);
+    }
+    return false;
   }
 
   /**
