@@ -1,4 +1,4 @@
-<div fxLayoutAlign="center center">
+<div fxLayout="row wrap" fxLayoutAlign="center center" >
   <!-- Placeholder. Uncomment when implemented. -->
   <!-- <button mat-icon-button (click)="$event.stopPropagation()">
     <mat-icon>play_arrow</mat-icon>
@@ -24,4 +24,8 @@
   <button mat-icon-button (click)="showMetadata($event)">
     <mat-icon>info</mat-icon>
   </button>
+
+  <a mat-icon-button [href]="s3bucketLink()" target="_blank" rel="noopener" title="Link to the S3 bucket">
+    <mat-icon>folder</mat-icon>
+  </a>
 </div>

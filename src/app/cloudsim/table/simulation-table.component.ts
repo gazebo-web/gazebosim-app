@@ -31,6 +31,7 @@ export class SimulationTableComponent implements OnChanges {
     'TerminationFailed',
     'InitializationFailed',
     'AdminReview',
+    'ServerRestart',
     'FailedToUploadLogs',
     'Rejected',
   ];
@@ -39,6 +40,7 @@ export class SimulationTableComponent implements OnChanges {
    * The dropdown circuit list
    */
   public circuitList: string[] = [
+    'Virtual Stix',
     'Tunnel Circuit',
     'Tunnel Practice 1',
     'Tunnel Practice 2',
@@ -54,6 +56,22 @@ export class SimulationTableComponent implements OnChanges {
     'Urban Practice 2',
     'Urban Practice 3',
     'Urban Circuit',
+    'Urban Circuit World 1',
+    'Urban Circuit World 2',
+    'Urban Circuit World 3',
+    'Urban Circuit World 4',
+    'Urban Circuit World 5',
+    'Urban Circuit World 6',
+    'Urban Circuit World 7',
+    'Urban Circuit World 8',
+    'Cave Qualification',
+    'Cave Simple 1',
+    'Cave Simple 2',
+    'Cave Simple 3',
+    'Cave Practice 1',
+    'Cave Practice 2',
+    'Cave Practice 3',
+    'Cave Circuit',
   ];
 
   /**
@@ -137,6 +155,7 @@ export class SimulationTableComponent implements OnChanges {
       status: this.statusFilter,
       errorStatus: this.errorStatusFilter,
       circuit: this.circuitFilter,
+      pageSize: pageEvent.pageSize,
       page
     });
   }
