@@ -413,7 +413,9 @@ export class SimVisualizerComponent implements OnDestroy {
    * Change the width and height of the visualization upon a resize event.
    */
   private resize() {
-    this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
+    if (this.scene) {
+      this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
+    }
   }
 
   /**
