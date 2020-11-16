@@ -71,8 +71,13 @@ export class SimulationService {
       if (params['circuit']) {
         httpParams = httpParams.set('circuit', params['circuit']);
       }
+      if (params['pageSize']) {
+        httpParams = httpParams.set('per_page', params['pageSize']);
+      }
     }
-    httpParams = httpParams.set('per_page', '10');
+    if (!httpParams.has('per_page')) {
+      httpParams = httpParams.set('per_page', '10');
+    }
     return this.http.get<PaginatedSimulation>(url, {params: httpParams, observe: 'response'})
       .map((response) => {
         const paginatedSim = new PaginatedSimulation();

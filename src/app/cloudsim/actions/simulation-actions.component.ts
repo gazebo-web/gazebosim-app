@@ -179,4 +179,16 @@ export class SimulationActionsComponent {
       }
     );
   }
+
+  /**
+   * The link to the S3 bucket where the simulation logs reside.
+   */
+  public s3bucketLink(): string {
+    // Note: In S3 the owners are encoded three times (spaces are treated as %252520).
+    // Otherwise, the link would point to a non-existent folder.
+    let encodedOwner = encodeURIComponent(this.simulation.owner);
+    encodedOwner = encodeURIComponent(encodedOwner);
+    encodedOwner = encodeURIComponent(encodedOwner);
+    return `${Simulation.bucketUrl}${encodedOwner}/${this.simulation.groupId}/`;
+  }
 }

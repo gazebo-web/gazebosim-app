@@ -87,9 +87,9 @@
   </mat-table>
 
   <mat-paginator [length]="paginatedSimulations.totalCount"
-                  [pageSize]="10"
-                  [pageSizeOptions]="[10]"
-                  (page)="pageEvent = pageChange($event)">
+                 [pageSize]="10"
+                 [pageSizeOptions]="[10, 20, 50, 100]"
+                 (page)="pageEvent = pageChange($event)">
   </mat-paginator>
 </div>
 

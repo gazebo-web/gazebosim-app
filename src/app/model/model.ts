@@ -14,6 +14,7 @@ export class Model extends FuelResource {
     'bvh',
     'config',
     'dae',
+    'dds',
     'jpg',
     'material',
     'mtl',

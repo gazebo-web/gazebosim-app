@@ -16,7 +16,8 @@ enum Status {
   DeletingNodes = 70,
   TerminatingInstances = 80,
   Terminated = 90,
-  Rejected = 100
+  Rejected = 100,
+  Superseded = 110
 }
 
 /**
