@@ -1,5 +1,5 @@
-import { async, TestBed, getTestBed } from '@angular/core/testing';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { TestBed, getTestBed } from '@angular/core/testing';
+import { HttpHeaders } from '@angular/common/http';
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -40,8 +40,8 @@ describe('PortalService', () => {
       ],
     });
     injector = getTestBed();
-    service = injector.get(PortalService);
-    httpMock = injector.get(HttpTestingController);
+    service = injector.inject(PortalService);
+    httpMock = injector.inject(HttpTestingController);
   });
 
   // After each test, verify that all the requests were consumed.
@@ -49,7 +49,7 @@ describe('PortalService', () => {
     httpMock.verify();
   });
 
-  it('should get a list of portals', async(() => {
+  it('should get a list of portals', () => {
     // TODO(german-mas): This returns fake data, intended to be used as a placeholder.
     // See https://app.asana.com/0/882898012818972/928371086237573/f
     service.getList().subscribe(
@@ -59,9 +59,9 @@ describe('PortalService', () => {
         expect(portals[0].owner).toEqual('DARPA');
       }
     );
-  }));
+  });
 
-  it('should get a single portal', async(() => {
+  it('should get a single portal', () => {
     // TODO(german-mas): This returns fake data, intended to be used as a placeholder.
     // See https://app.asana.com/0/882898012818972/928371086237573/f
     service.get('testOwner', 'testName').subscribe(
@@ -70,9 +70,9 @@ describe('PortalService', () => {
         expect(portal.name).toEqual('SubT');
       }
     );
-  }));
+  });
 
-  it('should send a registration request', async(() => {
+  it('should send a registration request', () => {
     const url = `${service.baseUrl}/subt/registrations`;
     service.sendRegistrationRequest('orgName').subscribe(
       (reg) => {
@@ -83,9 +83,9 @@ describe('PortalService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ participant: 'orgName'});
     req.flush(testRegistrationJson);
-  }));
+  });
 
-  it('should get registration requests', async(() => {
+  it('should get registration requests', () => {
     // No specific page.
     let url = `${service.baseUrl}/subt/registrations?status=pending&per_page=10`;
     service.getRegistrationRequests('pending').subscribe(
@@ -109,9 +109,9 @@ describe('PortalService', () => {
     req = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush([testRegistrationJson]);
-  }));
+  });
 
-  it('should modify a registration', async(() => {
+  it('should modify a registration', () => {
     const orgName = 'testOrg';
     const url = `${service.baseUrl}/subt/registrations/subt/${orgName}`;
     // Approval.
@@ -132,9 +132,9 @@ describe('PortalService', () => {
     req = httpMock.expectOne(url);
     expect(req.request.method).toBe('PATCH');
     req.flush(testRegistrationJson);
-  }));
+  });
 
-  it('should get a list of participants', async(() => {
+  it('should get a list of participants', () => {
     const url = `${service.baseUrl}/subt/participants?per_page=10`;
     const testParticipantJson = {
       name: 'testOrg'
@@ -147,9 +147,9 @@ describe('PortalService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush([testParticipantJson]);
-  }));
+  });
 
-  it('should parse the link header of a paginated response', async(() => {
+  it('should parse the link header of a paginated response', () => {
     const url = `${service.baseUrl}/subt/registrations?status=pending&per_page=10`;
     const header: HttpHeaders = new HttpHeaders({link: '</registrations?page=2>; rel="next"'});
     service.getRegistrationRequests('pending').subscribe(
@@ -161,5 +161,5 @@ describe('PortalService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush([testRegistrationJson], {headers: header});
-  }));
+  });
 });

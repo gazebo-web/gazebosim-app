@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
 
 import { CategoryService } from '../../fuel-resource/categories/category.service';
 
@@ -92,7 +92,7 @@ export class CategoriesComponent implements OnInit {
    *
    * @param event The Select Change event that contains the new categories.
    */
-  public selectionChange(event: MatSelectChange) {
+  public selectionChange(event: MatSelectChange): void {
     // Change the categories.
     this.categories = event.value;
 

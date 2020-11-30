@@ -1,20 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-  MatInputModule,
-  MatDialogRef,
-  MatSnackBarModule,
-  MAT_DIALOG_DATA,
-} from '@angular/material';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
+import { of, throwError } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
 import { FileSizePipe } from '../../file-size/file-size.pipe';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { LogfileService, NewLogfileDialogComponent } from '../../logfile';
 import { Organization } from '../../organization';
+import { Logfile } from '../logfile';
 
 describe('NewLogfileDialogComponent', () => {
   let fixture: ComponentFixture<NewLogfileDialogComponent>;
@@ -35,7 +33,8 @@ describe('NewLogfileDialogComponent', () => {
   const testFile = new File([''], 'testFile.zip');
   testFile['fullPath'] = '';
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
@@ -63,31 +62,28 @@ describe('NewLogfileDialogComponent', () => {
         }
         ],
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
     fixture = TestBed.createComponent(NewLogfileDialogComponent);
     component = fixture.debugElement.componentInstance;
-    authService = TestBed.get(AuthService);
-    logfileService = TestBed.get(LogfileService);
+    authService = TestBed.inject(AuthService);
+    logfileService = TestBed.inject(LogfileService);
   });
 
-  it('should obtain the list of participants from the injected dialog data', async(() => {
+  it('should obtain the list of participants from the injected dialog data', () => {
     component.ngOnInit();
     expect(component.ownerList).toEqual(testParticipants);
-  }));
+  });
 
-  it('should set the logfile on a file input', async(() => {
+  it('should set the logfile on a file input', () => {
     const eventTarget = new EventTarget();
     const event = { target: eventTarget } as Event;
     eventTarget['files'] = [testFile];
 
     component.onFileInput(event);
     expect(component.logfile).toBe(testFile);
-  }));
+  });
 
-  it('should upload the logfile', async(() => {
+  it('should upload the logfile', () => {
     component.ownerList = testParticipants;
     component.logfile = testFile;
 
@@ -96,7 +92,7 @@ describe('NewLogfileDialogComponent', () => {
     formData.append('private', 'true');
     formData.append('file', testFile, (testFile as any).fullPath);
 
-    const spyUpload = spyOn(logfileService, 'upload').and.returnValue(Observable.of({}));
+    const spyUpload = spyOn(logfileService, 'upload').and.returnValue(of({} as Logfile));
     const spySnackbar = spyOn(component.snackBar, 'open');
     const spyDialog = spyOn(component.dialogRef, 'close');
 
@@ -110,16 +106,16 @@ describe('NewLogfileDialogComponent', () => {
     spyDialog.calls.reset();
 
     // Error on Upload. Don't close the dialog.
-    spyUpload.and.returnValue(Observable.throw({}));
+    spyUpload.and.returnValue(throwError({}));
     component.upload();
     expect(spyUpload).toHaveBeenCalledWith(formData);
     expect(spySnackbar).toHaveBeenCalled();
     expect(spyDialog).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should close the dialog on cancel', async(() => {
+  it('should close the dialog on cancel', () => {
     spyOn(component.dialogRef, 'close');
     component.cancel();
     expect(component.dialogRef.close).toHaveBeenCalled();
-  }));
+  });
 });

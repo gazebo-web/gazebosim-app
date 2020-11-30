@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { AuthService } from '../../auth/auth.service';
 import { Portal } from '../portal';
@@ -54,7 +54,7 @@ export class RegistrationDialogComponent implements OnInit {
   /**
    * OnInit Lifecycle hook.
    */
-  public ngOnInit() {
+  public ngOnInit(): void {
     // Get all the Organizations the user can register.
     this.organizationList = this.authService.userProfile['orgs'].filter(
       (org) => this.authService.hasWriteAccess(org));

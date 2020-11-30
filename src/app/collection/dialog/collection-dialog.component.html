@@ -15,12 +15,14 @@
             fxLayout.gt-xs="row"
             fxLayout.xs="column">
           <mat-form-field class="collection-input">
-            <input matInput placeholder="Collection"
-                            [matAutocomplete]="auto" [formControl]="collectionAddInputForm">
+            <input matInput
+                   placeholder="Collection"
+                   [matAutocomplete]="auto"
+                   [formControl]="collectionAddInputForm">
 
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="getCollectionName">
               <mat-option *ngFor="let collection of (collectionList | async)"
-                            [value]="collection">{{collection.name}} by {{collection.owner}}
+                          [value]="collection">{{collection.name}} by {{collection.owner}}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -39,27 +41,26 @@
       <form fxLayout="column">
         <mat-form-field>
           <input matInput
-            placeholder="Collection name"
-            [formControl]="collectionNameInputForm" required/>
+                 placeholder="Collection name"
+                 [formControl]="collectionNameInputForm" required/>
           <mat-error>{{getCollectionNameError()}}</mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <mat-select [(ngModel)]="owner"
-            name="ownerList"
-            placeholder="Owner"
-            [disabled]="uploading"
-            required>
+                      name="ownerList"
+                      placeholder="Owner"
+                      required>
             <mat-option *ngFor="let owner of collectionOwnerList; let i = index"
-            [value]="i">{{owner}}</mat-option>
+                        [value]="i">{{owner}}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field>
           <textarea [(ngModel)]="collectionDescription"
-            name="description"
-            matInput
-            placeholder="Description">
+                    name="description"
+                    matInput
+                    placeholder="Description">
           </textarea>
         </mat-form-field>
 
@@ -67,8 +68,8 @@
           <p>Privacy</p>
           <mat-radio-group [formControl]="privacyInputForm">
             <mat-radio-button *ngFor="let p of collectionService.getPermissionList(); let i = index"
-                                   [value]="i"
-                                   [checked]="p === 'Public'">{{p}}</mat-radio-button>
+                              [value]="i"
+                              [checked]="p === 'Public'">{{p}}</mat-radio-button>
           </mat-radio-group>
         </div>
       </form>

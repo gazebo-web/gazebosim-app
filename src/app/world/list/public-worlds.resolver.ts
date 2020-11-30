@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { PaginatedWorlds } from '../paginated-worlds';
 import { WorldService } from '../world.service';
@@ -33,13 +34,13 @@ export class PublicWorldsResolver implements Resolve<PaginatedWorlds> {
 
     const search = route.params['q'];
 
-    return this.worldService.getList(search)
-      .map((worlds) => {
+    return this.worldService.getList(search).pipe(
+      map((worlds) => {
         return worlds;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

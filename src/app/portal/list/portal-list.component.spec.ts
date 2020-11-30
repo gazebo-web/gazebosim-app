@@ -1,7 +1,8 @@
 import { ActivatedRoute } from '@angular/router';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatIconModule, MatCardModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
@@ -19,7 +20,8 @@ describe('PortalListComponent', () => {
   // Test portal.
   const testPortal = new Portal({name: 'testPortal', owner: 'testOwner'});
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -50,17 +52,15 @@ describe('PortalListComponent', () => {
         },
         ],
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
     fixture = TestBed.createComponent(PortalListComponent);
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should load the the worlds from the resolved data', async(() => {
+
+  it('should load the the worlds from the resolved data', () => {
     expect(component.portals).toBeUndefined();
     component.ngOnInit();
     expect(component.portals).toEqual([testPortal]);
-  }));
+  });
 });

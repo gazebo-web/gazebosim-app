@@ -1,7 +1,7 @@
 import { Component, Inject, Output, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AdminElasticsearchService } from '../';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AdminElasticsearchService } from '../admin-elasticsearch.service';
 
 @Component({
   selector: 'ign-elasticsearch-config-dialog',
@@ -21,26 +21,26 @@ export class ElasticsearchConfigDialogComponent {
   /**
    * True to hide the password field.
    */
-  private hide = true;
+  public hide = true;
 
   /**
    * Input form for the address.
    */
-  private addressInputForm = new FormControl('',
+  public addressInputForm = new FormControl('',
     {validators: [Validators.required, Validators.pattern('[^\/]*')],
     updateOn: 'change' || 'submit'});
 
   /**
    * Input form for the username.
    */
-  private usernameInputForm = new FormControl('',
+  public usernameInputForm = new FormControl('',
     {validators: [Validators.pattern('[^\/]*')],
     updateOn: 'change' || 'submit'});
 
   /**
    * Input form for the password.
    */
-  private passwordInputForm = new FormControl('',
+  public passwordInputForm = new FormControl('',
     {validators: [Validators.pattern('[^\/]*')],
     updateOn: 'change' || 'submit'});
 

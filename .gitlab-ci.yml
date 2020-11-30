@@ -21,14 +21,14 @@ cache:
   - pip install awscli
   - export PATH=~/.local/bin:$PATH
 .deployment_script: &deployment_script
-  - aws s3 sync dist/ s3://$APPLICATION_ENVIRONMENT
+  - aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
   - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 
 ## Dependencies
 .dependencies_before_script: &dependencies_before_script
   - apt-get clean
   - apt-get update
-  - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+  - curl -sL https://deb.nodesource.com/setup_14.x | bash -
   - apt-get install -y nodejs git
   - npm -v
   - node -v
@@ -55,22 +55,13 @@ test:
   environment:
     name: testing
 
-codecov:
-  stage: testing
-  before_script:
-    - *dependencies_before_script
-  script:
-    - npm run codecov
-  environment:
-    name: testing
-
 ## Building stage jobs:
 build_integration:
   stage: building
   before_script:
     - *dependencies_before_script
   script:
-    - npm run build:prod
+    - npm run build
   artifacts:
     name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
     paths:
@@ -88,7 +79,7 @@ build_staging:
   before_script:
     - *dependencies_before_script
   script:
-    - npm run build:prod
+    - npm run build:staging
   artifacts:
     name: "CI_PROJECT_NAME-$CI_COMMIT_REF_NAME:CI_COMMIT_SHORT_SHA"
     paths:

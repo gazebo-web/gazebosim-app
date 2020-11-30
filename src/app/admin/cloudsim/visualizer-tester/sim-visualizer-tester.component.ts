@@ -1,6 +1,6 @@
 import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 
 import { WebsocketService } from '../../../cloudsim/websocket/sim-websocket.service';
 import { Topic } from '../../../cloudsim/websocket/topic';
@@ -56,6 +56,16 @@ export class SimVisualizerComponent implements OnDestroy {
   public authKey: string = '';
 
   /**
+   * List of 3d models.
+   */
+  public models: any[] = [];
+
+  /**
+   * True if the camera is following a model
+   */
+  public following: boolean = false;
+
+  /**
    * Gz3D Scene.
    */
   private scene: any;
@@ -69,16 +79,6 @@ export class SimVisualizerComponent implements OnDestroy {
    * ID of the Request Animation Frame method. Required to cancel the animation.
    */
   private cancelAnimation: number;
-
-  /**
-   * List of 3d models.
-   */
-  private models: any[] = [];
-
-  /**
-   * True if the camera is following a model
-   */
-  private following: boolean = false;
 
   /**
    * A sun directional light for global illumination
@@ -112,7 +112,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * On Destroy lifecycle hook used to make sure the websocket connection is terminated.
    */
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.disconnect();
 
     if (this.cancelAnimation) {
@@ -127,7 +127,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * Connect to the Websocket of the Simulation.
    */
-  public connect() {
+  public connect(): void {
     // Avoid multiple connections.
     this.disconnect();
 
@@ -259,7 +259,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * Disconnect from the Websocket of the Simulation.
    */
-  public disconnect() {
+  public disconnect(): void {
     this.ws.disconnect();
     this.availableTopics = [];
     this.sceneInfo = null;
@@ -280,7 +280,7 @@ export class SimVisualizerComponent implements OnDestroy {
    *
    * @param topic The name of the topic to subscribe.
    */
-  public subscribe(topicName: string) {
+  public subscribe(topicName: string): void {
     const topic: Topic = {
       name: topicName,
       cb: (msg) => this.genericCallback(msg)
@@ -293,14 +293,14 @@ export class SimVisualizerComponent implements OnDestroy {
    *
    * This is for Admins to easily debug topics.
    */
-  public getAvailableTopics() {
+  public getAvailableTopics(): void {
     this.availableTopics = this.ws.getAvailableTopics();
   }
 
   /**
    * Setup the visualization scene.
    */
-  public setupVisualization() {
+  public setupVisualization(): void {
     this.scene = new GZ3D.Scene(new GZ3D.Shaders());
     this.sdfParser = new GZ3D.SdfParser(this.scene);
     this.sdfParser.usingFilesUrls = true;
@@ -311,7 +311,10 @@ export class SimVisualizerComponent implements OnDestroy {
     this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
   }
 
-  public startVisualization() {
+  /**
+   * Start the visualization.
+   */
+  public startVisualization(): void {
     // Render loop.
     const animate = () => {
       this.scene.render();
@@ -324,46 +327,23 @@ export class SimVisualizerComponent implements OnDestroy {
   }
 
   /**
-   * The topic callback function will be called by the Websocket Service.
-   * Each topic we subscribe to should provide it's own callback function.
-   *
-   * @param msg The message we get from the websocket.
-   */
-  private genericCallback(msg: any) {
-    console.log(msg);
-  }
-
-  /**
-   * Unsubscribe from observables.
-   */
-  private unsubscribe() {
-    if (this.sceneInfoSubscription) {
-      this.sceneInfoSubscription.unsubscribe();
-    }
-
-    if (this.statusSubscription) {
-      this.statusSubscription.unsubscribe();
-    }
-  }
-
-  /**
    * Select the given model
    */
-  private select(model) {
+  public select(model): void {
     this.scene.emitter.emit('select_entity',  model['gz3dName']);
   }
 
   /**
    * Instruct the camera to move to the given model.
    */
-  private moveTo(model) {
+  public moveTo(model): void {
     this.scene.emitter.emit('move_to_entity', model['gz3dName']);
   }
 
   /**
    * Instruct the camera to follow the given model.
    */
-  private follow(model) {
+  public follow(model): void {
     if (model !== undefined && model !== null) {
         this.following = true;
         this.scene.emitter.emit('follow_entity', model['gz3dName']);
@@ -376,7 +356,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * Make the 3D viewport fullscreen
    */
-  private toggleFullscreen() {
+  public toggleFullscreen(): void {
     const elem = this.divRef.nativeElement;
 
     if (!this.fullscreen) {
@@ -412,7 +392,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * Change the width and height of the visualization upon a resize event.
    */
-  private resize() {
+  public resize(): void {
     if (this.scene) {
       this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
     }
@@ -421,14 +401,14 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * Reset the camera view
    */
-  private resetView() {
+  public resetView(): void {
     this.scene.resetView();
   }
 
   /**
    * Toggle lights
    */
-  private toggleLights() {
+  public toggleLights(): void {
     // Return if the light has not been created yet.
     if (this.sunLight === null || this.sunLight === undefined) {
       return;
@@ -452,10 +432,33 @@ export class SimVisualizerComponent implements OnDestroy {
    * Listen to the Escape key to stop following.
    */
   @HostListener('window:keydown', ['$event'])
-  private keyEscape(event: KeyboardEvent) {
-    if (event.keyCode === 27) {
+  private keyEscape(event: KeyboardEvent): void {
+    if (event.key === 'Escape' || event.code === 'Escape') {
       this.following = false;
       this.scene.emitter.emit('follow_entity', null);
+    }
+  }
+
+  /**
+   * The topic callback function will be called by the Websocket Service.
+   * Each topic we subscribe to should provide it's own callback function.
+   *
+   * @param msg The message we get from the websocket.
+   */
+  private genericCallback(msg: any): void {
+    console.log(msg);
+  }
+
+  /**
+   * Unsubscribe from observables.
+   */
+  private unsubscribe(): void {
+    if (this.sceneInfoSubscription) {
+      this.sceneInfoSubscription.unsubscribe();
+    }
+
+    if (this.statusSubscription) {
+      this.statusSubscription.unsubscribe();
     }
   }
 }

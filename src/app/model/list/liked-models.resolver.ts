@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { PaginatedModels } from '../paginated-models';
 import { ModelService } from '../model.service';
@@ -30,13 +31,13 @@ export class LikedModelsResolver implements Resolve<PaginatedModels> {
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedModels> {
     const user: string = route.paramMap.get('user');
 
-    return this.modelService.getUserLikedList(user)
-      .map((models) => {
+    return this.modelService.getUserLikedList(user).pipe(
+      map((models) => {
         return models;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

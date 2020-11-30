@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Portal, PortalService } from '../../portal';
+import { Portal } from '../portal';
+import { PortalService } from '../portal.service';
 
 @Component({
   selector: 'ign-portal-list',

@@ -1,7 +1,13 @@
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { MatTableDataSource, MatSelectChange, MatSnackBar, PageEvent } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectChange } from '@angular/material/select';
+import { PageEvent } from '@angular/material/paginator';
+
 import { AuthService } from '../../auth/auth.service';
-import { PaginatedSimulation, Simulation, SimulationService } from '../../cloudsim';
+import { SimulationService } from '../simulation.service';
+import { Simulation } from '../simulation';
+import { PaginatedSimulation } from '../paginated-simulation';
 
 @Component({
   selector: 'ign-simulation-table',
@@ -136,7 +142,7 @@ export class SimulationTableComponent implements OnChanges {
   /**
    * Callback from the Status dropdown. Get the simulations of the selected status.
    */
-  public filter() {
+  public filter(): void {
     this.getSimulations({
       status: this.statusFilter,
       errorStatus: this.errorStatusFilter,

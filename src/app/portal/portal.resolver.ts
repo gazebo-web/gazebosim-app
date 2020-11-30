@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
-import { Portal, PortalService } from '../portal';
+import { Portal } from './portal';
+import { PortalService } from './portal.service';
 
 @Injectable()
 
@@ -36,11 +38,12 @@ export class PortalResolver implements Resolve<Portal> {
     // TODO(german-mas): Remove this once portals come from the Server.
     // See https://app.asana.com/0/882898012818972/930885955659603/f
     if (portalOwner.toLowerCase() === 'darpa' && portalName.toLowerCase() === 'subt') {
-      return this.portalService.get(portalOwner, portalName).catch(
-        (err) => {
-          return Observable.of(null);
-        });
+      return this.portalService.get(portalOwner, portalName).pipe(
+        catchError((err) => {
+          return of(null);
+        })
+      );
     }
-    return Observable.of(null);
+    return of(null);
   }
 }

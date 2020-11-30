@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
+import { AuthService } from '../../auth/auth.service';
+import { ElasticsearchConfig } from './elasticsearch-config';
+import { environment } from '../../../environments/environment';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { UiError } from '../../ui-error';
-import { AuthService } from '../../auth/auth.service';
-
-import { ElasticsearchConfig } from './elasticsearch-config';
-
-import 'rxjs/add/operator/catch';
 
 import * as linkParser from 'parse-link-header';
 
@@ -26,7 +23,7 @@ export class AdminElasticsearchService {
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
    * @param authService Service to get authentication information.
@@ -44,71 +41,81 @@ export class AdminElasticsearchService {
    */
   public getList(): Observable<ElasticsearchConfig[]> {
     const url = this.baseUrl + '/admin/search';
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         return this.factory.fromJson(response.body, ElasticsearchConfig);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Reconnect the list of elasticsearch configurations.
    */
-   public reconnect(): Observable<any> {
+  public reconnect(): Observable<any> {
     const url = this.baseUrl + '/admin/search/reconnect';
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         return response.body;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Rebuild the elasticsearch indices.
    */
-   public rebuild(): Observable<any> {
+  public rebuild(): Observable<any> {
     const url = this.baseUrl + '/admin/search/rebuild';
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         return response.body;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Update the elasticsearch indices.
    */
-   public update(): Observable<any> {
+  public update(): Observable<any> {
     const url = this.baseUrl + '/admin/search/update';
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         return response.body;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Delete the elasticsearch config.
    */
-   public delete(configId: number): Observable<any> {
-     const url = this.baseUrl + `/admin/search/${configId}`;
-     return this.http.delete(url).catch(this.handleError);
+  public delete(configId: number): Observable<any> {
+    const url = this.baseUrl + `/admin/search/${configId}`;
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Create an elasticsearch config.
    */
-   public create(config: any): Observable<any> {
-     const url = this.baseUrl + `/admin/search`;
-     return this.http.post(url, config).catch(this.handleError);
+  public create(config: any): Observable<any> {
+    const url = this.baseUrl + `/admin/search`;
+    return this.http.post(url, config).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
    * Modify an elasticsearch config.
    */
-   public modify(configId: number, config: any): Observable<any> {
-     const url = this.baseUrl + `/admin/search/${configId}`;
-     return this.http.patch(url, config).catch(this.handleError);
+  public modify(configId: number, config: any): Observable<any> {
+    const url = this.baseUrl + `/admin/search/${configId}`;
+    return this.http.patch(url, config).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -121,8 +128,8 @@ export class AdminElasticsearchService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

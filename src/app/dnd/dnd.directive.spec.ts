@@ -33,6 +33,12 @@ describe('DndDirective', () => {
   });
 
   it('should highlight on dragover', () => {
+    // Mock event.
+    const event = new Event('drop');
+    event['dataTransfer'] = {
+      items: ['test'],
+    };
+
     divElement.triggerEventHandler('dragover', new Event('dragover'));
     // FIXME
     // Expectation failing, it seems dragleave is called right after. And yet,
@@ -43,6 +49,12 @@ describe('DndDirective', () => {
   });
 
   it('should handle empty drop event', () => {
-    divElement.triggerEventHandler('drop', new Event('drop'));
+    // Mock event with no data.
+    const event = new Event('drop');
+    event['dataTransfer'] = {
+      items: [],
+    };
+
+    divElement.triggerEventHandler('drop', event);
   });
 });

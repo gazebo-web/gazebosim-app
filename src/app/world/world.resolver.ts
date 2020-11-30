@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { World } from './world';
 import { WorldService } from './world.service';
@@ -33,9 +34,10 @@ export class WorldResolver implements Resolve<World> {
     const worldOwner: string = route.paramMap.get('owner');
     const worldName: string = route.paramMap.get('worldname');
 
-    return this.worldService.get(worldOwner, worldName).catch(
-      (err) => {
-        return Observable.of(null);
-      });
+    return this.worldService.get(worldOwner, worldName).pipe(
+      catchError((err) => {
+        return of(null);
+      })
+    );
   }
 }

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environments/environment';
 
 import { FuelResource } from './fuel-resource';
 import { FuelPaginatedResource } from './fuel-paginated-resource';
 
-import 'rxjs/add/operator/catch';
 import * as linkParser from 'parse-link-header';
 
 @Injectable()
@@ -33,7 +33,7 @@ export abstract class FuelResourceService {
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
    * The type of resource that will be handled by the service, for the URL construction.
@@ -85,16 +85,17 @@ export abstract class FuelResourceService {
       params = params.append('q', search);
     }
 
-    return this.http.get(url, {observe: 'response', params})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response', params}).pipe(
+      map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
         paginatedResource.nextPage = this.parseLinkHeader(response);
         return paginatedResource;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -106,16 +107,17 @@ export abstract class FuelResourceService {
   public getOwnerList(owner: string): Observable<FuelPaginatedResource> {
     const url = this.getOwnerListUrl(owner);
 
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
         paginatedResource.nextPage = this.parseLinkHeader(response);
         return paginatedResource;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -127,16 +129,17 @@ export abstract class FuelResourceService {
   public getUserLikedList(username: string): Observable<FuelPaginatedResource> {
     const url = this.getUserLikedListUrl(username);
 
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
         paginatedResource.nextPage = this.parseLinkHeader(response);
         return paginatedResource;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -147,16 +150,17 @@ export abstract class FuelResourceService {
    * @returns An observable of a paginated resource.
    */
   public getNextPage(paginatedResource: FuelPaginatedResource): Observable<FuelPaginatedResource> {
-    return this.http.get<FuelResource[]>(paginatedResource.nextPage, { observe: 'response' })
-      .map((response) => {
+    return this.http.get<FuelResource[]>(paginatedResource.nextPage, { observe: 'response' }).pipe(
+      map((response) => {
         const res = new this.paginatedResourceClass();
         res.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         res.resources = this.factory.fromJson(response.body, this.resourceClass);
         res.nextPage = this.parseLinkHeader(response);
         return res;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -168,11 +172,12 @@ export abstract class FuelResourceService {
    */
   public get(owner: string, name: string): Observable<FuelResource> {
     const url = this.getResourceUrl(owner, name);
-    return this.http.get<FuelResource>(url)
-      .map((response) => {
+    return this.http.get<FuelResource>(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, this.resourceClass);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -181,11 +186,11 @@ export abstract class FuelResourceService {
    * @param formData The form data to be uploaded.
    * @returns An observable of the HTTP response. It contains the uploaded resource in its body.
    */
-  public upload(formData: FormData): Observable<HttpResponse<FuelResource>> {
+  public upload(formData: FormData): Observable<HttpResponse<FuelResource> | any> {
     const url = this.getListUrl();
-    return this.http.post(url, formData,
-      { observe: 'response' })
-      .catch(this.handleError);
+    return this.http.post(url, formData, { observe: 'response' }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -198,11 +203,12 @@ export abstract class FuelResourceService {
    */
   public edit(owner: string, name: string, formData: any): Observable<FuelResource> {
     const url = this.getResourceUrl(owner, name);
-    return this.http.patch<FuelResource>(url, formData)
-      .map((response) => {
+    return this.http.patch<FuelResource>(url, formData).pipe(
+      map((response) => {
         return this.factory.fromJson(response, this.resourceClass);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -211,10 +217,11 @@ export abstract class FuelResourceService {
    * @param res The resource to delete.
    * @returns An observable of the deleted resource.
    */
-  public delete(res: FuelResource): Observable<FuelResource> {
+  public delete(res: FuelResource): Observable<FuelResource | any> {
     const url = this.getResourceUrl(res.owner, res.name);
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -223,10 +230,11 @@ export abstract class FuelResourceService {
    * @param res The resource to like.
    * @returns An observable of the number of likes the resource has.
    */
-  public like(res: FuelResource): Observable<number> {
+  public like(res: FuelResource): Observable<number | any> {
     const url = this.getLikeUrl(res.owner, res.name);
-    return this.http.post(url, null)
-      .catch(this.handleError);
+    return this.http.post(url, null).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -235,10 +243,11 @@ export abstract class FuelResourceService {
    * @param res The resource to unlike.
    * @returns An observable of the number of likes the resource has.
    */
-  public unlike(res: FuelResource): Observable<number> {
+  public unlike(res: FuelResource): Observable<number | any> {
     const url = this.getLikeUrl(res.owner, res.name);
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -256,11 +265,12 @@ export abstract class FuelResourceService {
     form.append('name', newName);
     form.append('owner', newOwner);
 
-    return this.http.post<FuelResource>(url, form)
-      .map((response) => {
+    return this.http.post<FuelResource>(url, form).pipe(
+      map((response) => {
         return this.factory.fromJson(response, this.resourceClass);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -273,8 +283,9 @@ export abstract class FuelResourceService {
    */
   public download(res: FuelResource, version?: string | number): Observable<Blob> {
     const url = `${this.getZipUrl(res.owner, res.name, version)}`;
-    return this.http.get(url, { responseType: 'blob' })
-      .catch(this.handleError);
+    return this.http.get(url, { responseType: 'blob' }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -287,8 +298,9 @@ export abstract class FuelResourceService {
   public report(res: FuelResource, reason: string): Observable<any> {
     const form = new FormData();
     form.append('reason', reason);
-    return this.http.post(this.getReportUrl(res.owner, res.name), form)
-    .catch(this.handleError);
+    return this.http.post(this.getReportUrl(res.owner, res.name), form).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -298,8 +310,9 @@ export abstract class FuelResourceService {
    * @returns An observable of the Blob.
    */
   public getFileAsBlob(url: string): Observable<Blob> {
-    return this.http.get(url, { responseType: 'blob' })
-      .catch(this.handleError);
+    return this.http.get(url, { responseType: 'blob' }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -313,8 +326,9 @@ export abstract class FuelResourceService {
   public getFileTree(res: FuelResource, version?: string | number): Observable<any> {
     const url = this.getFilesUrl(res.owner, res.name, version);
 
-    return this.http.get(url)
-      .catch(this.handleError);
+    return this.http.get(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -359,7 +373,7 @@ export abstract class FuelResourceService {
    * @param version Optional. The version of the resource.
    * @returns The URL of the server route to an individual file.
    */
-  public getIndividualFileUrl(res: FuelResource, file: File, version?: number | string) {
+  public getIndividualFileUrl(res: FuelResource, file: File, version?: number | string): string {
     const filePath = file['path'];
     // The file path starts with the forward slash.
     return `${this.getFilesUrl(res.owner, res.name, version)}${filePath}`;
@@ -497,7 +511,7 @@ export abstract class FuelResourceService {
       linkParser(link) &&
       linkParser(link).next) {
       const url = linkParser(link).next.url;
-      this.nextUrl = `${API_HOST}${url}`;
+      this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
       this.nextUrl = null;
     }
@@ -514,8 +528,8 @@ export abstract class FuelResourceService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

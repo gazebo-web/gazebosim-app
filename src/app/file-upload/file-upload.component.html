@@ -18,11 +18,12 @@
   </div>
 
   <div fxLayout="row" fxLayoutAlign="center center" fxFill fxLayout.xs="column">
-    <div fxFlex ignDnd class="dropzone-list"
-      (newValidFilesEmitter)="onValidFiles($event)"
-      (newInvalidFilesEmitter)="onInvalidFiles($event)"
-      [allowedExtensions]="allowedExtensions"
-      [disabled]="disabled">
+    <div fxFlex
+         ignDnd
+         class="dropzone-list"
+         (newValidFilesEmitter)="onValidFiles($event)"
+         (newInvalidFilesEmitter)="onInvalidFiles($event)"
+         [allowedExtensions]="allowedExtensions">
 
       <div *ngIf="!fileList || fileList.length == 0; else hasFiles"
            class="mat-typography dropzone-msg"

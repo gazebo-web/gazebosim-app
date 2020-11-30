@@ -20,6 +20,7 @@ mat-sidenav .title {
 mat-sidenav img {
   display: block;
   margin: auto;
+  width: 35%;
 }
 
 .wrapper {
@@ -50,8 +51,8 @@ mat-sidenav .copyright {
   padding-left: 20px;
 }
 
-.sidenav-list .mat-icon {
-  padding-right: 10px;
+.sidenav-list mat-icon {
+  margin-right: 10px;
 }
 
 .mat-drawer {
@@ -111,15 +112,6 @@ ign-page-title {
   position: fixed;
   overflow: visible;
   z-index: 10;
-}
-
-#progress-bar ::ng-deep > div.mat-progress-bar-primary.mat-progress-bar-fill.mat-progress-bar-element::after {
-  box-shadow: 0 0 10px 0 mat-color($custom-theme-accent, 500);
-  background-color: mat-color($custom-theme-accent, 500);
-}
-
-#progress-bar ::ng-deep > div.mat-progress-bar-buffer.mat-progress-bar-element {
-  opacity: 0;
 }
 
 .title > small {

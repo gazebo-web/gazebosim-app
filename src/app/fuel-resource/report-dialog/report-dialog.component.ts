@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import {
   ConfirmationDialogComponent,
 } from '../../confirmation-dialog/confirmation-dialog.component';

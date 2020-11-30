@@ -1,49 +1,20 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Ignition Robotics</title>
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico">
-  <meta name="description" content="<%= htmlWebpackPlugin.options.title %>">
-  <!-- base url -->
-  <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-  <% if (webpackConfig.htmlElements.headTags) { %>
-  <!-- Configured Head Tags  -->
-  <%= webpackConfig.htmlElements.headTags %>
-  <% } %>
-
-
-  <%= htmlWebpackPlugin.files.webpackManifest %>
-
-  <% if (htmlWebpackPlugin.options.metadata.isDevServer && htmlWebpackPlugin.options.metadata.HMR !== true) { %>
-  <!-- Webpack Dev Server reload -->
-  <script src="/webpack-dev-server.js"></script>
-  <% } %>
-  <script src="/assets/gz3d.min.js"></script>
-
-  <% if (htmlWebpackPlugin.options.metadata.PRODUCTION_DEPLOY == 'true') { %>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113063919-2"></script>
-  <script>
-  window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-        gtag('config', 'UA-113063919-2');
-  </script>
-  <% } %>
-
-  <!-- CSS will be injected by webpack here -->
-  <!-- Preload link tags will be injected by webpack here -->
-
+  <meta name="description" content="Ignition Robotics App">
+  <link rel="icon" type="image/x-icon" href="./assets/icon/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="/assets/gz3d.min.js" async></script>
 </head>
-<body style="background: #f6f7f7">
+<body class="mat-typography" style="background: #f6f7f7">
   <ign-app-root>
     <div style="text-align: center; font-size: x-large; font-family: helvetica;">
-      <h2>Lining up the robots...</h2>
+      <h2 style="font-weight: bold; font-size: 1.5em; margin: 1em 0;">Lining up the robots...</h2>
       <img src="assets/images/ign.gif">
     </div>
   </ign-app-root>

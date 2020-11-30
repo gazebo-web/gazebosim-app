@@ -1,6 +1,7 @@
 import { Image } from '../model/image';
 import { License } from '../model/license';
 import { Metadatum } from '../metadata';
+import { environment } from '../../environments/environment';
 
 /**
  * A class that represents a Fuel resource, such as a world or a model.
@@ -148,7 +149,7 @@ export abstract class FuelResource {
     // Append the given Thumbnail URL to the images.
     if (json['thumbnail_url']) {
       const image = new Image();
-      image.url = `${API_HOST}/${API_VERSION}${json['thumbnail_url']}`;
+      image.url = `${environment.API_HOST}/${environment.API_VERSION}${json['thumbnail_url']}`;
       this.images.push(image);
     }
   }

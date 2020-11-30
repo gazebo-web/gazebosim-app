@@ -5,7 +5,7 @@ import { Component,
          OnDestroy,
          SimpleChanges,
        } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FuelResource } from '../../fuel-resource';
 import { Model } from '../model';
@@ -365,6 +365,14 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
+   * Resize the 3D scene based on the DOM element's size
+   */
+  public resize(): void {
+    this.scene.setSize(this.sceneElement.clientWidth,
+                       this.sceneElement.clientHeight);
+  }
+
+  /**
    * Render the 3D scene, this function recursively calls itself in a loop.
    */
   private animate(): void {
@@ -420,14 +428,6 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     this.cancelAnimation = requestAnimationFrame(() => {
       this.animate();
     });
-  }
-
-  /**
-   * Resize the 3D scene based on the DOM element's size
-   */
-  private resize(): void {
-    this.scene.setSize(this.sceneElement.clientWidth,
-                       this.sceneElement.clientHeight);
   }
 
   /**

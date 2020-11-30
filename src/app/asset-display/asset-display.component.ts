@@ -6,7 +6,8 @@ import { Component,
          ComponentFactoryResolver,
          Type } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
+
 import { PageNotFoundComponent } from '../page-not-found';
 
 @Component({
@@ -25,25 +26,25 @@ export class AssetDisplayComponent implements OnInit, OnDestroy {
   /**
    * The view container of the element that will receive the dynamically generated component.
    */
-  @ViewChild('dynamicComponentView', {read: ViewContainerRef})
-    private componentViewContainer: ViewContainerRef;
+  @ViewChild('dynamicComponentView', {read: ViewContainerRef, static: true})
+    public componentViewContainer: ViewContainerRef;
 
   /**
    * The target component that will be rendered. This comes form the route configuration data or
    * from a 'component' field in the resolvedData.
    */
-  private newComponent: Type<any>;
+  public newComponent: Type<any>;
 
   /**
    * The data that comes from the route resolve guard. If it is null, the PageNotFound component
    * will be displayed.
    */
-  private resolvedData: any;
+  public resolvedData: any;
 
   /**
    * Subscription to the route's data.
    */
-  private dataSubscription: Subscription;
+  public dataSubscription: Subscription;
 
   /**
    * @param componentFactoryResolver Factory service used to create new components.
