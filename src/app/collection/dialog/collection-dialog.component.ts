@@ -1,17 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import {
-  MatDialogRef,
-  MatRadioButton,
-  MatRadioGroup,
-  MAT_DIALOG_DATA,
-  MatSnackBar
-} from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { map, switchMap, debounceTime } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
-import { switchMap, debounceTime } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
-
-import { AuthService } from '../../auth/auth.service';
 import { Collection } from '../collection';
 import { CollectionService } from '../collection.service';
 import { ErrMsg } from '../../server/err-msg';
@@ -70,20 +64,19 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * Form Input for the Model Privacy.
    */
-  private privacyInputForm = new FormControl();
+  public privacyInputForm = new FormControl();
 
   /**
    * Which option (add or create).
    */
-  private option = 0;
+  public option = 0;
 
   /**
    * The set of available options.
    */
-  private options = ['Add', 'Create'];
+  public options = ['Add', 'Create'];
 
   /**
-   * @param authService Service used to get the authenticated user information.
    * @param collectionService Service used to handle collection-related requests to the Server.
    * @param dialog Reference to the opened dialog.
    * @param snackBar Snackbar used to display notifications.
@@ -92,7 +85,6 @@ export class CollectionDialogComponent implements OnInit {
    *        - resource (FuelResource) The resource that could be added to the collection.
    */
   constructor(
-    public authService: AuthService,
     public collectionService: CollectionService,
     public dialog: MatDialogRef<CollectionDialogComponent>,
     public snackBar: MatSnackBar,
@@ -104,7 +96,7 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * On Init lifecycle hook.
    */
-  public ngOnInit() {
+  public ngOnInit(): void {
     // Prepare the collection list filter by input.
     this.collectionList = this.collectionAddInputForm.valueChanges.pipe(
       debounceTime(300),
@@ -115,10 +107,10 @@ export class CollectionDialogComponent implements OnInit {
         if (value.name) {
           value = value.name;
         }
-        return this.collectionService.getCollectionExtensibleList(value).map(
-          (paginatedCollections) => {
+        return this.collectionService.getCollectionExtensibleList(value).pipe(
+          map((paginatedCollections) => {
             return paginatedCollections.collections;
-          }
+          })
         );
       }));
   }
@@ -237,7 +229,7 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * Handle form submission.
    */
-  private submit(): void {
+  public submit(): void {
     if (this.option === 0) {
       this.add();
     } else {
@@ -248,7 +240,7 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * Set the option
    */
-  private openOption(index: number): void {
+  public openOption(index: number): void {
     this.option = index;
   }
 }

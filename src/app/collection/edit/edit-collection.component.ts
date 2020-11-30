@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   ConfirmationDialogComponent
@@ -100,10 +101,10 @@ export class EditCollectionComponent implements OnInit {
 
     // Set the fullPath. Required for consistency between Chrome and Firefox browsers.
     // Appends /thumbnails, as it needs to be uploaded as one.
-    if (file.webkitRelativePath === '') {
+    if (file['webkitRelativePath'] === '') {
       file['fullPath'] = `/thumbnails/${file['name']}`;
     } else {
-      file['fullPath'] = `/thumbnails/${file.webkitRelativePath}`;
+      file['fullPath'] = `/thumbnails/${file['webkitRelativePath']}`;
     }
     this.bannerFile = file;
   }

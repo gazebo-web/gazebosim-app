@@ -24,8 +24,8 @@
     <div fxLayout="row" fxLayoutAlign="space-between center" fxFill class="filename-container">
       <div class="filename">
         <span *ngIf="!logfile" class="placeholder">Logfile...</span>
-        <span *ngIf="logfile && logfile.fullPath">{{logfile.fullPath}}</span>
-        <span *ngIf="logfile && !logfile.fullPath">{{logfile.name}}</span>
+        <span *ngIf="logfile && logfile['fullPath']">{{logfile['fullPath']}}</span>
+        <span *ngIf="logfile && !logfile['fullPath']">{{logfile.name}}</span>
       </div>
       <div>
         <label for="browse-files">

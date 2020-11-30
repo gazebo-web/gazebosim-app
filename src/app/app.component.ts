@@ -6,13 +6,15 @@ import { Router,
          ResolveEnd,
          NavigationEnd,
          NavigationCancel } from '@angular/router';
-import { MatDialog, MatSnackBar, MatSidenav } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSidenav } from '@angular/material/sidenav';
 import { Title } from '@angular/platform-browser';
-import { SearchComponent } from './search';
+import { MediaChange, MediaObserver } from '@angular/flex-layout';
 
+import { SearchComponent } from './search';
 import { AuthService } from './auth/auth.service';
 import { Ng2DeviceService } from './device-detector';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
 @Component({
   selector: 'ign-app-root',
@@ -30,12 +32,20 @@ export class AppComponent implements OnInit {
    */
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
+  /**
+   * Search element.
+   */
   @ViewChild('search') public searchBar: ElementRef;
 
   /**
    * Title of the Web Application.
    */
   public readonly title = 'Ignition Robotics';
+
+  /**
+   * Current year to display in the copyright.
+   */
+  public currentYear: number = new Date().getFullYear();
 
   /**
    * Indicates whether a route is being resolved or not.
@@ -71,7 +81,7 @@ export class AppComponent implements OnInit {
     public authService: AuthService,
     public deviceService: Ng2DeviceService,
     public dialog: MatDialog,
-    public media: ObservableMedia,
+    public media: MediaObserver,
     private route: ActivatedRoute,
     private router: Router,
     public snackBar: MatSnackBar,
@@ -88,13 +98,17 @@ export class AppComponent implements OnInit {
   public ngOnInit(): void {
 
     // Subscribe to media changes. Detects the change in a layout breakpoint.
-    this.media.asObservable().subscribe((change: MediaChange) => {
-      if (change.mqAlias === 'xs') {
-        this.sidenav.mode = 'over';
-        this.sidenav.close();
+    this.media.asObservable().subscribe((changes: MediaChange[]) => {
+      if (changes.some(change => change.mqAlias === 'xs')) {
+        if (this.sidenav.mode === 'side') {
+          this.sidenav.mode = 'over';
+          this.sidenav.close();
+        }
       } else {
-        this.sidenav.mode = 'side';
-        this.sidenav.open();
+        if (this.sidenav.mode === 'over') {
+          this.sidenav.mode = 'side';
+          this.sidenav.open();
+        }
       }
     });
 
@@ -176,8 +190,18 @@ export class AppComponent implements OnInit {
    *
    * @param search Search string.
    */
-  private onSearch(search: string): void {
+  public onSearch(search: string): void {
     this.router.navigate(['search', {q: search}]);
+  }
+
+  /**
+   * On deactivate event handler.
+   */
+  public onDeactivate(event): void {
+    // Clear the search text
+    if (event instanceof SearchComponent) {
+      this.searchBar.nativeElement.value = '';
+    }
   }
 
   /**
@@ -196,15 +220,5 @@ export class AppComponent implements OnInit {
         this.makeProgress();
       }
     }, 200);
-  }
-
-  /**
-   * On deactivate event handler.
-   */
-  private onDeactivate(event): void {
-    // Clear the search text
-    if (event instanceof SearchComponent) {
-      this.searchBar.nativeElement.value = '';
-    }
   }
 }

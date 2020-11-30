@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { Observable, throwError, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { Organization, PaginatedOrganizations } from '../organization';
-import { Portal } from '../portal';
-import { Registration, PaginatedRegistration } from '../portal';
-import { LeaderBoardEntry, PaginatedLeaderBoardEntry } from '../portal';
+import { Portal } from './portal';
+import { Registration } from './registration';
+import { PaginatedRegistration } from './paginated-registration';
+import { LeaderBoardEntry } from './leaderboard/leaderboard-entry';
+import { PaginatedLeaderBoardEntry } from './leaderboard/paginated-leaderboard-entry';
 import { UiError } from '../ui-error';
+import { environment } from '../../environments/environment';
 
 import * as linkParser from 'parse-link-header';
 
@@ -20,12 +23,12 @@ import * as linkParser from 'parse-link-header';
  * TODO(german-mas): This service needs to be completed once portals are available in the Server.
  * See https://app.asana.com/0/851925973517080/909537141592497/f
  */
-export abstract class PortalService {
+export class PortalService {
 
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
    * Keep track of the next URL in the pagination.
@@ -63,7 +66,7 @@ export abstract class PortalService {
         this portal to register, submit solutions, and access information about the challenge.`,
     });
 
-    return Observable.of([portal]);
+    return of([portal]);
   }
 
   /**
@@ -85,7 +88,7 @@ export abstract class PortalService {
         this portal to register, submit solutions, and access information about the challenge.`,
     });
 
-    return Observable.of(portal);
+    return of(portal);
   }
 
   /**
@@ -96,11 +99,12 @@ export abstract class PortalService {
    */
   public sendRegistrationRequest(orgName: string): Observable<Registration> {
     return this.http.post<Registration>(`${this.baseUrl}/subt/registrations`,
-      {participant: orgName})
-      .map((response) => {
-        return this.factory.fromJson(response, Registration);
-      })
-      .catch(this.handleError);
+      {participant: orgName}).pipe(
+        map((response) => {
+          return this.factory.fromJson(response, Registration);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -119,15 +123,16 @@ export abstract class PortalService {
     if (page) {
       httpParams = httpParams.set('page', page.toString());
     }
-    return this.http.get<Registration[]>(url, {params: httpParams, observe: 'response'})
-      .map((response) => {
+    return this.http.get<Registration[]>(url, {params: httpParams, observe: 'response'}).pipe(
+      map((response) => {
         const res = new PaginatedRegistration();
         res.totalCount = +response.headers.get(this.headerTotalCount);
         res.registrations = this.factory.fromJson(response.body, Registration);
         res.nextPage = this.parseLinkHeader(response);
         return res;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -153,11 +158,12 @@ export abstract class PortalService {
     }
 
     return this.http.patch<Registration>(`${this.baseUrl}/subt/registrations/subt/${orgName}`,
-      {resolution, comment})
-      .map((response) => {
-        return this.factory.fromJson(response, Registration);
-      })
-      .catch(this.handleError);
+      {resolution, comment}).pipe(
+        map((response) => {
+          return this.factory.fromJson(response, Registration);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -172,11 +178,12 @@ export abstract class PortalService {
     httpParams = httpParams.set('comment', comment);
 
     return this.http.delete<Registration>(`${this.baseUrl}/subt/participants/subt/${orgName}`,
-      { params: httpParams, observe: 'response' })
-      .map((response) => {
-        return this.factory.fromJson(response, Registration);
-      })
-      .catch(this.handleError);
+      { params: httpParams, observe: 'response' }).pipe(
+        map((response) => {
+          return this.factory.fromJson(response, Registration);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -192,8 +199,8 @@ export abstract class PortalService {
     if (page) {
       url += `&page=${page}`;
     }
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         this.parseLinkHeader(response);
         if (response.body) {
           const paginatedOrg = new PaginatedOrganizations();
@@ -202,8 +209,9 @@ export abstract class PortalService {
           return paginatedOrg;
         }
         return undefined;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -220,16 +228,17 @@ export abstract class PortalService {
       httpParams = httpParams.set('page', page.toString());
     }
 
-    return this.http.get(url, {params: httpParams, observe: 'response'})
-      .map(
+    return this.http.get(url, {params: httpParams, observe: 'response'}).pipe(
+      map(
         (response) => {
           const paginatedEntries = new PaginatedLeaderBoardEntry();
           paginatedEntries.entries = this.factory.fromJson(
             response.body, LeaderBoardEntry);
           paginatedEntries.totalCount = +response.headers.get(this.headerTotalCount);
           return paginatedEntries;
-        })
-      .catch(this.handleError);
+        }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -245,7 +254,7 @@ export abstract class PortalService {
         linkParser(link) &&
         linkParser(link).next) {
       const url = linkParser(link).next.url;
-      this.nextUrl = `${API_HOST}${url}`;
+      this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
       this.nextUrl = null;
     }
@@ -259,8 +268,8 @@ export abstract class PortalService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

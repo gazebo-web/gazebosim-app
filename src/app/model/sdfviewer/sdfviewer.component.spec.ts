@@ -1,7 +1,8 @@
-import { TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../auth/auth.service';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
@@ -10,11 +11,6 @@ import { ModelService } from '../model.service';
 import { SdfViewerComponent } from './sdfviewer.component';
 import { WorldService } from '../../world/world.service';
 
-import {
-  MatSnackBarModule,
-} from '@angular/material';
-
-// Make TS happy
 declare var Detector: any;
 declare var GZ3D: any;
 
@@ -45,6 +41,9 @@ const waitsForAndRuns = (escapeFunction, runFunction, escapeTime) => {
 };
 
 describe('SdfViewerComponent', () => {
+  let fixture: ComponentFixture<SdfViewerComponent>;
+  let component: SdfViewerComponent;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -63,37 +62,36 @@ describe('SdfViewerComponent', () => {
         WorldService,
       ]
     });
+
+    fixture = TestBed.createComponent(SdfViewerComponent);
+    component = fixture.componentInstance;
   });
 
-  it('should create the SdfViewer component', async(() => {
-    const fixture = TestBed.createComponent(SdfViewerComponent);
-    const comp = fixture.debugElement.componentInstance;
-    expect(comp).toBeTruthy();
-  }));
+  it('should create the SdfViewer component', () => {
+    expect(component).toBeTruthy();
+  });
 
-  it('should have types available', async(() => {
+  it('should have types available', () => {
     expect(Detector).toBeDefined();
     expect(GZ3D).toBeDefined();
     expect(GZ3D.Shaders).toBeDefined();
     expect(GZ3D.SdfParser).toBeDefined();
     expect(GZ3D.Scene).toBeDefined();
-  }));
+  });
 
   it('should initialize empty scene without a model', (done) => {
-    const fixture = TestBed.createComponent(SdfViewerComponent);
-    const comp = fixture.debugElement.componentInstance;
-    expect(comp).toBeTruthy();
+    expect(component).toBeTruthy();
 
-    comp.ngOnInit();
+    component.ngOnInit();
 
     waitsForAndRuns(() => {
-      return comp.scene.scene.children.length > 3;
+      return component.scene.scene.children.length > 3;
     }, () => {
       // Check scene
-      expect(comp.sceneElement).toBeDefined();
-      expect(comp.model).toBeUndefined();
-      expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(6);
+      expect(component.sceneElement).toBeDefined();
+      expect(component.resource).toBeUndefined();
+      expect(component.scene).toBeDefined();
+      expect(component.scene.scene.children.length).toBe(6);
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
       // loop to end
@@ -102,9 +100,7 @@ describe('SdfViewerComponent', () => {
   });
 
   it('should initialize empty scene with bad model', (done) => {
-    const fixture = TestBed.createComponent(SdfViewerComponent);
-    const comp = fixture.debugElement.componentInstance;
-    expect(comp).toBeTruthy();
+    expect(component).toBeTruthy();
 
     // Mock model
     const model = new Model({
@@ -112,67 +108,24 @@ describe('SdfViewerComponent', () => {
       owner: 'example_owner',
     });
 
-    comp.model = model;
+    component.resource = model;
 
     // Init
-    comp.ngOnInit();
+    component.ngOnInit();
 
     waitsForAndRuns(() => {
-      return comp.scene.scene.children.length > 3;
+      return component.scene.scene.children.length > 3;
     }, () => {
       // Check scene
-      expect(comp.sceneElement).toBeDefined();
-      expect(comp.model).toBeDefined();
-      expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(6);
-      expect(comp.scene.scene.getObjectByName('example_model')).toBeUndefined();
+      expect(component.sceneElement).toBeDefined();
+      expect(component.resource).toBeDefined();
+      expect(component.scene).toBeDefined();
+      expect(component.scene.scene.children.length).toBe(6);
+      expect(component.scene.scene.getObjectByName('example_model')).toBeUndefined();
 
       // We need to call done, otherwise Jasmine will infinitely wait for the animate
       // loop to end
       done();
     }, 1000);
   });
-
-  it('should initialize scene with model', (done) => {
-    const fixture = TestBed.createComponent(SdfViewerComponent);
-    const comp = fixture.debugElement.componentInstance;
-    expect(comp).toBeTruthy();
-
-    // Mock model
-    const model = new Model({
-      name: 'example_name',
-      owner: 'example_owner',
-    });
-    model.files = [
-      {
-        path: '/model.config'
-      },
-      {
-        path: '/model.sdf'
-      },
-    ];
-    comp.resource = model;
-
-    // Change the API server
-    const modelService = TestBed.get(ModelService);
-    modelService.baseUrl = 'http://localhost:9876/base/src/assets/test';
-
-    // Init
-    comp.ngOnInit();
-
-    waitsForAndRuns(() => {
-      return comp.scene.scene.children.length > 3;
-    }, () => {
-      // Check scene
-      expect(comp.sceneElement).toBeDefined();
-      expect(comp.resource).toBeDefined();
-      expect(comp.scene).toBeDefined();
-      expect(comp.scene.scene.children.length).toBe(7);
-      expect(comp.scene.scene.getObjectByName('example_model')).toBeDefined();
-
-      // We need to call done, otherwise Jasmine will infinitely wait for the animate
-      // loop to end
-      done();
-    }, 1000);
-   });
 });

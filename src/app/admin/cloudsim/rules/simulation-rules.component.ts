@@ -1,13 +1,11 @@
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import {
-  MatDialog,
-  MatDialogRef,
-  MatTableDataSource,
-  MatSnackBar,
-  PageEvent
-} from '@angular/material';
-import { Subscription } from 'rxjs/Subscription';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
+
 import { SimulationService } from '../../../cloudsim';
 import { SimulationRule, PaginatedSimulationRules } from '../rules';
 import { TextInputDialogComponent } from '../../../text-input-dialog';
@@ -134,7 +132,7 @@ export class SimulationRulesComponent implements OnChanges {
    *
    * @param event The event fired by the form's submission. Required in order to reset the form.
    */
-  public create(event: Event) {
+  public create(event: Event): void {
 
     // Trim the inputs.
     this.ownerInputForm.setValue(this.ownerInputForm.value.trim());
@@ -194,7 +192,7 @@ export class SimulationRulesComponent implements OnChanges {
    *
    * @param rule The rule to modify.
    */
-  public edit(rule: SimulationRule) {
+  public edit(rule: SimulationRule): void {
 
     // Open a dialog for text input.
     const dialogOptions = {
@@ -235,7 +233,7 @@ export class SimulationRulesComponent implements OnChanges {
    *
    * @param rule The rule to delete.
    */
-  public delete(rule: SimulationRule) {
+  public delete(rule: SimulationRule): void {
 
     // Fire the confirmation dialog.
     const dialogOps = {

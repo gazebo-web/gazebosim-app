@@ -1,23 +1,21 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatCardModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatIconModule,
-  MatListModule,
-  MatPaginatorModule,
-  MatSelectModule,
-  MatSnackBarModule,
-  MatTableModule,
-  MatTabsModule,
-} from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { of, throwError } from 'rxjs';
 import * as FileSaver from 'file-saver';
 
 import { AuthPipe } from '../auth/auth.pipe';
@@ -73,7 +71,8 @@ describe('PortalComponent', () => {
   testPaginatedLogfile.nextPage = 'testUrl';
   testPaginatedLogfile.logfiles = [testLogfile];
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -128,18 +127,15 @@ describe('PortalComponent', () => {
         ],
       },
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
     fixture = TestBed.createComponent(PortalComponent);
     component = fixture.debugElement.componentInstance;
-    authService = TestBed.get(AuthService);
-    logfileService = TestBed.get(LogfileService);
-    portalService = TestBed.get(PortalService);
+    authService = TestBed.inject(AuthService);
+    logfileService = TestBed.inject(LogfileService);
+    portalService = TestBed.inject(PortalService);
   });
 
-  it('should get the portal from the resolved data', async(() => {
+  it('should get the portal from the resolved data', () => {
     spyOn(portalService, 'getParticipants');
     spyOn(portalService, 'getRegistrationRequests');
     spyOn(logfileService, 'getList');
@@ -150,20 +146,20 @@ describe('PortalComponent', () => {
     expect(portalService.getParticipants).not.toHaveBeenCalled();
     expect(portalService.getRegistrationRequests).not.toHaveBeenCalled();
     expect(logfileService.getList).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should get resources to display if authenticated during on init lifecycle hook', async(() => {
+  it('should get resources to display if authenticated during on init lifecycle hook', () => {
     spyOn(authService, 'isAuthenticated').and.returnValue(true);
-    spyOn(portalService, 'getParticipants').and.returnValue(Observable.of({}));
-    spyOn(portalService, 'getRegistrationRequests').and.returnValue(Observable.of({}));
-    spyOn(logfileService, 'getList').and.returnValue(Observable.of({}));
+    spyOn(portalService, 'getParticipants').and.returnValue(of(testParticipants));
+    spyOn(portalService, 'getRegistrationRequests').and.returnValue(of(testPaginatedRegistration));
+    spyOn(logfileService, 'getList').and.returnValue(of(testPaginatedLogfile));
     component.ngOnInit();
     expect(portalService.getParticipants).toHaveBeenCalled();
     expect(portalService.getRegistrationRequests).toHaveBeenCalled();
     expect(logfileService.getList).toHaveBeenCalled();
-  }));
+  });
 
-  it('should open the registration dialog', async(() => {
+  it('should open the registration dialog', () => {
     spyOn(component.dialog, 'open').and.callThrough();
     component.portal = testPortal;
     const options = {
@@ -173,28 +169,30 @@ describe('PortalComponent', () => {
     };
     component.registration();
     expect(component.dialog.open).toHaveBeenCalledWith(RegistrationDialogComponent, options);
-  }));
+  });
 
-  it('should send the request when the dialog emits a registration event', async(() => {
+  it('should send the request when the dialog emits a registration event', () => {
     const spySnackbar = spyOn(component.snackBar, 'open');
+
+    // const ref = new MatDialogRef();
 
     // Mock the dialog reference.
     spyOn(component.dialog, 'open').and.returnValue({
       componentInstance: {
-        onRegister: Observable.of(testParticipants[0]),
+        onRegister: of(testParticipants[0]),
       },
       close: () => {
         return true;
       },
       afterClosed: () => {
-        return Observable.of({});
+        return of({});
       },
-    });
+    } as any);
 
     // Registered correctly.
     component.pendingRegistrations = [];
     const spyRegistration = spyOn(portalService, 'sendRegistrationRequest');
-    spyRegistration.and.returnValue(Observable.of(testRegistration));
+    spyRegistration.and.returnValue(of(testRegistration));
 
     component.registration();
     expect(spyRegistration).toHaveBeenCalledWith(testParticipants[0]);
@@ -204,23 +202,23 @@ describe('PortalComponent', () => {
     // Problem on registration.
     component.pendingRegistrations = [];
     spyRegistration.calls.reset();
-    spyRegistration.and.returnValue(Observable.throw({}));
+    spyRegistration.and.returnValue(throwError({}));
     spySnackbar.calls.reset();
 
     component.registration();
     expect(component.pendingRegistrations.length).toBe(0);
     expect(spySnackbar).toHaveBeenCalled();
-  }));
+  });
 
-  it('should approve a registration request', async(() => {
+  it('should approve a registration request', () => {
     component.pendingRegistrations = [testRegistration];
     component.portal = testPortal;
 
     const spySnackbar = spyOn(component.snackBar, 'open');
     const spyParticipants = spyOn(portalService, 'getParticipants');
-    spyParticipants.and.returnValue(Observable.of(testParticipants));
+    spyParticipants.and.returnValue(of(testParticipants));
     const spyApproval = spyOn(portalService, 'modifyRegistration');
-    spyApproval.and.returnValue(Observable.of(testRegistration));
+    spyApproval.and.returnValue(of(testRegistration));
 
     component.approveRegistration(testRegistration);
 
@@ -233,7 +231,7 @@ describe('PortalComponent', () => {
     spySnackbar.calls.reset();
     spyParticipants.calls.reset();
     spyApproval.calls.reset();
-    spyApproval.and.returnValue(Observable.throw({}));
+    spyApproval.and.returnValue(throwError({}));
 
     component.pendingRegistrations = [testRegistration];
     component.approveRegistration(testRegistration);
@@ -242,25 +240,25 @@ describe('PortalComponent', () => {
     expect(component.pendingRegistrations).toEqual([testRegistration]);
     expect(component.snackBar.open).toHaveBeenCalled();
     expect(portalService.getParticipants).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should reject a registration request', async(() => {
+  it('should reject a registration request', () => {
     component.pendingRegistrations = [testRegistration];
     component.portal = testPortal;
     const rejectComment: string = 'Test rejection comment';
 
     const spyReject = spyOn(portalService, 'modifyRegistration');
-    spyReject.and.returnValue(Observable.of(testRegistration));
+    spyReject.and.returnValue(of(testRegistration));
 
     const spySnackbar = spyOn(component.snackBar, 'open');
     spyOn(component.dialog, 'open').and.returnValue({
       componentInstance: {
-        onSubmit: Observable.of(rejectComment),
+        onSubmit: of(rejectComment),
       },
       afterClosed: () => {
-        return Observable.of({});
+        return of({});
       },
-    });
+    } as any);
 
     component.rejectRegistration(testRegistration);
 
@@ -272,7 +270,7 @@ describe('PortalComponent', () => {
     // Error on modification.
     spySnackbar.calls.reset();
     spyReject.calls.reset();
-    spyReject.and.returnValue(Observable.throw({}));
+    spyReject.and.returnValue(throwError({}));
 
     component.pendingRegistrations = [testRegistration];
     component.rejectRegistration(testRegistration);
@@ -280,53 +278,53 @@ describe('PortalComponent', () => {
     expect(component.pendingRegistrations.length).toBe(1);
     expect(component.pendingRegistrations).toEqual([testRegistration]);
     expect(component.snackBar.open).toHaveBeenCalled();
-  }));
+  });
 
-  it('should upload a logfile', async(() => {
+  it('should upload a logfile', () => {
     component.pendingPaginatedLogfiles = new PaginatedLogfile();
 
     spyOn(component.dialog, 'open').and.returnValue({
       afterClosed: () => {
-        return Observable.of(testLogfile);
+        return of(testLogfile);
       }
-    });
+    } as any);
 
     component.uploadLogfile();
     expect(component.pendingPaginatedLogfiles.logfiles.length).toBe(1);
-  }));
+  });
 
-  it('should not upload a logfile when the dialog closes', async(() => {
+  it('should not upload a logfile when the dialog closes', () => {
     component.pendingPaginatedLogfiles = new PaginatedLogfile();
 
     spyOn(component.dialog, 'open').and.returnValue({
       afterClosed: () => {
-        return Observable.of(undefined);
+        return of(undefined);
       }
-    });
+    } as any);
 
     component.uploadLogfile();
     expect(component.pendingPaginatedLogfiles.logfiles.length).toBe(0);
-  }));
+  });
 
-  it('should score a logfile', async(() => {
+  it('should score a logfile', () => {
     component.pendingPaginatedLogfiles = new PaginatedLogfile();
     component.pendingPaginatedLogfiles.logfiles = [testLogfile];
     component.donePaginatedLogfiles = new PaginatedLogfile();
 
     spyOn(component.dialog, 'open').and.returnValue({
       afterClosed: () => {
-        return Observable.of(testLogfile);
+        return of(testLogfile);
       }
-    });
+    } as any);
 
     component.scoreLogfile(testLogfile);
 
     expect(component.pendingPaginatedLogfiles.logfiles.length).toBe(0);
     expect(component.donePaginatedLogfiles.logfiles.length).toBe(1);
     expect(component.donePaginatedLogfiles.logfiles[0]).toEqual(testLogfile);
-  }));
+  });
 
-  it('should score a logfile from the rejected list', async(() => {
+  it('should score a logfile from the rejected list', () => {
     component.pendingPaginatedLogfiles = new PaginatedLogfile();
     component.pendingPaginatedLogfiles.logfiles = [testLogfile];
     component.rejectedPaginatedLogfiles = new PaginatedLogfile();
@@ -335,9 +333,9 @@ describe('PortalComponent', () => {
 
     spyOn(component.dialog, 'open').and.returnValue({
       afterClosed: () => {
-        return Observable.of(testLogfile);
+        return of(testLogfile);
       }
-    });
+    } as any);
 
     component.scoreLogfile(testLogfile, true);
 
@@ -345,26 +343,26 @@ describe('PortalComponent', () => {
     expect(component.pendingPaginatedLogfiles.logfiles.length).toBe(1);
     expect(component.donePaginatedLogfiles.logfiles.length).toBe(1);
     expect(component.donePaginatedLogfiles.logfiles[0]).toEqual(testLogfile);
-  }));
+  });
 
-  it('should not score a logfile when the dialog closes', async(() => {
+  it('should not score a logfile when the dialog closes', () => {
     component.pendingPaginatedLogfiles = new PaginatedLogfile();
     component.pendingPaginatedLogfiles.logfiles = [testLogfile];
     component.donePaginatedLogfiles = new PaginatedLogfile();
 
     spyOn(component.dialog, 'open').and.returnValue({
       afterClosed: () => {
-        return Observable.of(undefined);
+        return of(undefined);
       }
-    });
+    } as any);
 
     component.scoreLogfile(testLogfile);
 
     expect(component.pendingPaginatedLogfiles.logfiles.length).toBe(1);
     expect(component.donePaginatedLogfiles.logfiles.length).toBe(0);
-  }));
+  });
 
-  it('should reject a logfile', async(() => {
+  it('should reject a logfile', () => {
     const rejectComment: string = 'Test rejection comment';
     const rejectStatus = { status: 2, comments: rejectComment };
     component.pendingPaginatedLogfiles = new PaginatedLogfile();
@@ -373,15 +371,15 @@ describe('PortalComponent', () => {
 
     const spyModify = spyOn(logfileService, 'modify');
     const spySnackbar = spyOn(component.snackBar, 'open');
-    spyModify.and.returnValue(Observable.of(testLogfile));
+    spyModify.and.returnValue(of(testLogfile));
     spyOn(component.dialog, 'open').and.returnValue({
       componentInstance: {
-        onSubmit: Observable.of(rejectComment),
+        onSubmit: of(rejectComment),
       },
       afterClosed: () => {
-        return Observable.of({});
+        return of({});
       },
-    });
+    } as any);
 
     component.rejectLogfile(testLogfile);
 
@@ -393,7 +391,7 @@ describe('PortalComponent', () => {
 
     spySnackbar.calls.reset();
     spyModify.calls.reset();
-    spyModify.and.returnValue(Observable.throw({}));
+    spyModify.and.returnValue(throwError({}));
     component.pendingPaginatedLogfiles.logfiles = [testLogfile];
     component.rejectedPaginatedLogfiles.logfiles = [];
 
@@ -403,11 +401,12 @@ describe('PortalComponent', () => {
     expect(component.pendingPaginatedLogfiles.logfiles.length).toBe(1);
     expect(component.pendingPaginatedLogfiles.logfiles[0]).toEqual(testLogfile);
     expect(component.snackBar.open).toHaveBeenCalled();
-  }));
+  });
 
-  it('should download a logfile', async(() => {
+  it('should download a logfile', () => {
     const spyDownload = spyOn(logfileService, 'download');
-    spyDownload.and.returnValue(Observable.of(testLogfile));
+    const blob = new Blob();
+    spyDownload.and.returnValue(of(blob));
     const spyFileSaver = spyOn(FileSaver, 'saveAs');
     spyOn(component.snackBar, 'open');
 
@@ -418,15 +417,15 @@ describe('PortalComponent', () => {
 
     spyFileSaver.calls.reset();
     spyDownload.calls.reset();
-    spyDownload.and.returnValue(Observable.throw({}));
+    spyDownload.and.returnValue(throwError({}));
 
     component.downloadLogfile(testLogfile);
     expect(logfileService.download).toHaveBeenCalledWith(testLogfile.id);
     expect(spyFileSaver).not.toHaveBeenCalled();
     expect(component.snackBar.open).toHaveBeenCalled();
-  }));
+  });
 
-  it('should get the title of the registration button', async(() => {
+  it('should get the title of the registration button', () => {
     const spyAuthenticated = spyOn(authService, 'isAuthenticated');
 
     // Not authenticated.
@@ -444,5 +443,5 @@ describe('PortalComponent', () => {
     component.pendingRegistrations = [];
     result = component.registrationButtonTitle();
     expect(result).toBe('Submit a registration');
-  }));
+  });
 });

@@ -19,32 +19,32 @@ export class DashboardComponent implements OnInit {
   /**
    * Latest models to display.
    */
-  private models: Model[];
+  public models: Model[];
 
   /**
    * The number of models in the Fuel Server.
    */
-  private modelsQuantity: number;
+  public modelsQuantity: number;
 
   /**
    * Latest worlds to display.
    */
-  private worlds: World[];
+  public worlds: World[];
 
   /**
    * The number of worlds in the Fuel Server.
    */
-  private worldsQuantity: number;
+  public worldsQuantity: number;
 
   /**
    * Latest collections to display.
    */
-  private collections: Collection[];
+  public collections: Collection[];
 
   /**
    * The number of collections in the Fuel Server.
    */
-  private collectionsQuantity: number;
+  public collectionsQuantity: number;
 
   /**
    * Number of items to be displayed for each resource type.

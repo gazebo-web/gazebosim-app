@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { PaginatedWorlds } from '../paginated-worlds';
 import { WorldService } from '../world.service';
@@ -33,13 +34,13 @@ export class UserWorldsResolver implements Resolve<PaginatedWorlds> {
 
     const worldOwner: string = route.paramMap.get('owner');
 
-    return this.worldService.getOwnerList(worldOwner)
-      .map((worlds) => {
+    return this.worldService.getOwnerList(worldOwner).pipe(
+      map((worlds) => {
         return worlds;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

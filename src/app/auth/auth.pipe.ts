@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { PipeTransform, Pipe, OnDestroy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /**
  * Pipe used to get a resource using an explicit GET request that contains an Authorization header.
@@ -41,11 +42,11 @@ export class AuthPipe implements PipeTransform, OnDestroy {
    * @param url The URL of the resource.
    */
   public transform(url: string): Observable<SafeUrl> {
-    return this.http.get(url, {responseType: 'blob'}).map(
-      (response) => {
+    return this.http.get(url, {responseType: 'blob'}).pipe(
+      map((response) => {
         this.resourceUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response));
         return this.resourceUrl;
-      }
+      })
     );
   }
 }

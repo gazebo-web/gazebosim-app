@@ -1,9 +1,8 @@
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-import { AuthService } from '../auth/auth.service';
 import { Collection } from './collection';
 import { FuelResource } from '../fuel-resource';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
@@ -13,6 +12,7 @@ import { World } from '../world/world';
 import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 import { UiError } from '../ui-error';
+import { environment } from '../../environments/environment';
 
 import * as linkParser from 'parse-link-header';
 
@@ -34,15 +34,13 @@ export class CollectionService {
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
-   * @param authService Service to get authentication information.
    * @param factory Factory to transform Json into an object instance.
    * @param http Performs HTTP requests.
    */
   constructor(
-    protected authService: AuthService,
     protected factory: JsonClassFactoryService,
     protected http: HttpClient) {
   }
@@ -58,16 +56,17 @@ export class CollectionService {
     if (search) {
       url += `?q=:noft:${search}`;
     }
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
         paginatedCollection.nextPage = this.parseLinkHeader(response);
         return paginatedCollection;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -81,16 +80,17 @@ export class CollectionService {
     if (search) {
       url += `&q=:noft:${search}`;
     }
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
         paginatedCollection.nextPage = this.parseLinkHeader(response);
         return paginatedCollection;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -101,16 +101,17 @@ export class CollectionService {
    */
   public getOwnerCollectionList(owner: string): Observable<PaginatedCollection> {
     const url = this.getOwnerCollectionListUrl(owner);
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
         paginatedCollection.nextPage = this.parseLinkHeader(response);
         return paginatedCollection;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -122,11 +123,12 @@ export class CollectionService {
    */
   public getCollection(owner: string, name: string): Observable<Collection> {
     const url = this.getCollectionUrl(owner, name);
-    return this.http.get<Collection>(url)
-      .map((response) => {
+    return this.http.get<Collection>(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Collection);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -138,16 +140,17 @@ export class CollectionService {
    */
   public getCollectionModels(owner: string, name: string): Observable<PaginatedModels> {
     const url = this.getCollectionModelsUrl(owner, name);
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedModels = new PaginatedModels();
         paginatedModels.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedModels.resources = this.factory.fromJson(response.body, Model);
         paginatedModels.nextPage = this.parseLinkHeader(response);
         return paginatedModels;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -159,16 +162,17 @@ export class CollectionService {
    */
   public getCollectionWorlds(owner: string, name: string): Observable<PaginatedWorlds> {
     const url = this.getCollectionWorldsUrl(owner, name);
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedWorlds = new PaginatedWorlds();
         paginatedWorlds.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedWorlds.resources = this.factory.fromJson(response.body, World);
         paginatedWorlds.nextPage = this.parseLinkHeader(response);
         return paginatedWorlds;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -180,11 +184,12 @@ export class CollectionService {
    */
   public createCollection(data: object): Observable<Collection> {
     const url = this.getCollectionListUrl();
-    return this.http.post(url, data)
-      .map((response) => {
+    return this.http.post(url, data).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Collection);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -198,11 +203,12 @@ export class CollectionService {
    */
   public editCollection(owner: string, name: string, form: FormData): Observable<Collection> {
     const url = this.getCollectionUrl(owner, name);
-    return this.http.patch<Collection>(url, form)
-      .map((response) => {
+    return this.http.patch<Collection>(url, form).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Collection);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -213,10 +219,11 @@ export class CollectionService {
    * @param name The name of the collection to remove.
    * @returns An observable of the result.
    */
-  public deleteCollection(owner: string, name: string): Observable<Collection> {
+  public deleteCollection(owner: string, name: string): Observable<any> {
     const url = this.getCollectionUrl(owner, name);
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -235,8 +242,9 @@ export class CollectionService {
       name: resource.name,
       owner: resource.owner
     };
-    return this.http.post(url, data)
-      .catch(this.handleError);
+    return this.http.post(url, data).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -252,8 +260,9 @@ export class CollectionService {
    */
   public removeAsset(owner: string, name: string, resource: FuelResource): Observable<any> {
     const url = this.getDeleteAssetUrl(owner, name, resource);
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -265,15 +274,16 @@ export class CollectionService {
    */
   public getAssetCollections(resource: FuelResource): Observable<PaginatedCollection> {
     const url = `${this.baseUrl}/${resource.owner}/${resource.type}/${resource.name}/collections`;
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
         paginatedCollection.nextPage = this.parseLinkHeader(response);
         return paginatedCollection;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -284,15 +294,17 @@ export class CollectionService {
    */
   public getNextPage(paginatedCollection: PaginatedCollection): Observable<PaginatedCollection> {
     return this.http.get<PaginatedCollection>(paginatedCollection.nextPage, {observe: 'response'})
-      .map((response) => {
-        const res = new PaginatedCollection();
-        res.totalCount = +response.headers.get(
-          CollectionService.headerTotalCount);
-        res.collections = this.factory.fromJson(response.body, Collection);
-        res.nextPage = this.parseLinkHeader(response);
-        return res;
-      })
-      .catch(this.handleError);
+      .pipe(
+        map((response) => {
+          const res = new PaginatedCollection();
+          res.totalCount = +response.headers.get(
+            CollectionService.headerTotalCount);
+          res.collections = this.factory.fromJson(response.body, Collection);
+          res.nextPage = this.parseLinkHeader(response);
+          return res;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -321,11 +333,12 @@ export class CollectionService {
       owner: newOwner
     };
 
-    return this.http.post<Collection>(url, data)
-      .map((response) => {
+    return this.http.post<Collection>(url, data).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Collection);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -428,7 +441,7 @@ export class CollectionService {
       linkParser(link) &&
       linkParser(link).next) {
       const url = linkParser(link).next.url;
-      nextUrl = `${API_HOST}${url}`;
+      nextUrl = `${environment.API_HOST}${url}`;
     }
     return nextUrl;
   }
@@ -443,8 +456,8 @@ export class CollectionService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

@@ -1,4 +1,4 @@
-import { async, TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -11,7 +11,6 @@ import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { User, UserService } from '../user';
 
 describe('UserService', () => {
-  let injector: TestBed;
   let auth: AuthService;
   let service: UserService;
   let factory: JsonClassFactoryService;
@@ -40,11 +39,11 @@ describe('UserService', () => {
         UserService,
       ],
     });
-    injector = getTestBed();
-    auth = injector.get(AuthService);
-    service = injector.get(UserService);
-    factory = injector.get(JsonClassFactoryService);
-    httpMock = injector.get(HttpTestingController);
+
+    auth = TestBed.inject(AuthService);
+    service = TestBed.inject(UserService);
+    factory = TestBed.inject(JsonClassFactoryService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   // After each test, verify that all the requests were consumed.
@@ -52,7 +51,7 @@ describe('UserService', () => {
     httpMock.verify();
   });
 
-  it('should get a single user', async(() => {
+  it('should get a single user', () => {
     const username: string = 'testUserA';
     const testUrl: string = `${service.baseUrl}/users/${username}`;
 
@@ -63,9 +62,9 @@ describe('UserService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testUserJsonA);
-  }));
+  });
 
-  it('should delete a user', async(() => {
+  it('should delete a user', () => {
     const username: string = 'testUserA';
     const testUrl: string = `${service.baseUrl}/users/${username}`;
 
@@ -74,5 +73,5 @@ describe('UserService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('DELETE');
     req.flush('');
-  }));
+  });
 });

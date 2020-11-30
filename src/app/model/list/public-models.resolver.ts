@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { PaginatedModels } from '../paginated-models';
 import { ModelService } from '../model.service';
@@ -33,13 +34,13 @@ export class PublicModelsResolver implements Resolve<PaginatedModels> {
 
     const search = route.params['q'];
 
-    return this.modelService.getList(search)
-      .map((models) => {
+    return this.modelService.getList(search).pipe(
+      map((models) => {
         return models;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

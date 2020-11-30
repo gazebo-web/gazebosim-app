@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { PaginatedWorlds } from '../paginated-worlds';
 import { WorldService } from '../world.service';
@@ -30,13 +31,13 @@ export class LikedWorldsResolver implements Resolve<PaginatedWorlds> {
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedWorlds> {
     const user: string = route.paramMap.get('user');
 
-    return this.worldService.getUserLikedList(user)
-      .map((worlds) => {
+    return this.worldService.getUserLikedList(user).pipe(
+      map((worlds) => {
         return worlds;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

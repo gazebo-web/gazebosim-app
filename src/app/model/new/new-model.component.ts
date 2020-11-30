@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
-import { Subscription } from 'rxjs/Subscription';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
 import {

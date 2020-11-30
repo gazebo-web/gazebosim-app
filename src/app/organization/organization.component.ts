@@ -1,14 +1,15 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthService } from '../auth/auth.service';
 import { CollectionService, Collection, PaginatedCollection } from '../collection';
 import {
   ConfirmationDialogComponent
 } from '../confirmation-dialog/confirmation-dialog.component';
-import { Organization } from '../organization';
+import { Organization } from './organization';
 import { OrganizationService } from './organization.service';
 import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
@@ -280,7 +281,7 @@ export class OrganizationComponent implements OnInit {
    *
    * @param user The user to remove from the organization.
    */
-  public removeUser(user: any) {
+  public removeUser(user: any): void {
 
     const dialogOps = {
       data: {

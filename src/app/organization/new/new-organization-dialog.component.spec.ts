@@ -1,17 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MatInputModule,
-  MatRadioModule,
-  MatSnackBarModule,
-  MatStepperModule
-} from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material/stepper';
+import { of, throwError } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
 import {
@@ -56,7 +53,7 @@ describe('NewOrganizationDialogComponent', () => {
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should build the new organization form', async(() => {
+  it('should build the new organization form', () => {
     component.ngOnInit();
 
     expect(component.newOrganizationForm.contains('name')).toBe(true);
@@ -70,9 +67,9 @@ describe('NewOrganizationDialogComponent', () => {
     // expect(component.newOrganizationForm.controls['email'].value).toBe('');
     // expect(component.newOrganizationForm.controls['invitationList'].value).toBe('');
     expect(component.newOrganizationForm.controls['plan'].value).toBe(component.planOptions[0]);
-  }));
+  });
 
-  it('should return the correct error for the organization name', async(() => {
+  it('should return the correct error for the organization name', () => {
     // Empty name error.
     component.organizationName.setValue('');
     let error = component.getNameError();
@@ -90,10 +87,10 @@ describe('NewOrganizationDialogComponent', () => {
     component.organizationName.setValue('Test organization');
     error = component.getNameError();
     expect(error).toBe('');
-  }));
+  });
 
   // Billing email to be added soon.
-  // it('should return the correct error for the organization email', async(() => {
+  // it('should return the correct error for the organization email', () => {
   //   // Empty email error.
   //   component.organizationEmail.setValue('');
   //   let error = component.getEmailError();
@@ -110,13 +107,14 @@ describe('NewOrganizationDialogComponent', () => {
   //   component.organizationEmail.setValue('test@email.com');
   //   error = component.getEmailError();
   //   expect(error).toBe('');
-  // }));
+  // });
 
-  it('should NOT submit a new organization with an empty name', async(() => {
-    const service = TestBed.get(OrganizationService);
+  it('should NOT submit a new organization with an empty name', () => {
+    const service = TestBed.inject(OrganizationService);
     const snackBar = component.snackBar;
+    const organization = new Organization({});
 
-    spyOn(service, 'createOrganization').and.returnValue(Observable.of({}));
+    spyOn(service, 'createOrganization').and.returnValue(of(organization));
 
     component.ngOnInit();
     component.organizationName.setValue('');
@@ -124,10 +122,10 @@ describe('NewOrganizationDialogComponent', () => {
 
     expect(snackBar._openedSnackBarRef).toBeTruthy();
     expect(service.createOrganization).not.toHaveBeenCalled();
-  }));
+  });
 
   // Billing email to be added soon.
-  // it('should NOT submit a new organization with an invalid email', async(() => {
+  // it('should NOT submit a new organization with an invalid email', () => {
   //   const service = TestBed.get(OrganizationService);
   //   const snackBar = component.snackBar;
 
@@ -139,11 +137,11 @@ describe('NewOrganizationDialogComponent', () => {
 
   //   expect(snackBar._openedSnackBarRef).toBeTruthy();
   //   expect(service.createOrganization).not.toHaveBeenCalled();
-  // }));
+  // });
 
-  it('should submit a new organization with a valid form', async(() => {
-    const service = TestBed.get(OrganizationService);
-    const authService = TestBed.get(AuthService);
+  it('should submit a new organization with a valid form', () => {
+    const service = TestBed.inject(OrganizationService);
+    const authService = TestBed.inject(AuthService);
 
     // First test with an empty profile.
     let mockProfile = {};
@@ -163,7 +161,7 @@ describe('NewOrganizationDialogComponent', () => {
     });
 
     spyOn(localStorage, 'setItem');
-    spyOn(service, 'createOrganization').and.returnValue(Observable.of(mockOrganization));
+    spyOn(service, 'createOrganization').and.returnValue(of(mockOrganization));
 
     component.ngOnInit();
     component.organizationName.setValue(formData.name);
@@ -193,11 +191,11 @@ describe('NewOrganizationDialogComponent', () => {
     expect(mockProfile['orgs'][1]).toBe('Valid Organization');
     expect(mockProfile['orgRoles']['testOrg']).toBe('admin');
     expect(mockProfile['orgRoles']['Valid Organization']).toBe('owner');
-  }));
+  });
 
-  it('should return an error if the submitted organization already exists', async(() => {
-    const service = TestBed.get(OrganizationService);
-    const authService = TestBed.get(AuthService);
+  it('should return an error if the submitted organization already exists', () => {
+    const service = TestBed.inject(OrganizationService);
+    const authService = TestBed.inject(AuthService);
 
     const mockProfile = {};
     authService.userProfile = mockProfile;
@@ -213,7 +211,7 @@ describe('NewOrganizationDialogComponent', () => {
 
     spyOn(localStorage, 'setItem');
     spyOn(service, 'createOrganization').and.returnValue(
-      Observable.throw({ code: ErrMsg.ErrorResourceExists }));
+      throwError({ code: ErrMsg.ErrorResourceExists }));
 
     component.ngOnInit();
     component.organizationName.setValue(formData.name);
@@ -222,5 +220,5 @@ describe('NewOrganizationDialogComponent', () => {
     component.onSubmit();
 
     expect(component.organizationName.getError('duplicated')).toBe(true);
-  }));
+  });
 });

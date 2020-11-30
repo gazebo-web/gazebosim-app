@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
@@ -32,10 +33,10 @@ export class SimulationResolver implements Resolve<Simulation> {
   public resolve(route: ActivatedRouteSnapshot): Observable<Simulation> {
     const groupId: string = route.paramMap.get('groupId');
 
-    return this.simulationService.getSimulation(groupId).catch(
-      (err) => {
-        return Observable.of(null);
-      }
+    return this.simulationService.getSimulation(groupId).pipe(
+      catchError((err) => {
+        return of(null);
+      })
     );
   }
 }
