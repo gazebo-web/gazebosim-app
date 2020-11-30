@@ -1,5 +1,5 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { MatIconModule } from '@angular/material';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 
 import { PageNotFoundComponent } from './page-not-found.component';
 import { PageTitleComponent } from '../page-title';
@@ -8,10 +8,7 @@ describe('PageNotFoundComponent', () => {
   let comp: PageNotFoundComponent;
   let fixture: ComponentFixture<PageNotFoundComponent>;
 
-  /**
-   * async beforeEach
-   */
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         MatIconModule,
@@ -21,15 +18,9 @@ describe('PageNotFoundComponent', () => {
         PageTitleComponent,
       ],
     });
-  });
 
-  /**
-   * synchronous beforeEach
-   */
-  beforeEach(() => {
     fixture = TestBed.createComponent(PageNotFoundComponent);
     comp = fixture.componentInstance;
-    expect(comp).toBeTruthy();
   });
 
   it('should not log to console', () => {

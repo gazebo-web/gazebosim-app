@@ -5,23 +5,17 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { Observable } from 'rxjs/Observable';
-
-import {
-  MatButtonModule,
-  MatChipsModule,
-  MatDialog,
-  MatDialogModule,
-  MatIconModule,
-  MatSelectModule,
-  MatInputModule,
-  MatListModule,
-  MatRadioModule,
-  MatSnackBar,
-  MatSnackBarModule,
-  MatTableModule,
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { of, throwError } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { AuthService } from '../../auth/auth.service';
@@ -124,10 +118,10 @@ describe('EditModelComponent', () => {
     component = fixture.componentInstance;
 
     // Get the injected services.
-    dialog = TestBed.get(MatDialog);
-    router = TestBed.get(Router);
-    service = TestBed.get(ModelService);
-    snackBar = TestBed.get(MatSnackBar);
+    dialog = TestBed.inject(MatDialog);
+    router = TestBed.inject(Router);
+    service = TestBed.inject(ModelService);
+    snackBar = TestBed.inject(MatSnackBar);
 
     // Reset files
     fileSdf = new File([''], 'model.sdf');
@@ -177,7 +171,7 @@ describe('EditModelComponent', () => {
       tags: ['tag1', 'tag2']
     });
 
-    spyOn(service, 'edit').and.returnValue(Observable.of(testEditedModel));
+    spyOn(service, 'edit').and.returnValue(of(testEditedModel));
     spyOn(component, 'back');
 
     component.onEdit();
@@ -196,7 +190,7 @@ describe('EditModelComponent', () => {
     component.model = testModel;
     component.descriptionModified = true;
 
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testModel));
     spyOn(component, 'back');
     component.onEdit();
 
@@ -215,7 +209,7 @@ describe('EditModelComponent', () => {
     component.model = testModel;
     component.tagsModified = true;
 
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testModel));
     spyOn(component, 'back');
     component.onEdit();
 
@@ -236,7 +230,7 @@ describe('EditModelComponent', () => {
     component.tagsModified = false;
     component.fileList = [fileConfig];
 
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testModel));
 
     component.onEdit();
 
@@ -250,7 +244,7 @@ describe('EditModelComponent', () => {
     component.tagsModified = false;
     component.fileList = [fileSdf];
 
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testModel));
 
     component.onEdit();
 
@@ -263,7 +257,7 @@ describe('EditModelComponent', () => {
     component.descriptionModified = false;
     component.tagsModified = false;
 
-    spyOn(service, 'edit').and.returnValue(Observable.throw({}));
+    spyOn(service, 'edit').and.returnValue(throwError({}));
 
     component.onEdit();
 

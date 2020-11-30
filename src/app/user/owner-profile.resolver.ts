@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-import { User, UserComponent, UserService } from '../user';
-import { Organization, OrganizationComponent } from '../organization';
+import { User } from './user';
+import { UserComponent } from './user.component';
+import { UserService } from './user.service';
+import { Organization } from '../organization/organization';
+import { OrganizationComponent } from '../organization/organization.component';
 
 @Injectable()
 
@@ -33,25 +37,24 @@ export class OwnerProfileResolver implements Resolve<any> {
   public resolve(route: ActivatedRouteSnapshot): Observable<any> {
     const user: string = route.paramMap.get('name');
 
-    return this.userService.getProfile(user)
-      .map(
-        (response) => {
-          // Check if the result is a User or an Organization.
-          if (response['OwnerType'] === 'users') {
-            return {
-              data: new User(response['User']),
-              component: UserComponent
-            };
-          } else if (response['OwnerType'] === 'organizations') {
-            return {
-              data: new Organization(response['Org']),
-              component: OrganizationComponent
-            };
-          }
-        })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-        });
+    return this.userService.getProfile(user).pipe(
+      map((response) => {
+        // Check if the result is a User or an Organization.
+        if (response['OwnerType'] === 'users') {
+          return {
+            data: new User(response['User']),
+            component: UserComponent
+          };
+        } else if (response['OwnerType'] === 'organizations') {
+          return {
+            data: new Organization(response['Org']),
+            component: OrganizationComponent
+          };
+        }
+      }),
+      catchError((err) => {
+        return of(null);
+      })
+    );
   }
 }

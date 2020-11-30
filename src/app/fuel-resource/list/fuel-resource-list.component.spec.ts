@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
@@ -13,7 +14,7 @@ describe('FuelResourceListComponent', () => {
   let fixture: ComponentFixture<FuelResourceListComponent>;
   let component: FuelResourceListComponent;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         InfiniteScrollModule,
@@ -27,16 +28,14 @@ describe('FuelResourceListComponent', () => {
         ItemCardComponent,
       ]
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(FuelResourceListComponent);
     component = fixture.debugElement.componentInstance;
     spyOn(component.onLoadMore, 'emit');
     spyOn(component.ref, 'detectChanges');
   });
 
-  it(`should stop loading after resources are set`, async(() => {
+  it(`should stop loading after resources are set`, () => {
     // Mock data. Use Models, as FuelResource is abstract and can't be instantiated.
     const resources: FuelResource[] = [];
     component.loading = true;
@@ -44,15 +43,15 @@ describe('FuelResourceListComponent', () => {
     expect(component.loading).toBe(false);
     expect(component.ref.detectChanges).toHaveBeenCalled();
     expect(component.resources.length).toBe(0);
-  }));
+  });
 
-  it(`should load resource on a scroll callback`, async(() => {
+  it(`should load resource on a scroll callback`, () => {
     spyOn(component, 'loadMoreResources');
     component.onScroll();
     expect(component.loadMoreResources).toHaveBeenCalled();
-  }));
+  });
 
-  it(`should load resources if it's not loading and there are resources to load`, async(() => {
+  it(`should load resources if it's not loading and there are resources to load`, () => {
     // Test loading.
     component.loading = false;
     component.finished = false;
@@ -60,9 +59,9 @@ describe('FuelResourceListComponent', () => {
     expect(component.loading).toBe(true);
     expect(component.onLoadMore.emit).toHaveBeenCalled();
     expect(component.ref.detectChanges).toHaveBeenCalled();
-  }));
+  });
 
-  it(`should NOT load resources if loading, or there aren't any left`, async(() => {
+  it(`should NOT load resources if loading, or there aren't any left`, () => {
     // Test loading.
     component.loading = true;
     component.finished = false;
@@ -74,9 +73,9 @@ describe('FuelResourceListComponent', () => {
     component.finished = true;
     component.loadMoreResources();
     expect(component.onLoadMore.emit).not.toHaveBeenCalled();
-  }));
+  });
 
-  it(`should ensure the scrollbar appears after a change in the view`, async(() => {
+  it(`should ensure the scrollbar appears after a change in the view`, () => {
     const loadResourcesSpy = spyOn(component, 'loadMoreResources');
     spyOn(component, 'getWindowHeight').and.returnValue(10);
 
@@ -103,5 +102,5 @@ describe('FuelResourceListComponent', () => {
     component.listElement.nativeElement.offsetHeight = 5;
     component.ngAfterViewChecked();
     expect(component.loadMoreResources).toHaveBeenCalled();
-  }));
+  });
 });

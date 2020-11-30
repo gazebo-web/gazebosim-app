@@ -1,15 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-  MatInputModule,
-  MatDialogRef,
-  MatSnackBarModule,
-  MAT_DIALOG_DATA,
-} from '@angular/material';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
+import { of, throwError } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
@@ -28,7 +25,8 @@ describe('LogfileScoreDialogComponent', () => {
     owner: 'testOwner',
   });
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -56,30 +54,28 @@ describe('LogfileScoreDialogComponent', () => {
         }
         ],
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
     fixture = TestBed.createComponent(LogfileScoreDialogComponent);
     component = fixture.debugElement.componentInstance;
-    authService = TestBed.get(AuthService);
-    logfileService = TestBed.get(LogfileService);
+    authService = TestBed.inject(AuthService);
+    logfileService = TestBed.inject(LogfileService);
   });
 
-  it('should get the logfile from the injected dialog data', async(() => {
+
+  it('should get the logfile from the injected dialog data', () => {
     component.ngOnInit();
     expect(component.logfile).toBe(testLogfile);
-  }));
+  });
 
-  it('should close the dialog on cancel', async(() => {
+  it('should close the dialog on cancel', () => {
     spyOn(component.dialogRef, 'close');
     component.cancel();
     expect(component.dialogRef.close).toHaveBeenCalled();
-  }));
+  });
 
-  it('should not score if there is an error in the form', async(() => {
+  it('should not score if there is an error in the form', () => {
     const spyScore = spyOn(logfileService, 'modify');
-    spyScore.and.returnValue(Observable.of({ testLogfile }));
+    spyScore.and.returnValue(of(testLogfile));
     const spyDialog = spyOn(component.dialogRef, 'close');
     const spySnackbar = spyOn(component.snackBar, 'open');
     component.logfile = testLogfile;
@@ -89,11 +85,11 @@ describe('LogfileScoreDialogComponent', () => {
     expect(spyScore).not.toHaveBeenCalled();
     expect(spyDialog).not.toHaveBeenCalled();
     expect(spySnackbar).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should score the dialog', async(() => {
+  it('should score the dialog', () => {
     const spyScore = spyOn(logfileService, 'modify');
-    spyScore.and.returnValue(Observable.of({ testLogfile }));
+    spyScore.and.returnValue(of(testLogfile));
     const spyDialog = spyOn(component.dialogRef, 'close');
     const spySnackbar = spyOn(component.snackBar, 'open');
     component.logfile = testLogfile;
@@ -112,13 +108,13 @@ describe('LogfileScoreDialogComponent', () => {
     spySnackbar.calls.reset();
 
     // Error from the score.
-    spyScore.and.returnValue(Observable.throw({}));
+    spyScore.and.returnValue(throwError({}));
     component.score();
     expect(spySnackbar).toHaveBeenCalled();
     expect(spyDialog).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should get an error string for the score input', async(() => {
+  it('should get an error string for the score input', () => {
     // Required score.
     component.scoreForm.setErrors({ required: true });
     expect(component.scoreForm.hasError('required')).toBe(true);
@@ -130,5 +126,5 @@ describe('LogfileScoreDialogComponent', () => {
     component.scoreForm.setValue(1.23);
     errorString = component.getError();
     expect(errorString).toEqual('');
-  }));
+  });
 });

@@ -1,6 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection } from './collection';
@@ -77,7 +78,7 @@ export class CollectionComponent implements OnInit {
    */
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authService: AuthService,
+    public authService: AuthService,
     private collectionService: CollectionService,
     public dialog: MatDialog,
     private modelService: ModelService,
@@ -228,7 +229,7 @@ export class CollectionComponent implements OnInit {
    *
    * @param event The event containing the resource to remove.
    */
-  public removeItem(event) {
+  public removeItem(event): void {
     const resource = event.resource;
 
     // Fire the confirmation dialog.
@@ -300,7 +301,7 @@ export class CollectionComponent implements OnInit {
    *
    * @param search Search string.
    */
-  private onSearch(search: string): void {
+  public onSearch(search: string): void {
     let searchFinal = 'collections:' + this.collection.name;
 
     // Replace ampersand with %26 so that it gets sent over the wire
@@ -343,7 +344,7 @@ export class CollectionComponent implements OnInit {
   /**
    * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
    */
-  private copyBibtex(): void {
+  public copyBibtex(): void {
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -365,7 +366,7 @@ export class CollectionComponent implements OnInit {
    *
    * @returns The title of the copy button, whether the collection can be copied or not.
    */
-  private getCopyButtonTitle(): string {
+  public getCopyButtonTitle(): string {
     if (!this.authService.isAuthenticated()) {
       return 'Log in to copy this collection';
     }
@@ -375,7 +376,7 @@ export class CollectionComponent implements OnInit {
   /**
    * Callback for the Collection Copy button.
    */
-  private copyCollection(): void {
+  public copyCollection(): void {
     const dialogOps = {
       disableClose: true,
       data: {

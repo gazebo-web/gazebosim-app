@@ -1,175 +1,188 @@
 <div align="center">
-  <img src="./assets/logo.png" width="200" alt="Ignition Robotics" />
+  <img src="./src/assets/images/ignition_icon_color.svg" width="200" alt="Ignition Robotics" />
   <h1>Ignition Robotics</h1>
-  <p>Ignition web application</p>
+  <p>Ignition Web Application</p>
 </div>
 
-* Framework: Angular 5
+* Framework: Angular 10
 * CI: GitLab pipelines
-* CD: GitLab pipelines + AWS CloudFront
+* CD: GitLab pipelines + AWS S3 + CloudFront
 
 ---
 
-## Quickstart
+# Prequisites
 
-### Prerequisite
+This project requires:
+- node 14.x
+- npm 6.x
 
-1. Install nodejs and npm (be sure you have `npm` version 3 and `nodejs` version 6):
+To install node, it is highly recommended to use Node Version Manager, [NVM](https://github.com/nvm-sh/nvm). You can install it the following way:
 
-        # Install node. Note you'll need root access
-        curl -sL https://deb.nodesource.com/setup_6.x | bash -
-        apt-get install -y nodejs
+        # Install NVM. Check their repository for the latest version.
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 
-1. If you run into issues with installing `npm` using the above commands, another option is to use node's version manager [nvm](https://github.com/nvm-sh/nvm). For example, here are the commands for installing nvm and node:
-
-        # install nvm
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-
-        # source .bashrc so we can use the nvm cmd
+        # Source .bashrc so we can use the nvm command.
         source ~/.bashrc
 
-        # install node version 6 and npm version 3
-        nvm install 6
+        # Install node version 14. This will also install npm version 6.
+        nvm install 14
 
+When you work on this project, make sure you are using the right version of node.
 
-### One-time setup
+        # Use node version 14.
+        nvm use 14
 
-1. Clone this repo and move to the clone:
+        # Verify the versions with the following commands.
+        node -v
+        npm -v
+
+If you don't want to use NVM, you can install node the following way.
+
+        # Install node without NVM.
+        curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+        sudo apt-get install -y nodejs
+
+---
+
+# Setup
+
+1. Clone this repo and change directory into it:
 
         git clone https://gitlab.com/ignitionrobotics/web/app.git
         cd app
 
-        # For development, use the `develop` branch
-        git checkout develop
-
-1. Install
+1. Install dependencies
 
         npm install
 
-### Serve the app for development
+---
 
-1. Make sure you have set your environment variables.
+# Workflow
 
-    This repository comes with an example `setup.bash` file which works with the API at https://staging-fuel.ignitionrobotics.org. Edit that file with your own Auth0 and backend information.
+Use the `develop` branch for development. Merge requests should target it. The `master` branch is only used for Production releases.
 
-    You can source this file by doing:
+## Environment Variables
 
-       . setup.bash
+Before serving the app for development or building it for deploy, you need to set the environment variables to use. This repository comes up with an example [setup.bash](setup.bash) file which works with the Staging API.
 
-1. Run the application.
+        source ./setup.bash
+
+## Serve the app for development
+
+You can serve the app locally with the following command.
 
         npm start
 
-### Build for production
+The app uses port 3000 by default. If you want to use a different one, you can serve it with the Angular CLI command.
 
-    npm run build:prod
+        ng serve --port <port>
+
+## Build the app for deployment
+
+The app can be built for different environments with the following commands. The different environments are listed in the [angular.json](angular.json) file, each one having different options and optimization levels. Remember to provide the environment variables to use.
+
+        # Development
+        npm run build
+
+        # Staging
+        npm run build:staging
+
+        # Production
+        npm run build:prod
+
+The output can be found in the `dist/app` folder.
+
+## Other useful scripts
+
+* Run tests
+
+        npm run test
+
+    The generated coverage can be found in `./coverage/html/index.html`.
+
+* Run the linter
+
+        npm run lint
 
 ---
 
-## Deploy
+# Deployment
 
-The deploy process is done by gitlab pipelines, whenever there is a change in the `staging` or `production` branches.
+## Gitlab Pipelines
+
+The deploy process is done using Gitlab pipelines. Whenever a job runs, you can manually trigger a deploy. Jobs ran on `develop` can be deployed to Staging, and jobs ran on `master` can be deployed to Production.
 
 The pipeline is in charge of setting the required environment variables, syncing the built app into the corresponding S3 bucket and invalidating the Cloudfront distribution.
 
 For in-depth details, you can check the `.gitlab-ci.yml` file.
 
-### Manual process
+## Manual process
 
-The preferred way to deploy is through pipelines, as mentioned before. Still, a script can be run locally to deploy the app.
+Though the preferred way to deploy is through pipelines, sometimes you need to deploy the app manually. Here is a list of steps required to do so.
 
-The following steps can be also seen in the pipeline configuration.
+First, you need the AWS CLI installed and configured. You can do it the following way.
 
-#### Local setup
-
-* Install the following dependencies before using the script:
-
+        # Install
         sudo apt install python-pip
-
-* Install AWS CLI
-
         pip install --upgrade --user awscli
 
-* Add the executable path to your PATH variable: `~/.local/bin`
+        # Configure
+        aws configure
 
-        export PATH=~/.local/bin:$PATH
+1. Provide the environment variables and build the app for the desired environment, as mentioned in the previous section.
 
-#### Deploy manually
-
-* Build the application for production.
-
-        npm run build:prod
-
-* Enable preview stage (for Cloudfront support).
+1. Enable preview stage (for Cloudfront support).
 
         aws configure set preview.cloudfront true
 
-* Configure your AWS credentials. Choose one of the two options:
+1. Sync the build output to the corresponding S3 bucket.
 
-    - Option 1: For general use, use aws:
+    Where `APPLICATION_ENVIRONMENT` can be
 
-            aws configure
+    - Integration: `integration-app.ignitionrobotics.org`
 
-    - Option 2: Set the following environment variables:
+    - Staging: `staging-app.ignitionrobotics.org`
 
-        ```
-        export AWS_ACCESS_KEY_ID=YOUR_AWS_KEY_ID
-        ```
+    - Production: `app.ignitionrobotics.org`
 
-        ```
-        export AWS_SECRET_ACCESS_KEY=YOUR_AWS_ACCESS_KEY
-        ```
+        aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
 
-* Configure the environment where you want to deploy:
+1. Trigger an invalidation in Cloudfront.
 
-        export APPLICATION_ENVIRONMENT=ENVIRONMENT
+        aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 
-    Where ENVIRONMENT can be `staging-app.ignitionrobotics.org` for staging or `app.ignitionrobotics.org` for production.
-
-* Configure your CloudFront distribution id:
-
-        export CLOUDFRONT_DISTRIBUTION_ID=YOUR_CLOUDFRONT_ID
-
-* Make sure that you are in your application's project directory and run:
-
-        ./deploy.sh
+    Make sure you are using the `CLOUDFRONT_DISTRIBUTION_ID`of the environment you deployed.
 
 ---
 
+# Notes
+
 ## Tests
-
-To run tests, use the following command:
-
-`npm run test`
-
-The results can be seen in the console. You can also check the generated coverage in `./coverage/html/index.html`.
-
-### Configuration
-
-We are using Karma and Jasmine to run the tests. Karma configuration can be found in `./config/karma.conf.js`.
-
-The tests are configured to do a single run, to avoid blocking the Bitbucket pipelines. For development purposes, you can change the `singleRun` flag. To see the console
-
-In order to see `console.log` lines, you need to modify the configuration file to `captureConsole=true`.
-
-### Other notes
 
 You can select a specific spec our suite to run by using `fdescribe()` or `fit()`. In a similar way, you can skip tests with `xdescribe()` or `xit()`. Read [Jasmine documentation](https://jasmine.github.io/2.0/introduction.html) for more information regarding tests.
 
 Each component and service being test requires a [TestBed](https://angular.io/api/core/testing/TestBed), which needs to be configured before each spec method. If the component has an external layout (separate `html` and `css` files), it requires to be compiled. We are doing this through Webpack in the Karma test configuration, thus there is no need to call the TestBed method to compile the component.
 
----
-
-## Docs
-
-We use [Typedoc](http://typedoc.org/) to generate documentation. You can generate it with the following command:
-
-`npm run docs`
-
-You can access the generated docs in `./doc/index.html`.
-
----
-
 ## Naming conventions
 
-Following the [Angular Style Guide](https://angular.io/guide/styleguide), we use the `ign` prefix for the selector of our Components and Directives.
+Following the [Angular Style Guide](https://angular.io/guide/styleguide), we use the `ign` prefix for the selector of our Components and Directives. This is configured in the linter.
+
+## Templates and variable scope
+
+Variables referenced in HTML templates must be `public`. Private variables inside a `component.ts` file cannot be accessed in `component.html` nor `component.spec.ts` files.
+
+## Environment Variables
+
+In order to add new environment variables, you need to add them in the [custom-webpack.config.js](custom-webpack.config.js) file, so it can be included once the application is built. After, it is advisable to include the new variable inside the [environment files](src/environments), with a fallback value.
+
+To work with environment variables inside the code, you need to include them.
+
+```
+import { environment } from 'src/environments/environment';
+```
+
+Then, you can use it. For example:
+
+```
+const api = environment.API_HOST;
+```

@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../../auth/auth.service';
-import { Simulation, SimulationService } from '../../cloudsim';
+import { Simulation } from '../simulation';
+import { SimulationService } from '../simulation.service';
 import {
   ConfirmationDialogComponent
 } from '../../confirmation-dialog/confirmation-dialog.component';

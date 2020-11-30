@@ -6,7 +6,7 @@ import { Component,
          NgZone,
          OnInit
        } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 declare let Detector: any;
 
@@ -93,17 +93,17 @@ export class FileUploadComponent implements OnInit {
    *
    * @param event Event containing the uploaded files.
    */
-  public onFileInput(event: Event) {
+  public onFileInput(event: Event): void {
     const validFiles = [];
     const invalidFiles = [];
 
     const files: File[] = Array.from(event.target['files']);
     for (const file of files) {
       // Set the fullPath. Required for consistency between Chrome and Firefox browsers.
-      if (file.webkitRelativePath === '') {
+      if (file['webkitRelativePath'] === '') {
         file['fullPath'] = file['name'];
       } else {
-        file['fullPath'] = file.webkitRelativePath;
+        file['fullPath'] = file['webkitRelativePath'];
       }
 
       if (this.isValidFile(file)) {

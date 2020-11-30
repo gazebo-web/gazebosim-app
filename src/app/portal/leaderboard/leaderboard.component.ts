@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource, MatSnackBar, PageEvent } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PageEvent } from '@angular/material/paginator';
 
-import { PortalService, PaginatedLeaderBoardEntry, LeaderBoardEntry } from '../../portal';
+import { PortalService } from '../portal.service';
+import { LeaderBoardEntry } from './leaderboard-entry';
+import { PaginatedLeaderBoardEntry } from './paginated-leaderboard-entry';
 
 @Component({
   selector: 'ign-leaderboard',

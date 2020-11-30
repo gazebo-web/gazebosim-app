@@ -1,7 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatDialog, MatSnackBar, PageEvent } from '@angular/material';
-import { QueueElement } from './queue-element';
+import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
+
+import { QueueElement } from './queue-element';
 import { SimulationService } from '../../../cloudsim';
 import { QueueList } from './queue-list';
 

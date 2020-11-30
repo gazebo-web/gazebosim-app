@@ -1,4 +1,4 @@
-import { async, TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpHeaders } from '@angular/common/http';
 import {
   HttpClientTestingModule,
@@ -7,15 +7,13 @@ import {
 } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { AuthService } from '../auth/auth.service';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { Collection, PaginatedCollection, CollectionService } from '../collection';
 import { Model } from '../model/model';
 import { World } from '../world/world';
 
 describe('CollectionService', () => {
-  let injector: TestBed;
-  let auth: AuthService;
+  let testBed: TestBed;
   let service: CollectionService;
   let factory: JsonClassFactoryService;
 
@@ -62,16 +60,14 @@ describe('CollectionService', () => {
         RouterTestingModule,
       ],
       providers: [
-        AuthService,
         JsonClassFactoryService,
         CollectionService,
       ],
     });
-    injector = getTestBed();
-    auth = injector.get(AuthService);
-    service = injector.get(CollectionService);
-    factory = injector.get(JsonClassFactoryService);
-    httpMock = injector.get(HttpTestingController);
+    testBed = getTestBed();
+    service = testBed.inject(CollectionService);
+    factory = testBed.inject(JsonClassFactoryService);
+    httpMock = testBed.inject(HttpTestingController);
   });
 
   // After each test, verify that all the requests were consumed.
@@ -79,7 +75,7 @@ describe('CollectionService', () => {
     httpMock.verify();
   });
 
-  it('should get the list of collections', async(() => {
+  it('should get the list of collections', () => {
     const testUrl: string = `${service.baseUrl}/collections`;
 
     service.getCollectionList().subscribe(
@@ -90,9 +86,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson);
-  }));
+  });
 
-  it('should get the list of collections with partial search', async(() => {
+  it('should get the list of collections with partial search', () => {
     const testUrl: string = `${service.baseUrl}/collections?q=:noft:test`;
 
     service.getCollectionList('test').subscribe(
@@ -103,9 +99,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson);
-  }));
+  });
 
-  it('should get the list of collections that can be extended by an user', async(() => {
+  it('should get the list of collections that can be extended by an user', () => {
     const testUrl: string = `${service.baseUrl}/collections?extend=true`;
 
     service.getCollectionExtensibleList().subscribe(
@@ -116,9 +112,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson);
-  }));
+  });
 
-  it('should get the list of extensible collections along with a partial search', async(() => {
+  it('should get the list of extensible collections along with a partial search', () => {
     const testUrl: string = `${service.baseUrl}/collections?extend=true&q=:noft:partial`;
 
     service.getCollectionExtensibleList('partial').subscribe(
@@ -129,9 +125,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson);
-  }));
+  });
 
-  it('should get the list of collections owned by an entity', async(() => {
+  it('should get the list of collections owned by an entity', () => {
     const owner: string = 'test-col-a-owner';
     const testUrl: string = `${service.baseUrl}/${owner}/collections`;
 
@@ -143,9 +139,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush([testCollectionJsonA]);
-  }));
+  });
 
-  it('should get a single collection', async(() => {
+  it('should get a single collection', () => {
     const name: string = 'test-col-a-name';
     const owner: string = 'test-col-a-owner';
 
@@ -159,9 +155,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionJsonA);
-  }));
+  });
 
-  it('should get the list of models of a collection', async(() => {
+  it('should get the list of models of a collection', () => {
     const owner: string = 'test-col-a-owner';
     const name: string = 'test-col-a-name';
     const testUrl: string = `${service.baseUrl}/${owner}/collections/${name}/models`;
@@ -174,9 +170,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testModels);
-  }));
+  });
 
-  it('should get the list of worlds of a collection', async(() => {
+  it('should get the list of worlds of a collection', () => {
     const owner: string = 'test-col-a-owner';
     const name: string = 'test-col-a-name';
     const testUrl: string = `${service.baseUrl}/${owner}/collections/${name}/worlds`;
@@ -189,9 +185,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testWorlds);
-  }));
+  });
 
-  it('should add an asset to a collection', async(() => {
+  it('should add an asset to a collection', () => {
     const owner: string = 'test-col-a-owner';
     const name: string = 'test-col-a-name';
     const resource = testModels[0];
@@ -203,9 +199,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('POST');
     req.flush('');
-  }));
+  });
 
-  it('should remove an asset to a collection', async(() => {
+  it('should remove an asset to a collection', () => {
     const owner: string = 'test-col-a-owner';
     const name: string = 'test-col-a-name';
     const resource = testModels[0];
@@ -219,9 +215,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('DELETE');
     req.flush('');
-  }));
+  });
 
-  it('should get the collections that have an asset', async(() => {
+  it('should get the collections that have an asset', () => {
     const resource = testModels[0];
 
     let testUrl: string;
@@ -236,9 +232,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionList);
-  }));
+  });
 
-  it('should create a collection', async(() => {
+  it('should create a collection', () => {
     const testUrl: string = `${service.baseUrl}/collections`;
 
     service.createCollection(testCollectionJsonA).subscribe(
@@ -249,9 +245,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('POST');
     req.flush(testCollectionJsonA);
-  }));
+  });
 
-  it('should edit a collection', async(() => {
+  it('should edit a collection', () => {
     const name = 'test-col-a-name';
     const owner = 'test-col-a-owner';
 
@@ -266,9 +262,9 @@ describe('CollectionService', () => {
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toBe(toEdit);
     req.flush('');
-  }));
+  });
 
-  it('should delete a collection', async(() => {
+  it('should delete a collection', () => {
     const name = 'test-col-a-name';
     const owner = 'test-col-a-owner';
 
@@ -279,9 +275,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('DELETE');
     req.flush('');
-  }));
+  });
 
-  it('should get the next page of a paginated collection', async(() => {
+  it('should get the next page of a paginated collection', () => {
     const paginatedCollection = new PaginatedCollection();
     paginatedCollection.collections = testCollectionList;
     paginatedCollection.nextPage = `nextPage`;
@@ -295,9 +291,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(paginatedCollection.nextPage);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionList);
-  }));
+  });
 
-  it(`should parse the next pagination url if it's present in the headers`, async(() => {
+  it(`should parse the next pagination url if it's present in the headers`, () => {
     // Fake Link Header.
     const header: HttpHeaders = new HttpHeaders({link: '</collections?page=2>; rel="next"'});
     const testUrl: string = `${service.baseUrl}/collections`;
@@ -311,9 +307,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson, {headers: header});
-  }));
+  });
 
-  it(`should NOT parse the next pagination url if it's NOT present in the headers`, async(() => {
+  it(`should NOT parse the next pagination url if it's NOT present in the headers`, () => {
     // Fake Link Header.
     const header: HttpHeaders = new HttpHeaders();
     const testUrl: string = `${service.baseUrl}/collections`;
@@ -327,9 +323,9 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson, {headers: header});
-  }));
+  });
 
-  it(`should NOT parse the next pagination url if the link is empty`, async(() => {
+  it(`should NOT parse the next pagination url if the link is empty`, () => {
     // Fake Header with an empty Link.
     const header: HttpHeaders = new HttpHeaders({link: ''});
     const testUrl: string = `${service.baseUrl}/collections`;
@@ -343,5 +339,5 @@ describe('CollectionService', () => {
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
     req.flush(testCollectionListJson, {headers: header});
-  }));
+  });
 });

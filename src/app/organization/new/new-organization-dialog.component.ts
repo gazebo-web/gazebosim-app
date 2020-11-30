@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { Subscription } from 'rxjs/Subscription';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 import { ErrMsg } from '../../server/err-msg';
 import { Organization } from '../organization';
 import { OrganizationService } from '../organization.service';
@@ -87,7 +88,7 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
   /**
    * OnInit Lifecycle hook.
    */
-  public ngOnInit() {
+  public ngOnInit(): void {
     // Creates the New Organization Form.
     this.newOrganizationForm = this.formBuilder.group({
       name: this.organizationName,
@@ -111,7 +112,7 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
    *
    * Unsubscribe from any subscription.
    */
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.nameValueChanges) {
       this.nameValueChanges.unsubscribe();
     }
@@ -120,7 +121,7 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
   /**
    * Form submit callback to create the organization.
    */
-  public onSubmit() {
+  public onSubmit(): void {
     // Validate forms.
     // The 'required' validator doesn't trim the input values, so we verify they are correct before
     // submitting the form.

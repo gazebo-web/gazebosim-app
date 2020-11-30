@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { Category } from './category';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { UiError } from '../../ui-error';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 
@@ -17,7 +18,7 @@ export class CategoryService {
   /**
    * Fuel server URL with version used to to Category-related requests.
    */
-  public url: string = `${API_HOST}/${API_VERSION}/categories`;
+  public url: string = `${environment.API_HOST}/${environment.API_VERSION}/categories`;
 
   /**
    * @param factory Factory to transform Json into an object instance.
@@ -34,11 +35,12 @@ export class CategoryService {
    * @returns An observable of the categories.
    */
   public getAll(): Observable<Category[]> {
-    return this.http.get(this.url)
-      .map((response) => {
+    return this.http.get(this.url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Category);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -48,9 +50,10 @@ export class CategoryService {
    * @param category The new category.
    * @returns An observable of the new category.
    */
-  public add(category: Category): Observable<Category> {
-    return this.http.post(this.url, category)
-      .catch(this.handleError);
+  public add(category: Category): Observable<any> {
+    return this.http.post(this.url, category).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -61,10 +64,11 @@ export class CategoryService {
    * @param newCategory The modified category.
    * @returns An observable of the modified category.
    */
-  public modify(category: Category, newCategory: Category): Observable<Category> {
+  public modify(category: Category, newCategory: Category): Observable<any> {
     const url = `${this.url}/${category.slug}`;
-    return this.http.patch(url, newCategory)
-      .catch(this.handleError);
+    return this.http.patch(url, newCategory).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -74,10 +78,11 @@ export class CategoryService {
    * @param category The category to delete.
    * @returns An observable of the deleted category.
    */
-  public delete(category: Category): Observable<Category> {
+  public delete(category: Category): Observable<any> {
     const url = `${this.url}/${category.slug}`;
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -90,8 +95,8 @@ export class CategoryService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

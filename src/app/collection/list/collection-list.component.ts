@@ -44,7 +44,7 @@ export class CollectionListComponent implements OnInit {
     this.collections = this.paginatedCollections.collections;
   }
 
-  public loadNextCollectionsPage() {
+  public loadNextCollectionsPage(): void {
     if (this.paginatedCollections.hasNextPage()) {
       this.collectionService.getNextPage(this.paginatedCollections).subscribe(
         (pagCollections) => {

@@ -1,74 +1,55 @@
-import { BrowserModule, DomSanitizer, Title } from '@angular/platform-browser';
+/**
+ * Angular imports.
+ */
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule, DomSanitizer, Title } from '@angular/platform-browser';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { MomentModule } from 'angular2-moment';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { NgxGalleryModule } from 'ngx-gallery';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
-
-import {
-  NgModule,
-  ApplicationRef
-} from '@angular/core';
-import {
-  removeNgStyles,
-  createNewHosts,
-  createInputTransfer
-} from '@angularclass/hmr';
-import {
-  RouterModule,
-  PreloadAllModules
-} from '@angular/router';
-
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatIconModule,
-  MatIconRegistry,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatOptionModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatStepperModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-} from '@angular/material';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { NgModule } from '@angular/core';
 import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overlay';
+import { RouterModule, PreloadAllModules } from '@angular/router';
 
+/**
+ * Third party dependencies.
+ */
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import 'hammerjs';
 
-/*
- * Platform and Environment providers/directives/pipes
+/**
+ * Local elements.
  */
-import { ENV_PROVIDERS } from './environment';
-import { ROUTES } from './app.routes';
-// App is our top level component
-import { AppComponent } from './app.component';
-import { APP_RESOLVER_PROVIDERS } from './app.resolver';
-import { AppState, InternalStateType } from './app.service';
-
 import { AccessTokenDialogComponent } from './settings/access-token-dialog.component';
 import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
 import { AdminComponent } from './admin';
-import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
+import { AdminElasticsearchComponent } from './admin/elasticsearch';
 import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
+import { AppComponent } from './app.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -91,6 +72,7 @@ import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
+import { ROUTES } from './app.routes';
 import {
   ElasticsearchConfigDialogComponent
 } from './admin/elasticsearch/config-dialog/config-dialog.component';
@@ -131,7 +113,7 @@ import { PortalListComponent } from './portal';
 import { PortalListResolver } from './portal';
 import { PortalRedirectGuard } from './portal/portal-redirect.guard';
 import { PortalResolver } from './portal';
-import { PortalService } from './portal';
+import { PortalService } from './portal/portal.service';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
@@ -161,67 +143,14 @@ import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
 
-import '../styles/styles.scss';
-import '../styles/custom-theme.scss';
-
-// Application wide providers
-const APP_PROVIDERS = [
-  ...APP_RESOLVER_PROVIDERS,
-  AdminElasticsearchService,
-  AdminGuard,
-  AppState,
-  AuthGuard,
-  AuthService,
-  CategoryService,
-  CollectionResolver,
-  CollectionService,
-  FuelResourceService,
-  JsonClassFactoryService,
-  LikedModelsResolver,
-  LikedWorldsResolver,
-  LogfileService,
-  ModelResolver,
-  ModelService,
-  NewModelGuard,
-  NewWorldGuard,
-  Ng2DeviceService,
-  OrganizationService,
-  OwnerCollectionsResolver,
-  OwnerProfileResolver,
-  PortalListResolver,
-  PortalRedirectGuard,
-  PortalResolver,
-  PortalService,
-  PublicCollectionsResolver,
-  PublicModelsResolver,
-  PublicWorldsResolver,
-  SimulationResolver,
-  SimulationService,
-  Title,
-  UserModelsResolver,
-  UserService,
-  UserWorldsResolver,
-  WebsocketService,
-  WorldResolver,
-  WorldService,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  }
-];
-
-interface StoreType  {
-  state: InternalStateType;
-  restoreInputValues: () => void;
-  disposeOldHosts: () => void;
-}
-
 /**
- * `AppModule` is the main entry point into Angular2's bootstraping process
+ * Entry point.
  */
 @NgModule({
   bootstrap: [ AppComponent ],
+  /**
+   * Array of local components and pipes.
+   */
   declarations: [
     AccessTokenDialogComponent,
     AdminCloudsimComponent,
@@ -283,7 +212,7 @@ interface StoreType  {
     WorldListComponent,
   ],
   /**
-   * Import Angular's modules.
+   * Import the used modules.
    */
   imports: [
     BrowserAnimationsModule,
@@ -293,13 +222,15 @@ interface StoreType  {
     HttpClientModule,
     InfiniteScrollModule,
     MarkdownModule.forRoot({
-      provide: MarkedOptions,
+      markedOptions: {
+        provide: MarkedOptions,
         useValue: {
-          sanitize: true,
+          // Note: Sanitize is enabled by default.
           gfm: true,
           breaks: true,
-        },
-      }),
+        }
+      }
+    }),
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
@@ -311,7 +242,6 @@ interface StoreType  {
     MatInputModule,
     MatListModule,
     MatMenuModule,
-    MatOptionModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatRadioModule,
@@ -331,8 +261,46 @@ interface StoreType  {
    * Expose our Services and Providers into Angular's dependency injection.
    */
   providers: [
-    ENV_PROVIDERS,
-    APP_PROVIDERS,
+    AdminElasticsearchService,
+    AdminGuard,
+    AuthGuard,
+    AuthService,
+    CategoryService,
+    CollectionResolver,
+    CollectionService,
+    JsonClassFactoryService,
+    LikedModelsResolver,
+    LikedWorldsResolver,
+    LogfileService,
+    ModelResolver,
+    ModelService,
+    NewModelGuard,
+    NewWorldGuard,
+    Ng2DeviceService,
+    OrganizationService,
+    OwnerCollectionsResolver,
+    OwnerProfileResolver,
+    PortalListResolver,
+    PortalRedirectGuard,
+    PortalResolver,
+    PortalService,
+    PublicCollectionsResolver,
+    PublicModelsResolver,
+    PublicWorldsResolver,
+    SimulationResolver,
+    SimulationService,
+    Title,
+    UserModelsResolver,
+    UserService,
+    UserWorldsResolver,
+    WebsocketService,
+    WorldResolver,
+    WorldService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     {
       provide: OverlayContainer,
       useClass: FullscreenOverlayContainer
@@ -356,8 +324,6 @@ interface StoreType  {
 export class AppModule {
 
   constructor(
-    public appRef: ApplicationRef,
-    public appState: AppState,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {
@@ -368,56 +334,5 @@ export class AppModule {
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/world.svg'));
     matIconRegistry.addSvgIcon('ign-model',
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/model.svg'));
-  }
-
-  public hmrOnInit(store: StoreType) {
-    if (!store || !store.state) {
-      return;
-    }
-    console.log('HMR store', JSON.stringify(store, null, 2));
-    /**
-     * Set state
-     */
-    this.appState._state = store.state;
-    /**
-     * Set input values
-     */
-    if ('restoreInputValues' in store) {
-      const restoreInputValues = store.restoreInputValues;
-      setTimeout(restoreInputValues);
-    }
-
-    this.appRef.tick();
-    delete store.state;
-    delete store.restoreInputValues;
-  }
-
-  public hmrOnDestroy(store: StoreType) {
-    const cmpLocation = this.appRef.components.map((cmp) => cmp.location.nativeElement);
-    /**
-     * Save state
-     */
-    const state = this.appState._state;
-    store.state = state;
-    /**
-     * Recreate root elements
-     */
-    store.disposeOldHosts = createNewHosts(cmpLocation);
-    /**
-     * Save input values
-     */
-    store.restoreInputValues  = createInputTransfer();
-    /**
-     * Remove styles
-     */
-    removeNgStyles();
-  }
-
-  public hmrAfterDestroy(store: StoreType) {
-    /**
-     * Display new elements
-     */
-    store.disposeOldHosts();
-    delete store.disposeOldHosts;
   }
 }

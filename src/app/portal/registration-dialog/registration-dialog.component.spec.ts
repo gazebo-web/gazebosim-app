@@ -1,13 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-  MatDialogRef,
-  MatListModule,
-  MatOptionModule,
-  MatSelectModule,
-  MAT_DIALOG_DATA,
-} from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthService } from '../../auth/auth.service';
@@ -31,13 +27,13 @@ describe('RegistrationDialogComponent', () => {
   // Test portal.
   const portal = new Portal({});
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
         HttpClientTestingModule,
         MatListModule,
-        MatOptionModule,
         MatSelectModule,
         ReactiveFormsModule,
         RouterTestingModule,
@@ -58,25 +54,22 @@ describe('RegistrationDialogComponent', () => {
         }
         ],
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationDialogComponent);
     component = fixture.debugElement.componentInstance;
-    authService = TestBed.get(AuthService);
+    authService = TestBed.inject(AuthService);
     authService.userProfile = profile;
   });
 
-  it('should get the organizations the user has write access to', async(() => {
+  it('should get the organizations the user has write access to', () => {
     spyOn(authService, 'isAuthenticated').and.returnValue(true);
     component.ngOnInit();
     expect(component.organizationList.length).toBe(1);
     expect(component.organizationList[0]).toEqual('adminOrg');
     expect(component.portal).toEqual(portal);
-  }));
+  });
 
-  it('should emit the selected organization to register', async(() => {
+  it('should emit the selected organization to register', () => {
     const eventSpy = spyOn(component.onRegister, 'emit');
 
     component.orgToRegister.setValue(null);
@@ -87,9 +80,9 @@ describe('RegistrationDialogComponent', () => {
     component.orgToRegister.setValue('testOrg');
     component.register();
     expect(eventSpy).toHaveBeenCalled();
-  }));
+  });
 
-  it('should get the form error as a string', async(() => {
+  it('should get the form error as a string', () => {
     let error: string;
     // No organization.
     component.orgToRegister.setErrors({ required: true });
@@ -100,5 +93,5 @@ describe('RegistrationDialogComponent', () => {
     component.orgToRegister.setValue('testOrg');
     error = component.getError();
     expect(error).toEqual('');
-  }));
+  });
 });

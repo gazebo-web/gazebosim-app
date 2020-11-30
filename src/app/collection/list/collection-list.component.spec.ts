@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatIconModule, MatCardModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-
+import { of } from 'rxjs';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { Observable } from 'rxjs/Observable';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { AuthService } from '../../auth/auth.service';
@@ -40,7 +40,7 @@ describe('CollectionListComponent', () => {
   nextPaginatedCollections.totalCount = nextCollections.length;
   nextPaginatedCollections.nextPage = null;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         InfiniteScrollModule,
@@ -75,23 +75,21 @@ describe('CollectionListComponent', () => {
         },
         ],
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CollectionListComponent);
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should load the the collections from the resolved data', async(() => {
+  it('should load the the collections from the resolved data', () => {
     expect(component.collections).toBeUndefined();
     component.ngOnInit();
     expect(component.collections).toEqual(testCollections);
-  }));
+  });
 
-  it('should load the next page', async(() => {
-    const collectionService = TestBed.get(CollectionService);
+  it('should load the next page', () => {
+    const collectionService = TestBed.inject(CollectionService);
     const spy = spyOn(collectionService, 'getNextPage').and.returnValue(
-      Observable.of(nextPaginatedCollections));
+      of(nextPaginatedCollections));
     component.collections = [];
     component.paginatedCollections = paginatedCollections;
 
@@ -107,23 +105,21 @@ describe('CollectionListComponent', () => {
     spy.calls.reset();
     component.loadNextCollectionsPage();
     expect(spy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should set the correct title in the page', async(() => {
-    const activatedRoute = TestBed.get(ActivatedRoute);
+  it('should set the correct title in the page', () => {
+    const activatedRoute = TestBed.inject(ActivatedRoute);
 
     // Without an user.
-    activatedRoute.snapshot.paramMap = convertToParamMap({
-      user: '',
-    });
+    const spy = spyOn(activatedRoute.snapshot.paramMap, 'get');
+    spy.withArgs('user').and.returnValue('');
     let title = component.getTitle();
     expect(title).toBe('Latest collections');
 
     // With an user.
-    activatedRoute.snapshot.paramMap = convertToParamMap({
-      user: 'testUser',
-    });
+    spy.calls.reset();
+    spy.withArgs('user').and.returnValue('testUser');
     title = component.getTitle();
     expect(title).toBe(`testUser's collections`);
-  }));
+  });
 });

@@ -5,20 +5,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { Observable } from 'rxjs/Observable';
-
-import {
-  MatButtonModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatDialog,
-  MatIconModule,
-  MatInputModule,
-  MatRadioModule,
-  MatSnackBar,
-  MatSnackBarModule,
-} from '@angular/material';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatInputModule } from '@angular/material/input';
+import { of, throwError } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
@@ -115,10 +109,10 @@ describe('EditWorldComponent', () => {
     component = fixture.componentInstance;
 
     // Get the injected services.
-    dialog = TestBed.get(MatDialog);
-    router = TestBed.get(Router);
-    service = TestBed.get(WorldService);
-    snackBar = TestBed.get(MatSnackBar);
+    dialog = TestBed.inject(MatDialog);
+    router = TestBed.inject(Router);
+    service = TestBed.inject(WorldService);
+    snackBar = TestBed.inject(MatSnackBar);
 
     // Reset files
     fileSdf = new File([''], 'test.sdf');
@@ -170,7 +164,7 @@ describe('EditWorldComponent', () => {
       tags: ['tag1', 'tag2']
     });
 
-    spyOn(service, 'edit').and.returnValue(Observable.of(testEditedWorld));
+    spyOn(service, 'edit').and.returnValue(of(testEditedWorld));
     spyOn(component, 'back');
 
     component.onEdit();
@@ -189,7 +183,7 @@ describe('EditWorldComponent', () => {
     component.world = testWorld;
     component.descriptionModified = true;
 
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testWorld));
     spyOn(component, 'back');
     component.onEdit();
 
@@ -209,7 +203,7 @@ describe('EditWorldComponent', () => {
     component.tagsModified = true;
 
     spyOn(component, 'back');
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testWorld));
     component.onEdit();
 
     // Arguments on the editWorld method.
@@ -229,7 +223,7 @@ describe('EditWorldComponent', () => {
     component.tagsModified = false;
     component.fileList = [fileOther];
 
-    spyOn(service, 'edit').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'edit').and.returnValue(of(testWorld));
 
     component.onEdit();
 
@@ -242,7 +236,7 @@ describe('EditWorldComponent', () => {
     component.descriptionModified = false;
     component.tagsModified = false;
 
-    spyOn(service, 'edit').and.returnValue(Observable.throw({}));
+    spyOn(service, 'edit').and.returnValue(throwError({}));
 
     component.onEdit();
 

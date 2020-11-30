@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../auth/auth.service';
-import { LogfileService } from '../../logfile';
+import { LogfileService } from '../logfile.service';
 import { Organization } from '../../organization';
 
 @Component({
@@ -71,7 +72,7 @@ export class NewLogfileDialogComponent implements OnInit {
    *
    * Fills the list of potential owners.
    */
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.ownerList = this.data.portal.participants;
   }
 
@@ -84,10 +85,10 @@ export class NewLogfileDialogComponent implements OnInit {
     // Only one logfile can be uploaded at a time.
     const file: File = event.target['files'][0];
     // Set the fullPath. Required for consistency between Chrome and Firefox browsers.
-    if (file.webkitRelativePath === '') {
+    if (file['webkitRelativePath'] === '') {
       file['fullPath'] = file['name'];
     } else {
-      file['fullPath'] = file.webkitRelativePath;
+      file['fullPath'] = file['webkitRelativePath'];
     }
 
     this.logfile = file;

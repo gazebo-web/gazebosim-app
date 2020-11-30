@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar, PageEvent } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
 import { Logfile,
@@ -10,8 +12,11 @@ import { Logfile,
   LogfileScoreDialogComponent,
   NewLogfileDialogComponent } from '../logfile';
 import { PaginatedOrganizations, Organization } from '../organization';
-import { Portal, PortalService } from '../portal';
-import { RegistrationDialogComponent, Registration, PaginatedRegistration } from '../portal';
+import { Portal } from './portal';
+import { PortalService } from './portal.service';
+import { RegistrationDialogComponent } from './registration-dialog/registration-dialog.component';
+import { Registration } from './registration';
+import { PaginatedRegistration } from './paginated-registration';
 import { TextInputDialogComponent } from '../text-input-dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog';
 
@@ -208,7 +213,7 @@ export class PortalComponent implements OnInit {
    * Reject a pending registration.
    * Only competition admins will have access to the element that calls this method.
    */
-  public rejectRegistration(registration: Registration) {
+  public rejectRegistration(registration: Registration): void {
 
     // Open a dialog for text input.
     const dialogOptions = {
@@ -251,7 +256,7 @@ export class PortalComponent implements OnInit {
    * Remove a registered participant.
    * Only competition admins will have access to the element that calls this method.
    */
-  public removeParticipant(org: Organization) {
+  public removeParticipant(org: Organization): void {
 
     // Open a dialog for text input.
     const dialogOptions = {

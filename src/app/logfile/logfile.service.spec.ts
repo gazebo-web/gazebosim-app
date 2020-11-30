@@ -1,4 +1,4 @@
-import { async, TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpHeaders } from '@angular/common/http';
 import {
   HttpClientTestingModule,
@@ -41,8 +41,8 @@ describe('LogfileService', () => {
       ],
     });
     injector = getTestBed();
-    service = injector.get(LogfileService);
-    httpMock = injector.get(HttpTestingController);
+    service = injector.inject(LogfileService);
+    httpMock = injector.inject(HttpTestingController);
   });
 
   // After each test, verify that all the requests were consumed.
@@ -50,7 +50,7 @@ describe('LogfileService', () => {
     httpMock.verify();
   });
 
-  it('should get a single logfile', async(() => {
+  it('should get a single logfile', () => {
     const url = `${service.baseUrl}/subt/logfiles/${testLogfile.id}`;
 
     service.getLogfile(testLogfile.id).subscribe(
@@ -62,9 +62,9 @@ describe('LogfileService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush(testLogfileJson);
-  }));
+  });
 
-  it('should get a list of logfiles', async(() => {
+  it('should get a list of logfiles', () => {
     // No specific page.
     let url = `${service.baseUrl}/subt/logfiles?status=pending&per_page=10`;
     service.getList('pending').subscribe(
@@ -90,9 +90,9 @@ describe('LogfileService', () => {
     req = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush([testLogfileJson]);
-  }));
+  });
 
-  it('should correctly parse the Link header of a paginated response', async(() => {
+  it('should correctly parse the Link header of a paginated response', () => {
     const status = 'pending';
     const url = `${service.baseUrl}/subt/logfiles?status=${status}&per_page=10`;
     const header: HttpHeaders = new HttpHeaders({link: '</logfiles?page=2>; rel="next"'});
@@ -107,9 +107,9 @@ describe('LogfileService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush([testLogfileJson], {headers: header});
-  }));
+  });
 
-  it('should get a list of logfiles with a status', async(() => {
+  it('should get a list of logfiles with a status', () => {
     const url = `${service.baseUrl}/subt/logfiles?status=pending&per_page=10`;
 
     service.getList('pending').subscribe(
@@ -121,9 +121,9 @@ describe('LogfileService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush([testLogfileJson]);
-  }));
+  });
 
-  it('should upload a logfiles', async(() => {
+  it('should upload a logfiles', () => {
     const url = `${service.baseUrl}/subt/logfiles`;
     const file = new File([], 'filename');
     file['fullPath'] = 'path';
@@ -143,9 +143,9 @@ describe('LogfileService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBe(formData);
     req.flush(testLogfileJson);
-  }));
+  });
 
-  it('should modify a logfile', async(() => {
+  it('should modify a logfile', () => {
     const url = `${service.baseUrl}/subt/logfiles/${testLogfile.id}`;
     const data = {
       status: 1,
@@ -162,9 +162,9 @@ describe('LogfileService', () => {
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toBe(data);
     req.flush(testLogfileJson);
-  }));
+  });
 
-  it('should remove a logfile', async(() => {
+  it('should remove a logfile', () => {
     const url = `${service.baseUrl}/subt/logfiles/${testLogfile.id}`;
 
     service.remove(testLogfile.id).subscribe(
@@ -176,9 +176,9 @@ describe('LogfileService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('DELETE');
     req.flush(testLogfileJson);
-  }));
+  });
 
-  it('should download a logfile', async(() => {
+  it('should download a logfile', () => {
     const url = `${service.baseUrl}/subt/logfiles/${testLogfile.id}/file?link=true`;
     const blob = new Blob([]);
 
@@ -191,9 +191,9 @@ describe('LogfileService', () => {
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     req.flush(testLogfileJson);
-  }));
+  });
 
-  it('should get the next page of logfiles', async(() => {
+  it('should get the next page of logfiles', () => {
     const paginatedLogfile = new PaginatedLogfile();
     paginatedLogfile.nextPage = `next-page-url`;
     paginatedLogfile.logfiles = [testLogfile];
@@ -207,5 +207,5 @@ describe('LogfileService', () => {
     const req: TestRequest = httpMock.expectOne(paginatedLogfile.nextPage);
     expect(req.request.method).toBe('GET');
     req.flush([testLogfileJson]);
-  }));
+  });
 });

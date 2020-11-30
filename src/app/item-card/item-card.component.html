@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-header>
+  <mat-card-header class="header">
     <!-- User Avatar coming in version 2-->
     <!-- <img mat-card-avatar *ngIf='resource.ownerAvatar; else avatarIcon'
          [src]='resource.ownerAvatar'>
@@ -11,8 +11,9 @@
 
     <div class="title-container">
       <a routerLink="/{{resource.owner}}/{{type}}/{{resource.name}}">
-        <mat-card-title title="{{resource.name}}">{{resource.name}}</mat-card-title>
+        <mat-card-title class="title" title="{{resource.name}}">{{resource.name}}</mat-card-title>
       </a>
+
       <mat-card-subtitle>
         <a routerLink="/{{resource.owner}}">
           {{resource.owner}}
@@ -21,12 +22,12 @@
     </div>
   </mat-card-header>
 
-  <mat-card-content fxLayout="column">
-    <div mat-card-image>
+  <mat-card-content class="content">
+    <div class="image-container">
       <a routerLink="/{{resource.owner}}/{{type}}/{{resource.name}}">
         <div *ngIf="resource.hasThumbnail(); else noImage">
           <img *ngIf="(resource.getThumbnail().url | ignAuthHeader | async) as result"
-            [src]="result" [alt]="resource.name">
+               [src]="result" [alt]="resource.name" class="thumbnail">
         </div>
 
         <ng-template #noImage>
@@ -41,7 +42,8 @@
       </a>
     </div>
   </mat-card-content>
-  <mat-card-actions fxLayout="row" fxLayoutAlign="end">
+
+  <mat-card-actions>
     <button mat-icon-button fxFlexAlign="end" *ngIf="removable">
       <mat-icon (click)="onRemoveClicked()">delete</mat-icon>
     </button>

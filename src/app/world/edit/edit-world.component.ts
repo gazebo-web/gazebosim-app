@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../auth/auth.service';
 import { WorldService } from '../world.service';
@@ -121,7 +123,7 @@ export class EditWorldComponent implements OnInit {
   /**
    * Callback to the FileUploadComponent's files event. Keeps track of the uploaded files.
    */
-  public onReceiveFiles(event: File[]) {
+  public onReceiveFiles(event: File[]): void {
     this.fileList = event;
   }
 
@@ -175,9 +177,11 @@ export class EditWorldComponent implements OnInit {
     }
 
     this.worldService.edit(this.world.owner, this.world.name, formData)
-      .finally(() => {
-        this.updating = false;
-      })
+      .pipe(
+        finalize(() => {
+          this.updating = false;
+        })
+      )
       .subscribe(
         (response) => {
           // Update the world.

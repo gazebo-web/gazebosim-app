@@ -1,21 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
-
-import {
-  MatButtonModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatIconModule,
-  MatInputModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatSnackBarModule,
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { of, throwError } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { AuthService } from '../../auth/auth.service';
@@ -48,7 +45,7 @@ describe('NewModelComponent', () => {
   const testThumbnails = new File([], 'img0.jpg');
   testThumbnails['fullPath'] = 'thumbnails/img0.jpg';
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -90,15 +87,13 @@ describe('NewModelComponent', () => {
         entryComponents: [ ConfirmationDialogComponent ],
       },
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(NewModelComponent);
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should have the authenticated user as owner', async(() => {
-    const authService = TestBed.get(AuthService);
+  it('should have the authenticated user as owner', () => {
+    const authService = TestBed.inject(AuthService);
 
     // No authenticated user.
     component.ngOnInit();
@@ -119,9 +114,9 @@ describe('NewModelComponent', () => {
     expect(component.owner).toBe(0);
     expect(component.ownerList[0]).toBe('testOwner');
     expect(component.ownerList[1]).toBe('testOrg1');
-  }));
+  });
 
-  it('should NOT upload without files', async(() => {
+  it('should NOT upload without files', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -130,9 +125,9 @@ describe('NewModelComponent', () => {
     component.verifyBeforeUpload();
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should NOT upload if the model name is empty', async(() => {
+  it('should NOT upload if the model name is empty', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -143,9 +138,9 @@ describe('NewModelComponent', () => {
 
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should NOT upload without a model.config file', async(() => {
+  it('should NOT upload without a model.config file', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -158,9 +153,9 @@ describe('NewModelComponent', () => {
     expect(component.urlName).toBe('Test_Model');
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should NOT upload without a .sdf file', async(() => {
+  it('should NOT upload without a .sdf file', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -173,9 +168,9 @@ describe('NewModelComponent', () => {
     expect(component.urlName).toBe('Test_Model');
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should open the thumbnail warning dialog if there are no thumbnails', async(() => {
+  it('should open the thumbnail warning dialog if there are no thumbnails', () => {
     spyOn(component, 'upload');
     spyOn(component, 'openThumbnailsWarning');
 
@@ -188,9 +183,9 @@ describe('NewModelComponent', () => {
     expect(component.urlName).toBe('Test_Model');
     expect(component.openThumbnailsWarning).toHaveBeenCalled();
     expect(component.upload).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should allow to upload if all requirements are met', async(() => {
+  it('should allow to upload if all requirements are met', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
     spyOn(component, 'openThumbnailsWarning');
@@ -204,13 +199,13 @@ describe('NewModelComponent', () => {
     expect(component.openThumbnailsWarning).not.toHaveBeenCalled();
     expect(component.upload).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeNull();
-  }));
+  });
 
-  it('should create the form and call the service upload with it', async(() => {
+  it('should create the form and call the service upload with it', () => {
     const service = component.modelService;
     const authService = component.authService;
     const router = component.router;
-    spyOn(service, 'upload').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'upload').and.returnValue(of({status: 200}));
     spyOn(router, 'navigate');
 
     // Mock authenticated user.
@@ -251,12 +246,12 @@ describe('NewModelComponent', () => {
     expect(service.upload).toHaveBeenCalledWith(testForm);
     expect(router.navigate).toHaveBeenCalledWith(['/testOwner/models/testModel']);
     //
-  }));
+  });
 
-  it('should cancel the upload on an incorrect response status', async(() => {
+  it('should cancel the upload on an incorrect response status', () => {
     const snackBar = component.snackBar;
     const service = component.modelService;
-    spyOn(service, 'upload').and.returnValue(Observable.of({status: 500}));
+    spyOn(service, 'upload').and.returnValue(of({status: 500}));
     spyOn(component, 'cancelUpload');
 
     component.modelName = 'testModel';
@@ -272,12 +267,12 @@ describe('NewModelComponent', () => {
 
     expect(component.cancelUpload).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should cancel the upload on an error response', async(() => {
+  it('should cancel the upload on an error response', () => {
     const snackBar = component.snackBar;
     const service = component.modelService;
-    spyOn(service, 'upload').and.returnValue(Observable.throw({}));
+    spyOn(service, 'upload').and.returnValue(throwError({}));
     spyOn(component, 'cancelUpload');
 
     component.modelName = 'testModel';
@@ -293,9 +288,9 @@ describe('NewModelComponent', () => {
 
     expect(component.cancelUpload).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should cancel the upload', async(() => {
+  it('should cancel the upload', () => {
     const snackBar = component.snackBar;
 
     component.cancelUpload();
@@ -303,9 +298,9 @@ describe('NewModelComponent', () => {
     expect(component.uploading).toBe(false);
     expect(component.modelNameInputForm.enabled).toBe(true);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should return the error if the name is empty', async(() => {
+  it('should return the error if the name is empty', () => {
     // Manually set the error.
     component.modelNameInputForm.setErrors({
       required: true
@@ -314,9 +309,9 @@ describe('NewModelComponent', () => {
     const error: string = component.getModelNameError();
 
     expect(error).toBe('This field is required');
-  }));
+  });
 
-  it('should return the error if the name is duplicated', async(() => {
+  it('should return the error if the name is duplicated', () => {
     // Manually set the error.
     component.modelNameInputForm.setErrors({
       duplicated: true
@@ -325,14 +320,14 @@ describe('NewModelComponent', () => {
     const error: string = component.getModelNameError();
 
     expect(error).toBe('This model name already exists. Please use a different one.');
-  }));
+  });
 
-  it(`should NOT highlight an error if there isn't any`, async(() => {
+  it(`should NOT highlight an error if there isn't any`, () => {
     // Manually set no errors.
     component.modelNameInputForm.setErrors({});
 
     const error: string = component.getModelNameError();
 
     expect(error).toBe('');
-  }));
+  });
 });

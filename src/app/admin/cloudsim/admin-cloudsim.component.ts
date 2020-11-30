@@ -1,5 +1,9 @@
-import { Component, OnInit  } from '@angular/core';
-import { MatTableDataSource, MatSelectChange, MatSnackBar, PageEvent } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectChange } from '@angular/material/select';
+import { PageEvent } from '@angular/material/paginator';
+
 import {
   Machine,
   PaginatedMachine,
@@ -120,7 +124,7 @@ export class AdminCloudsimComponent implements OnInit {
    *
    * @param change Change triggered by the dropdown element.
    */
-  public filterByStatus(change: MatSelectChange) {
+  public filterByStatus(change: MatSelectChange): void {
     this.machineStatusFilter = change.value;
     this.getMachines(this.machineStatusFilter, this.machineGroupIdFilter);
     this.getRules();
@@ -132,7 +136,7 @@ export class AdminCloudsimComponent implements OnInit {
    *
    * @param groupId Machine group id string.
    */
-  public filterByGroupId(groupId: string) {
+  public filterByGroupId(groupId: string): void {
     this.machineGroupIdFilter = groupId.trim();
     this.getMachines(this.machineStatusFilter, this.machineGroupIdFilter);
     this.getRules();

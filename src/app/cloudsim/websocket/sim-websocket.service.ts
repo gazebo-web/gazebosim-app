@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Root, Type, parse } from 'protobufjs';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Topic } from './topic';
 
 // Note: Required for Angular 5. Newer versions don't require the declaration.

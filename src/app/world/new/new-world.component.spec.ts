@@ -1,21 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
-
-import {
-  MatButtonModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatIconModule,
-  MatInputModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatSnackBarModule,
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { of, throwError } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { AuthService } from '../../auth/auth.service';
@@ -47,7 +44,7 @@ describe('NewWorldComponent', () => {
   const testThumbnails = new File([], 'img0.jpg');
   testThumbnails['fullPath'] = 'thumbnails/img0.jpg';
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -88,15 +85,13 @@ describe('NewWorldComponent', () => {
         entryComponents: [ ConfirmationDialogComponent ],
       },
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(NewWorldComponent);
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should have the authenticated user as owner', async(() => {
-    const authService = TestBed.get(AuthService);
+  it('should have the authenticated user as owner', () => {
+    const authService = TestBed.inject(AuthService);
 
     // No authenticated user.
     component.ngOnInit();
@@ -117,9 +112,9 @@ describe('NewWorldComponent', () => {
     expect(component.owner).toBe(0);
     expect(component.ownerList[0]).toBe('testOwner');
     expect(component.ownerList[1]).toBe('testOrg1');
-  }));
+  });
 
-  it('should NOT upload without files', async(() => {
+  it('should NOT upload without files', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -128,9 +123,9 @@ describe('NewWorldComponent', () => {
     component.verifyBeforeUpload();
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should NOT upload if the world name is empty', async(() => {
+  it('should NOT upload if the world name is empty', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -141,9 +136,9 @@ describe('NewWorldComponent', () => {
 
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should NOT upload without a .sdf file', async(() => {
+  it('should NOT upload without a .sdf file', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
 
@@ -156,9 +151,9 @@ describe('NewWorldComponent', () => {
     expect(component.urlName).toBe('Test_World');
     expect(component.upload).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should open the thumbnail warning dialog if there are no thumbnails', async(() => {
+  it('should open the thumbnail warning dialog if there are no thumbnails', () => {
     spyOn(component, 'upload');
     spyOn(component, 'openThumbnailsWarning');
 
@@ -171,9 +166,9 @@ describe('NewWorldComponent', () => {
     expect(component.urlName).toBe('Test_World');
     expect(component.upload).not.toHaveBeenCalled();
     expect(component.openThumbnailsWarning).toHaveBeenCalled();
-  }));
+  });
 
-  it('should allow to upload if all requirements are met', async(() => {
+  it('should allow to upload if all requirements are met', () => {
     const snackBar = component.snackBar;
     spyOn(component, 'upload');
     spyOn(component, 'openThumbnailsWarning');
@@ -187,13 +182,13 @@ describe('NewWorldComponent', () => {
     expect(component.openThumbnailsWarning).not.toHaveBeenCalled();
     expect(component.upload).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeNull();
-  }));
+  });
 
-  it('should create the form and call the service upload with it', async(() => {
+  it('should create the form and call the service upload with it', () => {
     const service = component.worldService;
     const authService = component.authService;
     const router = component.router;
-    spyOn(service, 'upload').and.returnValue(Observable.of({status: 200}));
+    spyOn(service, 'upload').and.returnValue(of({status: 200}));
     spyOn(router, 'navigate');
 
     // Mock authenticated user.
@@ -230,12 +225,12 @@ describe('NewWorldComponent', () => {
     expect(service.upload).toHaveBeenCalledWith(testForm);
     expect(router.navigate).toHaveBeenCalledWith(['/testOwner/worlds/testWorld']);
     //
-  }));
+  });
 
-  it('should cancel the upload on an incorrect response status', async(() => {
+  it('should cancel the upload on an incorrect response status', () => {
     const snackBar = component.snackBar;
     const service = component.worldService;
-    spyOn(service, 'upload').and.returnValue(Observable.of({status: 500}));
+    spyOn(service, 'upload').and.returnValue(of({status: 500}));
     spyOn(component, 'cancelUpload');
 
     component.worldName = 'testWorld';
@@ -251,12 +246,12 @@ describe('NewWorldComponent', () => {
 
     expect(component.cancelUpload).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should cancel the upload on an error response', async(() => {
+  it('should cancel the upload on an error response', () => {
     const snackBar = component.snackBar;
     const service = component.worldService;
-    spyOn(service, 'upload').and.returnValue(Observable.throw({}));
+    spyOn(service, 'upload').and.returnValue(throwError({}));
     spyOn(component, 'cancelUpload');
 
     component.worldName = 'testWorld';
@@ -272,9 +267,9 @@ describe('NewWorldComponent', () => {
 
     expect(component.cancelUpload).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should cancel the upload', async(() => {
+  it('should cancel the upload', () => {
     const snackBar = component.snackBar;
 
     component.cancelUpload();
@@ -282,9 +277,9 @@ describe('NewWorldComponent', () => {
     expect(component.uploading).toBe(false);
     expect(component.worldNameInputForm.enabled).toBe(true);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should return the error if the name is empty', async(() => {
+  it('should return the error if the name is empty', () => {
     // Manually set the error.
     component.worldNameInputForm.setErrors({
       required: true
@@ -293,9 +288,9 @@ describe('NewWorldComponent', () => {
     const error: string = component.getWorldNameError();
 
     expect(error).toBe('This field is required');
-  }));
+  });
 
-  it('should return the error if the name is duplicated', async(() => {
+  it('should return the error if the name is duplicated', () => {
     // Manually set the error.
     component.worldNameInputForm.setErrors({
       duplicated: true
@@ -304,14 +299,14 @@ describe('NewWorldComponent', () => {
     const error: string = component.getWorldNameError();
 
     expect(error).toBe('This world name already exists. Please use a different one.');
-  }));
+  });
 
-  it(`should NOT highlight an error if there isn't any`, async(() => {
+  it(`should NOT highlight an error if there isn't any`, () => {
     // Manually set no errors.
     component.worldNameInputForm.setErrors({});
 
     const error: string = component.getWorldNameError();
 
     expect(error).toBe('');
-  }));
+  });
 });

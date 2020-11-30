@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -6,11 +6,20 @@ import { Location } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Observable, Subscription, of, throwError } from 'rxjs';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule } from 'ngx-markdown';
-import { NgxGalleryModule } from 'ngx-gallery';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import * as FileSaver from 'file-saver';
 
 import { AuthPipe } from '../auth/auth.pipe';
@@ -32,20 +41,6 @@ import { PageTitleComponent } from '../page-title';
 import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../tags/tags.component';
 import { MetadataComponent } from '../metadata/metadata.component';
-
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatChipsModule,
-  MatDialog,
-  MatDialogModule,
-  MatIconModule,
-  MatListModule,
-  MatSelectModule,
-  MatSnackBarModule,
-  MatTableModule,
-  MatTabsModule,
-} from '@angular/material';
 
 describe('ModelComponent', () => {
   let fixture: ComponentFixture<ModelComponent>;
@@ -158,9 +153,11 @@ describe('ModelComponent', () => {
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should set the model from the router data on the ngOnInit lifecycle hook', async(() => {
+  it('should set the model from the router data on the ngOnInit lifecycle hook', () => {
     spyOn(component, 'getFiles');
     spyOn(component, 'loadCollections');
+
+    // declare let Detector: any;
 
     component.ngOnInit();
 
@@ -169,9 +166,9 @@ describe('ModelComponent', () => {
     expect(component.model.versions.length).toEqual(5);
     expect(component.latestVersion).toEqual(5);
     expect(component.currentVersion).toEqual(3);
-  }));
+  });
 
-  it('should unsubscribe from the dialog on the ngOnDestroy lifecycle hook', async(() => {
+  it('should unsubscribe from the dialog on the ngOnDestroy lifecycle hook', () => {
     component.collectionDialogSubscription = new Subscription();
     const spy = spyOn(component.collectionDialogSubscription, 'unsubscribe');
     component.ngOnDestroy();
@@ -181,9 +178,9 @@ describe('ModelComponent', () => {
     component.collectionDialogSubscription = undefined;
     component.ngOnDestroy();
     expect(spy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should revoke the created ObjectURLs on the ngOnDestroy lifecycle hook', async(() => {
+  it('should revoke the created ObjectURLs on the ngOnDestroy lifecycle hook', () => {
     component.galleryImages = [{medium: 'testUrl', small: 'testUrl'}];
     const spy = spyOn(URL, 'revokeObjectURL');
     component.ngOnDestroy();
@@ -193,12 +190,13 @@ describe('ModelComponent', () => {
     component.galleryImages = undefined;
     component.ngOnDestroy();
     expect(spy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should get the model after a download', async(() => {
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'download').and.returnValue(Observable.of('blob'));
-    spyOn(modelService, 'get').and.returnValue(Observable.of(updatedTestModel));
+  it('should get the model after a download', () => {
+    const modelService = TestBed.inject(ModelService);
+    const blob = new Blob([''], { type: 'application/zip' });
+    spyOn(modelService, 'download').and.returnValue(of(blob));
+    spyOn(modelService, 'get').and.returnValue(of(updatedTestModel));
 
     spyOn(component, 'getFiles');
     spyOn(FileSaver, 'saveAs');
@@ -209,29 +207,30 @@ describe('ModelComponent', () => {
     expect(component.model.downloads).toEqual(1);
     expect(modelService.download).toHaveBeenCalled();
     expect(modelService.get).toHaveBeenCalled();
-    expect(FileSaver.saveAs).toHaveBeenCalledWith('blob', 'test-model-name.zip');
-  }));
+    expect(FileSaver.saveAs).toHaveBeenCalledWith(blob, 'test-model-name.zip');
+  });
 
-  it('should download an individual file', async(() => {
+  it('should download an individual file', () => {
     const testFile = new File([], 'testFile');
     testFile['path'] = '/test/file';
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'getFileAsBlob').and.returnValue(Observable.of('blob'));
+    const modelService = TestBed.inject(ModelService);
+    const blob = new Blob(['']);
+    spyOn(modelService, 'getFileAsBlob').and.returnValue(of(blob));
     spyOn(FileSaver, 'saveAs');
 
     component.model = testModel;
     component.downloadIndividualFile(testFile);
 
     expect(modelService.getFileAsBlob).toHaveBeenCalled();
-    expect(FileSaver.saveAs).toHaveBeenCalledWith('blob', 'testFile');
-  }));
+    expect(FileSaver.saveAs).toHaveBeenCalledWith(blob, 'testFile');
+  });
 
-  it('should open a snackbar if downloading an individual file fails', async(() => {
+  it('should open a snackbar if downloading an individual file fails', () => {
     const snackBar = component.snackBar;
     const testFile = new File([], 'testFile');
     testFile['path'] = '/test/file';
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'getFileAsBlob').and.returnValue(Observable.throw({}));
+    const modelService = TestBed.inject(ModelService);
+    spyOn(modelService, 'getFileAsBlob').and.returnValue(throwError({}));
     spyOn(FileSaver, 'saveAs');
 
     component.model = testModel;
@@ -239,14 +238,18 @@ describe('ModelComponent', () => {
 
     expect(FileSaver.saveAs).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should like and unlike the model', async(() => {
-    const modelService = TestBed.get(ModelService);
-    const likeSpy = spyOn(modelService, 'like').and.returnValue(Observable.of(1));
-    const unlikeSpy = spyOn(modelService, 'unlike').and.returnValue(Observable.of(0));
+  it('should like and unlike the model', () => {
+    const modelService = TestBed.inject(ModelService);
+
+    const likeSpy = spyOn(modelService, 'like');
+    const unlikeSpy = spyOn(modelService, 'unlike');
+    likeSpy.and.returnValue(of(1));
+    unlikeSpy.and.returnValue(of(0));
 
     component.model = testModel;
+    component.model.isLiked = false;
     component.likeClick();
 
     expect(likeSpy).toHaveBeenCalled();
@@ -264,10 +267,10 @@ describe('ModelComponent', () => {
     expect(unlikeSpy).toHaveBeenCalled();
     expect(component.model.isLiked).toEqual(false);
     expect(component.model.likes).toEqual(0);
-  }));
+  });
 
-  it('should return the correct tooltip of the like button', async(() => {
-    const authService = TestBed.get(AuthService);
+  it('should return the correct tooltip of the like button', () => {
+    const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, 'isAuthenticated').and.returnValue(false);
 
     component.model = testModel;
@@ -282,11 +285,11 @@ describe('ModelComponent', () => {
     component.model.isLiked = true;
     title = component.getLikeButtonTitle();
     expect(title).toBe('Stop liking this model');
-  }));
+  });
 
-  it('should open a snackbar upon an error while liking the model', async(() => {
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'like').and.returnValue(Observable.throw({}));
+  it('should open a snackbar upon an error while liking the model', () => {
+    const modelService = TestBed.inject(ModelService);
+    spyOn(modelService, 'like').and.returnValue(throwError({}));
 
     const snackBar = component.snackBar;
 
@@ -296,17 +299,17 @@ describe('ModelComponent', () => {
 
     expect(modelService.like).toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should prompt the model name and owner when copying a model', async(() => {
-    const dialog = TestBed.get(MatDialog);
+  it('should prompt the model name and owner when copying a model', () => {
+    const dialog = TestBed.inject(MatDialog);
     spyOn(dialog, 'open').and.callThrough();
 
-    const modelService = TestBed.get(ModelService);
+    const modelService = TestBed.inject(ModelService);
     spyOn(modelService, 'copy');
 
     // Mock the logged user.
-    const authService = TestBed.get(AuthService);
+    const authService = TestBed.inject(AuthService);
     authService.userProfile = {
       username: 'testUser',
       orgs: ['testOrg']
@@ -317,10 +320,10 @@ describe('ModelComponent', () => {
 
     expect(dialog.open).toHaveBeenCalled();
     expect(modelService.copy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should return the correct tooltip of the copy button', async(() => {
-    const authService = TestBed.get(AuthService);
+  it('should return the correct tooltip of the copy button', () => {
+    const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, 'isAuthenticated').and.returnValue(false);
 
     component.model = testModel;
@@ -338,20 +341,20 @@ describe('ModelComponent', () => {
     component.currentVersion = 2;
     title = component.getCopyButtonTitle();
     expect(title).toBe('Copy this model');
-  }));
+  });
 
-  it('should notify with a snackbar if the file download fails', async(() => {
+  it('should notify with a snackbar if the file download fails', () => {
     const snackBar = component.snackBar;
 
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'download').and.returnValue(Observable.throw({}));
+    const modelService = TestBed.inject(ModelService);
+    spyOn(modelService, 'download').and.returnValue(throwError({}));
 
     component.downloadClick();
 
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should extract the files from the file tree', async(() => {
+  it('should extract the files from the file tree', () => {
     const testFileTree = {
       name: 'test-name',
       file_tree: [
@@ -388,8 +391,8 @@ describe('ModelComponent', () => {
       ]
     };
 
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'getFileTree').and.returnValue(Observable.of(testFileTree));
+    const modelService = TestBed.inject(ModelService);
+    spyOn(modelService, 'getFileTree').and.returnValue(of(testFileTree));
     spyOn(component, 'setupGallery');
 
     // For this test, spy on the Model's populateThumbnails method.
@@ -411,13 +414,13 @@ describe('ModelComponent', () => {
     expect(files[2].name).toBe('model.sdf');
     expect(files[2].path).toBe('/model.sdf');
     expect(files[2].displayPath).toBe('test-model-name');
-  }));
+  });
 
-  it('should populate the gallery with model images', async(() => {
+  it('should populate the gallery with model images', () => {
     component.model = testModel;
-    const modelService = TestBed.get(ModelService);
-    spyOn(modelService, 'getFileAsBlob').and.returnValues(Observable.of('test-url-1'),
-      Observable.of(`test-single-quote's-url`));
+    const modelService = TestBed.inject(ModelService);
+    const blob = new Blob();
+    spyOn(modelService, 'getFileAsBlob').and.returnValues(of(blob), of(blob));
     spyOn(URL, 'createObjectURL').and.returnValues('test-url-1', 'test-single-quote%27s-url');
 
     component.setupGallery();
@@ -427,10 +430,10 @@ describe('ModelComponent', () => {
     expect(galleryImages[0].small).toBe('test-url-1');
     expect(galleryImages[1].medium).toBe(`test-single-quote%27s-url`);
     expect(galleryImages[1].small).toBe(`test-single-quote%27s-url`);
-  }));
+  });
 
-  it('should change model version', async(() => {
-    const location = TestBed.get(Location);
+  it('should change model version', () => {
+    const location = TestBed.inject(Location);
 
     const spy = spyOn(component, 'getFiles');
     spyOn(component, 'loadCollections');
@@ -449,25 +452,27 @@ describe('ModelComponent', () => {
 
     expect(component.getFiles).toHaveBeenCalled();
     expect(location.go).toHaveBeenCalledWith('test-owner/models/test-model/2');
-  }));
+  });
 
-  it('should load the collections that have the model', async(() => {
-    const collectionService = TestBed.get(CollectionService);
+  it('should load the collections that have the model', () => {
+    const collectionService = TestBed.inject(CollectionService);
     const snackBar = component.snackBar;
+    const paginatedCollections = new PaginatedCollection();
 
-    const spy = spyOn(collectionService, 'getAssetCollections').and.returnValue(Observable.of({}));
+    const spy = spyOn(collectionService, 'getAssetCollections').and.returnValue(
+      of(paginatedCollections));
     component.loadCollections();
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model);
 
     spy.calls.reset();
-    spy.and.returnValue(Observable.throw({}));
+    spy.and.returnValue(throwError({}));
     component.loadCollections();
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should load the next page of the collections that have the model', async(() => {
-    const collectionService = TestBed.get(CollectionService);
+  it('should load the next page of the collections that have the model', () => {
+    const collectionService = TestBed.inject(CollectionService);
     const collection = new Collection({
       name: 'testCollection',
       owner: 'testOwner'
@@ -480,12 +485,12 @@ describe('ModelComponent', () => {
     mockCollections.collections = [collection];
 
     const spy = spyOn(collectionService, 'getNextPage').and.returnValue(
-      Observable.of(mockCollections));
+      of(mockCollections));
 
     component.loadNextCollections();
 
     expect(collectionService.getNextPage).toHaveBeenCalledWith(component.paginatedCollections);
     expect(component.paginatedCollections).toBe(mockCollections);
     expect(component.collections.length).toEqual(2);
-  }));
+  });
 });
