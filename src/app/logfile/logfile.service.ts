@@ -5,7 +5,6 @@ import { map, catchError, mergeMap } from 'rxjs/operators';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
-import { AuthService } from '../auth/auth.service';
 import { environment } from '../../environments/environment';
 import { Logfile } from './logfile';
 import { PaginatedLogfile } from './paginated-logfile';
@@ -35,12 +34,10 @@ export class LogfileService {
   public nextUrl: string;
 
   /**
-   * @param authService Service to get authentication information.
    * @param factory Factory to transform Json into an object instance.
    * @param http Performs HTTP requests.
    */
   constructor(
-    protected authService: AuthService,
     protected factory: JsonClassFactoryService,
     protected http: HttpClient) {
   }
