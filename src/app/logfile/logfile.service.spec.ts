@@ -1,13 +1,12 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
-import { HttpHeaders } from '@angular/common/http';
 import {
   HttpClientTestingModule,
   HttpTestingController,
   TestRequest
 } from '@angular/common/http/testing';
+import { HttpHeaders } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { AuthService } from '../auth/auth.service';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { Logfile, LogfileService, PaginatedLogfile } from '../logfile';
 
@@ -35,7 +34,6 @@ describe('LogfileService', () => {
         RouterTestingModule,
       ],
       providers: [
-        AuthService,
         JsonClassFactoryService,
         LogfileService,
       ],
@@ -180,6 +178,7 @@ describe('LogfileService', () => {
 
   it('should download a logfile', () => {
     const url = `${service.baseUrl}/subt/logfiles/${testLogfile.id}/file?link=true`;
+    const linkUrl = `logfile/link/url`;
     const blob = new Blob([]);
 
     service.download(testLogfile.id).subscribe(
@@ -188,9 +187,13 @@ describe('LogfileService', () => {
       }
     );
 
-    const req: TestRequest = httpMock.expectOne(url);
-    expect(req.request.method).toBe('GET');
-    req.flush(testLogfileJson);
+    const urlRequest: TestRequest = httpMock.expectOne(url);
+    expect(urlRequest.request.method).toBe('GET');
+    urlRequest.flush(linkUrl);
+
+    const linkRequest: TestRequest = httpMock.expectOne(linkUrl);
+    linkRequest.flush(blob);
+    expect(linkRequest.request.method).toBe('GET');
   });
 
   it('should get the next page of logfiles', () => {
