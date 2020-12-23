@@ -301,6 +301,7 @@ export class NewModelComponent implements OnInit {
           } else {
             if (this.createPr) {
               this.router.navigate([`/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`])
+              this.createPr = false;
             } else {
               this.router.navigate([`/${this.ownerList[this.owner]}/models/${this.modelName.trim()}`]);
             }

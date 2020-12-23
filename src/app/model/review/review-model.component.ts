@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { FuelResource } from 'src/app/fuel-resource';
+import { ModelService } from '../model.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'ign-review',
@@ -10,30 +13,65 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 export class ReviewComponent implements OnInit {
 
   /**
+   * owner of the model
+   */
+  public owner = '';
+  /**
    * fake branch name, need to remove later
    */
   public fakeBranch = 'base:main';
+  /**
+   * Name of the model, to be retrived from url
+   */
   public modelName = '';
-  public prText = `test a longer string to test selection. <b>If you want</b> to motivate these clowns then tryless carrots and more stciks. Win win incentive. Eat our own dog food. Is this sentence long enough? blah blah blah. Once upon a time, there was a wise man called Aesop`;
+  /**
+   * Comments that user wrote before opening the pr
+   */
+  public prComments = '';
+  /**
+   * list of reviwers
+   */
   public reviewers: string[] = ['John', 'steven', 'mary', 'jane', 'extra guy'];
-  public selectedReviewer = '';
+  /**
+   * reviewer the user selected
+   */
+  public selectedReviewers = [];
+  /**
+   * today's date. To be displayed in the file display section
+   */
   public date = this.getDate();
-  public fakeFiles = this.getMockFiles();
+  /**
+   * list of fake files for testing. Will be replaced with real files uploaded by user
+   */
+  public files: File[];
+  /**
+   * Configuration for richtext editor. Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
+   */
   public editorConfig: AngularEditorConfig = {
     minHeight: '15em'
   }
+  /**
+   * model resource object
+   */
+  public modelResource: FuelResource;
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data
+   * @param modelService Service to request model creation
    */
   constructor(
     private activatedRoute: ActivatedRoute,
+    public modelService: ModelService,
   ) { }
 
   ngOnInit(): void {
     this.modelName = this.activatedRoute.snapshot.paramMap.get('modelname');
+    this.owner = this.activatedRoute.snapshot.paramMap.get('owner');
+    this.getModel();
   }
-
+  /**
+   * Get today's date in dd - month - year format
+   */
   private getDate(): string {
     const monthStore = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const today = new Date();
@@ -42,31 +80,34 @@ export class ReviewComponent implements OnInit {
     const year = today.getFullYear().toString();
     return dd + ' ' + month + ' ' + year;
   }
-
-  private getMockFiles(): File[] {
-    const blobPic = new Blob([""], { type: 'image/png' });
-    blobPic["lastModifiedDate"] = "";
-    blobPic["name"] = "model.png";
-    const file1 = <File>blobPic;
-
-    const blobConf = new Blob([""], { type: '' });
-    blobConf["lastModifiedDate"] = "";
-    blobConf["name"] = "model.config";
-    const file2 = <File>blobConf;
-
-    const blobSdf = new Blob([""], { type: '' });
-    blobSdf["lastModifiedDate"] = "";
-    blobSdf["name"] = "model.sdf";
-    const file3 = <File>blobSdf;
-
-    return [file1, file2, file3];
+  /**
+   * get model
+   */
+  private getModel() {
+    this.modelService.get(this.owner, this.modelName).subscribe(response => {
+      this.modelResource = response;
+      this.getUploadedFiles(this.modelResource);
+    })
   }
-
-  public deleteFile(file: File) {
-    console.log(file);
+  /**
+   * retrieve files
+   */
+  private getUploadedFiles(fuelResource: FuelResource) {
+    this.modelService.getFileTree(fuelResource).subscribe(response => {
+      this.files = response.file_tree;
+    })
   }
-
+  /**
+   * function to create pull request
+   */
   public createPullRequest() {
-    console.log(this.prText);
+    console.log(this.prComments);
+    console.log(this.selectedReviewers)
+  }
+  /**
+   * delete a selected reviewer
+   */
+  public deleteReviewer(reviewer) {
+    this.selectedReviewers = this.selectedReviewers.filter(val => val !== reviewer);
   }
  }

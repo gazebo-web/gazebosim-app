@@ -21,6 +21,9 @@
   .select-reviewer {
     flex: 1;
     padding: 0 1em;
+    .mat-form-field {
+      width: 100%;
+    }
   }
 }
 .pull-request-group .mat-card-title {
@@ -37,6 +40,9 @@
 .pull-request-group .mat-card-actions {
   padding: 0 2em 2em 0;
 }
+.file-date {
+  margin: 1em 1em 0 1em;
+}
 .file-display {
   height: 100%;
   border-width: 1px;
@@ -45,16 +51,19 @@
   margin: 1em;
   min-height: 2em;
 }
-.file:hover {
+.file:hover, .selected-reviewer:hover {
   background-color: mat-color($custom-theme-accent, A100);
 }
-.file {
+.file{
   padding: 0.5em 2em;
 }
-.file > i {
+.selected-reviewer {
+  padding: 0.5em;
+}
+.selected-reviewer > i {
   cursor: pointer;
 }
-.file > i:hover {
+.selected-reviewer > i:hover {
   color: mat-color($custom-theme-accent, A700);
 }
 
