@@ -38,6 +38,7 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 import 'hammerjs';
 
 /**
@@ -142,6 +143,7 @@ import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
+import { ReviewComponent } from './model/review/review-model.component';
 
 /**
  * Entry point.
@@ -210,6 +212,7 @@ import { WorldService } from './world/world.service';
     UserComponent,
     WorldComponent,
     WorldListComponent,
+    ReviewComponent,
   ],
   /**
    * Import the used modules.
@@ -256,6 +259,7 @@ import { WorldService } from './world/world.service';
     NgxGalleryModule,
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
+    AngularEditorModule,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.

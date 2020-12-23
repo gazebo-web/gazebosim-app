@@ -46,6 +46,7 @@ import { UserWorldsResolver } from './world/list/user-worlds.resolver';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
+import { ReviewComponent } from './model/review/review-model.component';
 
 export const ROUTES: Routes = [
   {
@@ -224,8 +225,17 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: ':owner/fuel/models/review/:modelname',
+    component: ReviewComponent,
+    pathMatch: 'full',
+    data: {
+      titlebarTitle: 'Fuel',
+      titlebarSubtitle: 'Model Review',
+    }
+  },
+  {
     path: 'worlds',
-    redirectTo: 'fuel/worlds'
+    redirectTo: 'fuel/worlds',
   },
   {
     path: 'fuel/worlds',

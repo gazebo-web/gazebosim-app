@@ -1,0 +1,50 @@
+<div class="model-review">
+  <div class="content">
+    <ign-page-title title="Open a Review"></ign-page-title>
+    <p>A model review compares changes across two branches</p>
+
+    <mat-toolbar>
+      <mat-icon style="transform: rotate(90deg)">repeat</mat-icon>
+      <mat-card>{{fakeBranch}}</mat-card>
+      <mat-icon>keyboard_backspace</mat-icon>
+      <mat-card>{{fakeBranch}}</mat-card>
+    </mat-toolbar>
+
+    <div class="pull-request-group">
+      <mat-card>
+        <mat-card-title>
+          <div class="content">
+            Add a new model {{modelName}} for review
+          </div>
+        </mat-card-title>
+
+        <mat-card-content>
+          <h2>What's New</h2>
+          <angular-editor [(ngModel)]="prText" [config]="editorConfig"></angular-editor>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+          <button mat-raised-button color="accent" (click)="createPullRequest()">Create Pull Request</button>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-form-field class="select-reviewer">
+        <mat-label>Reviwers</mat-label>
+        <mat-select [(ngModel)]="selectedReviewer">
+          <mat-option *ngFor="let reviewer of reviewers" [value]="reviewer">
+            {{reviewer}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="file-display">
+      <div *ngFor="let file of fakeFiles" class="file" fxLayout="row" fxLayoutAlign="space-between">
+        <span>{{file.name}}</span> 
+        <i class="material-icons" button type="button" matSuffix (click)="deleteFile(file)">
+          delete
+        </i>
+      </div>
+    </div>
+  </div>
+</div>

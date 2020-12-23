@@ -5,8 +5,7 @@
 
 <ng-template #isAuthenticated>
 
-  <form fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start" class="content"
-        (ngSubmit)=verifyBeforeUpload()>
+  <form fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between start" class="content">
 
     <mat-form-field fxFill>
       <input matInput
@@ -76,7 +75,14 @@
 
     <div fxLayout="row" fxLayoutAlign="space-between start" fxFill *ngIf="!uploading; else isUploading">
       <button mat-raised-button (click)="location.back()">Cancel</button>
-      <button mat-raised-button color="accent" type="submit">Upload</button>
+
+      <div>
+        <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" type="button">Select upload option</button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="directUpload()">Upload</button>
+          <button mat-menu-item (click)="uploadAndCreatePr()">Upload for review</button>
+        </mat-menu>
+      </div>
     </div>
 
     <ng-template #isUploading>

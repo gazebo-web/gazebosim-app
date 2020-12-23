@@ -121,6 +121,11 @@ export class NewModelComponent implements OnInit {
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   /**
+   * Decide to redirect to new new pr page or not
+   */
+  private createPr = false;
+
+  /**
    * @param authService Service to get authentication details
    * @param dialog Dialog to display warnings
    * @param location Provides a way to go back to the previous page
@@ -179,9 +184,9 @@ export class NewModelComponent implements OnInit {
   /**
    * Callback when upload button is pressed.
    *
-   * Verifies that the model can be uploaded, and does so if it can.
+   * Verifies that the model can be uploaded.
    */
-  public verifyBeforeUpload(): void {
+  public verifyBeforeUpload(): boolean | undefined {
     // Check if the model has at least one file.
     if (!this.fileList || this.fileList.length === 0) {
       this.snackBar.open('Please add files to be uploaded.', 'Got it');
@@ -256,8 +261,7 @@ export class NewModelComponent implements OnInit {
       return;
     }
 
-    // All is good
-    this.upload();
+    return true
   }
 
   /**
@@ -294,8 +298,13 @@ export class NewModelComponent implements OnInit {
             this.snackBar.open('Something went wrong', 'Got it');
             this.cancelUpload();
             return;
+          } else {
+            if (this.createPr) {
+              this.router.navigate([`/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`])
+            } else {
+              this.router.navigate([`/${this.ownerList[this.owner]}/models/${this.modelName.trim()}`]);
+            }
           }
-          this.router.navigate([`/${this.ownerList[this.owner]}/models/${this.modelName.trim()}`]);
         },
         (error) => {
           this.cancelUpload();
@@ -306,6 +315,31 @@ export class NewModelComponent implements OnInit {
             });
           }
         });
+  }
+
+  /**
+   * Upload new model directly without creating pr
+   */
+  public directUpload(): void {
+    // Verifies the model has the necessary files to be uploaded
+    const verified = this.verifyBeforeUpload();
+
+    if (verified) {
+      // All is good
+      this.upload();
+    }
+  }
+
+  /**
+   * Upload a new model and create a new pr
+   */
+  public uploadAndCreatePr(): void {
+    this.createPr = true;
+    const verified = this.verifyBeforeUpload();
+
+    if (verified) {
+      this.upload();
+    }
   }
 
   /**
