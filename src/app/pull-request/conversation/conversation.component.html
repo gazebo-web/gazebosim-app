@@ -1,0 +1,39 @@
+<div class="conversations">
+  <mat-card *ngFor="let comment of comments">
+    <mat-card-title>
+      @{{comment.author}} commented on {{comment.date}}
+    </mat-card-title>
+    <mat-card-content>
+      {{comment.comment}}
+    </mat-card-content>
+  </mat-card>
+
+  <div class="file-heading">
+    <h2>Uploaded files</h2>
+    <span><button mat-raised-button color="accent">Download files</button></span>
+  </div>
+  <div class="file-display">
+    <div *ngFor="let file of files" class="file" fxLayout="row" fxLayoutAlign="space-between">
+      <span>{{file.name}}</span> 
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="new-comment">
+    <mat-card>
+      <mat-card-title>
+        New Comment
+      </mat-card-title>
+
+      <mat-card-content>
+        <angular-editor [(ngModel)]="newComment" [config]="editorConfig"></angular-editor>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-raised-button >Close Review</button>
+        <button mat-raised-button color="accent" (click)="addComment()" >Comment</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

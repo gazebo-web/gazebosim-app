@@ -2,17 +2,17 @@
 @import '../../../styles/custom-theme.scss';
 
 .content {
-  padding: 0 20px;
+  padding: 0 40px;
 }
 .mat-toolbar {
-  background-color: mat-color($custom-theme-primary);
+  background-color: mat-color($custom-theme-primary, 100);
   margin: 1em 0;
   .mat-card {
     padding: 0 1em;
     margin: 0 1em;
   }
 }
-.pull-request-group {
+.review-group {
   display: flex;
   .mat-card {
     flex: 4;
@@ -26,18 +26,18 @@
     }
   }
 }
-.pull-request-group .mat-card-title {
-  background-color: mat-color($custom-theme-primary);
+.review-group .mat-card-title {
+  background-color: mat-color($custom-theme-primary, 100);
   padding: 0.8em;
   .content {
     background-color: white;
     padding: 0.5em;
   }
 }
-.pull-request-group .mat-card-content {
+.review-group .mat-card-content {
   padding: 0 1em;
 }
-.pull-request-group .mat-card-actions {
+.review-group .mat-card-actions {
   padding: 0 2em 2em 0;
 }
 .file-date {

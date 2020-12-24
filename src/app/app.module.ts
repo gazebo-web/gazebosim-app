@@ -144,6 +144,9 @@ import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
 import { ReviewComponent } from './model/review/review-model.component';
+import { PullRequestComponent } from './pull-request/pull-request.component';
+import { ConversationComponent } from './pull-request/conversation/conversation.component';
+import { FileChangesComponent } from './pull-request/file-changes/file-changes.component';
 
 /**
  * Entry point.
@@ -213,6 +216,9 @@ import { ReviewComponent } from './model/review/review-model.component';
     WorldComponent,
     WorldListComponent,
     ReviewComponent,
+    PullRequestComponent,
+    ConversationComponent,
+    FileChangesComponent,
   ],
   /**
    * Import the used modules.

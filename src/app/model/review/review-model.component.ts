@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { FuelResource } from 'src/app/fuel-resource';
 import { ModelService } from '../model.service';
-import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'ign-review',
@@ -48,6 +47,7 @@ export class ReviewComponent implements OnInit {
    * Configuration for richtext editor. Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
    */
   public editorConfig: AngularEditorConfig = {
+    editable: true,
     minHeight: '15em'
   }
   /**
@@ -58,10 +58,12 @@ export class ReviewComponent implements OnInit {
   /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param modelService Service to request model creation
+   * @param router Router to navigate to other URLs
    */
   constructor(
     private activatedRoute: ActivatedRoute,
     public modelService: ModelService,
+    public router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -103,6 +105,7 @@ export class ReviewComponent implements OnInit {
   public createPullRequest() {
     console.log(this.prComments);
     console.log(this.selectedReviewers)
+    this.router.navigate([`/${this.owner}/pr/model/${this.modelName}`])
   }
   /**
    * delete a selected reviewer

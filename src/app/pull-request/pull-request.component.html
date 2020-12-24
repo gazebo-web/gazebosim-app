@@ -1,0 +1,38 @@
+<div class="pull-request">
+  <div class="content">
+    <mat-toolbar>
+      <mat-icon style="transform: rotate(90deg)">repeat</mat-icon>
+      <span class="heading">Add model for review</span>
+    </mat-toolbar>
+
+    <div class='display'>
+      <mat-tab-group mat-align-tabs="center" animationDuration="0ms" mat-stretch-tabs>
+        <mat-tab label="Conversation">
+          <ign-conversation
+          [files]="fakeFiles"></ign-conversation>
+        </mat-tab>
+        <mat-tab label="File Changes">
+          <ign-file-changes></ign-file-changes>
+        </mat-tab>
+        <mat-tab label="3D Changes">Coming soon!</mat-tab>
+      </mat-tab-group>
+
+      <div class="select-reviewer">
+        <mat-form-field>
+          <mat-label>Reviwers</mat-label>
+          <mat-select  [(ngModel)]="selectedReviewers" multiple>
+            <mat-option *ngFor="let reviewer of reviewers" [value]="reviewer">
+              {{reviewer}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="selected-reviewer" *ngFor="let reviewer of selectedReviewers" fxLayout="row" fxLayoutAlign="space-between">
+          <span>{{reviewer}}</span>
+          <i class="material-icons" button type="button" matSuffix (click)="deleteReviewer(reviewer)">
+            delete
+          </i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

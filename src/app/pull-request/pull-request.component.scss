@@ -1,0 +1,35 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.content {
+  padding: 20px 40px;
+}
+.heading {
+  margin-left: 1em;
+}
+.display {
+  display: flex;
+  .mat-tab-group {
+    flex: 4;
+  }
+  .select-reviewer {
+    flex: 1;
+    padding-top: 10px;
+    padding-left: 2em;
+    .mat-form-field {
+      width: 100%;
+    }
+  }
+}
+.selected-reviewer:hover {
+  background-color: mat-color($custom-theme-accent, A100);
+}
+.selected-reviewer {
+  padding: 0.5em;
+}
+.selected-reviewer > i {
+  cursor: pointer;
+}
+.selected-reviewer > i:hover {
+  color: mat-color($custom-theme-accent, A700);
+}

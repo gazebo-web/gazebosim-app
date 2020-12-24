@@ -1,0 +1,37 @@
+@import '~@angular/material/theming';
+@import '../../../styles/custom-theme.scss';
+
+.mat-card {
+  margin: 1.5em 0;
+  padding: 0;
+  .mat-card-title {
+    background-color: mat-color($custom-theme-primary, 100);
+    padding: 0.5em;
+  }
+  .mat-card-content {
+    padding: 1em;
+  }
+  .mat-card-actions {
+    padding: 0 1em 1em 0;
+  }
+}
+.file-heading {
+  margin: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.file-display {
+  height: 100%;
+  border-width: 1px;
+  border-color: #c3c3c3;
+  border-style: dashed;
+  margin: 1em;
+  margin-bottom: 2em;
+  min-height: 2em;
+}
+.file:hover, .selected-reviewer:hover {
+  background-color: mat-color($custom-theme-accent, A100);
+}
+.file{
+  padding: 0.5em 2em;
+}

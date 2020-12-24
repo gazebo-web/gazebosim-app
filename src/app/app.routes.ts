@@ -47,6 +47,7 @@ import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { ReviewComponent } from './model/review/review-model.component';
+import { PullRequestComponent } from './pull-request/pull-request.component';
 
 export const ROUTES: Routes = [
   {
@@ -600,6 +601,15 @@ export const ROUTES: Routes = [
     resolve: {
       resolvedData: OwnerProfileResolver,
     },
+  },
+  {
+    path: ':user/pr/:type/:name',
+    component: PullRequestComponent,
+    pathMatch: 'full',
+    data: {
+      titlebarTitle: 'Fuel',
+      titlebarSubtitle: 'Pull Request',
+    }
   },
   {
     path: '**',
