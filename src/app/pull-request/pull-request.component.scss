@@ -27,9 +27,18 @@
 .selected-reviewer {
   padding: 0.5em;
 }
-.selected-reviewer > i {
+.selected-reviewer i {
   cursor: pointer;
 }
-.selected-reviewer > i:hover {
+.selected-reviewer .delete:hover {
   color: mat-color($custom-theme-accent, A700);
+}
+.selected-reviewer .check_circle {
+  color: #29a329;
+}
+.mat-divider {
+  margin: 1rem 0;
+}
+.done {
+  color: #29a329;
 }

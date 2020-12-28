@@ -2,14 +2,18 @@
   <div class="content">
     <mat-toolbar>
       <mat-icon style="transform: rotate(90deg)">repeat</mat-icon>
-      <span class="heading">Add model for review</span>
+      <span class="heading">{{review.title}}</span>
     </mat-toolbar>
 
     <div class='display'>
       <mat-tab-group mat-align-tabs="center" animationDuration="0ms" mat-stretch-tabs>
         <mat-tab label="Conversation">
           <ign-conversation
-          [files]="fakeFiles"></ign-conversation>
+          [files]="fakeFiles"
+          [user]="user"
+          [modelName]="modelName"
+          [prId]="prId"
+          [review]="review"></ign-conversation>
         </mat-tab>
         <mat-tab label="File Changes">
           <ign-file-changes></ign-file-changes>
@@ -26,11 +30,28 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div class="no-reviewers" *ngIf="selectedReviewers.length === 0">
+          No Reviewers - please select a reviewer
+        </div>
         <div class="selected-reviewer" *ngFor="let reviewer of selectedReviewers" fxLayout="row" fxLayoutAlign="space-between">
           <span>{{reviewer}}</span>
-          <i class="material-icons" button type="button" matSuffix (click)="deleteReviewer(reviewer)">
-            delete
+          <div>
+            <i *ngIf="checkIsApproved(user, reviewer) && !checkIsApproved(user, review.approvals)" class="material-icons check_circle" button type="button" matSuffix (click)="onApprove(reviewer)">
+              check_circle
+            </i>
+            <i class="material-icons delete" button type="button" matSuffix (click)="deleteReviewer(reviewer)">
+              delete
+            </i>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div *ngIf="review.approvals.length > 0" fxLayout="row" fxLayoutAlign="space-between">
+          <i class="material-icons done">
+            done
           </i>
+          <span><b>{{review.approvals.length}} approval</b></span>
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
         <mat-card-content>
           <h2>What's New</h2>
-          <angular-editor [(ngModel)]="prComments" [config]="editorConfig"></angular-editor>
+          <angular-editor [(ngModel)]="description" [config]="editorConfig"></angular-editor>
         </mat-card-content>
 
         <mat-card-actions align="end">
@@ -37,6 +37,9 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div class="no-reviewers" *ngIf="selectedReviewers.length === 0">
+          No Reviewers - please select a reviewer
+        </div>
         <div class="selected-reviewer" *ngFor="let reviewer of selectedReviewers" fxLayout="row" fxLayoutAlign="space-between">
           <span>{{reviewer}}</span>
           <i class="material-icons" button type="button" matSuffix (click)="deleteReviewer(reviewer)">

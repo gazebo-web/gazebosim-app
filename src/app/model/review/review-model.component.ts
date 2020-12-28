@@ -26,7 +26,7 @@ export class ReviewComponent implements OnInit {
   /**
    * Comments that user wrote before opening the pr
    */
-  public prComments = '';
+  public description = '';
   /**
    * list of reviwers
    */
@@ -54,7 +54,10 @@ export class ReviewComponent implements OnInit {
    * model resource object
    */
   public modelResource: FuelResource;
-
+  /** 
+   * Id of review
+   */
+  public prId: number;
   /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param modelService Service to request model creation
@@ -70,6 +73,10 @@ export class ReviewComponent implements OnInit {
     this.modelName = this.activatedRoute.snapshot.paramMap.get('modelname');
     this.owner = this.activatedRoute.snapshot.paramMap.get('owner');
     this.getModel();
+    /**
+     * TODO  - determine how to get determine the id of the latest pr
+     */
+    this.prId = 1;
   }
   /**
    * Get today's date in dd - month - year format
@@ -103,9 +110,12 @@ export class ReviewComponent implements OnInit {
    * function to create pull request
    */
   public createPullRequest() {
-    console.log(this.prComments);
+    /**
+     * TODO: endpoint to store review
+     */
+    console.log(this.description);
     console.log(this.selectedReviewers)
-    this.router.navigate([`/${this.owner}/pr/model/${this.modelName}`])
+    this.router.navigate([`/${this.owner}/pr/${this.modelService.resourceType}/${this.modelName}/${this.prId}`])
   }
   /**
    * delete a selected reviewer

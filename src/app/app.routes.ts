@@ -603,7 +603,7 @@ export const ROUTES: Routes = [
     },
   },
   {
-    path: ':user/pr/:type/:name',
+    path: ':user/pr/:type/:name/:id',
     component: PullRequestComponent,
     pathMatch: 'full',
     data: {

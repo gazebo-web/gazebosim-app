@@ -1,4 +1,13 @@
 <div class="conversations">
+  <mat-card>
+    <mat-card-title>
+      Description - Author @{{review.creator}} {{review.date}}
+    </mat-card-title>
+    <mat-card-content>
+      {{review.description}}
+    </mat-card-content>
+  </mat-card>
+
   <mat-card *ngFor="let comment of comments">
     <mat-card-title>
       @{{comment.author}} commented on {{comment.date}}
@@ -31,7 +40,7 @@
       </mat-card-content>
 
       <mat-card-actions align="end">
-        <button mat-raised-button >Close Review</button>
+        <button mat-raised-button (click)="closeReview()">Close Review</button>
         <button mat-raised-button color="accent" (click)="addComment()" >Comment</button>
       </mat-card-actions>
     </mat-card>

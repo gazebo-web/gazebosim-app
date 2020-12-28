@@ -1,6 +1,6 @@
+import { I } from '@angular/cdk/keycodes';
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ign-conversation',
@@ -15,7 +15,10 @@ export class ConversationComponent implements OnInit {
   /**
    * User currently logged in
    */
-  public user = '';
+  @Input() user = '';
+  @Input() modelName = '';
+  @Input() prId = '';
+  @Input() review;
   /**
    * Configuration for richtext editor. Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
    */
@@ -43,15 +46,10 @@ export class ConversationComponent implements OnInit {
     }
   ];
 
-  /**
-   * @param activatedRoute The current Activated Route to get associated the data
-   */
   constructor(
-    private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.user = this.activatedRoute.snapshot.paramMap.get('user');
     console.log(this.files)
   }
 
@@ -78,4 +76,17 @@ export class ConversationComponent implements OnInit {
     const year = today.getFullYear().toString();
     return dd + ' ' + month + ' ' + year;
   }
+
+  private getComments() {
+    // TODO - implement get comments method
+  }
+
+  public downloadFiles() {
+    // TODO - implement downlile files method
+  }
+
+  public closeReview() {
+    // TODO - implement close review
+  }
+
 }
