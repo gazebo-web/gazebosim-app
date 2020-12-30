@@ -22,8 +22,8 @@ export class PullRequestService extends FuelResourceService {
   public paginatedResourceClass = PaginatedModels;
 
    /**
-   * The string of the resource type, to parse the URLs of the FuelResourceService.
-   */
+    * The string of the resource type, to parse the URLs of the FuelResourceService.
+    */
   public resourceType: string = '';
 
   /**
@@ -35,7 +35,7 @@ export class PullRequestService extends FuelResourceService {
     protected authService: AuthService,
     protected factory: JsonClassFactoryService,
     protected http: HttpClient
-  ) { 
+  ) {
     super(authService, factory, http);
   }
 }

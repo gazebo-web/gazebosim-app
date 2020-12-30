@@ -20,12 +20,13 @@ export class ConversationComponent implements OnInit {
   @Input() prId = '';
   @Input() review;
   /**
-   * Configuration for richtext editor. Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
+   * Configuration for richtext editor.
+   * Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
    */
   public editorConfig: AngularEditorConfig = {
     editable: true,
     minHeight: '15em'
-  }
+  };
   /**
    * comment text holder
    */
@@ -50,19 +51,26 @@ export class ConversationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.files)
+    console.log(this.files);
   }
 
-  public addComment() {
+  public addComment(): void {
     if (this.newComment) {
       const comment = {
         author: this.user,
         date: this.getDate(),
         comment: this.newComment
-      }
+      };
       this.comments = [...this.comments, comment];
     }
     // TODO: api to post new comment to backend and error message for empty comment
+  }
+  public downloadFiles(): void {
+    // TODO - implement downlile files method
+  }
+
+  public closeReview(): void {
+    // TODO - implement close review
   }
 
   /**
@@ -77,16 +85,7 @@ export class ConversationComponent implements OnInit {
     return dd + ' ' + month + ' ' + year;
   }
 
-  private getComments() {
+  private getComments(): void {
     // TODO - implement get comments method
   }
-
-  public downloadFiles() {
-    // TODO - implement downlile files method
-  }
-
-  public closeReview() {
-    // TODO - implement close review
-  }
-
 }

@@ -44,17 +44,18 @@ export class ReviewComponent implements OnInit {
    */
   public files: File[];
   /**
-   * Configuration for richtext editor. Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
+   * Configuration for richtext editor.
+   * Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
    */
   public editorConfig: AngularEditorConfig = {
     editable: true,
     minHeight: '15em'
-  }
+  };
   /**
    * model resource object
    */
   public modelResource: FuelResource;
-  /** 
+  /**
    * Id of review
    */
   public prId: number;
@@ -79,6 +80,25 @@ export class ReviewComponent implements OnInit {
     this.prId = 1;
   }
   /**
+   * function to create pull request
+   */
+  public createPullRequest(): void {
+    /**
+     * TODO: endpoint to store review
+     */
+    console.log(this.description);
+    console.log(this.selectedReviewers);
+    this.router.navigate([
+      `/${this.owner}/pr/${this.modelService.resourceType}/${this.modelName}/${this.prId}`
+    ]);
+  }
+  /**
+   * delete a selected reviewer
+   */
+  public deleteReviewer(reviewer): void {
+    this.selectedReviewers = this.selectedReviewers.filter(val => val !== reviewer);
+  }
+  /**
    * Get today's date in dd - month - year format
    */
   private getDate(): string {
@@ -92,35 +112,18 @@ export class ReviewComponent implements OnInit {
   /**
    * get model
    */
-  private getModel() {
+  private getModel(): void {
     this.modelService.get(this.owner, this.modelName).subscribe(response => {
       this.modelResource = response;
       this.getUploadedFiles(this.modelResource);
-    })
+    });
   }
   /**
    * retrieve files
    */
-  private getUploadedFiles(fuelResource: FuelResource) {
+  private getUploadedFiles(fuelResource: FuelResource): void {
     this.modelService.getFileTree(fuelResource).subscribe(response => {
       this.files = response.file_tree;
-    })
-  }
-  /**
-   * function to create pull request
-   */
-  public createPullRequest() {
-    /**
-     * TODO: endpoint to store review
-     */
-    console.log(this.description);
-    console.log(this.selectedReviewers)
-    this.router.navigate([`/${this.owner}/pr/${this.modelService.resourceType}/${this.modelName}/${this.prId}`])
-  }
-  /**
-   * delete a selected reviewer
-   */
-  public deleteReviewer(reviewer) {
-    this.selectedReviewers = this.selectedReviewers.filter(val => val !== reviewer);
+    });
   }
  }

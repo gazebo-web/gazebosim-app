@@ -34,7 +34,7 @@ export class PullRequestComponent implements OnInit {
     branch: 'new/model',
     status: 'status',
     title: 'Create new model'
-  }
+  };
   public isReviewer: boolean;
   public isApproved: boolean;
 
@@ -56,17 +56,6 @@ export class PullRequestComponent implements OnInit {
     // }
   }
 
-  private generateFakeFiles(): File[] {
-    const file1 = new File([], 'file.png', {type: 'image/png'});
-    const file2 = new File([], 'file.config', {type: ''});
-    const file3 = new File([], 'file.sdf', {type: ''});
-    return [file1, file2, file3];
-  }
-
-  private getModel() {
-    // TODO - implement get model method
-  }
-
   public checkIsReviewer(user: string, reviewer: string): boolean {
     return this.selectedReviewers.includes(user) && user === reviewer;
   }
@@ -74,13 +63,24 @@ export class PullRequestComponent implements OnInit {
   public checkIsApproved(user: string, approvals: string[]): boolean {
     return approvals.includes(user);
   }
-  public deleteReviewer(reviewer) {
+  public deleteReviewer(reviewer): void {
     this.selectedReviewers = this.selectedReviewers.filter(val => val !== reviewer);
   }
-  public getReview() {
+  public getReview(): void {
     // TODO - implement get review method
   }
-  public onApprove(reviewer: string) {
+  public onApprove(reviewer: string): void {
     this.review.approvals = [...this.review.approvals, reviewer];
+  }
+
+  private generateFakeFiles(): File[] {
+    const file1 = new File([], 'file.png', {type: 'image/png'});
+    const file2 = new File([], 'file.config', {type: ''});
+    const file3 = new File([], 'file.sdf', {type: ''});
+    return [file1, file2, file3];
+  }
+
+  private getModel(): void {
+    // TODO - implement get model method
   }
 }
