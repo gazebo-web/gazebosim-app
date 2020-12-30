@@ -146,7 +146,6 @@ import { WorldService } from './world/world.service';
 import { ReviewComponent } from './model/review/review-model.component';
 import { PullRequestComponent } from './pull-request/pull-request.component';
 import { ConversationComponent } from './pull-request/conversation/conversation.component';
-import { FileChangesComponent } from './pull-request/file-changes/file-changes.component';
 import { PullRequestService } from './pull-request/pull-request.service';
 
 /**
@@ -219,7 +218,6 @@ import { PullRequestService } from './pull-request/pull-request.service';
     ReviewComponent,
     PullRequestComponent,
     ConversationComponent,
-    FileChangesComponent,
   ],
   /**
    * Import the used modules.
