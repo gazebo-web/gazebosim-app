@@ -192,7 +192,7 @@ describe('NewModelComponent', () => {
 
     component.modelNameInputForm.setValue('Test Model');
     component.fileList = [testFile1, testConfig, testSdf, testThumbnails];
-    component.verifyBeforeUpload();
+    component.directUpload();
 
     expect(component.modelName).toBe('Test Model');
     expect(component.urlName).toBe('Test_Model');

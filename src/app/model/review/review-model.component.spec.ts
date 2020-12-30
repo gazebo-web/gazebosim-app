@@ -34,7 +34,7 @@ describe('ReviewComponent', () => {
         FormsModule,
         ReactiveFormsModule,
       ],
-      declarations: [ 
+      declarations: [
         ReviewComponent,
         PageTitleComponent,
       ],

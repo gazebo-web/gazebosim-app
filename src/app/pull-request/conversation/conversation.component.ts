@@ -1,4 +1,3 @@
-import { I } from '@angular/cdk/keycodes';
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
