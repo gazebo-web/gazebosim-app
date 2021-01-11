@@ -49,6 +49,7 @@ import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch';
 import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
+import { APIComponent } from './api';
 import { AppComponent } from './app.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
@@ -82,6 +83,7 @@ import { FileUploadComponent } from './file-upload';
 import { FuelHomeComponent } from './fuel-home';
 import { FuelResourceListComponent } from './fuel-resource';
 import { FuelResourceService } from './fuel-resource';
+import { InformationComponent } from './information';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { JsonClassFactoryService } from './factory/json-class-factory.service';
 import { LaunchQueueComponent } from './admin/cloudsim/launch-queue/launch-queue.component';
@@ -137,6 +139,7 @@ import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
+import { VisualizationComponent } from './visualization';
 import { WebsocketService } from './cloudsim/websocket/sim-websocket.service';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
@@ -156,6 +159,7 @@ import { WorldService } from './world/world.service';
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
+    APIComponent,
     AppComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
@@ -179,6 +183,7 @@ import { WorldService } from './world/world.service';
     FileUploadComponent,
     FuelHomeComponent,
     FuelResourceListComponent,
+    InformationComponent,
     ItemCardComponent,
     LaunchQueueComponent,
     LeaderBoardComponent,
@@ -208,6 +213,7 @@ import { WorldService } from './world/world.service';
     TagsComponent,
     TextInputDialogComponent,
     UserComponent,
+    VisualizationComponent,
     WorldComponent,
     WorldListComponent,
   ],

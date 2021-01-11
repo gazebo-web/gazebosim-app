@@ -145,7 +145,7 @@ export class SimulationActionsComponent {
 
     this.simulationService.download(this.simulation.groupId).subscribe(
       (response) => {
-        let extension = '.tar';
+        let extension = '.tar.gz';
         if (this.simulation.multiSim === 1) {
           // Tunnel Circuit simulations only have a json file.
           extension = '.json';
