@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Meta } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -139,6 +140,7 @@ export class ModelComponent implements OnInit, OnDestroy {
    * @param modelService Service used to get Model information from the Server
    * @param router Router service to allow navigation
    * @param snackBar Snackbar used to display notifications
+   * @param metaService Meta service used to update header tags.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -148,7 +150,8 @@ export class ModelComponent implements OnInit, OnDestroy {
     private location: Location,
     private modelService: ModelService,
     private router: Router,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private metaService: Meta) {
   }
 
   /**
@@ -206,6 +209,32 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.model.owner}},`;
     this.bibTex += `\n\turl={${url}},\n}`;
+
+    // The model's description, used to set meta tags.
+    const description = this.model.description !== undefined &&
+      this.model.description !== '' ? this.model.description :
+      'A model on the Ignition App.';
+
+    // Update header meta data. This assumes that index.html has been
+    // populated with default values for each of the tags. If you add new tags,
+    // then also add a default value to src/index.html
+    this.metaService.updateTag({name: 'og:title', content: this.model.name});
+    this.metaService.updateTag({name: 'og:description', content: description});
+    this.metaService.updateTag({name: 'og:url', content: url});
+    this.metaService.updateTag({name: 'twitter:card',
+      content: 'summary_large_image'});
+    this.metaService.updateTag({name: 'twitter:title',
+      content: this.model.name});
+    this.metaService.updateTag({name: 'twitter:description',
+      content: description});
+    this.metaService.updateTag({name: 'twitter:image:alt',
+      content: this.model.name});
+    if (this.model.images.length > 0) {
+      this.metaService.updateTag({name: 'og:image',
+        content: this.model.images[0].url});
+      this.metaService.updateTag({name: 'twitter:image',
+        content: this.model.images[0].url});
+    }
   }
 
   /**
