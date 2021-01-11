@@ -4,6 +4,7 @@ import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.componen
 import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
+import { APIComponent } from './api/api.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -15,6 +16,7 @@ import { EditCollectionComponent } from './collection/edit/edit-collection.compo
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
 import { FuelHomeComponent } from './fuel-home';
+import { InformationComponent } from './information/information.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { ModelComponent } from './model/model.component';
@@ -52,6 +54,22 @@ export const ROUTES: Routes = [
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'
+  },
+  {
+    path: 'api',
+    component: APIComponent,
+    data: {
+      titlebarTitle: 'Information',
+      titlebarSubtitle: 'API'
+    }
+  },
+  {
+    path: 'information',
+    component: InformationComponent,
+    data: {
+      titlebarTitle: 'Information',
+      titlebarSubtitle: ''
+    }
   },
   {
     path: 'home',
