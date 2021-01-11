@@ -139,6 +139,7 @@ import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
+import { VisualizationComponent } from './visualization';
 import { WebsocketService } from './cloudsim/websocket/sim-websocket.service';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
@@ -212,6 +213,7 @@ import { WorldService } from './world/world.service';
     TagsComponent,
     TextInputDialogComponent,
     UserComponent,
+    VisualizationComponent,
     WorldComponent,
     WorldListComponent,
   ],
