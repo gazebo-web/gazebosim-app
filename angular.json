@@ -32,6 +32,7 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/swagger-ui-dist/swagger-ui.css",
               "src/styles/styles.scss"
             ],
             "allowedCommonJsDependencies": [
@@ -41,7 +42,10 @@
               "protobufjs",
               "zone.js/dist/zone-error"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+              "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
+            ]
           },
           "configurations": {
             "production": {
