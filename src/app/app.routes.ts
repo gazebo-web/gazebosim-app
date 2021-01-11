@@ -43,6 +43,7 @@ import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
+import { VisualizationComponent } from './visualization';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
@@ -58,6 +59,14 @@ export const ROUTES: Routes = [
     component: DashboardComponent,
     data: {
       titlebarTitle: 'Dashboard',
+      titlebarSubtitle: ''
+    }
+  },
+  {
+    path: 'visualization',
+    component: VisualizationComponent,
+    data: {
+      titlebarTitle: 'Visualization',
       titlebarSubtitle: ''
     }
   },
