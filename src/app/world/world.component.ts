@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Meta } from '@angular/platform-browser';
 import { Subscription, forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
@@ -139,6 +140,7 @@ export class WorldComponent implements OnInit, OnDestroy {
    * @param worldService Service used to get World information from the Server
    * @param router Router service to allow navigation
    * @param snackBar Snackbar used to display notifications
+   * @param metaService Meta service used to update header tags.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -148,7 +150,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     private location: Location,
     private worldService: WorldService,
     private router: Router,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private metaService: Meta) {
   }
 
   /**
@@ -206,6 +209,32 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.world.owner}},`;
     this.bibTex += `\n\turl={${url}},\n}`;
+
+    // The world's description, used to set meta tags.
+    const description = this.world.description !== undefined &&
+      this.world.description !== '' ? this.world.description :
+      'A world on the Ignition App.';
+
+    // Update header meta data. This assumes that index.html has been
+    // populated with default values for each of the tags. If you add new tags,
+    // then also add a default value to src/index.html
+    this.metaService.updateTag({name: 'og:title', content: this.world.name});
+    this.metaService.updateTag({name: 'og:description', content: description});
+    this.metaService.updateTag({name: 'og:url', content: url});
+    this.metaService.updateTag({name: 'twitter:card',
+      content: 'summary_large_image'});
+    this.metaService.updateTag({name: 'twitter:title',
+      content: this.world.name});
+    this.metaService.updateTag({name: 'twitter:description',
+      content: description});
+    this.metaService.updateTag({name: 'twitter:image:alt',
+      content: this.world.name});
+    if (this.world.images.length > 0) {
+      this.metaService.updateTag({name: 'og:image',
+        content: this.world.images[0].url});
+      this.metaService.updateTag({name: 'twitter:image',
+        content: this.world.images[0].url});
+    }
   }
 
   /**
