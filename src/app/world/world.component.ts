@@ -633,6 +633,26 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Callback for the copy SDF button. Copies the current URL to the clipboard.
+   */
+  public copyWorldURL(): void {
+    const selBox = document.createElement('textarea');
+    const url = decodeURIComponent(this.worldService.getBaseUrl(this.world.owner, this.world.name));
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = `"${url}"`;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('SDF world URI copied to clipboard.', '', {
+      duration: 2000
+    });
+  }
+  /**
    * Extract files that contain no children from the File Tree nodes.
    *
    * @param file The current node of the File Tree.
