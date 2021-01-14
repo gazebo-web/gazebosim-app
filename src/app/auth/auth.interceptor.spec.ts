@@ -13,7 +13,7 @@ describe('AuthInterceptor', () => {
   // The injectable HttpTestingController allows mocking and flushing requests.
   let httpMock: HttpTestingController;
   let http: HttpClient;
-  let injector: TestBed;
+  let testBed: TestBed;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,9 +28,9 @@ describe('AuthInterceptor', () => {
         },
       ]
     });
-    injector = getTestBed();
-    httpMock = injector.get(HttpTestingController);
-    http = injector.get(HttpClient);
+    testBed = getTestBed();
+    httpMock = testBed.inject(HttpTestingController);
+    http = testBed.inject(HttpClient);
   });
 
   // After each test, verify that all the requests were consumed.

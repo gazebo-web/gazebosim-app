@@ -1,27 +1,21 @@
 import { ActivatedRoute } from '@angular/router';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpModule } from '@angular/http';
-
-import {
-  MatCardModule,
-  MatChipsModule,
-  MatDialog,
-  MatDialogModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatSelectModule,
-  MatSnackBarModule,
-  MatTabsModule
-} from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { of, throwError } from 'rxjs';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { Observable } from 'rxjs/Observable';
 
 import { AuthPipe } from '../auth/auth.pipe';
 import { AuthService } from '../auth/auth.service';
@@ -96,13 +90,13 @@ describe('OrganizationComponent', () => {
   testUsers[0].orgRoles[testOrganization.name] = 'member';
   testUsers[1].orgRoles[testOrganization.name] = 'owner';
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
         FormsModule,
         HttpClientTestingModule,
-        HttpModule,
         InfiniteScrollModule,
         MatCardModule,
         MatChipsModule,
@@ -151,21 +145,18 @@ describe('OrganizationComponent', () => {
         entryComponents: [ ConfirmationDialogComponent ],
       },
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
     fixture = TestBed.createComponent(OrganizationComponent);
     component = fixture.debugElement.componentInstance;
-    authService = TestBed.get(AuthService);
-    collectionService = TestBed.get(CollectionService);
-    dialog = TestBed.get(MatDialog);
-    modelService = TestBed.get(ModelService);
-    organizationService = TestBed.get(OrganizationService);
-    worldService = TestBed.get(WorldService);
+    authService = TestBed.inject(AuthService);
+    collectionService = TestBed.inject(CollectionService);
+    dialog = TestBed.inject(MatDialog);
+    modelService = TestBed.inject(ModelService);
+    organizationService = TestBed.inject(OrganizationService);
+    worldService = TestBed.inject(WorldService);
   });
 
-  it('should get the organization from the resolved data', async(() => {
+  it('should get the organization from the resolved data', () => {
     spyOn(modelService, 'getOwnerList').and.callThrough();
     spyOn(worldService, 'getOwnerList').and.callThrough();
     spyOn(organizationService, 'getOrganizationUsers').and.callThrough();
@@ -177,14 +168,14 @@ describe('OrganizationComponent', () => {
     expect(modelService.getOwnerList).toHaveBeenCalledWith('testOrgName');
     expect(worldService.getOwnerList).toHaveBeenCalledWith('testOrgName');
     expect(organizationService.getOrganizationUsers).toHaveBeenCalledWith(component.organization);
-  }));
+  });
 
-  it(`should get the organization's models on the OnInit lifecycle hook`, async(() => {
+  it(`should get the organization's models on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
     const spy = spyOn(modelService, 'getOwnerList');
 
     // Test failure.
-    spy.and.returnValue(Observable.throw({}));
+    spy.and.returnValue(throwError({}));
     component.ngOnInit();
     expect(component.models).toBeUndefined();
     expect(component.paginatedModels).toBeUndefined();
@@ -192,19 +183,19 @@ describe('OrganizationComponent', () => {
 
     // Test correct case.
     spy.calls.reset();
-    spy.and.returnValue(Observable.of(testModels));
+    spy.and.returnValue(of(testModels));
     component.ngOnInit();
     expect(component.models).toBe(testModels.resources);
     expect(component.paginatedModels).toEqual(testModels);
     expect(component.paginatedModels.totalCount).toBe(testModels.totalCount);
-  }));
+  });
 
-  it(`should get the organization's worlds on the OnInit lifecycle hook`, async(() => {
+  it(`should get the organization's worlds on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
     const spy = spyOn(worldService, 'getOwnerList');
 
     // Test failure.
-    spy.and.returnValue(Observable.throw({}));
+    spy.and.returnValue(throwError({}));
     component.ngOnInit();
     expect(component.worlds).toBeUndefined();
     expect(component.paginatedWorlds).toBeUndefined();
@@ -212,50 +203,50 @@ describe('OrganizationComponent', () => {
 
     // Test correct case.
     spy.calls.reset();
-    spy.and.returnValue(Observable.of(testWorlds));
+    spy.and.returnValue(of(testWorlds));
     component.ngOnInit();
     expect(component.worlds).toBe(testWorlds.resources);
     expect(component.paginatedWorlds).toEqual(testWorlds);
     expect(component.paginatedWorlds.totalCount).toBe(testWorlds.totalCount);
-  }));
+  });
 
-  it(`should get the organization's collections on the OnInit lifecycle hook`, async(() => {
+  it(`should get the organization's collections on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
     const spy = spyOn(collectionService, 'getOwnerCollectionList');
 
     // Test failure.
-    spy.and.returnValue(Observable.throw({}));
+    spy.and.returnValue(throwError({}));
     component.ngOnInit();
     expect(component.collections).toBeUndefined();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
 
     // Test correct case.
     spy.calls.reset();
-    spy.and.returnValue(Observable.of(testCollections));
+    spy.and.returnValue(of(testCollections));
     component.ngOnInit();
     expect(component.collections).toEqual(testCollections.collections);
     expect(component.paginatedCollections).toEqual(testCollections);
     expect(component.paginatedCollections.totalCount).toBe(testCollections.totalCount);
-  }));
+  });
 
-  it(`should get the organization's users on the OnInit lifecycle hook`, async(() => {
+  it(`should get the organization's users on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
     const spy = spyOn(organizationService, 'getOrganizationUsers');
 
     // Test failure.
-    spy.and.returnValue(Observable.throw({}));
+    spy.and.returnValue(throwError({}));
     component.ngOnInit();
     expect(component.users).toBeUndefined();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
 
     // Test correct case.
     spy.calls.reset();
-    spy.and.returnValue(Observable.of(testUsers));
+    spy.and.returnValue(of(testUsers));
     component.ngOnInit();
     expect(component.users).toEqual(testUsers);
-  }));
+  });
 
-  it(`should load the next page of models`, async(() => {
+  it(`should load the next page of models`, () => {
     component.models = [];
     component.paginatedModels = testModels;
     const spyGetNextUrl = spyOn(modelService, 'getNextPage');
@@ -268,15 +259,15 @@ describe('OrganizationComponent', () => {
 
     // Has a next page.
     component.paginatedModels.nextPage = 'testNextPage';
-    spyGetNextUrl.and.returnValue(Observable.of(testModels));
+    spyGetNextUrl.and.returnValue(of(testModels));
     component.loadNextModelsPage();
     expect(spyGetNextUrl).toHaveBeenCalledWith(testModels);
     expect(component.models.length).toBe(2);
     expect(component.models[0].name).toBe(testModels.resources[0].name);
     expect(component.models[1].name).toBe(testModels.resources[1].name);
-  }));
+  });
 
-  it(`should load the next page of worlds`, async(() => {
+  it(`should load the next page of worlds`, () => {
     component.worlds = [];
     component.paginatedWorlds = testWorlds;
     const spyGetNextUrl = spyOn(worldService, 'getNextPage');
@@ -289,15 +280,15 @@ describe('OrganizationComponent', () => {
 
     // Has a next page.
     component.paginatedWorlds.nextPage = 'testNextPage';
-    spyGetNextUrl.and.returnValue(Observable.of(testWorlds));
+    spyGetNextUrl.and.returnValue(of(testWorlds));
     component.loadNextWorldsPage();
     expect(spyGetNextUrl).toHaveBeenCalledWith(testWorlds);
     expect(component.worlds.length).toBe(2);
     expect(component.worlds[0].name).toBe(testWorlds.resources[0].name);
     expect(component.worlds[1].name).toBe(testWorlds.resources[1].name);
-  }));
+  });
 
-  it(`should load the next page of collections`, async(() => {
+  it(`should load the next page of collections`, () => {
     component.collections = [];
     component.paginatedCollections = testCollections;
     const spyGetNextUrl = spyOn(collectionService, 'getNextPage');
@@ -310,15 +301,15 @@ describe('OrganizationComponent', () => {
 
     // Has a next page.
     component.paginatedCollections.nextPage = 'testNextPage';
-    spyGetNextUrl.and.returnValue(Observable.of(testCollections));
+    spyGetNextUrl.and.returnValue(of(testCollections));
     component.loadNextCollectionsPage();
     expect(spyGetNextUrl).toHaveBeenCalledWith(testCollections);
     expect(component.collections.length).toBe(2);
     expect(component.collections[0].name).toBe(testCollections.collections[0].name);
     expect(component.collections[1].name).toBe(testCollections.collections[1].name);
-  }));
+  });
 
-  it(`should NOT add a new user if the username is empty`, async(() => {
+  it(`should NOT add a new user if the username is empty`, () => {
     const snackBar = component.snackBar;
     spyOn(organizationService, 'addUserToOrganization');
 
@@ -327,9 +318,9 @@ describe('OrganizationComponent', () => {
 
     expect(organizationService.addUserToOrganization).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it(`should NOT add a new user if the role is empty`, async(() => {
+  it(`should NOT add a new user if the role is empty`, () => {
     const snackBar = component.snackBar;
     spyOn(organizationService, 'addUserToOrganization');
 
@@ -339,11 +330,11 @@ describe('OrganizationComponent', () => {
 
     expect(organizationService.addUserToOrganization).not.toHaveBeenCalled();
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it(`should add a new user if the fields are correct`, async(() => {
+  it(`should add a new user if the fields are correct`, () => {
     const snackBar = component.snackBar;
-    spyOn(organizationService, 'addUserToOrganization').and.returnValue(Observable.of({}));
+    spyOn(organizationService, 'addUserToOrganization').and.returnValue(of({}));
 
     component.organization = testOrganization;
     component.users = [];
@@ -354,9 +345,9 @@ describe('OrganizationComponent', () => {
     expect(organizationService.addUserToOrganization).toHaveBeenCalled();
     expect(component.users.length).toBe(1);
     expect(snackBar._openedSnackBarRef).toBeNull();
-  }));
+  });
 
-  it(`should open the user remove dialog`, async(() => {
+  it(`should open the user remove dialog`, () => {
     const confirmationDialog = component.dialog;
     component.users = testUsers;
     component.organization = testOrganization;
@@ -384,9 +375,9 @@ describe('OrganizationComponent', () => {
     mockDialogOps.data.buttonText = `Remove`;
     component.removeUser(testUsers[1]);
     expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, mockDialogOps);
-  }));
+  });
 
-  it(`should disable the remove button for owners`, async(() => {
+  it(`should disable the remove button for owners`, () => {
     component.users = testUsers;
     component.organization = testOrganization;
     let shouldDisable: boolean;
@@ -397,9 +388,9 @@ describe('OrganizationComponent', () => {
     // Disable the button for a owner.
     shouldDisable = component.disableRemoveButton(testUsers[1]);
     expect(shouldDisable).toBe(true);
-  }));
+  });
 
-  it(`should return the correct tooltip if the remove button is disabled`, async(() => {
+  it(`should return the correct tooltip if the remove button is disabled`, () => {
     component.users = testUsers;
     component.organization = testOrganization;
     component.authService.userProfile = testUsers[0];
@@ -421,9 +412,9 @@ describe('OrganizationComponent', () => {
     // Logged user is not the one to remove.
     tooltip = component.getRemoveButtonTooltip(testUsers[1]);
     expect(tooltip).toBe(`This user can't be removed.`);
-  }));
+  });
 
-  it(`should label the remove button correctly`, async(() => {
+  it(`should label the remove button correctly`, () => {
     component.users = testUsers;
     component.organization = testOrganization;
     component.authService.userProfile = testUsers[0];
@@ -436,9 +427,9 @@ describe('OrganizationComponent', () => {
     // Logged user is not the one to remove.
     label = component.getRemoveButtonLabel(testUsers[1]);
     expect(label).toBe('Remove');
-  }));
+  });
 
-  it(`should change the active tab`, async(() => {
+  it(`should change the active tab`, () => {
     // Start showing models.
     expect(component.activeTab).toBe('models');
 
@@ -450,5 +441,5 @@ describe('OrganizationComponent', () => {
     expect(component.activeTab).toBe('collections');
     component.setActiveTab(0);
     expect(component.activeTab).toBe('models');
-  }));
+  });
 });

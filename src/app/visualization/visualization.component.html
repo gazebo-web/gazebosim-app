@@ -1,0 +1,60 @@
+<div class="content mat-typography">
+  <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start start">
+    <p>Connect to and visualize a running Ignition Gazebo simulation.</p>
+
+    <div fxLayoutAlign="start" fxLayoutGap="20px">
+
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+        <mat-form-field>
+          <input matInput [(ngModel)]="wsUrl" placeholder="Websocket URL">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="authKey" placeholder="Authorization Key">
+        </mat-form-field>
+
+        <button mat-raised-button (click)="connect()" *ngIf="connectionStatus === 'Disconnected'">
+          Connect
+        </button>
+
+        <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'Disconnected'">
+          Disconnect
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div fxLayout="row">
+  <div class="visualizer" fxFill>
+    <div class="outer" #fullScreen>
+
+      <a class="follow-button" *ngIf="following" mat-icon-button (click)="follow(null)" title="Stop following">Stop following</a>
+
+      <div class="controls">
+        <a mat-icon-button (click)="toggleLights()" title="Toggle lights"><mat-icon>highlight</mat-icon></a>
+        <a mat-icon-button (click)="resetView()" title="Reset view"><mat-icon>home</mat-icon></a>
+        <a mat-icon-button (click)="toggleFullscreen()" title="Full screen"><mat-icon>fullscreen</mat-icon></a>
+      </div>
+
+      <div class="inner" fxLayoutAlign="center center">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div id="scene" (window:resize)="resize()"></div>
+          <div fxLayout="column" class="gz3d-side-panel" *ngIf="models.length > 0">
+            <h2>Entities</h2>
+            <mat-list class="entity-list">
+              <mat-list-item *ngFor="let model of models" [matMenuTriggerFor]="menu">{{model['name']}}
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="select(model)">Select</button>
+                  <button mat-menu-item (click)="moveTo(model)">Move to</button>
+                  <button mat-menu-item (click)="follow(model)">Follow</button>
+                </mat-menu>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

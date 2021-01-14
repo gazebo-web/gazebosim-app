@@ -4,6 +4,7 @@ import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.componen
 import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
+import { APIComponent } from './api/api.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -15,6 +16,7 @@ import { EditCollectionComponent } from './collection/edit/edit-collection.compo
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
 import { FuelHomeComponent } from './fuel-home';
+import { InformationComponent } from './information/information.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { ModelComponent } from './model/model.component';
@@ -43,6 +45,7 @@ import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
+import { VisualizationComponent } from './visualization';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
@@ -54,10 +57,34 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'api',
+    component: APIComponent,
+    data: {
+      titlebarTitle: 'Information',
+      titlebarSubtitle: 'API'
+    }
+  },
+  {
+    path: 'information',
+    component: InformationComponent,
+    data: {
+      titlebarTitle: 'Information',
+      titlebarSubtitle: ''
+    }
+  },
+  {
     path: 'home',
     component: DashboardComponent,
     data: {
       titlebarTitle: 'Dashboard',
+      titlebarSubtitle: ''
+    }
+  },
+  {
+    path: 'visualization',
+    component: VisualizationComponent,
+    data: {
+      titlebarTitle: 'Visualization',
       titlebarSubtitle: ''
     }
   },

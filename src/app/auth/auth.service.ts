@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject, Observable, Subscription, of, timer } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+
 import * as auth0 from 'auth0-js';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/timer';
-import 'rxjs/add/operator/mergeMap';
+import { environment } from '../../environments/environment';
 
 import { AUTH_CONFIG } from './auth0-variables';
 import { FuelResource } from '../fuel-resource';
@@ -32,7 +30,7 @@ export class AuthService {
   /**
    * Logged in status.
    */
-  public loggedIn: boolean;
+  public loggedIn: boolean = false;
 
   /**
    * Logged in status stream to communicate throughout the app.
@@ -47,7 +45,7 @@ export class AuthService {
   /**
    * Profile stream to communicate throughout the app.
    */
-  public userProfile$ = new BehaviorSubject<boolean>(this.userProfile);
+  public userProfile$ = new BehaviorSubject<any>(null);
 
   /**
    * Subscriber for the token renewal process.
@@ -57,7 +55,7 @@ export class AuthService {
   /**
    * URL used to log in and retrieve the username.
    */
-  private loginUrl: string = `${API_HOST}/${API_VERSION}/login`;
+  private loginUrl: string = `${environment.API_HOST}/${environment.API_VERSION}/login`;
 
   /**
    * Auth0 Web Auth instance.
@@ -146,7 +144,7 @@ export class AuthService {
     // Logout from Auth0.
     this.auth0.logout({
       client_id: AUTH_CONFIG.CLIENT_ID,
-      returnTo: AUTH0_LOGOUT_REDIRECT,
+      returnTo: environment.AUTH0_LOGOUT_REDIRECT,
     });
   }
 
@@ -227,12 +225,13 @@ export class AuthService {
 
     // Get the expiration time and set an expiration Observable.
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    const expiresIn$ = Observable.of(expiresAt).mergeMap(
-      (expires) => {
+    const expiresIn$ = of(expiresAt).pipe(
+      mergeMap((expires) => {
         const now = Date.now();
         // Emit the observable at the timer's duration.
-        return Observable.timer(Math.max(1, expires - now));
-      });
+        return timer(Math.max(1, expires - now));
+      })
+    );
 
     // Subscribe to the token expiration observable. The token needs to be refreshed.
     this.tokenRenewalSub = expiresIn$.subscribe(

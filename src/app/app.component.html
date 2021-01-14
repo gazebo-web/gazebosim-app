@@ -2,16 +2,17 @@
   <mat-progress-bar
     id="progress-bar"
     mode="determinate"
+    color="accent"
     [value]="progressBarValue"
     *ngIf="resolvingRoute"></mat-progress-bar>
 
   <!-- According to Angular Material, a sidenav container must take up the full space -->
   <mat-sidenav-container class="mat-typography">
-    <mat-sidenav #sidenav mode="side" fixedInViewport>
+    <mat-sidenav #sidenav mode="side" opened fixedInViewport>
       <div fxLayout="column" fxLayoutAlign="start left" fxFill>
         <div class="mat-typography title">
           <a routerLink="/dashboard" (click)="closeSidenav()">
-            <img src="assets/images/ignition_icon_white_48x48.png">
+            <img src="assets/images/ignition_icon_white.svg">
           </a>
         </div>
 
@@ -25,10 +26,11 @@
           <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
             <mat-icon>collections</mat-icon> Collections
           </a>
-          <a mat-list-item routerLink="/portal" (click)="closeSidenav()">
-            Portals
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/visualization" (click)="closeSidenav()">
+            Visualization
           </a>
-          <a mat-list-item href="https://openrobotics.freshdesk.com" (click)="closeSidenav()">
+          <a mat-list-item routerLink="/information" (click)="closeSidenav()">
             Information
           </a>
           <!-- Add link to System Admin page if the user is a system admin -->
@@ -36,8 +38,7 @@
             System Admin
           </a>
         </mat-nav-list>
-
-        <div class="copyright">&copy; 2018 Open Robotics</div>
+        <div class="copyright">&copy; {{currentYear}} Open Robotics</div>
       </div>
     </mat-sidenav>
 

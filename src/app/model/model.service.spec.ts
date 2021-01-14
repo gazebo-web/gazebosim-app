@@ -1,4 +1,4 @@
-import { TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -9,7 +9,6 @@ import { ModelService } from './model.service';
 import { PaginatedModels } from './paginated-models';
 
 describe('ModelService', () => {
-  let injector: TestBed;
   let auth: AuthService;
   let service: ModelService;
   let factory: JsonClassFactoryService;
@@ -27,10 +26,9 @@ describe('ModelService', () => {
       ],
     });
 
-    injector = getTestBed();
-    auth = injector.get(AuthService);
-    service = injector.get(ModelService);
-    factory = injector.get(JsonClassFactoryService);
+    auth = TestBed.inject(AuthService);
+    service = TestBed.inject(ModelService);
+    factory = TestBed.inject(JsonClassFactoryService);
   });
 
   it('should have the resource type and classes set', () => {

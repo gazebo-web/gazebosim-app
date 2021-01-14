@@ -80,7 +80,7 @@
             <mat-paginator [length]="paginatedAccessTokens.totalCount"
                            [pageSize]="10"
                            [pageSizeOptions]="[10]"
-                           (page)="pageEvent = accessTokensPageChange($event)">
+                           (page)="accessTokensPageChange($event)">
             </mat-paginator>
           </div>
         </div>

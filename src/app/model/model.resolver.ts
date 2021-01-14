@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Model } from './model';
 import { ModelService } from './model.service';
@@ -33,9 +34,10 @@ export class ModelResolver implements Resolve<Model> {
     const modelOwner: string = route.paramMap.get('owner');
     const modelName: string = route.paramMap.get('modelname');
 
-    return this.modelService.get(modelOwner, modelName).catch(
-      (err) => {
-        return Observable.of(null);
-      });
+    return this.modelService.get(modelOwner, modelName).pipe(
+      catchError((err) => {
+        return of(null);
+      })
+    );
   }
 }

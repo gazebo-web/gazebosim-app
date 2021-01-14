@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { Collection, CollectionService, PaginatedCollection } from '../../collection';
 
@@ -31,13 +32,13 @@ export class OwnerCollectionsResolver implements Resolve<PaginatedCollection> {
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedCollection> {
     const owner: string = route.paramMap.get('user');
 
-    return this.collectionService.getOwnerCollectionList(owner)
-      .map((collections) => {
+    return this.collectionService.getOwnerCollectionList(owner).pipe(
+      map((collections) => {
         return collections;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

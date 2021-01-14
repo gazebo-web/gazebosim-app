@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 
@@ -16,7 +17,7 @@ export class PortalRedirectGuard implements CanActivate {
    */
   public canActivate(route: ActivatedRouteSnapshot): boolean {
     if (route.params['owner'] === 'DARPA' && route.params['portalname'] === 'SubT') {
-      window.location.href = SUBT_PORTAL_URL;
+      window.location.href = environment.SUBT_PORTAL_URL;
       return false;
     }
     return true;

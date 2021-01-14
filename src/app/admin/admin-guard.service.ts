@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CanActivate } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user';
 
@@ -41,14 +43,14 @@ export class AdminGuard implements CanActivate {
     }
 
     // Check with the Server if the user is a system admin.
-    return this.userService.getLogin().map(
-      (user) => {
+    return this.userService.getLogin().pipe(
+      map((user) => {
         if (user.sysAdmin) {
           return true;
         }
         this.router.navigate(['']);
         return false;
-      },
+      })
     );
   }
 }

@@ -1,21 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpModule } from '@angular/http';
-import {
-  MatIconModule,
-  MatCardModule,
-  MatInputModule,
-  MatFormFieldModule,
-  MatSelectModule,
-  MatOptionModule,
-} from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
-
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { CategoryService } from '../../fuel-resource/categories/category.service';
@@ -54,7 +49,7 @@ describe('WorldListComponent', () => {
   nextPaginatedWorlds.totalCount = nextWorlds.length;
   nextPaginatedWorlds.nextPage = null;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -64,10 +59,8 @@ describe('WorldListComponent', () => {
         MatIconModule,
         MatFormFieldModule,
         MatSelectModule,
-        MatOptionModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        HttpModule,
         HttpClientTestingModule,
         ],
       declarations: [
@@ -98,24 +91,22 @@ describe('WorldListComponent', () => {
         },
         ],
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(WorldListComponent);
     component = fixture.debugElement.componentInstance;
   });
 
-  it('should load the the worlds from the resolved data', async(() => {
+  it('should load the the worlds from the resolved data', () => {
     expect(component.worlds).toBeUndefined();
     component.ngOnInit();
     expect(component.worlds).toEqual(testWorlds);
     expect(component.title).toEqual('testTitle');
-  }));
+  });
 
-  it('should load the next page', async(() => {
-    const worldService = TestBed.get(WorldService);
+  it('should load the next page', () => {
+    const worldService = TestBed.inject(WorldService);
     const spy = spyOn(worldService, 'getNextPage').and.returnValue(
-      Observable.of(nextPaginatedWorlds));
+      of(nextPaginatedWorlds));
     component.worlds = [];
     component.paginatedWorlds = paginatedWorlds;
 
@@ -131,5 +122,5 @@ describe('WorldListComponent', () => {
     spy.calls.reset();
     component.loadNextPage();
     expect(spy).not.toHaveBeenCalled();
-  }));
+  });
 });

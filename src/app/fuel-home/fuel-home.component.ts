@@ -4,7 +4,7 @@ import { CollectionService, Collection } from '../collection';
 import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
 

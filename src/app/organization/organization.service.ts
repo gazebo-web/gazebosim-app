@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
-import { ENV_PROVIDERS } from './environment';
 import { AuthService } from '../auth/auth.service';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { Organization, PaginatedOrganizations } from '../organization';
+import { Organization } from './organization';
+import { PaginatedOrganizations } from './paginated-organization';
 import { UiError } from '../ui-error';
-import { User } from '../user';
+import { User } from '../user/user';
+import { environment } from '../../environments/environment';
 
 import * as linkParser from 'parse-link-header';
 
@@ -23,7 +24,7 @@ export class OrganizationService {
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
    * Keep track of the next URL in the pagination.
@@ -53,8 +54,8 @@ export class OrganizationService {
    */
   public getPublicOrganizations(): Observable<PaginatedOrganizations> {
     const url = this.getOrganizationListUrl();
-    return this.http.get(url, {observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
         this.parseLinkHeader(response);
         if (response.body) {
           const paginatedOrg = new PaginatedOrganizations();
@@ -63,8 +64,9 @@ export class OrganizationService {
           return paginatedOrg;
         }
         return undefined;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -75,11 +77,12 @@ export class OrganizationService {
    */
   public getOrganization(name: string): Observable<Organization> {
     const url = this.getOrganizationUrl(name);
-    return this.http.get<Organization>(url)
-      .map((response) => {
+    return this.http.get<Organization>(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Organization);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -91,11 +94,12 @@ export class OrganizationService {
    */
   public createOrganization(data: object): Observable<Organization> {
     const url = this.getOrganizationListUrl();
-    return this.http.post(url, data)
-      .map((response) => {
+    return this.http.post(url, data).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Organization);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -108,11 +112,12 @@ export class OrganizationService {
    */
   public editOrganization(organization: Organization, form: any): Observable<Organization> {
     const url = this.getOrganizationUrl(organization.name);
-    return this.http.patch<Organization>(url, form)
-      .map((response) => {
+    return this.http.patch<Organization>(url, form).pipe(
+      map((response) => {
         return this.factory.fromJson(response, Organization);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -122,10 +127,11 @@ export class OrganizationService {
    * @param organization The organization to delete.
    * @returns An observable of the deleted organization.
    */
-  public deleteOrganization(organization: Organization): Observable<Organization> {
+  public deleteOrganization(organization: Organization): Observable<any> {
     const url = this.getOrganizationUrl(organization.name);
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -137,11 +143,12 @@ export class OrganizationService {
    */
   public getOrganizationUsers(organization: Organization): Observable<any[]> {
     const url = this.getOrganizationUserListUrl(organization.name);
-    return this.http.get(url)
-      .map((response) => {
+    return this.http.get(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, User);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -159,11 +166,12 @@ export class OrganizationService {
       username: user,
       role: orgRole,
     };
-    return this.http.post(url, body)
-      .map((response) => {
+    return this.http.post(url, body).pipe(
+      map((response) => {
         return this.factory.fromJson(response, User);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -176,11 +184,12 @@ export class OrganizationService {
    */
   public removeUserFromOrganization(organization: Organization, user: string): Observable<any> {
     const url = this.getOrganizationUserUrl(organization.name, user);
-    return this.http.delete(url)
-      .map((response) => {
+    return this.http.delete(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, User);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -252,7 +261,7 @@ export class OrganizationService {
         linkParser(link) &&
         linkParser(link).next) {
       const url = linkParser(link).next.url;
-      this.nextUrl = `${API_HOST}${url}`;
+      this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
       this.nextUrl = null;
     }
@@ -268,8 +277,8 @@ export class OrganizationService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

@@ -1,7 +1,13 @@
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { MatTableDataSource, MatSelectChange, MatSnackBar, PageEvent } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectChange } from '@angular/material/select';
+import { PageEvent } from '@angular/material/paginator';
+
 import { AuthService } from '../../auth/auth.service';
-import { PaginatedSimulation, Simulation, SimulationService } from '../../cloudsim';
+import { SimulationService } from '../simulation.service';
+import { Simulation } from '../simulation';
+import { PaginatedSimulation } from '../paginated-simulation';
 
 @Component({
   selector: 'ign-simulation-table',
@@ -31,6 +37,7 @@ export class SimulationTableComponent implements OnChanges {
     'TerminationFailed',
     'InitializationFailed',
     'AdminReview',
+    'ServerRestart',
     'FailedToUploadLogs',
     'Rejected',
   ];
@@ -39,6 +46,7 @@ export class SimulationTableComponent implements OnChanges {
    * The dropdown circuit list
    */
   public circuitList: string[] = [
+    'Virtual Stix',
     'Tunnel Circuit',
     'Tunnel Practice 1',
     'Tunnel Practice 2',
@@ -54,6 +62,22 @@ export class SimulationTableComponent implements OnChanges {
     'Urban Practice 2',
     'Urban Practice 3',
     'Urban Circuit',
+    'Urban Circuit World 1',
+    'Urban Circuit World 2',
+    'Urban Circuit World 3',
+    'Urban Circuit World 4',
+    'Urban Circuit World 5',
+    'Urban Circuit World 6',
+    'Urban Circuit World 7',
+    'Urban Circuit World 8',
+    'Cave Qualification',
+    'Cave Simple 1',
+    'Cave Simple 2',
+    'Cave Simple 3',
+    'Cave Practice 1',
+    'Cave Practice 2',
+    'Cave Practice 3',
+    'Cave Circuit',
   ];
 
   /**
@@ -118,7 +142,7 @@ export class SimulationTableComponent implements OnChanges {
   /**
    * Callback from the Status dropdown. Get the simulations of the selected status.
    */
-  public filter() {
+  public filter(): void {
     this.getSimulations({
       status: this.statusFilter,
       errorStatus: this.errorStatusFilter,
@@ -137,6 +161,7 @@ export class SimulationTableComponent implements OnChanges {
       status: this.statusFilter,
       errorStatus: this.errorStatusFilter,
       circuit: this.circuitFilter,
+      pageSize: pageEvent.pageSize,
       page
     });
   }

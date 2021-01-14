@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { Observable } from 'rxjs/Observable';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { ErrMsg } from '../server/err-msg';
@@ -10,6 +10,7 @@ import { UiError } from '../ui-error';
 import { User } from './user';
 import { PaginatedAccessToken } from '../settings/paginated-access-token';
 import { AccessToken } from '../settings/access-token';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 
@@ -22,7 +23,7 @@ export class UserService {
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
    * @param authService Service to get authentication information.
@@ -42,18 +43,19 @@ export class UserService {
    */
   public getLogin(): Observable<User> {
     const url = this.getLoginUrl();
-    return this.http.get(url)
-      .map((response) => {
+    return this.http.get(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, User);
-      })
-      .catch((error) => {
+      }),
+      catchError((error) => {
         const uiError = new UiError(error);
         if (!(uiError.code === ErrMsg.ErrorAuthNoUser ||
           error.code === ErrMsg.ErrorResourceExists)) {
           console.error('An error occurred', error);
         }
-        return Observable.throw(uiError);
-      });
+        return throwError(uiError);
+      })
+    );
   }
 
   /**
@@ -64,11 +66,12 @@ export class UserService {
    */
   public getUser(name: string): Observable<User> {
     const url = this.getUserUrl(name);
-    return this.http.get<User>(url)
-      .map((response) => {
+    return this.http.get<User>(url).pipe(
+      map((response) => {
         return this.factory.fromJson(response, User);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -79,11 +82,12 @@ export class UserService {
    */
   public createUser(body: any): Observable<User> {
     const url = this.getUserListUrl();
-    return this.http.post(url, body)
-      .map((response) => {
+    return this.http.post(url, body).pipe(
+      map((response) => {
         return this.factory.fromJson(response, User);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -94,8 +98,9 @@ export class UserService {
    */
   public deleteUser(username: string): Observable<any> {
     const url = this.getUserUrl(username);
-    return this.http.delete(url)
-      .catch(this.handleError);
+    return this.http.delete(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -106,8 +111,9 @@ export class UserService {
    */
   public getProfile(name: string): Observable<any> {
     const url = this.getProfileUrl(name);
-    return this.http.get(url)
-      .catch(this.handleError);
+    return this.http.get(url).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -120,11 +126,12 @@ export class UserService {
     const body = {
       name: tokenname,
     };
-    return this.http.post(url, body).catch(this.handleError)
-      .map((response) => {
+    return this.http.post(url, body).pipe(
+      map((response) => {
         return this.factory.fromJson(response, AccessToken);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -134,7 +141,9 @@ export class UserService {
    */
   public revokeAccessToken(username: string, token: AccessToken): Observable<any> {
     const url = `${this.getUserUrl(username)}/access-tokens/revoke`;
-    return this.http.post(url, token).catch(this.handleError);
+    return this.http.post(url, token).pipe(
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -150,14 +159,15 @@ export class UserService {
     }
     const url = `${this.getUserUrl(name)}/access-tokens`;
     return this.http.get<PaginatedAccessToken>(url, {params: httpParams, observe: 'response'})
-      .map((response) => {
-        const paginatedAccessToken = new PaginatedAccessToken();
-        paginatedAccessToken.totalCount = +response.headers.get(UserService.headerTotalCount);
-        paginatedAccessToken.accessTokens = this.factory.fromJson(response.body, AccessToken);
-        return paginatedAccessToken;
-
-      })
-      .catch(this.handleError);
+      .pipe(
+        map((response) => {
+          const paginatedAccessToken = new PaginatedAccessToken();
+          paginatedAccessToken.totalCount = +response.headers.get(UserService.headerTotalCount);
+          paginatedAccessToken.accessTokens = this.factory.fromJson(response.body, AccessToken);
+          return paginatedAccessToken;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -215,8 +225,8 @@ export class UserService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 }

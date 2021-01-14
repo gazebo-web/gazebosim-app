@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
-import { Metadatum } from './';
+import { MatTableDataSource } from '@angular/material/table';
+
+import { Metadatum } from './metadatum';
 
 @Component({
   selector: 'ign-metadata',

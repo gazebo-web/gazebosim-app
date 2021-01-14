@@ -1,4 +1,4 @@
-import { TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -15,7 +15,6 @@ import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 
 describe('FuelResourceService', () => {
   // Injector and related services.
-  let injector: TestBed;
   let authService: AuthService;
   let factoryService: JsonClassFactoryService;
   let service: FuelResourceService;
@@ -46,11 +45,10 @@ describe('FuelResourceService', () => {
       ],
     });
 
-    injector = getTestBed();
-    authService = injector.get(AuthService);
-    factoryService = injector.get(JsonClassFactoryService);
-    service = injector.get(FuelResourceService);
-    httpMock = injector.get(HttpTestingController);
+    authService = TestBed.inject(AuthService);
+    factoryService = TestBed.inject(JsonClassFactoryService);
+    service = TestBed.inject(FuelResourceService);
+    httpMock = TestBed.inject(HttpTestingController);
 
     service.paginatedResourceClass = FuelPaginatedResource;
     service.resourceClass = FuelResource;

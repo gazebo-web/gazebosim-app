@@ -1,3 +1,5 @@
+import { environment } from '../../environments/environment';
+
 /**
  * Enum of available simulation status.
  * They come from the Cloudsim Server.
@@ -16,7 +18,8 @@ enum Status {
   DeletingNodes = 70,
   TerminatingInstances = 80,
   Terminated = 90,
-  Rejected = 100
+  Rejected = 100,
+  Superseded = 110
 }
 
 /**
@@ -34,7 +37,7 @@ export class Simulation {
    * URL of the S3 Bucket that contains all the simulation logs.
    */
   public static readonly bucketUrl: string =
-    `https://s3.console.aws.amazon.com/s3/buckets/${AWS_GZ_LOGS_BUCKET}/gz-logs/`;
+    `https://s3.console.aws.amazon.com/s3/buckets/${environment.AWS_GZ_LOGS_BUCKET}/gz-logs/`;
 
   /**
    * Static array that contains each Status in the enumeration as a string.

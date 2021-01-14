@@ -1,6 +1,7 @@
 import { Model } from '../model/model';
 import { World } from '../world/world';
 import { Image } from '../model/image';
+import { environment } from '../../environments/environment';
 
 /**
  * A class that represents a Collection.
@@ -61,7 +62,7 @@ export class Collection {
       const thumbnails: string[] = json['thumbnails'];
       thumbnails.forEach((url) => {
         const image = new Image();
-        image.url = `${API_HOST}/${API_VERSION}${url}`;
+        image.url = `${environment.API_HOST}/${environment.API_VERSION}${url}`;
         this.thumbnails.push(image);
       });
     }

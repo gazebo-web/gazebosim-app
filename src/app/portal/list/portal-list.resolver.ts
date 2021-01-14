@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-import { Portal, PortalService } from '../../portal';
+import { Portal } from '../portal';
+import { PortalService } from '../portal.service';
 
 @Injectable()
 
@@ -31,13 +33,13 @@ export class PortalListResolver implements Resolve<Portal> {
    * @returns An observable of the portals or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<Portal> {
-    return this.portalService.getList()
-      .map((portal) => {
+    return this.portalService.getList().pipe(
+      map((portal) => {
         return portal;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

@@ -5,7 +5,7 @@ import { Component,
          OnDestroy,
          SimpleChanges,
        } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FuelResource } from '../../fuel-resource';
 import { Model } from '../model';
@@ -270,6 +270,15 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
+    // If the resource is private, pass the Authorization header to gz3d.
+    if (this.resource.private) {
+      const token = localStorage.getItem('token');
+
+      this.scene.setRequestHeader('Authorization', `Bearer ${token}`);
+      this.sdfParser.setRequestHeader('Authorization', `Bearer ${token}`);
+      this.ogre2json.setRequestHeader('Authorization', `Bearer ${token}`);
+    }
+
     // Set usingFilesUrls to true to indicate that we will be supplying files URLs.
     this.sdfParser.usingFilesUrls = true;
 
@@ -356,12 +365,21 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
+   * Resize the 3D scene based on the DOM element's size
+   */
+  public resize(): void {
+    this.scene.setSize(this.sceneElement.clientWidth,
+                       this.sceneElement.clientHeight);
+  }
+
+  /**
    * Render the 3D scene, this function recursively calls itself in a loop.
    */
   private animate(): void {
 
     // Reposition object
-    if (this.obj && !this.objPositioned) {
+    if (this.resource && this.resource.type === 'models' &&
+        this.obj && !this.objPositioned) {
 
       // Get object's bounding box
       const bb = new THREE.Box3();
@@ -410,14 +428,6 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     this.cancelAnimation = requestAnimationFrame(() => {
       this.animate();
     });
-  }
-
-  /**
-   * Resize the 3D scene based on the DOM element's size
-   */
-  private resize(): void {
-    this.scene.setSize(this.sceneElement.clientWidth,
-                       this.sceneElement.clientHeight);
   }
 
   /**

@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Meta } from '@angular/platform-browser';
+import { Subscription, forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
@@ -15,9 +19,7 @@ import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
 import * as FileSaver from 'file-saver';
 import { NgxGalleryOptions,
          NgxGalleryImage,
-         NgxGalleryImageSize } from 'ngx-gallery';
-import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+         NgxGalleryImageSize } from '@kolkov/ngx-gallery';
 
 declare let Detector: any;
 
@@ -90,6 +92,16 @@ export class WorldComponent implements OnInit, OnDestroy {
   public collectionDialogSubscription: Subscription;
 
   /**
+   * Bibtex for this world.
+   */
+  public bibTex: string;
+
+  /**
+   * GzWeb visualizer flag.
+   */
+  public hasGzWeb: boolean;
+
+  /**
    * Dialog to prompt the user about the World name for copying.
    */
   private copyNameDialog: MatDialogRef<CopyDialogComponent>;
@@ -103,16 +115,6 @@ export class WorldComponent implements OnInit, OnDestroy {
    * Dialog to report a world
    */
   private reportWorldDialog: MatDialogRef<ReportDialogComponent>;
-
-  /**
-   * Bibtex for this world.
-   */
-  private bibTex: string;
-
-  /**
-   * GzWeb visualizer flag.
-   */
-  private hasGzWeb: boolean;
 
   /**
    * Are we rendering sdfviewer scene.
@@ -138,6 +140,7 @@ export class WorldComponent implements OnInit, OnDestroy {
    * @param worldService Service used to get World information from the Server
    * @param router Router service to allow navigation
    * @param snackBar Snackbar used to display notifications
+   * @param metaService Meta service used to update header tags.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -147,7 +150,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     private location: Location,
     private worldService: WorldService,
     private router: Router,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private metaService: Meta) {
   }
 
   /**
@@ -205,6 +209,32 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.world.owner}},`;
     this.bibTex += `\n\turl={${url}},\n}`;
+
+    // The world's description, used to set meta tags.
+    const description = this.world.description !== undefined &&
+      this.world.description !== '' ? this.world.description :
+      'A world on the Ignition App.';
+
+    // Update header meta data. This assumes that index.html has been
+    // populated with default values for each of the tags. If you add new tags,
+    // then also add a default value to src/index.html
+    this.metaService.updateTag({name: 'og:title', content: this.world.name});
+    this.metaService.updateTag({name: 'og:description', content: description});
+    this.metaService.updateTag({name: 'og:url', content: url});
+    this.metaService.updateTag({name: 'twitter:card',
+      content: 'summary_large_image'});
+    this.metaService.updateTag({name: 'twitter:title',
+      content: this.world.name});
+    this.metaService.updateTag({name: 'twitter:description',
+      content: description});
+    this.metaService.updateTag({name: 'twitter:image:alt',
+      content: this.world.name});
+    if (this.world.images.length > 0) {
+      this.metaService.updateTag({name: 'og:image',
+        content: this.world.images[0].url});
+      this.metaService.updateTag({name: 'twitter:image',
+        content: this.world.images[0].url});
+    }
   }
 
   /**
@@ -431,11 +461,12 @@ export class WorldComponent implements OnInit, OnDestroy {
    */
   public getFiles(): void {
     this.worldService.getFileTree(this.world, this.currentVersion)
-      .finally(
-        () => {
+      .pipe(
+        finalize(() => {
           // Executes after any response from the subscribe method.
           this.setupGallery();
         })
+      )
       .subscribe(
         (response) => {
           const files = response['file_tree'];
@@ -549,6 +580,79 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   */
+  public copyBibtex(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.bibTex;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
+  }
+
+  /**
+   * Make the viewport fullscreen
+   */
+  public openFullscreen(): void {
+    const elem = this.divRef.nativeElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
+  }
+
+  /**
+   * Reset the camera view
+   */
+  public resetView(): void {
+    this.sdfViewer.resetCameraPose();
+  }
+
+  /**
+   * Open / close SDF viewer.
+   * Note: since we're using ngIf, a new <ign-sdfviewer> is created each time this
+   * is toggled.
+   */
+  public toggle3D(): void {
+    this.view3d = !this.view3d;
+  }
+
+  /**
+   * Callback for the copy SDF button. Copies the current URL to the clipboard.
+   */
+  public copyWorldURL(): void {
+    const selBox = document.createElement('textarea');
+    const url = decodeURIComponent(this.worldService.getBaseUrl(this.world.owner, this.world.name));
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = `"${url}"`;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('SDF world URI copied to clipboard.', '', {
+      duration: 2000
+    });
+  }
+  /**
    * Extract files that contain no children from the File Tree nodes.
    *
    * @param file The current node of the File Tree.
@@ -566,58 +670,5 @@ export class WorldComponent implements OnInit, OnDestroy {
         this.extractFile(child);
       }
     }
-  }
-
-  /**
-   * Make the viewport fullscreen
-   */
-  private openFullscreen() {
-    const elem = this.divRef.nativeElement;
-
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    }
-  }
-
-  /**
-   * Reset the camera view
-   */
-  private resetView() {
-    this.sdfViewer.resetCameraPose();
-  }
-
-  /**
-   * Open / close SDF viewer.
-   * Note: since we're using ngIf, a new <ign-sdfviewer> is created each time this
-   * is toggled.
-   */
-  private toggle3D(): void {
-    this.view3d = !this.view3d;
-  }
-
-  /**
-   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
-   */
-  private copyBibtex(): void {
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = this.bibTex;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-    this.snackBar.open('Bibtex copied to clipboard.', '', {
-      duration: 2000
-    });
   }
 }

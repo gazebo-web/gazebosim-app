@@ -1,17 +1,21 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  MatIconModule,
-  MatInputModule,
-  MatRadioModule,
-  MatSnackBarModule,
-} from '@angular/material';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { of, throwError } from 'rxjs';
+
 import { MarkdownModule } from 'ngx-markdown';
-import { Observable } from 'rxjs/Observable';
+
+import {
+  ConfirmationDialogComponent
+} from '../../confirmation-dialog/confirmation-dialog.component';
 
 import { AuthService } from '../../auth/auth.service';
 import { Collection, CollectionService } from '../../collection';
@@ -25,6 +29,8 @@ describe('EditCollectionComponent', () => {
   let authService: AuthService;
   let collectionService: CollectionService;
   let router: Router;
+  let dialog: MatDialog;
+  let testBed: TestBed;
 
   // Test Collection
   const testCollectionJson = {
@@ -35,13 +41,15 @@ describe('EditCollectionComponent', () => {
 
   const testCollection = new Collection(testCollectionJson);
 
-  beforeEach(async(() => {
+  // Create fixture and component before each test.
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
         FormsModule,
         HttpClientTestingModule,
         MarkdownModule,
+        MatDialogModule,
         MatIconModule,
         MatInputModule,
         MatRadioModule,
@@ -50,6 +58,7 @@ describe('EditCollectionComponent', () => {
         RouterTestingModule,
         ],
       declarations: [
+        ConfirmationDialogComponent,
         DescriptionComponent,
         EditCollectionComponent
         ],
@@ -69,24 +78,24 @@ describe('EditCollectionComponent', () => {
         },
         ],
     });
-  }));
 
-  // Create fixture and component before each test.
-  beforeEach(() => {
+    testBed = getTestBed();
     fixture = TestBed.createComponent(EditCollectionComponent);
     component = fixture.debugElement.componentInstance;
-    authService = TestBed.get(AuthService);
+
+    authService = testBed.inject(AuthService);
     authService.userProfile = { orgs: [] };
-    collectionService = TestBed.get(CollectionService);
-    router = TestBed.get(Router);
+    collectionService = testBed.inject(CollectionService);
+    router = testBed.inject(Router);
+    dialog = testBed.inject(MatDialog);
   });
 
-  it('should obtain the collection to edit from the route during OnInit', async(() => {
+  it('should obtain the collection to edit from the route during OnInit', () => {
     component.ngOnInit();
     expect(component.collection).toBe(testCollection);
-  }));
+  });
 
-  it('should determine if the logged user can edit the collection', async(() => {
+  it('should determine if the logged user can edit the collection', () => {
     // Unauthenticated
     const authSpy = spyOn(authService, 'isAuthenticated').and.returnValue(false);
     component.ngOnInit();
@@ -110,9 +119,9 @@ describe('EditCollectionComponent', () => {
     authService.userProfile.orgs = [testCollection.owner];
     component.ngOnInit();
     expect(component.canEdit).toBe(true);
-  }));
+  });
 
-  it('should receive a file', async(() => {
+  it('should receive a file', () => {
     const mockTarget = new EventTarget();
     const mockEvent = { target: mockTarget } as Event;
     const testFile = new File([''], 'test.png');
@@ -121,24 +130,24 @@ describe('EditCollectionComponent', () => {
     component.onFileInput(mockEvent);
     expect(component.bannerFile.name).toBe('test.png');
     expect(component.bannerFile['fullPath']).toBe('/thumbnails/test.png');
-  }));
+  });
 
-  it('should mark the description as modified', async(() => {
+  it('should mark the description as modified', () => {
     component.collection = testCollection;
 
     component.onModifyDescription('new-description');
     expect(component.collection.description).toBe('new-description');
     expect(component.descriptionModified).toBe(true);
-  }));
+  });
 
-  it('should edit the collection given a new description', async(() => {
+  it('should edit the collection given a new description', () => {
     const testEditedCollection = new Collection({
       name: testCollection.name,
       owner: testCollection.owner,
       description: 'new-description'
     });
 
-    spyOn(collectionService, 'editCollection').and.returnValue(Observable.of(testEditedCollection));
+    spyOn(collectionService, 'editCollection').and.returnValue(of(testEditedCollection));
     spyOn(router, 'navigate');
     const snackBar = component.snackBar;
     component.collection = testCollection;
@@ -154,10 +163,10 @@ describe('EditCollectionComponent', () => {
     const routeCalled = `${component.collection.owner}/collections/${component.collection.name}`;
     expect(router.navigate).toHaveBeenCalledWith([routeCalled]);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should edit the collection given a new banner', async(() => {
-    spyOn(collectionService, 'editCollection').and.returnValue(Observable.of(testCollection));
+  it('should edit the collection given a new banner', () => {
+    spyOn(collectionService, 'editCollection').and.returnValue(of(testCollection));
     spyOn(router, 'navigate');
     const snackBar = component.snackBar;
     component.collection = testCollection;
@@ -175,11 +184,11 @@ describe('EditCollectionComponent', () => {
     const routeCalled = `${component.collection.owner}/collections/${component.collection.name}`;
     expect(router.navigate).toHaveBeenCalledWith([routeCalled]);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
-  }));
+  });
 
-  it('should open a snackbar on an edit error', async(() => {
+  it('should open a snackbar on an edit error', () => {
     spyOn(collectionService, 'editCollection').and.returnValue(
-      Observable.throw({message: 'err'}));
+      throwError({message: 'err'}));
     const snackBar = component.snackBar;
     component.collection = testCollection;
     const formData = new FormData();
@@ -191,14 +200,14 @@ describe('EditCollectionComponent', () => {
       formData);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
     expect(snackBar._openedSnackBarRef.instance.data.message).toBe('err');
-  }));
+  });
 
-  it(`should go back to the collection page`, async(() => {
+  it(`should go back to the collection page`, () => {
     component.collection = testCollection;
     spyOn(router, 'navigate');
 
     component.back();
     const routeCalled = `${component.collection.owner}/collections/${component.collection.name}`;
     expect(router.navigate).toHaveBeenCalledWith([routeCalled]);
-  }));
+  });
 });

@@ -1,20 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { HttpModule } from '@angular/http';
-import { MatIconModule,
-  MatCardModule,
-  MatFormFieldModule,
-  MatSelectModule,
-  MatInputModule,
-  MatOptionModule,
-} from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
-
+import { of } from 'rxjs';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { Observable } from 'rxjs/Observable';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { AuthService } from '../../auth/auth.service';
@@ -53,7 +49,7 @@ describe('ModelListComponent', () => {
   nextPaginatedModels.totalCount = nextModels.length;
   nextPaginatedModels.nextPage = null;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
@@ -63,10 +59,8 @@ describe('ModelListComponent', () => {
         MatIconModule,
         MatFormFieldModule,
         MatSelectModule,
-        MatOptionModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        HttpModule,
         HttpClientTestingModule,
         ],
       declarations: [
@@ -95,26 +89,24 @@ describe('ModelListComponent', () => {
             }
           }
         },
-        ],
+      ],
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ModelListComponent);
-    component = fixture.debugElement.componentInstance;
+    component = fixture.componentInstance;
   });
 
-  it('should load the the models from the resolved data', async(() => {
+  it('should load the the models from the resolved data', () => {
     expect(component.models).toBeUndefined();
     component.ngOnInit();
     expect(component.models).toEqual(testModels);
     expect(component.title).toEqual('testTitle');
-  }));
+  });
 
-  it('should load the next page', async(() => {
-    const modelService = TestBed.get(ModelService);
+  it('should load the next page', () => {
+    const modelService = TestBed.inject(ModelService);
     const spy = spyOn(modelService, 'getNextPage').and.returnValue(
-      Observable.of(nextPaginatedModels));
+      of(nextPaginatedModels));
     component.models = [];
     component.paginatedModels = paginatedModels;
 
@@ -130,5 +122,5 @@ describe('ModelListComponent', () => {
     spy.calls.reset();
     component.loadNextPage();
     expect(spy).not.toHaveBeenCalled();
-  }));
+  });
 });

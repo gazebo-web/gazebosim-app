@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
-import { AuthService } from '../auth/auth.service';
-
-import { Logfile, PaginatedLogfile } from '../logfile';
+import { environment } from '../../environments/environment';
+import { Logfile } from './logfile';
+import { PaginatedLogfile } from './paginated-logfile';
 
 import * as linkParser from 'parse-link-header';
 
@@ -16,7 +16,7 @@ import * as linkParser from 'parse-link-header';
 /**
  * The Logfile Service is in charge of making logfile-related requests to the Server.
  */
-export abstract class LogfileService {
+export class LogfileService {
 
   /**
    * Private field used as a constant to represent X-Total-Count header name.
@@ -26,7 +26,7 @@ export abstract class LogfileService {
   /**
    * Base server URL, including version.
    */
-  public baseUrl: string = `${API_HOST}/${API_VERSION}`;
+  public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
   /**
    * Keep track of the next URL.
@@ -34,12 +34,10 @@ export abstract class LogfileService {
   public nextUrl: string;
 
   /**
-   * @param authService Service to get authentication information.
    * @param factory Factory to transform Json into an object instance.
    * @param http Performs HTTP requests.
    */
   constructor(
-    protected authService: AuthService,
     protected factory: JsonClassFactoryService,
     protected http: HttpClient) {
   }
@@ -60,16 +58,17 @@ export abstract class LogfileService {
       httpParams = httpParams.set('page', page.toString());
     }
     const url = `${this.baseUrl}/subt/logfiles`;
-    return this.http.get(url, {params: httpParams, observe: 'response'})
-      .map((response) => {
+    return this.http.get(url, {params: httpParams, observe: 'response'}).pipe(
+      map((response) => {
         const paginatedLogfile = new PaginatedLogfile();
         paginatedLogfile.totalCount = +response.headers.get(
           LogfileService.headerTotalCount);
         paginatedLogfile.logfiles = this.factory.fromJson(response.body, Logfile);
         paginatedLogfile.nextPage = this.parseLinkHeader(response);
         return paginatedLogfile;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -81,11 +80,12 @@ export abstract class LogfileService {
   public getLogfile(id: number): Observable<Logfile> {
     const url = `${this.baseUrl}/subt/logfiles/${id}`;
 
-    return this.http.get<Logfile>(url)
-      .map((logfile) => {
+    return this.http.get<Logfile>(url).pipe(
+      map((logfile) => {
         return new Logfile(logfile);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -97,11 +97,12 @@ export abstract class LogfileService {
   public upload(form: any): Observable<Logfile> {
     const url = `${this.baseUrl}/subt/logfiles`;
 
-    return this.http.post<Logfile>(url, form)
-      .map((logfile) => {
+    return this.http.post<Logfile>(url, form).pipe(
+      map((logfile) => {
         return new Logfile(logfile);
-      })
-      .catch(this.handleUploadError);
+      }),
+      catchError(this.handleUploadError)
+    );
   }
 
   /**
@@ -115,11 +116,12 @@ export abstract class LogfileService {
   public modify(id: number, data: any): Observable<Logfile> {
     const url = `${this.baseUrl}/subt/logfiles/${id}`;
 
-    return this.http.patch<Logfile>(url, data)
-      .map((logfile) => {
+    return this.http.patch<Logfile>(url, data).pipe(
+      map((logfile) => {
         return new Logfile(logfile);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -132,11 +134,12 @@ export abstract class LogfileService {
   public remove(id: number): Observable<Logfile> {
     const url = `${this.baseUrl}/subt/logfiles/${id}`;
 
-    return this.http.delete<Logfile>(url)
-      .map((logfile) => {
+    return this.http.delete<Logfile>(url).pipe(
+      map((logfile) => {
         return new Logfile(logfile);
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -149,14 +152,14 @@ export abstract class LogfileService {
     const url = `${this.baseUrl}/subt/logfiles/${id}/file`;
 
     // Note: MergeMap allows chaining requests.
-    return this.http.get(url, {params: new HttpParams().set('link', 'true')})
-      .mergeMap(
-        (responseUrl) => {
-          // Note: The request to the S3 signed URL will fail if it has an Authorization header.
-          // In the HTTP interceptor, the 'X-Amz-Signature' query parameter is detected in order to
-          // skip adding this header.
-          return this.http.get(responseUrl as string, {responseType: 'blob'});
-        });
+    return this.http.get(url, {params: new HttpParams().set('link', 'true')}).pipe(
+      mergeMap((responseUrl) => {
+        // Note: The request to the S3 signed URL will fail if it has an Authorization header.
+        // In the HTTP interceptor, the 'X-Amz-Signature' query parameter is detected in order to
+        // skip adding this header.
+        return this.http.get(responseUrl as string, {responseType: 'blob'});
+      })
+    );
   }
 
   /**
@@ -166,16 +169,17 @@ export abstract class LogfileService {
    * @returns An observable of a paginated logfile.
    */
   public getNextPage(paginatedLogfile: PaginatedLogfile): Observable<PaginatedLogfile> {
-    return this.http.get<PaginatedLogfile>(paginatedLogfile.nextPage, {observe: 'response'})
-      .map((response) => {
+    return this.http.get<PaginatedLogfile>(paginatedLogfile.nextPage, {observe: 'response'}).pipe(
+      map((response) => {
         const res = new PaginatedLogfile();
         res.totalCount = +response.headers.get(
           LogfileService.headerTotalCount);
         res.logfiles = this.factory.fromJson(response.body, Logfile);
         res.nextPage = this.parseLinkHeader(response);
         return res;
-      })
-      .catch(this.handleError);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -192,7 +196,7 @@ export abstract class LogfileService {
       linkParser(link) &&
       linkParser(link).next) {
       const url = linkParser(link).next.url;
-      nextUrl = `${API_HOST}${url}`;
+      nextUrl = `${environment.API_HOST}${url}`;
     }
     return nextUrl;
   }
@@ -204,9 +208,9 @@ export abstract class LogfileService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleError(response: HttpErrorResponse): ErrorObservable {
+  private handleError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
-    return Observable.throw(new UiError(response));
+    return throwError(new UiError(response));
   }
 
   /**
@@ -218,10 +222,10 @@ export abstract class LogfileService {
    * @returns An error observable with a UiError, which contains error code to handle and
    * message to display.
    */
-  private handleUploadError(response: HttpErrorResponse): ErrorObservable {
+  private handleUploadError(response: HttpErrorResponse): Observable<never> {
     console.error('An error occurred', response);
     const error = {...response,
       statusText: 'An error ocurred. Make sure your logfile is smaller than 800 MB.'};
-    return Observable.throw(new UiError(error));
+    return throwError(new UiError(error));
   }
 }

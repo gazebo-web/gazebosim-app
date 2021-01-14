@@ -200,6 +200,7 @@
   width: 6em;
   border-radius: 20%;
   padding: 0.5em;
+  box-sizing: content-box;
 }
 
 pre.bibtex {
@@ -209,4 +210,8 @@ pre.bibtex {
 .bibtex:hover {
   cursor: pointer;
   color: mat-color($custom-theme-primary);
+}
+
+ngx-gallery ::ng-deep .ngx-gallery-thumbnails .ngx-gallery-thumbnail {
+  border: none !important;
 }

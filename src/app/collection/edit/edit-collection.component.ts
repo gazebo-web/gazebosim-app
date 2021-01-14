@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+import {
+  ConfirmationDialogComponent
+} from '../../confirmation-dialog/confirmation-dialog.component';
 
 import { AuthService } from '../../auth/auth.service';
 import { Collection, CollectionService } from '../../collection';
@@ -48,6 +53,11 @@ export class EditCollectionComponent implements OnInit {
   private privacyInputForm = new FormControl();
 
   /**
+   * Confirmation dialog reference for the deletion confirmation
+   */
+  private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param authService Service to get authentication details
    * @param collectionService Service used to update the collection of the Server
@@ -58,6 +68,7 @@ export class EditCollectionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     public authService: AuthService,
     public collectionService: CollectionService,
+    public dialog: MatDialog,
     public router: Router,
     public snackBar: MatSnackBar) {
   }
@@ -90,10 +101,10 @@ export class EditCollectionComponent implements OnInit {
 
     // Set the fullPath. Required for consistency between Chrome and Firefox browsers.
     // Appends /thumbnails, as it needs to be uploaded as one.
-    if (file.webkitRelativePath === '') {
+    if (file['webkitRelativePath'] === '') {
       file['fullPath'] = `/thumbnails/${file['name']}`;
     } else {
-      file['fullPath'] = `/thumbnails/${file.webkitRelativePath}`;
+      file['fullPath'] = `/thumbnails/${file['webkitRelativePath']}`;
     }
     this.bannerFile = file;
   }
@@ -148,9 +159,51 @@ export class EditCollectionComponent implements OnInit {
   }
 
   /**
+   * Callback when delete button is pressed
+   */
+  public onDelete(): void {
+    const dialogOps = {
+      data: {
+        title: 'Delete collection "' + this.collection.name + '"',
+        message: 'Be mindful when deleting a model, other users could be counting on it.',
+        buttonText: 'Delete',
+        hasInput: true,
+        inputMessage: 'To confirm, type the collection\'s name (case-sensitive)',
+        inputPlaceholder: 'Collection name',
+        inputTarget: this.collection.name
+      }
+    };
+
+    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+
+    // Callback when the Dialog is closed.
+    this.confirmationDialog.afterClosed()
+      .subscribe(
+        (result) => {
+          if (result !== true) {
+            return;
+          }
+
+          // Request deletion
+          this.collectionService.deleteCollection(this.collection.owner, this.collection.name)
+              .subscribe(
+                (response) => {
+                  this.snackBar.open(this.collection.name + ' collection deleted', 'Got it', {
+                    duration: 2750
+                  });
+                  this.router.navigate([this.collection.owner + '/collections']);
+                },
+                (error) => {
+                  this.snackBar.open(`${error.message}`, 'Got it');
+                });
+              });
+  }
+
+  /**
    * Navigate back to the collection page.
    */
   public back(): void {
     this.router.navigate([`${this.collection.owner}/collections/${this.collection.name}`]);
   }
+
 }

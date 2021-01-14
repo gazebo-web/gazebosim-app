@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Meta } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription, forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
@@ -12,13 +16,10 @@ import { ModelService } from './model.service';
 import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 
-import 'rxjs/add/operator/finally';
 import * as FileSaver from 'file-saver';
 import { NgxGalleryOptions,
          NgxGalleryImage,
-         NgxGalleryImageSize } from 'ngx-gallery';
-import { Subscription } from 'rxjs/Subscription';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+         NgxGalleryImageSize } from '@kolkov/ngx-gallery';
 
 declare let Detector: any;
 
@@ -101,6 +102,11 @@ export class ModelComponent implements OnInit, OnDestroy {
   public collectionDialogSubscription: Subscription;
 
   /**
+   * Bibtex for this model.
+   */
+  public bibTex: string;
+
+  /**
    * Dialog to prompt the user about the Model name and owner for copying.
    */
   private copyNameDialog: MatDialogRef<CopyDialogComponent>;
@@ -114,11 +120,6 @@ export class ModelComponent implements OnInit, OnDestroy {
    * Dialog to add the model into a collection (or create one).
    */
   private collectionDialog: MatDialogRef<CollectionDialogComponent>;
-
-  /**
-   * Bibtex for this model.
-   */
-  private bibTex: string;
 
   /**
    * Reference to the <div> that can be toggled fullscreen.
@@ -139,6 +140,7 @@ export class ModelComponent implements OnInit, OnDestroy {
    * @param modelService Service used to get Model information from the Server
    * @param router Router service to allow navigation
    * @param snackBar Snackbar used to display notifications
+   * @param metaService Meta service used to update header tags.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -148,7 +150,8 @@ export class ModelComponent implements OnInit, OnDestroy {
     private location: Location,
     private modelService: ModelService,
     private router: Router,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private metaService: Meta) {
   }
 
   /**
@@ -206,6 +209,32 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.model.owner}},`;
     this.bibTex += `\n\turl={${url}},\n}`;
+
+    // The model's description, used to set meta tags.
+    const description = this.model.description !== undefined &&
+      this.model.description !== '' ? this.model.description :
+      'A model on the Ignition App.';
+
+    // Update header meta data. This assumes that index.html has been
+    // populated with default values for each of the tags. If you add new tags,
+    // then also add a default value to src/index.html
+    this.metaService.updateTag({name: 'og:title', content: this.model.name});
+    this.metaService.updateTag({name: 'og:description', content: description});
+    this.metaService.updateTag({name: 'og:url', content: url});
+    this.metaService.updateTag({name: 'twitter:card',
+      content: 'summary_large_image'});
+    this.metaService.updateTag({name: 'twitter:title',
+      content: this.model.name});
+    this.metaService.updateTag({name: 'twitter:description',
+      content: description});
+    this.metaService.updateTag({name: 'twitter:image:alt',
+      content: this.model.name});
+    if (this.model.images.length > 0) {
+      this.metaService.updateTag({name: 'og:image',
+        content: this.model.images[0].url});
+      this.metaService.updateTag({name: 'twitter:image',
+        content: this.model.images[0].url});
+    }
   }
 
   /**
@@ -424,12 +453,13 @@ export class ModelComponent implements OnInit, OnDestroy {
    * Get the files of the Model.
    */
   public getFiles(): void {
-    this.modelService.getFileTree(this.model, this.currentVersion)
-      .finally(
+    this.modelService.getFileTree(this.model, this.currentVersion).pipe(
+      finalize(
         () => {
           // Executes after any response from the subscribe method.
           this.setupGallery();
         })
+      )
       .subscribe(
         (response) => {
           const files = response['file_tree'];
@@ -444,7 +474,8 @@ export class ModelComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.snackBar.open(error.message, 'Got it');
-        });
+        }
+      );
   }
 
   /**
@@ -591,7 +622,7 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * Make the viewport fullscreen
    */
-  private openFullscreen() {
+  public openFullscreen(): void {
     const elem = this.divRef.nativeElement;
 
     if (elem.requestFullscreen) {
@@ -608,8 +639,28 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * Reset the camera view
    */
-  private resetView() {
+  public resetView(): void {
     this.sdfViewer.resetCameraPose();
+  }
+
+  /**
+   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   */
+  public copyBibtex(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.bibTex;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
   }
 
   /**
@@ -630,25 +681,5 @@ export class ModelComponent implements OnInit, OnDestroy {
         this.extractFile(child);
       }
     }
-  }
-
-  /**
-   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
-   */
-  private copyBibtex(): void {
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = this.bibTex;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-    this.snackBar.open('Bibtex copied to clipboard.', '', {
-      duration: 2000
-    });
   }
 }

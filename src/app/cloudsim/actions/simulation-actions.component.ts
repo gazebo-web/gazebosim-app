@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../../auth/auth.service';
-import { Simulation, SimulationService } from '../../cloudsim';
+import { Simulation } from '../simulation';
+import { SimulationService } from '../simulation.service';
 import {
   ConfirmationDialogComponent
 } from '../../confirmation-dialog/confirmation-dialog.component';
@@ -143,7 +145,7 @@ export class SimulationActionsComponent {
 
     this.simulationService.download(this.simulation.groupId).subscribe(
       (response) => {
-        let extension = '.tar';
+        let extension = '.tar.gz';
         if (this.simulation.multiSim === 1) {
           // Tunnel Circuit simulations only have a json file.
           extension = '.json';
@@ -178,5 +180,17 @@ export class SimulationActionsComponent {
         this.snackBar.open(error.message, 'Got it');
       }
     );
+  }
+
+  /**
+   * The link to the S3 bucket where the simulation logs reside.
+   */
+  public s3bucketLink(): string {
+    // Note: In S3 the owners are encoded three times (spaces are treated as %252520).
+    // Otherwise, the link would point to a non-existent folder.
+    let encodedOwner = encodeURIComponent(this.simulation.owner);
+    encodedOwner = encodeURIComponent(encodedOwner);
+    encodedOwner = encodeURIComponent(encodedOwner);
+    return `${Simulation.bucketUrl}${encodedOwner}/${this.simulation.groupId}/`;
   }
 }

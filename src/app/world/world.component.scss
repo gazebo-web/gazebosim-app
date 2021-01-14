@@ -202,3 +202,7 @@ pre.bibtex {
   cursor: pointer;
   color: mat-color($custom-theme-primary);
 }
+
+ngx-gallery ::ng-deep .ngx-gallery-thumbnails .ngx-gallery-thumbnail {
+  border: none !important;
+}

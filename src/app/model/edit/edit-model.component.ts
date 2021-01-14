@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../auth/auth.service';
 import { ModelService } from '../model.service';
@@ -151,7 +153,7 @@ export class EditModelComponent implements OnInit {
   /**
    * Callback to the FileUploadComponent's files event. Keeps track of the uploaded files.
    */
-  public onReceiveFiles(event: File[]) {
+  public onReceiveFiles(event: File[]): void {
     this.fileList = event;
   }
 
@@ -233,9 +235,11 @@ export class EditModelComponent implements OnInit {
     }
 
     this.modelService.edit(this.model.owner, this.model.name, formData)
-      .finally(() => {
-        this.updating = false;
-      })
+      .pipe(
+        finalize(() => {
+          this.updating = false;
+        })
+      )
       .subscribe(
         (response) => {
           // Update the model.

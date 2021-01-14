@@ -5,13 +5,12 @@ import { FormBuilder,
          FormGroupDirective,
          Validators  } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog,
-         MatDialogRef,
-         MatPaginator,
-         MatSlideToggleChange,
-         MatSnackBar,
-         MatTableDataSource,
-         PageEvent } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+
 import { NewOrganizationDialogComponent, OrganizationService, Organization } from '../organization';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
@@ -112,7 +111,7 @@ export class SettingsComponent implements OnInit {
   /**
    * OnInit Lifecycle hook.
    */
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.experimentalGzWeb = (localStorage.getItem('experimental_gzweb') === 'true');
     if (this.authService.userProfile.orgs) {
       this.organizationList = this.authService.userProfile.orgs.sort();
@@ -122,10 +121,12 @@ export class SettingsComponent implements OnInit {
     this.route.fragment.subscribe((fragment) => {
       if (fragment === 'account') {
         this.selected.setValue(0);
-      } else if (fragment === 'organizations') {
+      } else if (fragment === 'access_tokens') {
         this.selected.setValue(1);
-      } else if (fragment === 'labs') {
+      } else if (fragment === 'organizations') {
         this.selected.setValue(2);
+      } else if (fragment === 'labs') {
+        this.selected.setValue(3);
       }
       });
     if (window.screen.width <= 600) {
@@ -139,14 +140,14 @@ export class SettingsComponent implements OnInit {
   /**
    * Callback for changes on the GzWeb experimental feature slider.
    */
-  public onToggleGzWebFeature(event: MatSlideToggleChange) {
+  public onToggleGzWebFeature(event: MatSlideToggleChange): void {
     localStorage.setItem('experimental_gzweb', event.checked.toString());
   }
 
   /**
    * Open the New Organization Dialog.
    */
-  public newOrganizationDialog() {
+  public newOrganizationDialog(): void {
     this.dialog.open(NewOrganizationDialogComponent, {id: 'new-organization-dialog',
       panelClass: 'ign-modal-panel'});
   }
@@ -156,7 +157,7 @@ export class SettingsComponent implements OnInit {
    *
    * @param orgName The name of the organization.
    */
-  public promptOrgLeave(orgName: string) {
+  public promptOrgLeave(orgName: string): void {
 
     const dialogOps = {
       data: {
@@ -196,7 +197,7 @@ export class SettingsComponent implements OnInit {
   /**
    * Open the modal dialog to alert the user about deleting their account.
    */
-  public confirmationDeleteAccount() {
+  public confirmationDeleteAccount(): void {
 
     // Options of the Confirmation Dialog.
     const dialogOps = {
@@ -232,7 +233,7 @@ export class SettingsComponent implements OnInit {
   /**
    * Get all the access tokens.
    */
-  public getAccessTokens(page?: number) {
+  public getAccessTokens(page?: number): void {
     this.userService.getAccessTokens(this.authService.userProfile.username, page).subscribe(
       (response) => {
         this.paginatedAccessTokens = response;
@@ -247,7 +248,7 @@ export class SettingsComponent implements OnInit {
   /**
    * Remove an access token.
    */
-  public revokeAccessToken(token: AccessToken) {
+  public revokeAccessToken(token: AccessToken): void {
 
     const dialogOps = {
       data: {
@@ -286,7 +287,7 @@ export class SettingsComponent implements OnInit {
   /**
    * Create a new access token.
    */
-  public createAccessToken() {
+  public createAccessToken(): void {
     const name = this.createAccessTokenForm.get('tokenNameInputForm').value.trim();
 
     // Clear the form.

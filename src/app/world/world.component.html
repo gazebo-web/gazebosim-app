@@ -64,6 +64,10 @@
             (click)="downloadClick()">
             <mat-icon>file_download</mat-icon>
           </button>
+          <button mat-icon-button title="Copy world URL to clipboard."
+            (click)="copyWorldURL()">
+            <mat-icon>code</mat-icon>
+          </button>
           <button mat-icon-button
             [disabled]="!authService.isAuthenticated() || currentVersion != latestVersion"
             [title]="getCopyButtonTitle()"
@@ -228,7 +232,7 @@
         </mat-tab>
 
         <mat-tab label="Metadata">
-          <ign-metadata [metadata]="world.metadata" [edit]="false" [disabled]="updating" fxFill>
+          <ign-metadata [metadata]="world.metadata" [edit]="false" fxFill>
           </ign-metadata>
         </mat-tab>
       </mat-tab-group>

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from './auth.service';
 import { ErrMsg } from '../server/err-msg';
@@ -126,7 +126,7 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
    *
    * Unsubscribes from the loggedIn$ behavior subject.
    */
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.loggedInSubscriber) {
       this.loggedInSubscriber.unsubscribe();
     }

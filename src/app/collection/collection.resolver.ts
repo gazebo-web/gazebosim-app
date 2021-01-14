@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Collection, CollectionService } from '../collection';
 
@@ -32,9 +33,10 @@ export class CollectionResolver implements Resolve<Collection> {
     const colOwner: string = route.paramMap.get('user');
     const colName: string = route.paramMap.get('collection');
 
-    return this.collectionService.getCollection(colOwner, colName).catch(
-      (err) => {
-        return Observable.of(null);
-      });
+    return this.collectionService.getCollection(colOwner, colName).pipe(
+      catchError((err) => {
+        return of(null);
+      })
+    );
   }
 }

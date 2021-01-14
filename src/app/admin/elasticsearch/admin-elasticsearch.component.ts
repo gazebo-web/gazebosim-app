@@ -1,14 +1,11 @@
-import { Component, OnInit  } from '@angular/core';
-import {
-  MatDialog,
-  MatDialogRef,
-  MatTableDataSource,
-  MatSelectChange,
-  MatSnackBar,
-  MatButton,
-  MatCheckbox,
-  PageEvent
-} from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectChange } from '@angular/material/select';
+import { PageEvent } from '@angular/material/paginator';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton } from '@angular/material/button';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { AdminElasticsearchService } from './admin-elasticsearch.service';
 import { ElasticsearchConfig } from './elasticsearch-config';
@@ -44,14 +41,14 @@ export class AdminElasticsearchComponent implements OnInit {
   public dataSource: MatTableDataSource<ElasticsearchConfig>;
 
   /**
+   * True to hide the password field.
+   */
+  public hide = true;
+
+  /**
    * All of the elastic search configs.
    */
   private configs: ElasticsearchConfig[] = [];
-
-  /**
-   * True to hide the password field.
-   */
-  private hide = true;
 
   /**
    * Dialog to create or alter an elastic search config.
@@ -79,20 +76,9 @@ export class AdminElasticsearchComponent implements OnInit {
   }
 
   /**
-   * Get the configurations
-   */
-  private getConfigs(): void {
-    this.elasticService.getList().subscribe(
-      (configurations) => {
-        this.configs = configurations;
-        this.dataSource = new MatTableDataSource(configurations);
-      });
-  }
-
-  /**
    * Reconnect to the elasticsearch instance
    */
-  private reconnect(): void {
+  public reconnect(): void {
     this.elasticService.reconnect().subscribe(
       (response) => {
         this.snackBar.open(response.status, 'Got it');
@@ -105,7 +91,7 @@ export class AdminElasticsearchComponent implements OnInit {
   /**
    * Rebuild the elasticsearch indices
    */
-  private rebuild(): void {
+  public rebuild(): void {
     this.elasticService.rebuild().subscribe(
       (response) => {
         this.snackBar.open(response.status, 'Got it');
@@ -118,7 +104,7 @@ export class AdminElasticsearchComponent implements OnInit {
   /**
    * Update the elasticsearch indices
    */
-  private update(): void {
+  public update(): void {
     this.elasticService.update().subscribe(
       (response) => {
         this.snackBar.open(response.status, 'Got it');
@@ -131,7 +117,7 @@ export class AdminElasticsearchComponent implements OnInit {
   /**
    * Delete the elasticsearch config
    */
-  private delete(configId: number): void {
+  public delete(configId: number): void {
     this.elasticService.delete(configId).subscribe(
       (response) => {
         for (let i = 0; i < this.configs.length; i++) {
@@ -150,7 +136,7 @@ export class AdminElasticsearchComponent implements OnInit {
   /**
    * Set a config to primary
    */
-  private setPrimary(configId: number): void {
+  public setPrimary(configId: number): void {
     for (const cfg of this.configs) {
       if (cfg.id === configId) {
         this.elasticService.modify(configId, {
@@ -170,7 +156,7 @@ export class AdminElasticsearchComponent implements OnInit {
   /**
    * Add a new config.
    */
-  private addConfig(): void {
+  public addConfig(): void {
     this.configDialog = this.dialog.open(ElasticsearchConfigDialogComponent,
       null);
 
@@ -190,7 +176,7 @@ export class AdminElasticsearchComponent implements OnInit {
   /**
    * Modify a config.
    */
-  private modify(config: ElasticsearchConfig): void {
+  public modify(config: ElasticsearchConfig): void {
     const dialogOps = {
       data: {
         address: config.address,
@@ -220,4 +206,14 @@ export class AdminElasticsearchComponent implements OnInit {
     );
   }
 
+  /**
+   * Get the configurations
+   */
+  private getConfigs(): void {
+    this.elasticService.getList().subscribe(
+      (configurations) => {
+        this.configs = configurations;
+        this.dataSource = new MatTableDataSource(configurations);
+      });
+  }
 }

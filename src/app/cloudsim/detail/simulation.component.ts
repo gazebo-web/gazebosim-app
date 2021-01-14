@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
@@ -58,6 +58,16 @@ export class SimulationComponent implements OnInit, OnDestroy {
   public connectionStatus: string = 'Disconnected';
 
   /**
+   * List of 3d models.
+   */
+  public models: any[] = [];
+
+  /**
+   * True if the camera is following a model
+   */
+  public following: boolean = false;
+
+  /**
    * Scene of the visualization.
    */
   private scene: any;
@@ -81,16 +91,6 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * ID of the Request Animation Frame method. Required to cancel the animation.
    */
   private cancelAnimation: number;
-
-  /**
-   * List of 3d models.
-   */
-  private models: any[] = [];
-
-  /**
-   * True if the camera is following a model
-   */
-  private following: boolean = false;
 
   /**
    * A sun directional light for global illumination
@@ -163,7 +163,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * @param url The websocket URL.
    * @param key The authorization key to send.
    */
-  public connect(url: string, key: string) {
+  public connect(url: string, key: string): void {
     // Avoid multiple connections.
     this.disconnect();
 
@@ -174,7 +174,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
       this.connectionStatus = response;
 
       if (response === 'Error') {
-        this.snackBar.open('Too many connections. Please try again later', 'Got it');
+        this.snackBar.open('Connection failed. Please contact an administrator.', 'Got it');
       }
 
       // We can start setting up the visualization after we are Connected.
@@ -251,7 +251,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
               // update the models ID and gz3dName.
               if (foundIndex < 0) {
                 const entity = this.scene.getByName();
-                const modelObj = this.sdfParser.spawnFromObj({ model }, false);
+                const modelObj = this.sdfParser.spawnFromObj({ model }, { enableLights: false });
                 model['gz3dName'] = modelObj.name;
                 this.models.push(model);
                 this.scene.add(modelObj);
@@ -277,7 +277,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
       this.startVisualization();
 
       sceneInfo['model'].forEach((model) => {
-        const modelObj = this.sdfParser.spawnFromObj({ model }, false);
+        const modelObj = this.sdfParser.spawnFromObj({ model }, { enableLights: false });
         model['gz3dName'] = modelObj.name;
         this.models.push(model);
         this.scene.add(modelObj);
@@ -302,7 +302,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Disconnect from the Websocket of the Simulation.
    */
-  public disconnect() {
+  public disconnect(): void {
     this.ws.disconnect();
     this.connectionStatus = 'Disconnected';
     this.unsubscribe();
@@ -311,7 +311,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Setup the visualization scene.
    */
-  public setupVisualization() {
+  public setupVisualization(): void {
     this.scene = new GZ3D.Scene(new GZ3D.Shaders());
     this.sdfParser = new GZ3D.SdfParser(this.scene);
     this.sdfParser.usingFilesUrls = true;
@@ -325,7 +325,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Start the visualization.
    */
-  public startVisualization() {
+  public startVisualization(): void {
     // Render loop.
     const animate = () => {
       this.scene.render();
@@ -340,7 +340,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Make the 3D viewport fullscreen
    */
-  private toggleFullscreen() {
+  public toggleFullscreen(): void {
     const elem = this.divRef.nativeElement;
 
     if (!this.fullscreen) {
@@ -377,48 +377,35 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Reset the camera view
    */
-  private resetView() {
+  public resetView(): void {
     this.scene.resetView();
   }
 
   /**
    * Change the width and height of the visualization upon a resize event.
    */
-  private resize() {
+  public resize(): void {
     this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
-  }
-
-  /**
-   * Unsubscribe from observables.
-   */
-  private unsubscribe() {
-    if (this.sceneInfoSubscription) {
-      this.sceneInfoSubscription.unsubscribe();
-    }
-
-    if (this.statusSubscription) {
-      this.statusSubscription.unsubscribe();
-    }
   }
 
   /**
    * Select the given model
    */
-  private select(model) {
+  public select(model): void {
     this.scene.emitter.emit('select_entity', model['gz3dName']);
   }
 
   /**
    * Instruct the camera to move to the given model.
    */
-  private moveTo(model) {
+  public moveTo(model): void {
     this.scene.emitter.emit('move_to_entity', model['gz3dName']);
   }
 
   /**
    * Instruct the camera to follow the given model.
    */
-  private follow(model) {
+  public follow(model): void {
     if (model !== undefined && model !== null) {
         this.following = true;
         this.scene.emitter.emit('follow_entity', model['gz3dName']);
@@ -431,7 +418,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Toggle lights
    */
-  private toggleLights() {
+  public toggleLights(): void {
     // Return if the light has not been created yet.
     if (this.sunLight === null || this.sunLight === undefined) {
       return;
@@ -448,6 +435,30 @@ export class SimulationComponent implements OnInit, OnDestroy {
     }
     for (const model of this.models) {
       this.scene.toggleLights(model['gz3dName']);
+    }
+  }
+
+  /**
+   * Listen to the Escape key to stop following.
+   */
+  @HostListener('window:keydown', ['$event'])
+  private keyEscape(event: KeyboardEvent): void {
+    if (event.key === 'Escape' || event.code === 'Escape') {
+      this.following = false;
+      this.scene.emitter.emit('follow_entity', null);
+    }
+  }
+
+  /**
+   * Unsubscribe from observables.
+   */
+  private unsubscribe(): void {
+    if (this.sceneInfoSubscription) {
+      this.sceneInfoSubscription.unsubscribe();
+    }
+
+    if (this.statusSubscription) {
+      this.statusSubscription.unsubscribe();
     }
   }
 }

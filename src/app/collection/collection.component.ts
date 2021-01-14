@@ -1,6 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Meta } from '@angular/platform-browser';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection } from './collection';
@@ -74,16 +76,18 @@ export class CollectionComponent implements OnInit {
    * @param router The router allows page navigation.
    * @param snackBar Snackbar used to display notifications.
    * @param worldService Service used to fetch the organization's worlds.
+   * @param metaService Meta service used to update header tags.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
-    private authService: AuthService,
+    public authService: AuthService,
     private collectionService: CollectionService,
     public dialog: MatDialog,
     private modelService: ModelService,
     public router: Router,
     public snackBar: MatSnackBar,
-    private worldService: WorldService) {
+    private worldService: WorldService,
+    private metaService: Meta) {
   }
 
   /**
@@ -141,6 +145,33 @@ export class CollectionComponent implements OnInit {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.collection.owner}},`;
     this.bibTex += `\n\turl={${this.collectionService.baseUrl + this.router.url}},\n}`;
+
+    // The collections's description, used to set meta tags.
+    const description = this.collection.description !== undefined &&
+      this.collection.description !== '' ? this.collection.description :
+      'A collection on the Ignition App.';
+
+    // Update header meta data. This assumes that index.html has been
+    // populated with default values for each of the tags. If you add new tags,
+    // then also add a default value to src/index.html
+    this.metaService.updateTag({name: 'og:title', content: this.collection.name});
+    this.metaService.updateTag({name: 'og:description', content: description});
+    this.metaService.updateTag({name: 'og:url',
+      content: this.collectionService.baseUrl + this.router.url});
+    this.metaService.updateTag({name: 'twitter:card',
+      content: 'summary_large_image'});
+    this.metaService.updateTag({name: 'twitter:title',
+      content: this.collection.name});
+    this.metaService.updateTag({name: 'twitter:description',
+      content: description});
+    this.metaService.updateTag({name: 'twitter:image:alt',
+      content: this.collection.name});
+    if (this.collection.thumbnails.length > 0) {
+      this.metaService.updateTag({name: 'og:image',
+        content: this.collection.thumbnails[0].url});
+      this.metaService.updateTag({name: 'twitter:image',
+        content: this.collection.thumbnails[0].url});
+    }
   }
 
   /**
@@ -228,7 +259,7 @@ export class CollectionComponent implements OnInit {
    *
    * @param event The event containing the resource to remove.
    */
-  public removeItem(event) {
+  public removeItem(event): void {
     const resource = event.resource;
 
     // Fire the confirmation dialog.
@@ -300,7 +331,7 @@ export class CollectionComponent implements OnInit {
    *
    * @param search Search string.
    */
-  private onSearch(search: string): void {
+  public onSearch(search: string): void {
     let searchFinal = 'collections:' + this.collection.name;
 
     // Replace ampersand with %26 so that it gets sent over the wire
@@ -343,7 +374,7 @@ export class CollectionComponent implements OnInit {
   /**
    * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
    */
-  private copyBibtex(): void {
+  public copyBibtex(): void {
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -365,7 +396,7 @@ export class CollectionComponent implements OnInit {
    *
    * @returns The title of the copy button, whether the collection can be copied or not.
    */
-  private getCopyButtonTitle(): string {
+  public getCopyButtonTitle(): string {
     if (!this.authService.isAuthenticated()) {
       return 'Log in to copy this collection';
     }
@@ -375,7 +406,7 @@ export class CollectionComponent implements OnInit {
   /**
    * Callback for the Collection Copy button.
    */
-  private copyCollection(): void {
+  public copyCollection(): void {
     const dialogOps = {
       disableClose: true,
       data: {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { Collection, CollectionService, PaginatedCollection } from '../../collection';
 
@@ -29,13 +30,13 @@ export class PublicCollectionsResolver implements Resolve<PaginatedCollection> {
    * @returns An observable of the collections or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedCollection> {
-    return this.collectionService.getCollectionList()
-      .map((collections) => {
+    return this.collectionService.getCollectionList().pipe(
+      map((collections) => {
         return collections;
+      }),
+      catchError((err) => {
+        return of(null);
       })
-      .catch(
-        (err) => {
-          return Observable.of(null);
-      });
+    );
   }
 }

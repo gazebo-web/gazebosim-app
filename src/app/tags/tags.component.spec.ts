@@ -1,11 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatChipsModule,
-  MatChipInputEvent,
-  MatIconModule,
-  MatInputModule
-} from '@angular/material';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 import { TagsComponent } from './tags.component';
 
@@ -29,7 +26,7 @@ describe('TagsComponent', () => {
     target: htmlElement,
   };
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         FormsModule,
@@ -42,9 +39,7 @@ describe('TagsComponent', () => {
         TagsComponent
         ]
     });
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(TagsComponent);
     component = fixture.debugElement.componentInstance;
     spyOn(component.onModify, 'emit');
@@ -56,7 +51,7 @@ describe('TagsComponent', () => {
     focusEvent.target = htmlElement;
   });
 
-  it('should NOT add a tag to the list if not on edit mode', async(() => {
+  it('should NOT add a tag to the list if not on edit mode', () => {
     // Disable edit mode and try to add Tag.
     component.edit = false;
     component.addTagChip(inputEvent);
@@ -67,9 +62,9 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should add a tag to the list on edit mode', async(() => {
+  it('should add a tag to the list on edit mode', () => {
     // Edit mode: Add chip.
     component.edit = true;
     component.addTagChip(inputEvent);
@@ -81,9 +76,9 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).toHaveBeenCalledWith(true);
-  }));
+  });
 
-  it('should NOT add a chip to the list if input is empty', async(() => {
+  it('should NOT add a chip to the list if input is empty', () => {
     // Edit mode: Add chip.
     component.edit = true;
     inputEvent.value = '';
@@ -95,9 +90,9 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should NOT close a chip on a blur event if not on edit mode', async(() => {
+  it('should NOT close a chip on a blur event if not on edit mode', () => {
     // Disable edit mode and trigger blur.
     component.edit = false;
     component.closeTagOnBlur(focusEvent);
@@ -108,9 +103,9 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should close a chip on a blur event on edit mode', async(() => {
+  it('should close a chip on a blur event on edit mode', () => {
     // Edit mode and trigger blur.
     component.edit = true;
     component.closeTagOnBlur(focusEvent);
@@ -122,9 +117,9 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).toHaveBeenCalledWith(true);
-  }));
+  });
 
-  it('should remove a tag on edit mode', async(() => {
+  it('should remove a tag on edit mode', () => {
     // Manually add tags.
     component.edit = true;
     component.tags = ['tag_1', 'tag_2', 'tag_3'];
@@ -148,9 +143,9 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).toHaveBeenCalledWith(true);
-  }));
+  });
 
-  it('should NOT remove a tag if not on edit mode', async(() => {
+  it('should NOT remove a tag if not on edit mode', () => {
     // Disable edit mode and manually add tags.
     component.edit = false;
     component.tags = ['tag_1', 'tag_2', 'tag_3'];
@@ -176,5 +171,5 @@ describe('TagsComponent', () => {
 
     // Check modification event.
     expect(component.onModify.emit).not.toHaveBeenCalled();
-  }));
+  });
 });
