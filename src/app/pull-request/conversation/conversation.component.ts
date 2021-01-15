@@ -79,7 +79,7 @@ export class ConversationComponent implements OnInit {
     const monthStore = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const today = new Date();
     const dd = today.getDate().toString();
-    const month = monthStore[today.getMonth() - 1];
+    const month = monthStore[today.getMonth()];
     const year = today.getFullYear().toString();
     return dd + ' ' + month + ' ' + year;
   }
