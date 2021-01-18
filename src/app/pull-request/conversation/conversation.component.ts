@@ -53,12 +53,12 @@ export class ConversationComponent implements OnInit {
     console.log(this.files);
   }
 
-  public getCommentFromEditor($event: string) {
+  public getCommentFromEditor($event: string): void {
     this.newComment = $event;
     this.addComment();
   }
 
-  private addComment = (): void => {
+  public addComment = (): void => {
     if (this.newComment) {
       const comment = {
         author: this.user,
@@ -75,7 +75,6 @@ export class ConversationComponent implements OnInit {
   }
 
   public closeReview(): void {
-    console.log("")
     // TODO - implement close review
   }
 

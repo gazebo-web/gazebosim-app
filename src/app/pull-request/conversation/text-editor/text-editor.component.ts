@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
-  selector: 'text-editor',
+  selector: 'ign-text-editor',
   templateUrl: './text-editor.component.html',
   styleUrls: ['./text-editor.component.scss']
 })
@@ -27,7 +27,7 @@ export class TextEditorComponent implements OnInit {
 
   public addComment(): void {
     this.sendComment.emit(this.newComment);
-    this.newComment = "";
+    this.newComment = '';
   }
 
   constructor() { }
