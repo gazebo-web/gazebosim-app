@@ -27,7 +27,7 @@ export class ConversationComponent implements OnInit {
     minHeight: '15em'
   };
   /**
-   * comment text holder
+   * receive comment from text editor
    */
   public newComment = '';
   /**
@@ -53,7 +53,12 @@ export class ConversationComponent implements OnInit {
     console.log(this.files);
   }
 
-  public addComment(): void {
+  public getCommentFromEditor($event: string) {
+    this.newComment = $event;
+    this.addComment();
+  }
+
+  private addComment = (): void => {
     if (this.newComment) {
       const comment = {
         author: this.user,
@@ -61,6 +66,7 @@ export class ConversationComponent implements OnInit {
         comment: this.newComment
       };
       this.comments = [...this.comments, comment];
+      this.newComment = '';
     }
     // TODO: api to post new comment to backend and error message for empty comment
   }
@@ -69,13 +75,14 @@ export class ConversationComponent implements OnInit {
   }
 
   public closeReview(): void {
+    console.log("")
     // TODO - implement close review
   }
 
   /**
    * Get today's date in dd - month - year format
    */
-  private getDate(): string {
+  public getDate(): string {
     const monthStore = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const today = new Date();
     const dd = today.getDate().toString();

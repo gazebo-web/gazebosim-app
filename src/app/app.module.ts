@@ -147,6 +147,7 @@ import { ReviewComponent } from './model/review/review-model.component';
 import { PullRequestComponent } from './pull-request/pull-request.component';
 import { ConversationComponent } from './pull-request/conversation/conversation.component';
 import { PullRequestService } from './pull-request/pull-request.service';
+import { TextEditorComponent } from './pull-request/conversation/text-editor/text-editor.component';
 
 /**
  * Entry point.
@@ -218,6 +219,7 @@ import { PullRequestService } from './pull-request/pull-request.service';
     ReviewComponent,
     PullRequestComponent,
     ConversationComponent,
+    TextEditorComponent,
   ],
   /**
    * Import the used modules.

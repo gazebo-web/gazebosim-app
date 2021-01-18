@@ -29,20 +29,5 @@
 
   <mat-divider></mat-divider>
 
-  <div class="new-comment">
-    <mat-card>
-      <mat-card-title>
-        New Comment
-      </mat-card-title>
-
-      <mat-card-content>
-        <angular-editor [(ngModel)]="newComment" [config]="editorConfig"></angular-editor>
-      </mat-card-content>
-
-      <mat-card-actions align="end">
-        <button mat-raised-button (click)="closeReview()">Close Review</button>
-        <button mat-raised-button color="accent" (click)="addComment()" >Comment</button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+  <text-editor (sendComment)="getCommentFromEditor($event)" [closeReview]="closeReview"></text-editor>
 </div>
