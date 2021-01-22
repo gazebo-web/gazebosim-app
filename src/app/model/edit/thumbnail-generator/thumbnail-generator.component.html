@@ -1,0 +1,34 @@
+<div *ngIf="resource.files.length === 0">
+  <p>
+    Fetching model files, please wait...
+  </p>
+</div>
+
+<div *ngIf="resource.files.length > 0">
+  <p>
+    Generate the thumbnails of the current model.
+  </p>
+
+  <p>
+    Note that this does not modify the model files. You would need to upload these generated thumbnails alongside your
+    model as a new version.
+  </p>
+</div>
+
+<button mat-raised-button
+        type="button"
+        color="accent"
+        title="Click to generate thumbnails"
+        [disabled]="resource.files.length === 0 || state === 'generating'"
+        (click)="beginRender()"
+        *ngIf="state === 'ready'">
+  Generate
+</button>
+
+<img src="assets/images/ign.gif" *ngIf="state === 'generating'">
+
+<p *ngIf="state === 'generating'">
+  The model is being rendered. Please wait...
+</p>
+
+<div id="container"></div>
