@@ -121,6 +121,28 @@ export abstract class FuelResourceService {
   }
 
   /**
+   * Get the first page of all the resources that belong to a user and is under review
+   *
+   * @param owner The owner of the resources.
+   * @returns An observable of the paginated resources.
+   */
+  public getOwnerModelsUnderReviewList(owner: string): Observable<FuelPaginatedResource> {
+    const url = this.getOwnerModelsUnderReviewListUrl(owner);
+
+    return this.http.get(url, {observe: 'response'}).pipe(
+      map((response) => {
+        const paginatedResource = new this.paginatedResourceClass();
+        paginatedResource.totalCount = +response.headers.get(
+          FuelResourceService.headerTotalCount);
+        paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
+        paginatedResource.nextPage = this.parseLinkHeader(response);
+        return paginatedResource;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
    * Get the first page of all the resources that a user liked.
    *
    * @param username The user to get their liked resources.
@@ -407,6 +429,17 @@ export abstract class FuelResourceService {
    */
   private getOwnerListUrl(owner: string): string {
     return `${this.baseUrl}/${owner}/${this.resourceType}`;
+  }
+
+  /**
+   * Server route of the list of resources owned by a user and is under review.
+   * The route is tbc (to be implemented after checking with the backend team)
+   *
+   * @param owner The owner of the resources.
+   * @returns The URL of the server route of the list of resources owned by the entity.
+   */
+  private getOwnerModelsUnderReviewListUrl(owner: string): string {
+    return ``;
   }
 
   /**
