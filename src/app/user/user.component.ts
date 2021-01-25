@@ -136,7 +136,7 @@ export class UserComponent implements OnInit {
     this.modelService.getOwnerModelsUnderReviewList(this.user.username).subscribe(
       (response) => {
         this.paginatedUnderReviewModels = response;
-        this.models = response.resources;
+        this.underReviewModels = response.resources;
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
