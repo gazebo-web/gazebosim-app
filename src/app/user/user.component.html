@@ -25,6 +25,25 @@
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon="ign-model"></mat-icon>
+          <span>Models under Review ({{paginatedModels?.totalCount}})</span>
+        </div>
+      </ng-template>
+
+      <div class="tab-content">
+        <ign-fuel-resource-list [resources]="underReviewModels"
+                                resourceType="models"
+                                [disabled]="activeTab !== 'modelsUnderReview'"
+                                [finished]="!paginatedUnderReviewModels?.hasNextPage()"
+                                (onLoadMore)="loadNextUnderReviewModelsPage()"
+                                fxFlex>
+        </ign-fuel-resource-list>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="ign-model"></mat-icon>
           <span>Models Liked ({{paginatedLikedModels?.totalCount}})</span>
         </div>
       </ng-template>
