@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'ign-conversation',
@@ -46,7 +47,11 @@ export class ConversationComponent implements OnInit {
     }
   ];
 
+  /**
+   * @param snackBar Snackbar to display notifications
+   */
   constructor(
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -54,13 +59,15 @@ export class ConversationComponent implements OnInit {
   }
 
   public addComment(): void {
-    if (this.newComment) {
+    if (this.newComment.length > 0) {
       const comment = {
         author: this.user,
         date: this.getDate(),
         comment: this.newComment
       };
       this.comments = [...this.comments, comment];
+    } else {
+      this.snackBar.open('Please enter something before commenting.', 'Got it');
     }
     // TODO: api to post new comment to backend and error message for empty comment
   }

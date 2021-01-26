@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { FuelResource } from 'src/app/fuel-resource';
 import { ModelService } from '../model.service';
 
@@ -63,11 +65,13 @@ export class ReviewComponent implements OnInit {
    * @param activatedRoute The current Activated Route to get associated the data
    * @param modelService Service to request model creation
    * @param router Router to navigate to other URLs
+   * @param snackBar Snackbar to display notifications
    */
   constructor(
     private activatedRoute: ActivatedRoute,
     public modelService: ModelService,
     public router: Router,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -88,9 +92,15 @@ export class ReviewComponent implements OnInit {
      */
     console.log(this.description);
     console.log(this.selectedReviewers);
-    this.router.navigate([
-      `/${this.owner}/pr/${this.modelService.resourceType}/${this.modelName}/${this.prId}`
-    ]);
+    if (this.description.length === 0) {
+      this.snackBar.open('Description cannot be empty.', 'Got it');
+    } else if (this.selectedReviewers.length === 0) {
+      this.snackBar.open('Please select a reviewer.', 'Got it');
+    } else {
+      this.router.navigate([
+        `/${this.owner}/pr/${this.modelService.resourceType}/${this.modelName}/${this.prId}`
+      ]);
+    }
   }
   /**
    * delete a selected reviewer
@@ -105,7 +115,7 @@ export class ReviewComponent implements OnInit {
     const monthStore = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const today = new Date();
     const dd = today.getDate().toString();
-    const month = monthStore[today.getMonth() - 1];
+    const month = monthStore[today.getMonth()];
     const year = today.getFullYear().toString();
     return dd + ' ' + month + ' ' + year;
   }
