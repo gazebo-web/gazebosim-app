@@ -49,6 +49,7 @@ import { VisualizationComponent } from './visualization';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 export const ROUTES: Routes = [
   {
@@ -86,6 +87,14 @@ export const ROUTES: Routes = [
     data: {
       titlebarTitle: 'Visualization',
       titlebarSubtitle: ''
+    }
+  },
+  {
+    path: 'notifications',
+    component: NotificationsComponent,
+    data: {
+      titlebarTitle: 'Fuel',
+      titlebarSubtitle: 'Notifications'
     }
   },
   {
@@ -628,5 +637,5 @@ export const ROUTES: Routes = [
 
       title: 'Page not found'
     }
-  }
+  },
 ];
