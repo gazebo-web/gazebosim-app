@@ -26,10 +26,11 @@
           <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
             <mat-icon>collections</mat-icon> Collections
           </a>
-          <a mat-list-item routerLink="/portal" (click)="closeSidenav()">
-            Portals
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/visualization" (click)="closeSidenav()">
+            Visualization
           </a>
-          <a mat-list-item href="https://openrobotics.freshdesk.com" (click)="closeSidenav()">
+          <a mat-list-item routerLink="/information" (click)="closeSidenav()">
             Information
           </a>
           <!-- Add link to System Admin page if the user is a system admin -->

@@ -2,6 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Meta } from '@angular/platform-browser';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection } from './collection';
@@ -75,6 +76,7 @@ export class CollectionComponent implements OnInit {
    * @param router The router allows page navigation.
    * @param snackBar Snackbar used to display notifications.
    * @param worldService Service used to fetch the organization's worlds.
+   * @param metaService Meta service used to update header tags.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -84,7 +86,8 @@ export class CollectionComponent implements OnInit {
     private modelService: ModelService,
     public router: Router,
     public snackBar: MatSnackBar,
-    private worldService: WorldService) {
+    private worldService: WorldService,
+    private metaService: Meta) {
   }
 
   /**
@@ -142,6 +145,33 @@ export class CollectionComponent implements OnInit {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.collection.owner}},`;
     this.bibTex += `\n\turl={${this.collectionService.baseUrl + this.router.url}},\n}`;
+
+    // The collections's description, used to set meta tags.
+    const description = this.collection.description !== undefined &&
+      this.collection.description !== '' ? this.collection.description :
+      'A collection on the Ignition App.';
+
+    // Update header meta data. This assumes that index.html has been
+    // populated with default values for each of the tags. If you add new tags,
+    // then also add a default value to src/index.html
+    this.metaService.updateTag({name: 'og:title', content: this.collection.name});
+    this.metaService.updateTag({name: 'og:description', content: description});
+    this.metaService.updateTag({name: 'og:url',
+      content: this.collectionService.baseUrl + this.router.url});
+    this.metaService.updateTag({name: 'twitter:card',
+      content: 'summary_large_image'});
+    this.metaService.updateTag({name: 'twitter:title',
+      content: this.collection.name});
+    this.metaService.updateTag({name: 'twitter:description',
+      content: description});
+    this.metaService.updateTag({name: 'twitter:image:alt',
+      content: this.collection.name});
+    if (this.collection.thumbnails.length > 0) {
+      this.metaService.updateTag({name: 'og:image',
+        content: this.collection.thumbnails[0].url});
+      this.metaService.updateTag({name: 'twitter:image',
+        content: this.collection.thumbnails[0].url});
+    }
   }
 
   /**
