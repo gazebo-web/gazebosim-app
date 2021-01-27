@@ -147,6 +147,7 @@ import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { TableComponent } from './notifications/table/table.component';
 
 /**
  * Entry point.
@@ -220,6 +221,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
     WorldComponent,
     WorldListComponent,
     NotificationsComponent,
+    TableComponent,
   ],
   /**
    * Import the used modules.
