@@ -44,7 +44,8 @@ export class UserComponent implements OnInit {
   public underReviewModels: Model[];
 
   /**
-   * Paginated Models that are under review. Contains the amount of models the user has uploaded, as well as
+   * Paginated Models that are under review.
+   * Contains the amount of models the user has uploaded, as well as
    * the page the following models should be obtained.
    */
   public paginatedUnderReviewModels: PaginatedModels;

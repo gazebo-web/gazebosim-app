@@ -10,20 +10,26 @@ import { OnInit, Component } from '@angular/core';
 })
 
 export class NotificationsComponent implements OnInit {
-  //TODO: retrieve notification data from server
+  // TODO: retrieve notification data from server
   inboxData = [
-    {title: "Update the thumbnail gallery", author: "@johnappleseed", action: "Review Requested", date: "23 June 2021"},
-    {title: "Add a new model for review", author: "@boaringsquare", action: "Subscribed", date: "25 June 2021"},
-    {title: "Changing texture of floor tiles", author: "@marycain", action: "Mentioned", date: "25 June 2021"},
+    {title: 'Update the thumbnail gallery', author: '@johnappleseed',
+    action: 'Review Requested', date: '23 June 2021'},
+    {title: 'Add a new model for review', author: '@boaringsquare',
+    action: 'Subscribed', date: '25 June 2021'},
+    {title: 'Changing texture of floor tiles', author: '@marycain',
+    action: 'Mentioned', date: '25 June 2021'},
   ];
   reviewRequestedData = [
-    {title: "Update the thumbnail gallery", author: "@johnappleseed", action: "Review Requested", date: "23 June 2021"}
+    {title: 'Update the thumbnail gallery', author: '@johnappleseed',
+    action: 'Review Requested', date: '23 June 2021'}
   ];
   subscribedData = [
-    {title: "Add a new model for review", author: "@boaringsquare", action: "Subscribed", date: "25 June 2021"}
+    {title: 'Add a new model for review', author: '@boaringsquare',
+    action: 'Subscribed', date: '25 June 2021'}
   ];
   mentionedData = [
-    {title: "Changing texture of floor tiles", author: "@marycain", action: "Mentioned", date: "25 June 2021"}
+    {title: 'Changing texture of floor tiles', author: '@marycain',
+    action: 'Mentioned', date: '25 June 2021'}
   ];
 
   /**
@@ -31,7 +37,7 @@ export class NotificationsComponent implements OnInit {
    */
   public activeTab: 'inbox' | 'reviewRequested' | 'subscribed' | 'mentioned' = 'inbox';
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
   /**
