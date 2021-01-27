@@ -1,34 +1,7 @@
-// import { Component, OnInit } from '@angular/core';
-
-// @Component({
-//   selector: 'ign-notifications',
-//   templateUrl: './notifications.component.html',
-//   styleUrls: ['./notifications.component.scss']
-// })
-
-// /**
-//  * The notifications that belong to a user
-// */
-// export class NotificationsComponent implements OnInit {
-
-//   public notifications: Notification[]
-
-//   constructor() { }
-
-//   public ngOnInit(): void {
-
-//     // TODO: Get the User's notifications
-    
-//   }
-
-// }
-
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatTableDataSource} from '@angular/material/table';
+import { OnInit, Component } from '@angular/core';
 
 /**
- * @title Table with pagination
+ * Notifications component
  */
 @Component({
   selector: 'ign-notifications',
@@ -36,22 +9,29 @@ import {MatTableDataSource} from '@angular/material/table';
   styleUrls: ['./notifications.component.scss']
 })
 
-export class NotificationsComponent implements AfterViewInit {
-  displayedColumns: string[] = ['title', 'author', 'action', 'date'];
-  dataSource = new MatTableDataSource<Notification>(MOCK_DATA);
-  reviewRequestedData = new MatTableDataSource<Notification>(REVIEW_REQUEST_MOCK_DATA);
-  subscribedData = new MatTableDataSource<Notification>(SUBSCRIBED_MOCK_DATA);
-  mentionedData = new MatTableDataSource<Notification>(MENTIONED_MOCK_DATA);
-  
+export class NotificationsComponent implements OnInit {
+  //TODO: retrieve notification data from server
+  inboxData = [
+    {title: "Update the thumbnail gallery", author: "@johnappleseed", action: "Review Requested", date: "23 June 2021"},
+    {title: "Add a new model for review", author: "@boaringsquare", action: "Subscribed", date: "25 June 2021"},
+    {title: "Changing texture of floor tiles", author: "@marycain", action: "Mentioned", date: "25 June 2021"},
+  ];
+  reviewRequestedData = [
+    {title: "Update the thumbnail gallery", author: "@johnappleseed", action: "Review Requested", date: "23 June 2021"}
+  ];
+  subscribedData = [
+    {title: "Add a new model for review", author: "@boaringsquare", action: "Subscribed", date: "25 June 2021"}
+  ];
+  mentionedData = [
+    {title: "Changing texture of floor tiles", author: "@marycain", action: "Mentioned", date: "25 June 2021"}
+  ];
+
   /**
    * Active tab in the tab group.
    */
   public activeTab: 'inbox' | 'reviewRequested' | 'subscribed' | 'mentioned' = 'inbox';
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+  ngOnInit() {
   }
 
   /**
@@ -78,29 +58,3 @@ export class NotificationsComponent implements AfterViewInit {
     }
   }
 }
-
-export interface Notification {
-  title: string;
-  author: string;
-  action: string;
-  date: string;
-}
-
-const MOCK_DATA: Notification[] = [
-  {title: "Update the thumbnail gallery", author: "@johnappleseed", action: "Review Requested", date: "23 June 2021"},
-  {title: "Add a new model for review", author: "@boaringsquare", action: "Subscribed", date: "25 June 2021"},
-  {title: "Changing texture of floor tiles", author: "@marycain", action: "Mentioned", date: "25 June 2021"},
-];
-
-const REVIEW_REQUEST_MOCK_DATA: Notification[] = [
-  {title: "Update the thumbnail gallery", author: "@johnappleseed", action: "Review Requested", date: "23 June 2021"}
-];
-
-const SUBSCRIBED_MOCK_DATA: Notification[] = [
-  {title: "Add a new model for review", author: "@boaringsquare", action: "Subscribed", date: "25 June 2021"},
-];
-
-const MENTIONED_MOCK_DATA: Notification[] = [
-  {title: "Changing texture of floor tiles", author: "@marycain", action: "Mentioned", date: "25 June 2021"},
-];
-
