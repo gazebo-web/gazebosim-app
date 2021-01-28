@@ -89,9 +89,7 @@ export class ReviewComponent implements OnInit {
      * TODO  - determine how to get determine the id of the latest pr
      */
     this.prId = 1;
-
-    // TODO - change the organization name
-    this.getReviewers('open_robotics');
+    this.getReviewers(this.owner);
   }
   /**
    * function to create pull request
