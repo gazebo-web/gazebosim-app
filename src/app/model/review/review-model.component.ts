@@ -5,6 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FuelResource } from 'src/app/fuel-resource';
 import { ModelService } from '../model.service';
+import { OrganizationService } from '../../organization/organization.service';
+import { Organization } from '../../organization/organization';
 
 @Component({
   selector: 'ign-review',
@@ -62,6 +64,10 @@ export class ReviewComponent implements OnInit {
    */
   public prId: number;
   /**
+   * organization
+   */
+  private organization: Organization;
+  /**
    * @param activatedRoute The current Activated Route to get associated the data
    * @param modelService Service to request model creation
    * @param router Router to navigate to other URLs
@@ -71,7 +77,8 @@ export class ReviewComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     public modelService: ModelService,
     public router: Router,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public organizationService: OrganizationService
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +89,9 @@ export class ReviewComponent implements OnInit {
      * TODO  - determine how to get determine the id of the latest pr
      */
     this.prId = 1;
+
+    // TODO - change the organization name
+    this.getReviewers('open_robotics');
   }
   /**
    * function to create pull request
@@ -134,6 +144,20 @@ export class ReviewComponent implements OnInit {
   private getUploadedFiles(fuelResource: FuelResource): void {
     this.modelService.getFileTree(fuelResource).subscribe(response => {
       this.files = response.file_tree;
+    });
+  }
+  /**
+   * Get reviewers
+   */
+  private getReviewers(name: string): void {
+    this.organizationService.getOrganization(name).subscribe(response => {
+      this.organization = response;
+      this.organizationService.getOrganizationUsers(this.organization).subscribe(res => {
+        const holder = res.map(user => {
+          return user.username;
+        });
+        this.reviewers = holder;
+      });
     });
   }
  }

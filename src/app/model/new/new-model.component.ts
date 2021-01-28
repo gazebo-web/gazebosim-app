@@ -126,6 +126,11 @@ export class NewModelComponent implements OnInit {
   private createPr = false;
 
   /**
+   * List of Organizations the user is in
+   */
+  private organization: string[] = [];
+
+  /**
    * @param authService Service to get authentication details
    * @param dialog Dialog to display warnings
    * @param location Provides a way to go back to the previous page
@@ -151,6 +156,7 @@ export class NewModelComponent implements OnInit {
       // the organizations (sorted alphabetically).
       this.ownerList = [this.authService.userProfile.username,
         ...this.authService.userProfile.orgs.sort()];
+      this.organization = [...this.authService.userProfile.orgs.sort()];
     }
   }
 
@@ -330,7 +336,7 @@ export class NewModelComponent implements OnInit {
     const verified = this.verifyBeforeUpload();
 
     if (verified) {
-      // All is good
+    //   // All is good
       this.upload();
     }
   }
@@ -340,7 +346,19 @@ export class NewModelComponent implements OnInit {
    */
   public uploadAndCreatePr(): void {
     this.createPr = true;
+    const privacyBoolean = !!this.privacyInputForm.value;
+    const isOrganization = this.organization.includes(this.ownerList[this.owner]);
     const verified = this.verifyBeforeUpload();
+
+    if (!privacyBoolean) {
+      this.snackBar.open('Model must be private if a review is to be created', 'Got it');
+      return;
+    }
+
+    if (!isOrganization) {
+      this.snackBar.open('User needs to be an organization', 'Got it');
+      return;
+    }
 
     if (verified) {
       this.upload();
