@@ -42,6 +42,11 @@ export class SettingsComponent implements OnInit {
   public experimentalGzWeb: boolean = false;
 
   /**
+   * In development - pull request feature
+   */
+  public pullRequestCreation: boolean = false;
+
+  /**
    * List of Organizations.
    */
   public organizationList: string[] = [];
@@ -113,6 +118,8 @@ export class SettingsComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.experimentalGzWeb = (localStorage.getItem('experimental_gzweb') === 'true');
+    this.pullRequestCreation = (localStorage.getItem('pullRequest_creation') === 'true');
+
     if (this.authService.userProfile.orgs) {
       this.organizationList = this.authService.userProfile.orgs.sort();
     }
@@ -142,6 +149,10 @@ export class SettingsComponent implements OnInit {
    */
   public onToggleGzWebFeature(event: MatSlideToggleChange): void {
     localStorage.setItem('experimental_gzweb', event.checked.toString());
+  }
+
+  public onTogglePullRequest(event: MatSlideToggleChange): void {
+    localStorage.setItem('pullRequest_creation', event.checked.toString())
   }
 
   /**

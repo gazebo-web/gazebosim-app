@@ -133,12 +133,23 @@
           <p>
           Try out these experimental features, and <a href="https://openrobotics.freshdesk.com/support/home">let us know what you think</a>. Remember, these are experimental features and may change, break or disappear at any time.
           </p>
-          <mat-slide-toggle
-            color="primary"
-            [checked]="experimentalGzWeb"
-            (change)="onToggleGzWebFeature($event)">
-          </mat-slide-toggle>
-          <span>Enable <a href="http://gazebosim.org/gzweb" target="_blank">GzWeb</a> for model visualization during model upload.</span>
+          <div>
+            <mat-slide-toggle
+              color="primary"
+              [checked]="experimentalGzWeb"
+              (change)="onToggleGzWebFeature($event)">
+            </mat-slide-toggle>
+            <span>Enable <a href="http://gazebosim.org/gzweb" target="_blank">GzWeb</a> for model visualization during model upload.</span>
+          </div>
+          <div>
+            <mat-slide-toggle 
+              color="primary"
+              [checked]="pullRequestCreation"
+              (change)="onTogglePullRequest($event)">
+
+            </mat-slide-toggle>
+            <span>Enable pull request creation feature</span>
+          </div>
         </div>
       </mat-tab>
     </mat-tab-group>

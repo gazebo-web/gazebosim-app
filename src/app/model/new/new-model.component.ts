@@ -115,6 +115,8 @@ export class NewModelComponent implements OnInit {
    */
   public privacyInputForm = new FormControl(0);
 
+  public hasPullRequest = false;
+
   /**
    * Confirmation dialog reference.
    */
@@ -151,6 +153,7 @@ export class NewModelComponent implements OnInit {
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
+    this.hasPullRequest = (localStorage.getItem('pullRequest_creation') === 'true');
     if (this.authService.isAuthenticated()) {
       // Prepare the list of owners the model could have. Username goes first, followed by
       // the organizations (sorted alphabetically).

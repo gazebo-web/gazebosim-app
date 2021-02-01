@@ -76,7 +76,9 @@
     <div fxLayout="row" fxLayoutAlign="space-between start" fxFill *ngIf="!uploading; else isUploading">
       <button mat-raised-button (click)="location.back()">Cancel</button>
 
-      <div>
+      <button *ngIf="!hasPullRequest" mat-raised-button color="accent" (click)="directUpload()">Upload</button>
+
+      <div *ngIf="hasPullRequest">
         <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" type="button">Select upload option</button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="directUpload()">Upload</button>
