@@ -21,9 +21,15 @@ export class TableComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  ngAfterViewInit(): void {
+  public createDataSource(): void {
     this.dataSource = new MatTableDataSource<Notification>(this.notificationData);
-    this.dataSource.paginator = this.paginator;
+  }
+
+  ngAfterViewInit(): void {
+    Promise.resolve().then(() => {
+      this.createDataSource();
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
 }
