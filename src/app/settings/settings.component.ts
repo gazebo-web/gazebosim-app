@@ -152,7 +152,7 @@ export class SettingsComponent implements OnInit {
   }
 
   public onTogglePullRequest(event: MatSlideToggleChange): void {
-    localStorage.setItem('pullRequest_creation', event.checked.toString())
+    localStorage.setItem('pullRequest_creation', event.checked.toString());
   }
 
   /**
