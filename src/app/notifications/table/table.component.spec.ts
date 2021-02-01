@@ -14,8 +14,17 @@ describe('TableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, MatDividerModule, MatTabsModule, MatTableModule, MatPaginatorModule ],
-      declarations: [ TableComponent, PageTitleComponent,  ]
+      imports: [
+        BrowserAnimationsModule,
+        MatDividerModule,
+        MatTabsModule,
+        MatTableModule,
+        MatPaginatorModule
+      ],
+      declarations: [
+        TableComponent,
+        PageTitleComponent
+      ]
     })
     .compileComponents();
   });
