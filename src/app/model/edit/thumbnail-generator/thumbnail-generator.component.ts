@@ -236,18 +236,8 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     boundingBox.getSize(size);
     const max = Math.max(size.x, size.y, size.z);
 
-    // Choose a scaling basis value based on the bounding box.
-    let scalingBasis = 1;
-    if (max >= 10000) {
-      scalingBasis = 1000;
-    } else if (max >= 1000) {
-      scalingBasis = 100;
-    } else if (max >= 100) {
-      scalingBasis = 10;
-    }
-
     // Normalize scale.
-    const scaling = scalingBasis / max;
+    const scaling = 1.0 / max;
     obj.scale.copy(new THREE.Vector3().addScalar(scaling));
   }
 
