@@ -94,10 +94,9 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     }
 
     if (this.scene) {
+      this.scene.emitter.removeAllListeners('load_finished');
       this.scene.cleanup();
     }
-
-    this.scene.emitter.removeAllListeners('load_finished');
   }
 
   /**
