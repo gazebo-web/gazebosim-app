@@ -1,22 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
-import { AngularEditorModule } from '@kolkov/angular-editor';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { AuthService } from '../auth/auth.service';
+import { ConversationComponent } from './conversation/conversation.component';
+import { DescriptionComponent } from '../description';
+import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { PullRequestComponent } from './pull-request.component';
 import { PullRequestService } from './pull-request.service';
-import { AuthService } from '../auth/auth.service';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { ConversationComponent } from './conversation/conversation.component';
 
 describe('PullRequestComponent', () => {
   let component: PullRequestComponent;
@@ -25,24 +27,25 @@ describe('PullRequestComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
-        MatSelectModule,
         BrowserAnimationsModule,
         FormsModule,
+        HttpClientTestingModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        MatTabsModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatListModule,
         MatCardModule,
-        AngularEditorModule
+        MatIconModule,
+        MatInputModule,
+        MatListModule,
+        MatSelectModule,
+        MatTabsModule,
+        MatToolbarModule,
       ],
-      declarations: [ PullRequestComponent, ConversationComponent ],
+      declarations: [ ConversationComponent, DescriptionComponent, PullRequestComponent],
       providers: [
-        PullRequestService,
         AuthService,
         JsonClassFactoryService,
+        MatSnackBar,
+        PullRequestService,
         {
           provide: ActivatedRoute,
           useValue: {

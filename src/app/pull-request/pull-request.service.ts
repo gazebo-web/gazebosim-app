@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 export class PullRequestService {
 
   /**
-   * @param authService Service to get authentication information.
    * @param factory Json factory
    * @param http Performs HTTP requests.
    */

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 
-import { OrganizationService } from '../../organization/organization.service';
 import { Organization } from '../../organization/organization';
+import { OrganizationService } from '../../organization/organization.service';
 
 @Component({
   selector: 'ign-review',
@@ -24,7 +24,7 @@ export class ReviewComponent implements OnInit {
 
   /**
    * Name of the model, to be retrived from url
-   * 
+   *
    */
   public modelName = '';
 
@@ -52,7 +52,7 @@ export class ReviewComponent implements OnInit {
    * list of fake files for testing. Will be replaced with real files uploaded by user
    */
   public files: File[];
-  
+
   /**
    * Id of review
    */

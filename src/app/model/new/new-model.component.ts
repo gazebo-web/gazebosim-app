@@ -362,7 +362,6 @@ export class NewModelComponent implements OnInit {
     if (verified) {
       // TODO - implement route to upload pr
       // temp redirect for now
-      console.log('testing correctness')
       this.router.navigate([
         `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`
       ]);

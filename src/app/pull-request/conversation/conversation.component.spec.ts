@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatCardModule } from '@angular/material/card';
-import { AngularEditorModule } from '@kolkov/angular-editor';
-import { MatListModule } from '@angular/material/list';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ConversationComponent } from './conversation.component';
 
@@ -14,14 +14,14 @@ describe('ConversationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        MatCardModule,
-        AngularEditorModule,
-        MatListModule,
-        HttpClientTestingModule,
         FormsModule,
-        ReactiveFormsModule
+        HttpClientTestingModule,
+        MatCardModule,
+        MatListModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
       ],
-      declarations: [ ConversationComponent ]
+      declarations: [ ConversationComponent ],
     })
     .compileComponents();
   });

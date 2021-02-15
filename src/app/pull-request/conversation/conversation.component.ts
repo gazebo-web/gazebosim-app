@@ -7,22 +7,37 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./conversation.component.scss']
 })
 export class ConversationComponent implements OnInit {
+
   /**
    * file array passed down from pull-request parent component. Includes all files for the model
    */
   @Input() files: File[];
+
   /**
    * User currently logged in
    */
   @Input() user = '';
+
+  /**
+   * model name
+   */
   @Input() modelName = '';
+
+  /**
+   * pr id
+   */
   @Input() prId = '';
+
+  /**
+   * review object
+   */
   @Input() review;
- 
+
   /**
    * comment text holder
    */
   public newComment = '';
+
   /**
    * list of existing comments in the pr
    */
@@ -47,9 +62,11 @@ export class ConversationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.files);
   }
 
+  /**
+   * Add comments to comment list
+   */
   public addComment(): void {
     if (this.newComment.length > 0) {
       const comment = {
@@ -63,26 +80,15 @@ export class ConversationComponent implements OnInit {
     }
     // TODO: api to post new comment to backend and error message for empty comment
   }
-  public downloadFiles(): void {
-    // TODO - implement downlile files method
-  }
-
-  /**
-   * Close a pull request
-   */
-  public closeReview(): void {
-    // TODO - implement close review
-  }
 
    /**
-   * Modify the comment based on the event received.
-   *
-   * @param comment The modified comment.
-   */
+    * Modify the comment based on the event received.
+    *
+    * @param comment The modified comment.
+    */
   public onModifyDescription(comment: string): void {
     this.newComment = comment;
   }
-
 
   /**
    * Get today's date in dd - month - year format
@@ -94,9 +100,5 @@ export class ConversationComponent implements OnInit {
     const month = monthStore[today.getMonth() - 1];
     const year = today.getFullYear().toString();
     return dd + ' ' + month + ' ' + year;
-  }
-
-  private getComments(): void {
-    // TODO - implement get comments method
   }
 }

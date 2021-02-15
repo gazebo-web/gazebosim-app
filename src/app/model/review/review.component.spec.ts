@@ -1,19 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatCardModule } from '@angular/material/card';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { AuthService } from '../../auth/auth.service';
+import { DescriptionComponent } from '../../description';
+import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
+import { OrganizationService } from '../../organization/organization.service';
 import { PageTitleComponent } from '../../page-title';
 import { ReviewComponent } from './review.component';
-import { ModelService } from '../model.service';
-import { AuthService } from '../../auth/auth.service';
-import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 
 describe('ReviewComponent', () => {
   let component: ReviewComponent;
@@ -22,24 +25,27 @@ describe('ReviewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
-        MatCardModule,
-        RouterTestingModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatSelectModule,
         BrowserAnimationsModule,
         FormsModule,
+        HttpClientTestingModule,
+        MatCardModule,
+        MatIconModule,
+        MatInputModule,
+        MatToolbarModule,
+        MatSelectModule,
         ReactiveFormsModule,
+        RouterTestingModule,
       ],
       declarations: [
-        ReviewComponent,
+        DescriptionComponent,
         PageTitleComponent,
+        ReviewComponent,
       ],
       providers: [
-        ModelService,
         AuthService,
         JsonClassFactoryService,
+        MatSnackBar,
+        OrganizationService,
         {
           provide: ActivatedRoute,
           useValue: {

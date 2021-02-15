@@ -21,7 +21,7 @@ describe('PullRequestService', () => {
     service = TestBed.inject(PullRequestService);
   });
 
-  it('should work', () => {
-    // TODO - write test later
+  it('should render properly', () => {
+    expect(service).toBeTruthy();
   });
 });

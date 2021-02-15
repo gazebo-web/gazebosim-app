@@ -1,5 +1,5 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 
 import { PullRequestService } from './pull-request.service';
 
@@ -21,12 +21,28 @@ export class PullRequestComponent implements OnInit {
   public reviewers: string[] = ['John', 'steven', 'mary', 'jane', 'extra guy', 'boaringsquare'];
 
   /**
-   * TODO - remove this line of code once backend is up
+   * List of uploaded files
    */
-  public fakeFiles = this.generateFakeFiles();
+  public files = [];
+
+  /**
+   * owner of model
+   */
   public user = '';
+
+  /**
+   * id of pull requests
+   */
   public prId = '';
+
+  /**
+   * model name
+   */
   public modelName = '';
+
+  /**
+   * temp review object
+   */
   public review = {
     id: '1',
     owner: 'boaringsquare',
@@ -75,21 +91,8 @@ export class PullRequestComponent implements OnInit {
   public getReview(): void {
     // TODO - implement get review method
   }
+
   public onApprove(reviewer: string): void {
     this.review.approvals = [...this.review.approvals, reviewer];
-  }
-
-  /**
-   * KIV - remove once backend is up, test it with chrome and firefox to make sure not different fields
-   */
-  private generateFakeFiles(): File[] {
-    const file1 = new File([], 'file.png', {type: 'image/png'});
-    const file2 = new File([], 'file.config', {type: ''});
-    const file3 = new File([], 'file.sdf', {type: ''});
-    return [file1, file2, file3];
-  }
-
-  private getModel(): void {
-    // TODO - implement get model method
   }
 }
