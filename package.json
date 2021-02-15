@@ -26,7 +26,6 @@
     "@angular/platform-browser": "~10.2.0",
     "@angular/platform-browser-dynamic": "~10.2.0",
     "@angular/router": "~10.2.0",
-    "@kolkov/angular-editor": "^1.1.4",
     "@kolkov/ngx-gallery": "^1.2.3",
     "auth0-js": "^9.14.0",
     "file-saver": "^2.0.2",

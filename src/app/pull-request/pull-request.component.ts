@@ -14,11 +14,15 @@ export class PullRequestComponent implements OnInit {
    * list of selected reviewers, if any
    */
   public selectedReviewers = ['steven', 'mary', 'boaringsquare'];
+
   /**
    * list of reviwers
    */
   public reviewers: string[] = ['John', 'steven', 'mary', 'jane', 'extra guy', 'boaringsquare'];
 
+  /**
+   * TODO - remove this line of code once backend is up
+   */
   public fakeFiles = this.generateFakeFiles();
   public user = '';
   public prId = '';
@@ -50,22 +54,24 @@ export class PullRequestComponent implements OnInit {
     this.prId = this.activatedRoute.snapshot.paramMap.get('id');
     this.user = this.activatedRoute.snapshot.paramMap.get('user');
     this.modelName = this.activatedRoute.snapshot.paramMap.get('name');
-    // this.isReviewer = this.checkIsReviewer(this.user, this.selectedReviewers);
-    // if (this.isReviewer) {
-    //   this.isApproved = this.checkIsApproved(this.user, this.review.approvals);
-    // }
+    this.isReviewer = this.checkIsReviewer(this.user);
+    if (this.isReviewer) {
+      this.isApproved = this.checkIsApproved(this.user, this.review.approvals);
+    }
   }
 
-  public checkIsReviewer(user: string, reviewer: string): boolean {
-    return this.selectedReviewers.includes(user) && user === reviewer;
+  public checkIsReviewer(user: string): boolean {
+    return this.selectedReviewers.includes(user);
   }
 
   public checkIsApproved(user: string, approvals: string[]): boolean {
     return approvals.includes(user);
   }
+
   public deleteReviewer(reviewer): void {
     this.selectedReviewers = this.selectedReviewers.filter(val => val !== reviewer);
   }
+
   public getReview(): void {
     // TODO - implement get review method
   }
@@ -73,6 +79,9 @@ export class PullRequestComponent implements OnInit {
     this.review.approvals = [...this.review.approvals, reviewer];
   }
 
+  /**
+   * KIV - remove once backend is up, test it with chrome and firefox to make sure not different fields
+   */
   private generateFakeFiles(): File[] {
     const file1 = new File([], 'file.png', {type: 'image/png'});
     const file2 = new File([], 'file.config', {type: ''});

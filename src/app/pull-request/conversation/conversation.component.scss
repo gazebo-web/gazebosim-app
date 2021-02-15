@@ -15,11 +15,13 @@
     padding: 0 1em 1em 0;
   }
 }
+
 .file-heading {
   margin: 0 1rem;
   display: flex;
   justify-content: space-between;
 }
+
 .file-display {
   height: 100%;
   border-width: 1px;
@@ -29,9 +31,11 @@
   margin-bottom: 2em;
   min-height: 2em;
 }
+
 .file:hover, .selected-reviewer:hover {
   background-color: mat-color($custom-theme-accent, A100);
 }
+
 .file{
   padding: 0.5em 2em;
 }

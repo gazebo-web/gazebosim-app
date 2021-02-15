@@ -49,7 +49,7 @@ import { VisualizationComponent } from './visualization';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
-import { ReviewComponent } from './model/review/review-model.component';
+import { ReviewComponent } from './model/review/review.component';
 import { PullRequestComponent } from './pull-request/pull-request.component';
 
 export const ROUTES: Routes = [
@@ -253,15 +253,6 @@ export const ROUTES: Routes = [
     }
   },
   {
-    path: ':owner/fuel/models/review/:modelname',
-    component: ReviewComponent,
-    pathMatch: 'full',
-    data: {
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Model Review',
-    }
-  },
-  {
     path: 'worlds',
     redirectTo: 'fuel/worlds',
   },
@@ -342,6 +333,15 @@ export const ROUTES: Routes = [
     },
     resolve: {
       resolvedData: UserModelsResolver
+    }
+  },
+  {
+    path: ':owner/fuel/models/review/:modelname',
+    component: ReviewComponent,
+    pathMatch: 'full',
+    data: {
+      titlebarTitle: 'Fuel',
+      titlebarSubtitle: 'Model Review',
     }
   },
   {

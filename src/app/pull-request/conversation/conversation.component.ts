@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -19,14 +18,7 @@ export class ConversationComponent implements OnInit {
   @Input() modelName = '';
   @Input() prId = '';
   @Input() review;
-  /**
-   * Configuration for richtext editor.
-   * Refer to docs at https://www.npmjs.com/package/@kolkov/angular-editor
-   */
-  public editorConfig: AngularEditorConfig = {
-    editable: true,
-    minHeight: '15em'
-  };
+ 
   /**
    * comment text holder
    */
@@ -75,9 +67,22 @@ export class ConversationComponent implements OnInit {
     // TODO - implement downlile files method
   }
 
+  /**
+   * Close a pull request
+   */
   public closeReview(): void {
     // TODO - implement close review
   }
+
+   /**
+   * Modify the comment based on the event received.
+   *
+   * @param comment The modified comment.
+   */
+  public onModifyDescription(comment: string): void {
+    this.newComment = comment;
+  }
+
 
   /**
    * Get today's date in dd - month - year format

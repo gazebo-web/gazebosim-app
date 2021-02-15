@@ -115,7 +115,10 @@ export class NewModelComponent implements OnInit {
    */
   public privacyInputForm = new FormControl(0);
 
-  public hasPullRequest = false;
+  /**
+   * checks if user selects "upload for review" option to create a review
+   */
+  public hasPullRequest: boolean = false;
 
   /**
    * Confirmation dialog reference.
@@ -123,9 +126,9 @@ export class NewModelComponent implements OnInit {
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   /**
-   * Decide to redirect to new new pr page or not
+   * Decide to redirect to new Pull Request page or not
    */
-  private createPr = false;
+  private createPr: boolean = false;
 
   /**
    * List of Organizations the user is in
@@ -157,9 +160,9 @@ export class NewModelComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       // Prepare the list of owners the model could have. Username goes first, followed by
       // the organizations (sorted alphabetically).
-      this.ownerList = [this.authService.userProfile.username,
-        ...this.authService.userProfile.orgs.sort()];
       this.organization = [...this.authService.userProfile.orgs.sort()];
+      this.ownerList = [this.authService.userProfile.username,
+        ...this.organization];
     }
   }
 
@@ -195,11 +198,11 @@ export class NewModelComponent implements OnInit {
    *
    * Verifies that the model can be uploaded.
    */
-  public verifyBeforeUpload(): boolean | undefined {
+  public verifyBeforeUpload(): boolean {
     // Check if the model has at least one file.
     if (!this.fileList || this.fileList.length === 0) {
       this.snackBar.open('Please add files to be uploaded.', 'Got it');
-      return;
+      return false;
     }
 
     // Check that the model has a name.
@@ -209,15 +212,15 @@ export class NewModelComponent implements OnInit {
 
     if (this.modelNameInputForm.value === undefined || this.modelNameInputForm.value === '') {
       this.snackBar.open('Please provide a model name.', 'Got it');
-      return;
+      return false;
     } else if (this.modelNameInputForm.value.includes('/')) {
       this.snackBar.open('A model name cannot have a forward slash ("/").',
         'Got it');
-      return;
+      return false;
     } else if (this.modelNameInputForm.value.includes('%')) {
       this.snackBar.open('A model name cannot have a percent ("%").',
         'Got it');
-      return;
+      return false;
     }
 
     this.modelName = this.modelNameInputForm.value;
@@ -257,17 +260,17 @@ export class NewModelComponent implements OnInit {
 
     if (!hasConfig) {
       this.snackBar.open(`Missing a 'model.config' file. It must be lowercase.`, 'Got it');
-      return;
+      return false;
     }
 
     if (!hasSDF) {
       this.snackBar.open('Missing an SDF file.', 'Got it');
-      return;
+      return false;
     }
 
-    if (!hasThumbnails) {
+    if (!hasThumbnails && !this.createPr) {
       this.openThumbnailsWarning();
-      return;
+      return true;
     }
 
     return true;
@@ -308,16 +311,9 @@ export class NewModelComponent implements OnInit {
             this.cancelUpload();
             return;
           } else {
-            if (this.createPr) {
-              this.router.navigate([
-                `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`
-              ]);
-              this.createPr = false;
-            } else {
-              this.router.navigate([
-                `/${this.ownerList[this.owner]}/models/${this.modelName.trim()}`
-              ]);
-            }
+            this.router.navigate([
+              `/${this.ownerList[this.owner]}/models/${this.modelName.trim()}`
+            ]);
           }
         },
         (error) => {
@@ -332,20 +328,20 @@ export class NewModelComponent implements OnInit {
   }
 
   /**
-   * Upload new model directly without creating pr
+   * Upload new model directly without creating pull request
    */
   public directUpload(): void {
     // Verifies the model has the necessary files to be uploaded
     const verified = this.verifyBeforeUpload();
 
     if (verified) {
-    //   // All is good
+      // All is good
       this.upload();
     }
   }
 
   /**
-   * Upload a new model and create a new pr
+   * Create a new pr
    */
   public uploadAndCreatePr(): void {
     this.createPr = true;
@@ -359,12 +355,17 @@ export class NewModelComponent implements OnInit {
     }
 
     if (!isOrganization) {
-      this.snackBar.open('User needs to be an organization', 'Got it');
+      this.snackBar.open('The owner needs to be an organization', 'Got it');
       return;
     }
 
     if (verified) {
-      this.upload();
+      // TODO - implement route to upload pr
+      // temp redirect for now
+      console.log('testing correctness')
+      this.router.navigate([
+        `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`
+      ]);
     }
   }
 

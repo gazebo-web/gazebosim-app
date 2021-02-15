@@ -38,7 +38,6 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
-import { AngularEditorModule } from '@kolkov/angular-editor';
 import 'hammerjs';
 
 /**
@@ -66,6 +65,7 @@ import { CollectionListComponent } from './collection/list/collection-list.compo
 import { CollectionResolver } from './collection/collection.resolver';
 import { CollectionService } from './collection/collection.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { ConversationComponent } from './pull-request/conversation/conversation.component';
 import { CopyDialogComponent } from './fuel-resource/copy-dialog/copy-dialog.component';
 import { DashboardComponent } from './dashboard';
 import { DescriptionComponent } from './description';
@@ -120,7 +120,10 @@ import { PortalService } from './portal/portal.service';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
+import { PullRequestComponent } from './pull-request/pull-request.component';
+import { PullRequestService } from './pull-request/pull-request.service';
 import { RegistrationDialogComponent } from './portal';
+import { ReviewComponent } from './model/review/review.component';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
 import { SearchComponent } from './search/search.component';
@@ -147,10 +150,6 @@ import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
-import { ReviewComponent } from './model/review/review-model.component';
-import { PullRequestComponent } from './pull-request/pull-request.component';
-import { ConversationComponent } from './pull-request/conversation/conversation.component';
-import { PullRequestService } from './pull-request/pull-request.service';
 
 /**
  * Entry point.
@@ -175,6 +174,7 @@ import { PullRequestService } from './pull-request/pull-request.service';
     CollectionDialogComponent,
     CollectionListComponent,
     ConfirmationDialogComponent,
+    ConversationComponent,
     CopyDialogComponent,
     DashboardComponent,
     DescriptionComponent,
@@ -206,8 +206,10 @@ import { PullRequestService } from './pull-request/pull-request.service';
     PageTitleComponent,
     PortalComponent,
     PortalListComponent,
+    PullRequestComponent,
     RegistrationDialogComponent,
     ReportDialogComponent,
+    ReviewComponent,
     SdfViewerComponent,
     SearchComponent,
     SettingsComponent,
@@ -223,9 +225,6 @@ import { PullRequestService } from './pull-request/pull-request.service';
     VisualizationComponent,
     WorldComponent,
     WorldListComponent,
-    ReviewComponent,
-    PullRequestComponent,
-    ConversationComponent,
   ],
   /**
    * Import the used modules.
@@ -272,7 +271,6 @@ import { PullRequestService } from './pull-request/pull-request.service';
     NgxGalleryModule,
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
-    AngularEditorModule,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.
@@ -304,6 +302,7 @@ import { PullRequestService } from './pull-request/pull-request.service';
     PublicCollectionsResolver,
     PublicModelsResolver,
     PublicWorldsResolver,
+    PullRequestService,
     SimulationResolver,
     SimulationService,
     Title,
@@ -313,7 +312,6 @@ import { PullRequestService } from './pull-request/pull-request.service';
     WebsocketService,
     WorldResolver,
     WorldService,
-    PullRequestService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

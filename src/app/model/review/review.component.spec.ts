@@ -10,8 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PageTitleComponent } from '../../page-title';
-import { AngularEditorModule } from '@kolkov/angular-editor';
-import { ReviewComponent } from './review-model.component';
+import { ReviewComponent } from './review.component';
 import { ModelService } from '../model.service';
 import { AuthService } from '../../auth/auth.service';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
@@ -27,7 +26,6 @@ describe('ReviewComponent', () => {
         MatCardModule,
         RouterTestingModule,
         MatToolbarModule,
-        AngularEditorModule,
         MatIconModule,
         MatSelectModule,
         BrowserAnimationsModule,

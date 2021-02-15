@@ -4,6 +4,11 @@
 .content {
   padding: 0 40px;
 }
+
+.repeat-icon {
+  transform: rotate(90deg);
+}
+
 .mat-toolbar {
   background-color: mat-color($custom-theme-primary, 100);
   margin: 1em 0;
@@ -12,6 +17,7 @@
     margin: 0 1em;
   }
 }
+
 .review-group {
   display: flex;
   .mat-card {
@@ -26,6 +32,7 @@
     }
   }
 }
+
 .review-group .mat-card-title {
   background-color: mat-color($custom-theme-primary, 100);
   padding: 0.8em;
@@ -34,15 +41,19 @@
     padding: 0.5em;
   }
 }
+
 .review-group .mat-card-content {
   padding: 0 1em;
 }
+
 .review-group .mat-card-actions {
   padding: 0 2em 2em 0;
 }
+
 .file-date {
   margin: 1em 1em 0 1em;
 }
+
 .file-display {
   height: 100%;
   border-width: 1px;
@@ -51,18 +62,23 @@
   margin: 1em;
   min-height: 2em;
 }
+
 .file:hover, .selected-reviewer:hover {
   background-color: mat-color($custom-theme-accent, A100);
 }
+
 .file{
   padding: 0.5em 2em;
 }
+
 .selected-reviewer {
   padding: 0.5em;
 }
+
 .selected-reviewer > i {
   cursor: pointer;
 }
+
 .selected-reviewer > i:hover {
   color: mat-color($custom-theme-accent, A700);
 }

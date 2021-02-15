@@ -36,7 +36,11 @@
       </mat-card-title>
 
       <mat-card-content>
-        <angular-editor [(ngModel)]="newComment" [config]="editorConfig"></angular-editor>
+        <ign-description 
+        [edit]="true" 
+        [description]="newComment"
+        (onModify)="onModifyDescription($event)"
+        fxFill></ign-description>
       </mat-card-content>
 
       <mat-card-actions align="end">
