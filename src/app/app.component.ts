@@ -178,10 +178,10 @@ export class AppComponent implements OnInit {
         }
       });
 
-      /**
-       * Check if Notifications is enabled in settings
-       */
-      this.hasNotifications = (localStorage.getItem('notifications') === 'true');
+    /**
+     * Check if Notifications is enabled in settings
+     */
+    this.hasNotifications = (localStorage.getItem('notifications') === 'true');
   }
 
   /**
