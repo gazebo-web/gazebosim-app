@@ -80,7 +80,7 @@
         </mat-menu>
 
         <!-- Notifications button -->
-        <button *ngIf="authService.isAuthenticated()" class="add-button" mat-icon-button title="Notifications" routerLink="/notifications" routerLinkActive="active">
+        <button *ngIf="authService.isAuthenticated() && hasNotifications" class="add-button" mat-icon-button title="Notifications" routerLink="/notifications" routerLinkActive="active">
           <mat-icon>notifications</mat-icon>
         </button>
 

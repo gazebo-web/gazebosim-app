@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router,
          ActivatedRoute,
-         Event,
          ResolveStart,
          ResolveEnd,
          NavigationEnd,
@@ -66,6 +65,11 @@ export class AppComponent implements OnInit {
    * Subtitle in the titlebar.
    */
   public titlebarSubtitle: string;
+
+  /**
+   * Visibility of Notifications button
+   */
+  public hasNotifications: boolean = false;
 
   /**
    * @param authService The Authentication Service.
@@ -173,6 +177,11 @@ export class AppComponent implements OnInit {
           }
         }
       });
+
+      /**
+       * Check if Notifications is enabled in settings
+       */
+      this.hasNotifications = (localStorage.getItem('notifications') === 'true');
   }
 
   /**
