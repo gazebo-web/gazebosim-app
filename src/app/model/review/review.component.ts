@@ -78,7 +78,7 @@ export class ReviewComponent implements OnInit {
   ngOnInit(): void {
     this.modelName = this.activatedRoute.snapshot.paramMap.get('modelname');
     this.owner = this.activatedRoute.snapshot.paramMap.get('owner');
-    this.getModel();
+
     /**
      * TODO  - determine how to get determine the id of the latest pr
      */
@@ -130,15 +130,6 @@ export class ReviewComponent implements OnInit {
     const month = monthStore[today.getMonth()];
     const year = today.getFullYear().toString();
     return dd + ' ' + month + ' ' + year;
-  }
-
-  /**
-   * get model
-   */
-  private getModel(): void {
-    /**
-     * TODO - get model from pull request end point
-     */
   }
 
   /**

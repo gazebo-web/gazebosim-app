@@ -360,7 +360,7 @@ export class NewModelComponent implements OnInit {
     }
 
     if (verified) {
-      // TODO - implement route to upload pr
+      // TODO - implement logic to upload pr
       // temp redirect for now
       this.router.navigate([
         `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`
