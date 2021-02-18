@@ -2,6 +2,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
 import { PullRequestService } from './pull-request.service';
+import { PullRequest } from './pull-request';
 
 @Component({
   selector: 'ign-pull-request',
@@ -26,11 +27,6 @@ export class PullRequestComponent implements OnInit {
   public files = [];
 
   /**
-   * owner of model
-   */
-  public organization = '';
-
-  /**
    * User currently logged in
    */
   public user = 'boaringsquare';
@@ -48,18 +44,7 @@ export class PullRequestComponent implements OnInit {
   /**
    * temp review object
    */
-  public review = {
-    id: '1',
-    owner: 'boaringsquare',
-    creator: 'boringsquare',
-    reviewers: this.selectedReviewers,
-    date: '19 November 2020',
-    approvals: [],
-    description: 'this is a temporary review object until the apis are ready. It will then be replaced',
-    branch: 'new/model',
-    status: 'status',
-    title: 'Create new model'
-  };
+  public review: PullRequest = new PullRequest();
 
   /**
    * boolean to indicate if a logged in user is a reviewer
@@ -72,7 +57,7 @@ export class PullRequestComponent implements OnInit {
   public isApproved: boolean;
 
   /**
-   *  @param activatedRoute The current Activated Route to get associated the data
+   *  @param activatedRoute The current Activated Route to get the associated data
    */
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -86,9 +71,17 @@ export class PullRequestComponent implements OnInit {
     this.prId = this.activatedRoute.snapshot.paramMap.get('id');
 
     /**
-     * get the organization
+     * initialize temp review object
      */
-    this.organization = this.activatedRoute.snapshot.paramMap.get('organization');
+    this.review.id = this.prId;
+    this.review.owner = this.activatedRoute.snapshot.paramMap.get('organization');
+    this.review.creator = 'boringsquare';
+    this.review.reviewers = this.selectedReviewers;
+    this.review.approvals = [];
+    this.review.description = 'this is a temporary review object until the apis are ready. It will then be replaced';
+    this.review.branch = 'new/model';
+    this.review.status = 'status';
+    this.review.title = 'Create new mode';
 
     /**
      * get the model name
