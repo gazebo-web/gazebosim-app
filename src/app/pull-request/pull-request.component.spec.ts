@@ -13,10 +13,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { AuthService } from '../auth/auth.service';
 import { ConversationComponent } from './conversation/conversation.component';
 import { DescriptionComponent } from '../description';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { PullRequestComponent } from './pull-request.component';
 import { PullRequestService } from './pull-request.service';
 
@@ -42,8 +40,6 @@ describe('PullRequestComponent', () => {
       ],
       declarations: [ ConversationComponent, DescriptionComponent, PullRequestComponent],
       providers: [
-        AuthService,
-        JsonClassFactoryService,
         MatSnackBar,
         PullRequestService,
         {
