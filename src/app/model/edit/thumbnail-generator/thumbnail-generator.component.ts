@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { finalize } from 'rxjs/operators';
 
-import { FuelResource } from '../../../fuel-resource';
+import { FuelResource, FuelResourceService } from '../../../fuel-resource';
 import { ModelService } from '../../model.service';
+import { WorldService } from '../../../world/world.service';
 
 declare let GZ3D: any;
 declare let THREE: any;
@@ -15,12 +15,13 @@ declare let THREE: any;
 })
 
 /**
- * Thumbnail Generator Component is in charge of rendering a model and generating the thumbnails.
+ * Thumbnail Generator Component is in charge of rendering a model or world and generating
+ * the thumbnails.
  */
 export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
 
   /**
-   * Model to generate thumbnails.
+   * Fuel resource to generate thumbnails.
    */
   @Input() public resource: FuelResource;
 
@@ -36,7 +37,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   public state: 'ready' | 'generating' = 'ready';
 
   /**
-   * The THREE Object that represents the model.
+   * The THREE Object that represents the Fuel resource.
    */
   public resourceObj: any;
 
@@ -63,20 +64,23 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   /**
    * @param modelService Service used to get the model files.
    * @param snackBar Snackbar used to display notifications
+   * @param worldService Service used to get the world files.
    */
   constructor(
     public modelService: ModelService,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    public worldService: WorldService) {
   }
 
   /**
    * OnInit Lifecycle hook.
    *
-   * The model obtained from the input could have no files. In the case, get them from the Server.
+   * The resource obtained from the input could have no files.
+   * In the case, get them from the Server.
    */
   public ngOnInit(): void {
-    // Get the model files.
-    // TODO(german) It would be nice to have an active model in a store, in order to avoid
+    // Get the resource files.
+    // TODO(german) It would be nice to have an active model or world in a store, in order to avoid
     // multiple requests to the server.
     if (this.resource.files && this.resource.files.length === 0) {
       this.getFiles();
@@ -117,7 +121,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
       if (this.resourceObj) {
         this.state = 'ready';
 
-        // Post-processing: Scale and get the center of the model.
+        // Post-processing: Scale and get the center of the resource.
         this.scale(this.resourceObj);
         const center = this.getCenter(this.resourceObj);
 
@@ -173,7 +177,17 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     // If there's a Fuel resource, push the file URLs
     const pendingMaterials = [];
     for (const file of this.resource.files) {
-      const fileUrl = this.modelService.getIndividualFileUrl(this.resource, file);
+      let fileUrl;
+      switch (this.resource.type) {
+        case 'models':
+          fileUrl = this.modelService.getIndividualFileUrl(
+            this.resource, file);
+          break;
+        case 'worlds':
+          fileUrl = this.worldService.getIndividualFileUrl(
+            this.resource, file);
+          break;
+      }
 
       if (file.path.indexOf('/thumbnails/') >= 0) {
         // Skip thumbnails
@@ -222,7 +236,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Normalize the model scale for the thumbnail generation.
+   * Normalize the resource scale for the thumbnail generation.
    * @param obj A THREE.Object3D to scale. The object is modified.
    */
   public scale(obj: any): void {
@@ -238,6 +252,13 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     // Normalize scale.
     const scaling = 1.0 / max;
     obj.scale.copy(new THREE.Vector3().addScalar(scaling));
+
+    // Change the distance of lights.
+    this.scene.scene.traverse((child) => {
+      if (child instanceof THREE.Light) {
+        child.distance = child.distance * scaling;
+      }
+    });
   }
 
   /**
@@ -264,10 +285,20 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get the files of the Model.
+   * Get the files of the Model or World.
    */
   private getFiles(): void {
-    this.modelService.getFileTree(this.resource)
+    let service: FuelResourceService;
+    switch (this.resource.type) {
+      case 'models':
+        service = this.modelService;
+        break;
+      case 'worlds':
+        service = this.worldService;
+        break;
+    }
+
+    service.getFileTree(this.resource)
       .subscribe(
         (response) => {
           const files = response['file_tree'];
@@ -276,9 +307,9 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
             this.extractFile(file);
           }
           // Once we have the files, populate the thumbnails.
-          const modelUrl = this.modelService.getBaseVersionUrl(
+          const resourceUrl = service.getBaseVersionUrl(
             this.resource.owner, this.resource.name);
-          this.resource.populateThumbnails(modelUrl);
+          this.resource.populateThumbnails(resourceUrl);
         },
         (error) => {
           this.snackBar.open(error.message, 'Got it');
