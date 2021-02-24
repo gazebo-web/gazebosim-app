@@ -26,6 +26,7 @@ import { NewModelComponent } from './model/new/new-model.component';
 import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewWorldComponent } from './world/new/new-world.component';
 import { NewWorldGuard } from './world/new/new-world-guard.service';
+import { NotificationsComponent } from './notifications/notifications.component';
 import { OrganizationComponent } from './organization';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
 import { OwnerProfileResolver } from './user/owner-profile.resolver';
@@ -49,7 +50,6 @@ import { VisualizationComponent } from './visualization';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
-import { NotificationsComponent } from './notifications/notifications.component';
 
 export const ROUTES: Routes = [
   {

@@ -104,6 +104,8 @@ import { NewOrganizationDialogComponent } from './organization';
 import { NewWorldComponent } from './world/new/new-world.component';
 import { NewWorldGuard } from './world/new/new-world-guard.service';
 import { Ng2DeviceService } from './device-detector';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationsTableComponent } from './notifications/notifications-table/notifications-table.component';
 import { OrganizationComponent } from './organization/organization.component';
 import { OrganizationService } from './organization/organization.service';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
@@ -146,8 +148,6 @@ import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
-import { NotificationsComponent } from './notifications/notifications.component';
-import { TableComponent } from './notifications/table/table.component';
 
 /**
  * Entry point.
@@ -198,6 +198,8 @@ import { TableComponent } from './notifications/table/table.component';
     NewModelComponent,
     NewOrganizationDialogComponent,
     NewWorldComponent,
+    NotificationsComponent,
+    NotificationsTableComponent,
     OrganizationComponent,
     PageNotFoundComponent,
     PageTitleComponent,
@@ -220,8 +222,6 @@ import { TableComponent } from './notifications/table/table.component';
     VisualizationComponent,
     WorldComponent,
     WorldListComponent,
-    NotificationsComponent,
-    TableComponent,
   ],
   /**
    * Import the used modules.
