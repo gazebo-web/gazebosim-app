@@ -1,7 +1,3 @@
-/**
- * A class that represents a Notification.
- *
- */
 export class Notification {
 
   /**

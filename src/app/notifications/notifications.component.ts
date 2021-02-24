@@ -1,4 +1,5 @@
 import { OnInit, Component } from '@angular/core';
+import { Notification } from './notifications-table/notifications-table.component';
 
 /**
  * Notifications component
@@ -10,27 +11,11 @@ import { OnInit, Component } from '@angular/core';
 })
 
 export class NotificationsComponent implements OnInit {
-  // TODO: retrieve notification data from server
-  inboxData = [
-    {title: 'Update the thumbnail gallery', author: '@johnappleseed',
-    action: 'Review Requested', date: '23 June 2021'},
-    {title: 'Add a new model for review', author: '@boaringsquare',
-    action: 'Subscribed', date: '25 June 2021'},
-    {title: 'Changing texture of floor tiles', author: '@marycain',
-    action: 'Mentioned', date: '25 June 2021'},
-  ];
-  reviewRequestedData = [
-    {title: 'Update the thumbnail gallery', author: '@johnappleseed',
-    action: 'Review Requested', date: '23 June 2021'}
-  ];
-  subscribedData = [
-    {title: 'Add a new model for review', author: '@boaringsquare',
-    action: 'Subscribed', date: '25 June 2021'}
-  ];
-  mentionedData = [
-    {title: 'Changing texture of floor tiles', author: '@marycain',
-    action: 'Mentioned', date: '25 June 2021'}
-  ];
+  public inboxData: Notification[];
+  public reviewRequestedData: Notification[];
+  public subscribedData: Notification[];
+  public mentionedData: Notification[];
+  
 
   /**
    * Active tab in the tab group.
@@ -38,6 +23,27 @@ export class NotificationsComponent implements OnInit {
   public activeTab: 'inbox' | 'reviewRequested' | 'subscribed' | 'mentioned' = 'inbox';
 
   public ngOnInit(): void {
+    // TODO: retrieve notification data from server
+    this.inboxData = [
+      {title: 'Update the thumbnail gallery', author: '@johnappleseed',
+      action: 'Review Requested', date: '23 June 2021'},
+      {title: 'Add a new model for review', author: '@boaringsquare',
+      action: 'Subscribed', date: '25 June 2021'},
+      {title: 'Changing texture of floor tiles', author: '@marycain',
+      action: 'Mentioned', date: '25 June 2021'},
+    ];
+    this.reviewRequestedData = [
+      {title: 'Update the thumbnail gallery', author: '@johnappleseed',
+      action: 'Review Requested', date: '23 June 2021'}
+    ];
+    this.subscribedData = [
+      {title: 'Add a new model for review', author: '@boaringsquare',
+      action: 'Subscribed', date: '25 June 2021'}
+    ];
+    this.mentionedData = [
+      {title: 'Changing texture of floor tiles', author: '@marycain',
+      action: 'Mentioned', date: '25 June 2021'}
+    ];
   }
 
   /**
