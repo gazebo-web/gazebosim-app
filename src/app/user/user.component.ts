@@ -96,6 +96,7 @@ export class UserComponent implements OnInit {
 
   /**
    * Active tab in the tab group.
+   * Note: Layout would have to change when there are more tabs added
    */
   public activeTab: 'models' | 'modelsUnderReview' | 'modelsLiked' | 'worlds' | 'worldsLiked' | 'collections' = 'models';
 
