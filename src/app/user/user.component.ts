@@ -135,7 +135,7 @@ export class UserComponent implements OnInit {
     );
 
     // Get the User's models that are under review.
-    this.modelService.getOwnerModelsUnderReviewList(this.user.username).subscribe(
+    this.modelService.getModelsUnderReviewList(this.user.username).subscribe(
       (response) => {
         this.paginatedUnderReviewModels = response;
         this.underReviewModels = response.resources;
