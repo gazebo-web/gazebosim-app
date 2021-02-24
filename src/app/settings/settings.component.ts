@@ -150,6 +150,10 @@ export class SettingsComponent implements OnInit {
     localStorage.setItem('experimental_gzweb', event.checked.toString());
   }
 
+  /**
+   * TODO: implement Notification feature when backend API is up
+   */
+
   public onToggleNotifications(event: MatSlideToggleChange): void {
     localStorage.setItem('notifications', event.checked.toString());
   }
