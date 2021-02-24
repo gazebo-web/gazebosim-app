@@ -36,6 +36,19 @@
         </mat-radio-group>
       </div>
 
+      <h2>Metadata</h2>
+
+      <ign-metadata [metadata]="world.metadata"
+                    [edit]="true"
+                    [disabled]="updating"
+                    (onModify)="onModifyMetadata()"
+                    fxFill>
+      </ign-metadata>
+
+      <h2>Thumbnails</h2>
+
+      <ign-thumbnail-generator [resource]="world"></ign-thumbnail-generator>
+
       <h2>Replace files</h2>
 
       <ign-file-upload (files)="onReceiveFiles($event)"
