@@ -59,7 +59,8 @@ export class ModelService extends FuelResourceService {
    * The route is tbc (to be implemented after checking with the backend team)
    *
    * @param owner The owner of the resources.
-   * @returns The URL of the server route of the list of resources owned by the entity and is under review.
+   * @returns The URL of the server route of the list of resources
+   * owned by the entity and is under review.
    * TODO: implement service when backend API is complete
    */
   private getModelsUnderReviewListUrl(owner: string): string {

@@ -56,7 +56,7 @@ export abstract class FuelResourceService {
    * Keep track of the next URL.
    */
   public nextUrl: string;
-  
+
   /**
    * @param authService Service to get authentication information.
    * @param factory Factory to transform Json into an object instance.
@@ -67,25 +67,25 @@ export abstract class FuelResourceService {
     protected factory: JsonClassFactoryService,
     protected http: HttpClient) {
     }
-    
+
   /**
    * Return value of private field headerTotalCount
    */
-  static returnHeaderTotalCount() {
+  static returnHeaderTotalCount(): string {
     return FuelResourceService.headerTotalCount;
   }
 
   /**
    * Return private method parseLinkHeader
    */
-  public returnLinkHeaderParser(response: HttpResponse<any>) {
+  public returnLinkHeaderParser(response: HttpResponse<any>): string {
     return this.parseLinkHeader(response);
   }
 
   /**
-   * Return private method parseLinkHeader
+   * Return private method handleError
    */
-  public returnErrorHandler(response: HttpErrorResponse) {
+  public returnErrorHandler(response: HttpErrorResponse): Observable<never> {
     return this.handleError(response);
   }
 

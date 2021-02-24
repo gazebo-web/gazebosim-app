@@ -15,7 +15,6 @@ export class NotificationsComponent implements OnInit {
   public reviewRequestedData: Notification[];
   public subscribedData: Notification[];
   public mentionedData: Notification[];
-  
 
   /**
    * Active tab in the tab group.
