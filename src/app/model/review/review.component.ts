@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { Organization } from '../../organization/organization';
 import { OrganizationService } from '../../organization/organization.service';
+import { PullRequestService } from '../../pull-request/pull-request.service';
 
 @Component({
   selector: 'ign-review',
@@ -56,7 +57,7 @@ export class ReviewComponent implements OnInit {
   /**
    * Id of review
    */
-  public prId: number;
+  public prId: string;
 
   /**
    * organization
@@ -67,22 +68,20 @@ export class ReviewComponent implements OnInit {
    * @param activatedRoute The current Activated Route to get associated the data
    * @param router Router to navigate to other URLs
    * @param snackBar Snackbar to display notifications
+   * @param pullRequestService PullRequestService
    */
   constructor(
     private activatedRoute: ActivatedRoute,
     public router: Router,
     public snackBar: MatSnackBar,
-    public organizationService: OrganizationService
+    public organizationService: OrganizationService,
+    public pullRequestService: PullRequestService,
   ) { }
 
   ngOnInit(): void {
     this.modelName = this.activatedRoute.snapshot.paramMap.get('modelname');
     this.owner = this.activatedRoute.snapshot.paramMap.get('owner');
-
-    /**
-     * TODO  - determine how to get determine the id of the latest pr
-     */
-    this.prId = 1;
+    this.prId = this.activatedRoute.snapshot.paramMap.get('id');
     this.getReviewers(this.owner);
   }
 
@@ -98,9 +97,12 @@ export class ReviewComponent implements OnInit {
     } else if (this.selectedReviewers.length === 0) {
       this.snackBar.open('Please select a reviewer.', 'Got it');
     } else {
-      this.router.navigate([
-        `/${this.owner}/pr/model/${this.modelName}/${this.prId}`
-      ]);
+      // update description and reviewers of existing pr
+      this.pullRequestService.updateReview().subscribe(res => {
+        this.router.navigate([
+          `/${res.owner}/pr/model/${this.modelName}/${res.id}`
+        ]);
+      });
     }
   }
 

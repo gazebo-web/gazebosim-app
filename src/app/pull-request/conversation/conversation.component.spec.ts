@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ConversationComponent } from './conversation.component';
+import { PullRequestService } from '../pull-request.service';
 
 describe('ConversationComponent', () => {
   let component: ConversationComponent;
@@ -22,6 +23,9 @@ describe('ConversationComponent', () => {
         ReactiveFormsModule,
       ],
       declarations: [ ConversationComponent ],
+      providers: [
+        PullRequestService
+      ]
     })
     .compileComponents();
   });

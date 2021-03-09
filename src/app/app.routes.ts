@@ -336,7 +336,7 @@ export const ROUTES: Routes = [
     }
   },
   {
-    path: ':owner/fuel/models/review/:modelname',
+    path: ':owner/fuel/models/review/:modelname/:id',
     component: ReviewComponent,
     pathMatch: 'full',
     data: {

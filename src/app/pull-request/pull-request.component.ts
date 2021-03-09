@@ -66,22 +66,12 @@ export class PullRequestComponent implements OnInit {
 
   ngOnInit(): void {
     /**
-     * get pull request id
-     */
-    this.prId = this.activatedRoute.snapshot.paramMap.get('id');
-
-    /**
      * initialize temp review object
      */
-    this.review.id = this.prId;
-    this.review.owner = this.activatedRoute.snapshot.paramMap.get('organization');
-    this.review.creator = 'boringsquare';
-    this.review.reviewers = this.selectedReviewers;
-    this.review.approvals = [];
-    this.review.description = 'this is a temporary review object until the apis are ready. It will then be replaced';
-    this.review.branch = 'new/model';
-    this.review.status = 'status';
-    this.review.title = 'Create new mode';
+    this.pullRequestService.getReview().subscribe(res => {
+      this.review = res;
+      this.prId = this.review.id;
+    });
 
     /**
      * get the model name

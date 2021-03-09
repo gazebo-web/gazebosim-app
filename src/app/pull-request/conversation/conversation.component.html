@@ -10,10 +10,17 @@
 
   <mat-card *ngFor="let comment of comments">
     <mat-card-title>
-      @{{comment.author}} commented on {{comment.date}}
+      <div class="comment-title">
+        @{{comment.user}} commented
+        <button *ngIf="!comment.resolved" class="resolved-button" mat-raised-button color="accent" (click)="resolveComment(comment)">Resolve</button>
+        <div *ngIf="comment.resolved">Resolved</div>
+      </div>
     </mat-card-title>
     <mat-card-content>
-      {{comment.comment}}
+      <div *ngIf="!comment.resolved">
+        <h2>File - {{comment.file}}, at Line {{comment.lineStart}} to {{comment.lineEnd}}</h2>
+        <p>{{comment.text}}</p>
+      </div>
     </mat-card-content>
   </mat-card>
 
@@ -46,7 +53,7 @@
       <mat-card-actions align="end">
         <button mat-raised-button color="accent">Merge Pull Request</button>
         <button mat-raised-button >Close Review</button>
-        <button mat-raised-button color="accent">Comment</button>
+        <button mat-raised-button color="accent" (click)="addComment()">Comment</button>
       </mat-card-actions>
     </mat-card>
   </div>

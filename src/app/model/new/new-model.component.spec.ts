@@ -27,6 +27,7 @@ import { NewModelComponent } from './new-model.component';
 import { PageTitleComponent } from '../../page-title';
 import { SdfViewerComponent } from '../sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../../tags/tags.component';
+import { PullRequestService } from '../../pull-request/pull-request.service';
 
 describe('NewModelComponent', () => {
   let fixture: ComponentFixture<NewModelComponent>;
@@ -77,7 +78,8 @@ describe('NewModelComponent', () => {
       providers: [
         AuthService,
         ModelService,
-        JsonClassFactoryService
+        JsonClassFactoryService,
+        PullRequestService
         ],
     });
 

@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { ReviewComment } from '../review-comment';
+import { PullRequestService } from '../pull-request.service';
+
 @Component({
   selector: 'ign-conversation',
   templateUrl: './conversation.component.html',
@@ -41,24 +44,14 @@ export class ConversationComponent implements OnInit {
   /**
    * list of existing comments in the pr
    */
-  public comments = [
-    {
-      author: 'Johnny',
-      date: '19 December 2020',
-      comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-    },
-    {
-      author: 'Abey babe',
-      date: '20 December 2020',
-      comment: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    }
-  ];
+  public comments: ReviewComment[] = [];
 
   /**
    * @param snackBar Snackbar to display notifications
    */
   constructor(
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public pullRequestService: PullRequestService,
   ) { }
 
   ngOnInit(): void {
@@ -69,12 +62,9 @@ export class ConversationComponent implements OnInit {
    */
   public addComment(): void {
     if (this.newComment.length > 0) {
-      const comment = {
-        author: this.user,
-        date: this.getDate(),
-        comment: this.newComment
-      };
-      this.comments = [...this.comments, comment];
+      this.pullRequestService.createComment().subscribe(res => {
+        this.comments = [...this.comments, res];
+      });
     } else {
       this.snackBar.open('Please enter something before commenting.', 'Got it');
     }
@@ -88,6 +78,18 @@ export class ConversationComponent implements OnInit {
     */
   public onModifyDescription(comment: string): void {
     this.newComment = comment;
+  }
+
+  /**
+   * resolve comment
+   */
+
+  public resolveComment(resolvedComment: ReviewComment): void {
+    this.comments.forEach(comment => {
+      if (comment.id === resolvedComment.id) {
+        comment.resolved = true;
+      }
+    });
   }
 
   /**

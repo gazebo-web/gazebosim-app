@@ -16,6 +16,7 @@ import { DescriptionComponent } from '../../description';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { OrganizationService } from '../../organization/organization.service';
 import { PageTitleComponent } from '../../page-title';
+import { PullRequestService } from '../../pull-request/pull-request.service';
 import { ReviewComponent } from './review.component';
 
 describe('ReviewComponent', () => {
@@ -60,6 +61,7 @@ describe('ReviewComponent', () => {
             }
           }
         },
+        PullRequestService
       ]
     })
     .compileComponents();

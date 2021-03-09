@@ -16,6 +16,11 @@
   }
 }
 
+.comment-title {
+  display: flex;
+  justify-content: space-between;
+}
+
 .file-heading {
   margin: 0 1rem;
   display: flex;

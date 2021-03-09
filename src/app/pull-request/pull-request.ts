@@ -1,3 +1,8 @@
+// TODO - remember to fill in the defined states of Prs
+export enum PullRequestStatus {
+
+}
+
 /**
  * A class that represents a Pull Request/Review.
  */
@@ -6,45 +11,45 @@ export class PullRequest {
   /**
    * id of pull request
    */
-  id: string;
+  public id: string;
 
   /**
    * name of organization
    */
-  owner: string;
+  public owner: string;
 
   /**
    * creator
    */
-  creator: string;
+  public creator: string;
 
   /**
    * list of selected reviewers
    */
-  reviewers: string[];
+  public reviewers: string[];
 
   /**
    * list of reviewers that approved
    */
-  approvals: string[];
+  public approvals: string[];
 
   /**
    * description of the pull request
    */
-  description: string;
+  public description: string;
 
   /**
    * branch name
    */
-  branch: string;
+  public branch: string;
 
   /**
    * status of the pull request
    */
-  status: string;
+  public status: string;
 
   /**
    * title
    */
-  title: string;
+  public title: string;
 }

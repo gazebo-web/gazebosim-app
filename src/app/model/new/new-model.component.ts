@@ -13,6 +13,7 @@ import {
 import { ErrMsg } from '../../server/err-msg';
 import { Model } from '../model';
 import { ModelService } from '../model.service';
+import { PullRequestService } from '../../pull-request/pull-request.service';
 
 @Component({
   selector: 'ign-new-model',
@@ -142,6 +143,7 @@ export class NewModelComponent implements OnInit {
    * @param modelService Service to request model creation
    * @param router Router to navigate to other URLs
    * @param snackBar Snackbar to display notifications
+   * @param pullRequestService PullRequestService
    */
   constructor(
     public authService: AuthService,
@@ -149,7 +151,8 @@ export class NewModelComponent implements OnInit {
     public location: Location,
     public modelService: ModelService,
     public router: Router,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    public pullRequestService: PullRequestService) {
   }
 
   /**
@@ -361,10 +364,12 @@ export class NewModelComponent implements OnInit {
 
     if (verified) {
       // TODO - implement logic to upload pr
-      // temp redirect for now
-      this.router.navigate([
-        `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}`
-      ]);
+      // create new model and mark it for review
+      this.pullRequestService.createNewModel().subscribe(res => {
+        this.router.navigate([
+          `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}/${res.id}`
+        ]);
+      });
     }
   }
 
