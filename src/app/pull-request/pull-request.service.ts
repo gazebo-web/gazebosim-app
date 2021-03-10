@@ -24,6 +24,12 @@ export class PullRequestService {
    */
   public baseUrl: string = `${environment.API_HOST}/${environment.API_VERSION}`;
 
+  // create a new rev iew comment
+  public createComment(): Observable<ReviewComment> {
+    // path - newReviewCommentUrl
+    return of(this.buildComment());
+  }
+
   // create a new model and mark it for review
   public createNewModel(): Observable<PullRequest> {
     // path - createNewModelReviweUrl
@@ -42,10 +48,12 @@ export class PullRequestService {
     return of(this.buildPullRequest());
   }
 
-  // create a new rev iew comment
-  public createComment(): Observable<ReviewComment> {
-    // path - newReviewCommentUrl
-    return of(this.buildComment());
+  // update comment
+  public updateComment(): Observable<ReviewComment> {
+    // path - updateReviewCommentUrl
+    const comment = this.buildComment();
+    comment.resolved = true;
+    return of(comment);
   }
 
   // temp function to return a pull request object
@@ -79,38 +87,86 @@ export class PullRequestService {
     return comment;
   }
 
+  /**
+   * returns the url to get a specific review for a model
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   * @param id id of review
+   */
   private getModelReviewUrl(username: string, model: string, id: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews/${id}`;
   }
 
+  /**
+   * returns the url to get reviews for a model the user has access to
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   */
   private getModelReviewsUrl(username: string, model: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews`;
   }
 
+  /**
+   * returns the url to create a model and mark it for review
+   */
   private createNewModelReviweUrl(): string {
     return `${this.baseUrl}/models/reviews`;
   }
 
+  /**
+   * returns the url to update and review an exsting model
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   */
   private updateModelReviewUrl(username: string, model: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews`;
   }
 
+  /**
+   * returns the url to update an existing model
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   */
   private updateModelUrl(username: string, model: string): string {
     return `${this.baseUrl}/${username}/models/${model}`;
   }
 
+  /**
+   * returns the url to update an exsiting review
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   * @param id id of review
+   */
   private updateReviewUrl(username: string, model: string, id: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews/${id}`;
   }
 
+  /**
+   * returns the url to merge changes
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   * @param id id of review
+   */
   private reviewMergeUrl(username: string, model: string, id: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews/${id}/merge`;
   }
 
+  /**
+   * returns the url to create a new review comment
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   * @param id id of review
+   */
   private newReviewCommentUrl(username: string, model: string, id: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews/${id}/comments`;
   }
 
+  /**
+   * returns the url to update an edited review
+   * @param username name of user who created the review
+   * @param model model associated with the review
+   * @param id id of review
+   */
   private updateReviewCommentUrl(username: string, model: string, id: string): string {
     return `${this.baseUrl}/${username}/models/${model}/reviews/${id}/comments`;
   }

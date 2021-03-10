@@ -92,6 +92,10 @@ export class ConversationComponent implements OnInit {
     });
   }
 
+  /**
+   * expand resolved comment
+   * @param resolvedComment the resolved comment in question
+   */
   public showResolvedComment(resolvedComment: ReviewComment): void {
     this.comments.forEach(comment => {
       if (comment.id === resolvedComment.id) {
@@ -100,6 +104,10 @@ export class ConversationComponent implements OnInit {
     });
   }
 
+  /**
+   * hide resolved comment
+   * @param resolvedComment the resolved comment in question
+   */
   public hideResolvedComment(resolvedComment: ReviewComment): void {
     this.comments.forEach(comment => {
       if (comment.id === resolvedComment.id) {
