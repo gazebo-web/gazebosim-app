@@ -71,11 +71,11 @@ export class ConversationComponent implements OnInit {
     // TODO: api to post new comment to backend and error message for empty comment
   }
 
-   /**
-    * Modify the comment based on the event received.
-    *
-    * @param comment The modified comment.
-    */
+  /**
+   * Modify the comment based on the event received.
+   *
+   * @param comment The modified comment.
+   */
   public onModifyDescription(comment: string): void {
     this.newComment = comment;
   }
@@ -83,11 +83,27 @@ export class ConversationComponent implements OnInit {
   /**
    * resolve comment
    */
-
   public resolveComment(resolvedComment: ReviewComment): void {
     this.comments.forEach(comment => {
       if (comment.id === resolvedComment.id) {
         comment.resolved = true;
+        comment.hideComment = true;
+      }
+    });
+  }
+
+  public showResolvedComment(resolvedComment: ReviewComment): void {
+    this.comments.forEach(comment => {
+      if (comment.id === resolvedComment.id) {
+        comment.hideComment = false;
+      }
+    });
+  }
+
+  public hideResolvedComment(resolvedComment: ReviewComment): void {
+    this.comments.forEach(comment => {
+      if (comment.id === resolvedComment.id) {
+        comment.hideComment = true;
       }
     });
   }

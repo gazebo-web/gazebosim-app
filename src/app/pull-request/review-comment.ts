@@ -48,4 +48,9 @@ export class ReviewComment {
    * whether the issue has been resolved or not
    */
   resolved: boolean;
+
+  /**
+   * whether to show data after it has been resolved - not a field in model object
+   */
+  public hideComment = false;
 }

@@ -16,6 +16,11 @@
   }
 }
 
+.expand-comment {
+  display: flex;
+  justify-content: center;
+}
+
 .comment-title {
   display: flex;
   justify-content: space-between;
@@ -44,3 +49,7 @@
 .file{
   padding: 0.5em 2em;
 }
+
+.resolved-header, .expand-comment:hover {
+  cursor: pointer;
+} 

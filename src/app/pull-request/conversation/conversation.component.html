@@ -13,13 +13,26 @@
       <div class="comment-title">
         @{{comment.user}} commented
         <button *ngIf="!comment.resolved" class="resolved-button" mat-raised-button color="accent" (click)="resolveComment(comment)">Resolve</button>
-        <div *ngIf="comment.resolved">Resolved</div>
+        <div class="resolved-header" fxLayout="row" *ngIf="comment.resolved" (click)="hideResolvedComment(comment)">
+          Resolved
+          <i *ngIf="comment.resolved && !comment.hideComment" class="material-icons expand-more">
+            expand_less
+          </i>
+        </div>
       </div>
     </mat-card-title>
     <mat-card-content>
-      <div *ngIf="!comment.resolved">
+      <div *ngIf="!comment.hideComment">
         <h2>File - {{comment.file}}, at Line {{comment.lineStart}} to {{comment.lineEnd}}</h2>
         <p>{{comment.text}}</p>
+      </div>
+      <div *ngIf="comment.hideComment" class="expand-comment">
+        <span fxLayout="row" (click)="showResolvedComment(comment)">
+          <i class="material-icons expand-more">
+            expand_more
+          </i>
+          Expand
+        </span>
       </div>
     </mat-card-content>
   </mat-card>
