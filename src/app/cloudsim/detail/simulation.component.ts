@@ -111,7 +111,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public snackBar: MatSnackBar,
     private simulationService: SimulationService,
-    private ws: WebsocketService) {
+    public ws: WebsocketService) {
   }
 
   /**
@@ -436,6 +436,13 @@ export class SimulationComponent implements OnInit, OnDestroy {
     for (const model of this.models) {
       this.scene.toggleLights(model['gz3dName']);
     }
+  }
+
+  /**
+   * Take a snapshot of the scene.
+   */
+   public snapshot(): void {
+    this.scene.saveScreenshot(this.ws.getWorld());
   }
 
   /**
