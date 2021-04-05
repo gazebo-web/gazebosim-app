@@ -40,8 +40,10 @@ export class WebsocketService {
 
   /**
    * List of available topics.
+   *
+   * Array of objects containing {topic, msg_type}.
    */
-  private availableTopics: string[] = [];
+  private availableTopics: object[] = [];
 
   /**
    * Map of the subscribed topics.
@@ -105,7 +107,7 @@ export class WebsocketService {
    *
    * @returns The list of topics that can be subscribed to.
    */
-  public getAvailableTopics(): string[] {
+  public getAvailableTopics(): object[] {
     return this.availableTopics;
   }
 
@@ -181,7 +183,7 @@ export class WebsocketService {
             this.root = parse(fileReader.result as string, {keepCase: true}).root;
 
             // Request topics.
-            this.ws.send(this.buildMsg(['topics', '', '', '']));
+            this.ws.send(this.buildMsg(['topics-types', '', '', '']));
 
             // Request world information.
             this.ws.send(this.buildMsg(['worlds', '', '', '']));
@@ -215,6 +217,11 @@ export class WebsocketService {
 
       // Handle actions and messages.
       switch (frameParts[1]) {
+        case 'topics-types':
+          for (const pub of msg['publisher']) {
+            this.availableTopics.push(pub);
+          }
+          break;
         case 'topics':
           this.availableTopics = msg['data'];
           break;
