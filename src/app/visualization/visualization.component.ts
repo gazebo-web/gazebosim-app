@@ -30,6 +30,11 @@ export class VisualizationComponent implements OnDestroy {
   public sceneInfoSubscription: Subscription;
 
   /**
+   * Particle emitter updates.
+   */
+  public particleEmittersSubscription: Subscription;
+
+  /**
    * Connection status from the Websocket.
    */
   public connectionStatus: string = 'Disconnected';
@@ -254,6 +259,19 @@ export class VisualizationComponent implements OnDestroy {
           sceneInfo['ambient']['b']);
       }
     });
+
+    // Particle emitters.
+    // Remove this once we migrate to Ignition Fortress and
+    // Ignition Dome+Edifice are EOL.
+    this.particleEmittersSubscription = this.ws.particleEmitters$.subscribe((particleEmitters) => {
+      if (!particleEmitters) {
+        return;
+      }
+
+      particleEmitters['particle_emitter'].forEach((emitter) => {
+        const emitterObj = this.sdfParser.createParticleEmitter(emitter);
+      });
+    });
   }
 
   /**
@@ -455,6 +473,9 @@ export class VisualizationComponent implements OnDestroy {
   private unsubscribe(): void {
     if (this.sceneInfoSubscription) {
       this.sceneInfoSubscription.unsubscribe();
+    }
+    if (this.particleEmittersSubscription) {
+      this.particleEmittersSubscription.unsubscribe();
     }
 
     if (this.statusSubscription) {
