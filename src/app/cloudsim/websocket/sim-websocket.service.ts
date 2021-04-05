@@ -101,6 +101,17 @@ export class WebsocketService {
   }
 
   /**
+   * Unsubscribe from a topic.
+   *
+   * @param topic The topic to unsubscribe from.
+   */
+  public unsubscribe(topic: Topic): void {
+    this.topicMap.delete(topic.name);
+
+    this.ws.send(this.buildMsg(['unsub', topic.name, '', '']));
+  }
+
+  /**
    * Return the list of available topics.
    *
    * @returns The list of topics that can be subscribed to.

@@ -95,6 +95,8 @@ export class VisualizationComponent implements OnDestroy {
    */
   private fullscreen: boolean = false;
 
+  private poseTopic: Topic;
+
   /**
    * Reference to the <div> that can be toggled fullscreen.
    */
@@ -151,7 +153,7 @@ export class VisualizationComponent implements OnDestroy {
       // Once the status is Ready, we have the world and scene information available.
       if (response === 'Ready') {
         // Subscribe to the pose topic and modify the models' poses.
-        const poseTopic: Topic = {
+        this.poseTopic = {
           name: `/world/${this.ws.getWorld()}/dynamic_pose/info`,
           cb: (msg) => {
             msg['pose'].forEach((pose) => {
@@ -175,7 +177,7 @@ export class VisualizationComponent implements OnDestroy {
         this.scene.add(this.sunLight);
         this.scene.ambient.color = new THREE.Color(0x666666);
 
-        this.ws.subscribe(poseTopic);
+        this.ws.subscribe(this.poseTopic);
 
         // Subscribe to the 'scene/info' topic which sends scene changes.
         const sceneTopic: Topic = {
@@ -270,7 +272,14 @@ export class VisualizationComponent implements OnDestroy {
     this.sceneElement = window.document.getElementById('scene');
     if (this.sceneElement && this.sceneElement.childElementCount > 0) {
       this.sceneElement.removeChild(this.scene.renderer.domElement);
-    }
+      }
+  }
+
+  /**
+   * Unsubscribe from the topics.
+   */
+  public topicUnsubscribe(): void {
+    this.ws.unsubscribe(this.poseTopic);
   }
 
   /**

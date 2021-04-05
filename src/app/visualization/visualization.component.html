@@ -20,6 +20,11 @@
         <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'Disconnected'">
           Disconnect
         </button>
+
+        <button mat-raised-button (click)="topicUnsubscribe()" *ngIf="connectionStatus !== 'Disconnected'">
+          Unsubscribe
+        </button>
+
       </div>
     </div>
   </div>
