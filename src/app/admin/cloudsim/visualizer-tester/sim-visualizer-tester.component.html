@@ -35,7 +35,7 @@
       <ul>
         <li *ngFor="let topic of availableTopics">
           <div fxLayoutAlign="space-between center" fxLayoutGap="20px">
-            <span>{{ topic }}</span>
+            <span>{{ topic.topic }} (Type: {{ topic.msg_type }})</span>
 
             <div>
               <button mat-raised-button (click)="subscribe(topic)">

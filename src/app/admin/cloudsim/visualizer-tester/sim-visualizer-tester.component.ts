@@ -42,7 +42,7 @@ export class SimVisualizerComponent implements OnDestroy {
   /**
    * List of available topics.
    */
-  public availableTopics: string[] = [];
+  public availableTopics: object[] = [];
 
   /**
    * The Websocket URL to connect to.
