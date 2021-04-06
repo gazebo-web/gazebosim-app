@@ -106,7 +106,7 @@ export class SimVisualizerComponent implements OnDestroy {
    */
    constructor(
      public snackBar: MatSnackBar,
-     private ws: WebsocketService) {
+     public ws: WebsocketService) {
   }
 
   /**
@@ -426,6 +426,13 @@ export class SimVisualizerComponent implements OnDestroy {
     for (const model of this.models) {
       this.scene.toggleLights(model['gz3dName']);
     }
+  }
+
+  /**
+   * Take a snapshot of the scene.
+   */
+  public snapshot(): void {
+    this.scene.saveScreenshot(this.ws.getWorld());
   }
 
   /**

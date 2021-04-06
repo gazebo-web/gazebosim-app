@@ -106,7 +106,7 @@ export class VisualizationComponent implements OnDestroy {
    */
    constructor(
      public snackBar: MatSnackBar,
-     private ws: WebsocketService) {
+     public ws: WebsocketService) {
   }
 
   /**
@@ -403,6 +403,13 @@ export class VisualizationComponent implements OnDestroy {
    */
   public resetView(): void {
     this.scene.resetView();
+  }
+
+  /**
+   * Take a snapshot of the scene.
+   */
+  public snapshot(): void {
+    this.scene.saveScreenshot(this.ws.getWorld());
   }
 
   /**
