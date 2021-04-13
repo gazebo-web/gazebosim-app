@@ -29,6 +29,14 @@ export class WebsocketService {
   public sceneInfo$ = new BehaviorSubject<object>(null);
 
   /**
+   * Particle emitter information behavior subject.
+   * Components can subscribe to it to get the particle emitters once it is obtained.
+   * Remove this once we migrate to Ignition Fortress and
+   * Ignition Dome+Edifice are EOL.
+   */
+  public particleEmitters$ = new BehaviorSubject<object>(null);
+
+  /**
    * The Websocket object.
    */
   private ws: WebSocket;
@@ -40,8 +48,10 @@ export class WebsocketService {
 
   /**
    * List of available topics.
+   *
+   * Array of objects containing {topic, msg_type}.
    */
-  private availableTopics: string[] = [];
+  private availableTopics: object[] = [];
 
   /**
    * Map of the subscribed topics.
@@ -105,7 +115,7 @@ export class WebsocketService {
    *
    * @returns The list of topics that can be subscribed to.
    */
-  public getAvailableTopics(): string[] {
+  public getAvailableTopics(): object[] {
     return this.availableTopics;
   }
 
@@ -152,6 +162,7 @@ export class WebsocketService {
     this.root = null;
     this.status$.next('Disconnected');
     this.sceneInfo$.next(null);
+    this.particleEmitters$.next(null);
   }
 
   /**
@@ -181,7 +192,7 @@ export class WebsocketService {
             this.root = parse(fileReader.result as string, {keepCase: true}).root;
 
             // Request topics.
-            this.ws.send(this.buildMsg(['topics', '', '', '']));
+            this.ws.send(this.buildMsg(['topics-types', '', '', '']));
 
             // Request world information.
             this.ws.send(this.buildMsg(['worlds', '', '', '']));
@@ -215,6 +226,11 @@ export class WebsocketService {
 
       // Handle actions and messages.
       switch (frameParts[1]) {
+        case 'topics-types':
+          for (const pub of msg['publisher']) {
+            this.availableTopics.push(pub);
+          }
+          break;
         case 'topics':
           this.availableTopics = msg['data'];
           break;
@@ -222,6 +238,11 @@ export class WebsocketService {
           // The world name needs to be used to get the scene information.
           this.world = msg['data'][0];
           this.ws.send(this.buildMsg(['scene', this.world, '', '']));
+
+          // Get particle emitters. This is only valid for
+          // Ignition Dome and Edifice.  Ignition Fortress and beyond will have
+          // particle emitters contained in the 'scene' message.
+          this.ws.send(this.buildMsg(['particle_emitters', this.world, '', '']));
           break;
         case 'scene':
           // Emit the scene information. Contains all the models used.
@@ -230,6 +251,9 @@ export class WebsocketService {
           // Once we received the Scene Information, we can start working.
           // We emit the Ready status to reflect this.
           this.status$.next('Ready');
+          break;
+        case 'particle_emitters':
+          this.particleEmitters$.next(msg);
           break;
         default:
           // Message from a subscribed topic. Get the topic and execute its callback.

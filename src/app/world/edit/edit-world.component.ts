@@ -40,6 +40,12 @@ export class EditWorldComponent implements OnInit {
   public tagsModified: boolean = false;
 
   /**
+   * Whether metadata have been modified or not. Notified by a
+   * MetadataComponent event.
+   */
+  public metadataModified: boolean = false;
+
+  /**
    * Whether description has been modified or not. Notified by a DescriptionComponent event.
    */
   public descriptionModified: boolean = false;
@@ -111,6 +117,14 @@ export class EditWorldComponent implements OnInit {
   }
 
   /**
+   * Callback to the MetadataComponent's onModify event.
+   * Set the metadata as 'dirty'.
+   */
+  public onModifyMetadata(): void {
+    this.metadataModified = true;
+  }
+
+  /**
    * Callback to the DescriptionComponent's onModify event. Set the description as 'dirty'.
    *
    * @param description The event that contains the modified description.
@@ -142,6 +156,19 @@ export class EditWorldComponent implements OnInit {
     // Check if the Tags have been modified.
     if (this.tagsModified) {
       formData.append('tags', this.world.tags.join());
+    }
+
+    // Check if the metadata has been modified.
+    if (this.metadataModified) {
+      // Add the world metadata. To delete/remove all metadata, send a single
+      // {key: '', value: ''}. This feature should be handled automatically
+      // by the metadata component.
+      for (const m of this.world.metadata) {
+        if (this.world.metadata.length === 1 ||
+            (m.key !== '' && m.value !== '')) {
+          formData.append('metadata', JSON.stringify(m));
+        }
+      }
     }
 
     // Check if there are files to upload and analyze them.
@@ -187,6 +214,7 @@ export class EditWorldComponent implements OnInit {
           // Update the world.
           this.world = response;
           this.tagsModified = false;
+          this.metadataModified = false;
           this.descriptionModified = false;
 
           // Notify the user.
