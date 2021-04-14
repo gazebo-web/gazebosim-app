@@ -68,6 +68,7 @@ li {
   right: 0;
   z-index: 10;
   height: calc(100% - 120px);
+  width: 20%;
 
   h2 {
     padding: 10px;
@@ -76,9 +77,21 @@ li {
   .entity-list  {
     overflow-y: scroll;
   }
-  
+
   .entity-list .mat-list-item:hover {
     background-color: #e3e3e7;
     cursor: pointer;
+  }
+
+  .sensor-topic {
+    // For making an ellipsis on the left side of the string.
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    // Some leading special characters (such as a / ) recognize rtl mode and change their position.
+    // To avoid this, the string in the template must lead with a left-to-right mark (&lrm;).
+    direction: rtl;
+    text-align: left;
   }
 }

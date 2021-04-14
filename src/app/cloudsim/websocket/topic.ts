@@ -12,4 +12,9 @@ export interface Topic {
    * Callback to use for this current topic.
    */
   cb(msg: any): any;
+
+  /**
+   * Optional. Function to be called when unsubscribing from the topic.
+   */
+   unsubscribe?(): any;
 }
