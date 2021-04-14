@@ -111,6 +111,23 @@ export class WebsocketService {
   }
 
   /**
+   * Unsubscribe from a topic.
+   *
+   * @param name The name of the topic to unsubcribe from.
+   */
+  public unsubscribe(name: string): void {
+    if (this.topicMap.has(name)) {
+      const topic = this.topicMap.get(name);
+      if (topic.unsubscribe !== undefined) {
+        topic.unsubscribe();
+      }
+
+      this.topicMap.delete(name);
+      this.ws.send(this.buildMsg(['unsub', name, '', '']));
+    }
+  }
+
+  /**
    * Return the list of available topics.
    *
    * @returns The list of topics that can be subscribed to.
@@ -122,10 +139,11 @@ export class WebsocketService {
   /**
    * Return the list of subscribed topics.
    *
-   * @returns The list of topics that we are currently subscribed to.
+   * @returns A map containing the name and message type of topics that we are currently
+   *          subscribed to.
    */
-  public getSubscribedTopics(): string[] {
-    return Array.from(this.topicMap.keys());
+  public getSubscribedTopics(): Map<string, Topic> {
+    return this.topicMap;
   }
 
   /**
@@ -257,7 +275,9 @@ export class WebsocketService {
           break;
         default:
           // Message from a subscribed topic. Get the topic and execute its callback.
-          this.topicMap.get(frameParts[1]).cb(msg);
+          if (this.topicMap.has(frameParts[1])) {
+            this.topicMap.get(frameParts[1]).cb(msg);
+          }
           break;
       }
     };
