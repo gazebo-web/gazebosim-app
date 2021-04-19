@@ -53,6 +53,11 @@ export class CollectionComponent implements OnInit {
   public activeTab: 'models' | 'worlds' = 'models';
 
   /**
+   * Download command for this collection.
+   */
+  public downloadCommand: string;
+
+  /**
    * Confirmation dialog reference used to confirm when a collection is removed.
    */
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
@@ -63,7 +68,7 @@ export class CollectionComponent implements OnInit {
   private copyNameDialog: MatDialogRef<CopyDialogComponent>;
 
   /**
-   * Bibtex for this model.
+   * Bibtex for this collection.
    */
   private bibTex: string;
 
@@ -145,6 +150,9 @@ export class CollectionComponent implements OnInit {
     this.bibTex += `\n\tday={${date.getDay()}},`;
     this.bibTex += `\n\tauthor={${this.collection.owner}},`;
     this.bibTex += `\n\turl={${this.collectionService.baseUrl + this.router.url}},\n}`;
+
+    this.downloadCommand = 'python3 download_collection.py -o "' +
+      this.collection.owner + '" -c "' + this.collection.name + '"';
 
     // The collections's description, used to set meta tags.
     const description = this.collection.description !== undefined &&
@@ -387,6 +395,27 @@ export class CollectionComponent implements OnInit {
     document.execCommand('copy');
     document.body.removeChild(selBox);
     this.snackBar.open('Bibtex copied to clipboard.', '', {
+      duration: 2000
+    });
+  }
+
+  /**
+   * Callback for the download command copy button. Copies the download
+   * command to the clipboard.
+   */
+  public copyDownloadCommand(): void {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.downloadCommand;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Command copied to clipboard.', '', {
       duration: 2000
     });
   }
