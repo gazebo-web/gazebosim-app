@@ -270,6 +270,37 @@ export class VisualizationComponent implements OnDestroy {
 
       particleEmitters['particle_emitter'].forEach((emitter) => {
         const emitterObj = this.sdfParser.createParticleEmitter(emitter);
+        let topic = '';
+
+        // Ignition Fortress and beyond has a 'topic' field in the particle
+        // message. Ignition Dome and Edifice put the topic information in
+        // the header.
+        if ('topic' in emitter) {
+          topic = emitter.topic;
+        } else if ('header' in emitter) {
+          for (const data of emitter['header'].data)  {
+            if (data.key === 'topic') {
+              topic = data.value[0];
+            }
+          }
+        }
+
+        // Listen for particle emitter updates.
+        if (topic) {
+          const emitterTopic: Topic = {
+            name: topic,
+            cb: (msg) => {
+              if ('emitting' in msg) {
+                if (msg.emitting.data) {
+                  emitterObj.enable();
+                } else {
+                  emitterObj.disable();
+                }
+              }
+            }
+          };
+          this.ws.subscribe(emitterTopic);
+        }
       });
     });
   }

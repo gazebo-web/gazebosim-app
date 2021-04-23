@@ -1,9 +1,12 @@
 import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
-import { WebsocketService } from '../../../cloudsim/websocket/sim-websocket.service';
+import { ImageTopic } from '../../../cloudsim/websocket/imageTopic';
+import { PointCloudTopic } from '../../../cloudsim/websocket/pointCloudTopic';
 import { Topic } from '../../../cloudsim/websocket/topic';
+import { WebsocketService } from '../../../cloudsim/websocket/sim-websocket.service';
 
 declare let GZ3D: any;
 declare let THREE: any;
@@ -45,6 +48,13 @@ export class SimVisualizerComponent implements OnDestroy {
   public availableTopics: object[] = [];
 
   /**
+   * List of subscribed topics. Used to toggle the button state of the template.
+   *
+   * This is for Admins to easily debug topics.
+   */
+  public subscribedTopics: string[] = [];
+
+  /**
    * The Websocket URL to connect to.
    * A simulation should expose a URL to connect to. For testing purposes, we can provide one here.
    */
@@ -59,6 +69,11 @@ export class SimVisualizerComponent implements OnDestroy {
    * List of 3d models.
    */
   public models: any[] = [];
+
+  /**
+   * List of Sensors.
+   */
+  public sensorList: string[] = [];
 
   /**
    * True if the camera is following a model
@@ -150,13 +165,16 @@ export class SimVisualizerComponent implements OnDestroy {
 
       // Once the status is Ready, we have the world and scene information available.
       if (response === 'Ready') {
+        // Get the list of topics.
+        this.getAvailableTopics();
+
         // Subscribe to the pose topic and modify the models' poses.
         const poseTopic: Topic = {
           name: `/world/${this.ws.getWorld()}/dynamic_pose/info`,
           cb: (msg) => {
             msg['pose'].forEach((pose) => {
               // Objects created by Gz3D have an unique name, which is the name plus the id.
-              const entity = this.scene.getByName(`${pose['name']}${pose['id']}`);
+              const entity = this.scene.getByProperty('uniqueName', `${pose['name']}${pose['id']}`);
 
               if (entity) {
                 this.scene.setPose(entity, pose.position, pose.orientation);
@@ -164,6 +182,8 @@ export class SimVisualizerComponent implements OnDestroy {
             });
           }
         };
+
+        this.ws.subscribe(poseTopic);
 
         // create a sun light
         this.sunLight = this.scene.createLight(3,
@@ -174,8 +194,6 @@ export class SimVisualizerComponent implements OnDestroy {
 
         this.scene.add(this.sunLight);
         this.scene.ambient.color = new THREE.Color(0x666666);
-
-        this.ws.subscribe(poseTopic);
 
         // Subscribe to the 'scene/info' topic which sends scene changes.
         const sceneTopic: Topic = {
@@ -209,17 +227,20 @@ export class SimVisualizerComponent implements OnDestroy {
                 model['gz3dName'] = modelObj.name;
                 this.models.push(model);
                 this.scene.add(modelObj);
-              } else {
-                // Make sure to update the exisiting models so that future pose
-                // messages can update the model.
-                this.models[foundIndex]['gz3dName'] = `${model['name']}${model['id']}`;
-                this.models[foundIndex]['id'] = model['id'];
               }
             });
           }
         };
 
         this.ws.subscribe(sceneTopic);
+
+        // Record topics that publish sensor data, to display in the entity list.
+        this.availableTopics.forEach(pub => {
+          if (pub['msg_type'] === 'ignition.msgs.PointCloudPacked' ||
+              pub['msg_type'] === 'ignition.msgs.Image') {
+            this.sensorList.push(pub['topic']);
+          }
+        });
       }
     });
 
@@ -262,6 +283,8 @@ export class SimVisualizerComponent implements OnDestroy {
   public disconnect(): void {
     this.ws.disconnect();
     this.availableTopics = [];
+    this.models = [];
+    this.sensorList = [];
     this.sceneInfo = null;
     this.connectionStatus = 'Disconnected';
     this.unsubscribe();
@@ -280,12 +303,19 @@ export class SimVisualizerComponent implements OnDestroy {
    *
    * @param topic The name of the topic to subscribe.
    */
-  public subscribe(topicName: string): void {
-    const topic: Topic = {
-      name: topicName,
-      cb: (msg) => this.genericCallback(msg)
-    };
-    this.ws.subscribe(topic);
+  public toggleSubscription(topicName: string): void {
+    const topics = this.ws.getSubscribedTopics();
+    if (topics.has(topicName)) {
+      this.subscribedTopics = this.subscribedTopics.filter((name) => name !== topicName);
+      this.ws.unsubscribe(topicName);
+    } else {
+      const topic: Topic = {
+        name: topicName,
+        cb: (msg) => this.genericCallback(msg)
+      };
+      this.subscribedTopics.push(topicName);
+      this.ws.subscribe(topic);
+    }
   }
 
   /**
@@ -425,6 +455,41 @@ export class SimVisualizerComponent implements OnDestroy {
 
     for (const model of this.models) {
       this.scene.toggleLights(model['gz3dName']);
+    }
+  }
+
+  /**
+   * Subscribe/Unsubscribe to a Sensor topic.
+   *
+   * @param event The event coming from a change on the selection list.
+   */
+  public handleSensorSubscription(event: MatSelectionListChange): void {
+    // We don't provide a way to select multiple options at once, so there is only one element.
+    const option = event.options[0];
+    const topics = this.ws.getSubscribedTopics();
+    const topicStr = option.value;
+
+    // Subscribe.
+    if (option.selected && !topics.has(topicStr)) {
+      const publisher = this.availableTopics.filter(pub => pub['topic'] === topicStr)[0];
+
+      // Verify type.
+      if (publisher['msg_type'] === 'ignition.msgs.PointCloudPacked') {
+        const topic = new PointCloudTopic(topicStr, this.scene);
+        this.ws.subscribe(topic);
+      }
+      else if (publisher['msg_type'] === 'ignition.msgs.Image') {
+        // create new image element and append it to image streams container
+        const imageContainer =
+            window.document.getElementById('image-streams');
+        const topic = new ImageTopic(topicStr, imageContainer);
+        this.ws.subscribe(topic);
+      }
+    }
+
+    // Unsubscribe.
+    if (!option.selected && topics.has(topicStr)) {
+      this.ws.unsubscribe(topicStr);
     }
   }
 

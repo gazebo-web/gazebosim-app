@@ -82,3 +82,32 @@ input.search {
 .mat-expansion-panel-header {
   padding-left: 0;
 }
+
+.download-link {
+  padding: 10px;
+}
+.download-link h1 {
+  font-size: 14px;
+  font-weight: 500;
+}
+.download-link h3 {
+  font-size: 14px;
+  font-weight: 200;
+  margin-bottom: 4px;
+}
+.download-link a {
+  color: mat-color($custom-theme-primary);
+  padding: 10px;
+}
+.download-link a:hover {
+  text-decoration: underline;
+}
+.download-link .command {
+  padding:10px;
+  margin: 4px;
+  background:rgb(246, 248, 250);
+}
+.download-link .command pre {
+  white-space: pre-wrap;       /* css-3 */
+  font-size: 12px;
+}

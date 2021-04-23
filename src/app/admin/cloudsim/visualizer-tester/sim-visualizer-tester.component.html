@@ -23,32 +23,48 @@
           Disconnect
         </button>
       </div>
-
-      <div>
-        <button mat-raised-button (click)="getAvailableTopics()" [disabled]="connectionStatus === 'Disconnected'">
-          Get available topics
-        </button>
-      </div>
     </div>
 
     <div *ngIf="availableTopics && availableTopics.length > 0; else noTopics">
-      <ul>
-        <li *ngFor="let topic of availableTopics">
-          <div fxLayoutAlign="space-between center" fxLayoutGap="20px">
-            <span>{{ topic.topic }} (Type: {{ topic.msg_type }})</span>
+      <mat-accordion>
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Available Topics
+            </mat-panel-title>
 
-            <div>
-              <button mat-raised-button (click)="subscribe(topic)">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </li>
-      </ul>
+            <mat-panel-description>
+              Click to expand
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <ul>
+            <li *ngFor="let topic of availableTopics">
+              <div fxLayoutAlign="space-between center" fxLayoutGap="20px">
+                <span>{{ topic.topic }} (Type: {{ topic.msg_type }})</span>
+
+                <div>
+                  <button *ngIf="!subscribedTopics.includes(topic.topic)"
+                          mat-raised-button
+                          (click)="toggleSubscription(topic.topic)">
+                    Subscribe
+                  </button>
+                  <button *ngIf="subscribedTopics.includes(topic.topic)"
+                          mat-stroked-button
+                          color="warn"
+                          (click)="toggleSubscription(topic.topic)">
+                    Unsubscribe
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
     <ng-template #noTopics>
-      <h4 *ngIf="connectionStatus === 'Disconnected'">No topics available yet</h4>
-      <h4 *ngIf="connectionStatus !== 'Disconnected'">Click above to get the topics available</h4>
+      <h4>No topics available yet</h4>
     </ng-template>
   </div>
 </div>
@@ -69,9 +85,13 @@
       <div class="inner" fxLayoutAlign="center center">
         <div fxLayout="row" fxLayoutAlign="center center">
           <div id="scene" (window:resize)="resize()"></div>
+
           <div fxLayout="column" class="gz3d-side-panel" *ngIf="models.length > 0">
             <h2>Entities</h2>
+
             <mat-list class="entity-list">
+              <div mat-subheader>Models</div>
+
               <mat-list-item *ngFor="let model of models" [matMenuTriggerFor]="menu">{{model['name']}}
                 <mat-menu #menu="matMenu">
                   <button mat-menu-item (click)="select(model)">Select</button>
@@ -79,10 +99,26 @@
                   <button mat-menu-item (click)="follow(model)">Follow</button>
                 </mat-menu>
               </mat-list-item>
+
+              <mat-divider></mat-divider>
+
+              <div mat-subheader>Sensors</div>
+
+              <mat-selection-list [multiple]="true" (selectionChange)="handleSensorSubscription($event)">
+                <mat-list-option *ngFor="let sensor of sensorList"
+                                 [checkboxPosition]="'before'"
+                                 [value]="sensor"
+                                 [title]="sensor">
+                  <span class="sensor-topic">&lrm;{{ sensor }}</span>
+                </mat-list-option>
+              </mat-selection-list>
             </mat-list>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<div id="image-streams" class="image-container">
 </div>

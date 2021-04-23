@@ -23,6 +23,24 @@
     </div>
 
     <div fxFlex="30%" fxLayout="row wrap" fxLayoutAlign="end" class="buttons">
+      <button mat-icon-button [matMenuTriggerFor]="downloadDialog" #menuTrigger title="Download this collection.">
+        <mat-icon>file_download</mat-icon>
+      </button>
+      <mat-menu #downloadDialog="matMenu">
+        <div fxLayout="column" (click)="$event.stopPropagation()" class='download-link'>
+          <h1>Collection Download</h1>
+          <h3>Run this command using the script below</h3>
+          <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" class='command'>
+            <pre>{{downloadCommand}}</pre>
+            <button mat-icon-button title="Copy command"
+              (click)="copyDownloadCommand()">
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          </div>
+          <a href="assets/scripts/download_collection.py" download>Download script</a>
+        </div>
+      </mat-menu>
+
       <button mat-icon-button
         [disabled]="!authService.isAuthenticated()"
         [title]="getCopyButtonTitle()"
