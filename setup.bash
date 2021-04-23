@@ -11,7 +11,7 @@ export AUTH0_AUDIENCE="https://staging-api.ignitionfuel.org"
 export AUTH0_CLIENT_DOMAIN="ignitionrobotics-staging.auth0.com"
 export AUTH0_CLIENT_ID="MjT19rUiv1LX3JCMXcaaYdKennuikPFw"
 export AUTH0_LOGOUT_REDIRECT="https://staging-app.ignitionrobotics.org"
-export AUTH0_REDIRECT="https://staging-app.ignitionrobotics.org/callback"
+export AUTH0_REDIRECT="http://localhost:3000/callback"
 
 # Misc
 export AWS_GZ_LOGS_BUCKET="web-cloudsim-staging-logs"

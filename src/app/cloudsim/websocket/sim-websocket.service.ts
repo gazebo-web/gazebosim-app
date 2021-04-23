@@ -107,7 +107,30 @@ export class WebsocketService {
   public subscribe(topic: Topic): void {
     this.topicMap.set(topic.name, topic);
 
-    this.ws.send(this.buildMsg(['sub', topic.name, '', '']));
+    const publisher = this.availableTopics.filter(pub => pub['topic'] === topic.name)[0];
+    if (publisher['msg_type'] === 'ignition.msgs.Image') {
+      this.ws.send(this.buildMsg(['image', topic.name, '', '']));
+    }
+    else {
+      this.ws.send(this.buildMsg(['sub', topic.name, '', '']));
+    }
+  }
+
+  /**
+   * Unsubscribe from a topic.
+   *
+   * @param name The name of the topic to unsubcribe from.
+   */
+  public unsubscribe(name: string): void {
+    if (this.topicMap.has(name)) {
+      const topic = this.topicMap.get(name);
+      if (topic.unsubscribe !== undefined) {
+        topic.unsubscribe();
+      }
+
+      this.topicMap.delete(name);
+      this.ws.send(this.buildMsg(['unsub', name, '', '']));
+    }
   }
 
   /**
@@ -122,10 +145,11 @@ export class WebsocketService {
   /**
    * Return the list of subscribed topics.
    *
-   * @returns The list of topics that we are currently subscribed to.
+   * @returns A map containing the name and message type of topics that we are currently
+   *          subscribed to.
    */
-  public getSubscribedTopics(): string[] {
-    return Array.from(this.topicMap.keys());
+  public getSubscribedTopics(): Map<string, Topic> {
+    return this.topicMap;
   }
 
   /**
@@ -220,9 +244,20 @@ export class WebsocketService {
       const buffer = new Uint8Array(fileReader.result as ArrayBuffer);
 
       // Decode the Message. The "+3" in the slice accounts for the commas in the frame.
-      const msg = msgType.decode(buffer.slice(
+      let msg;
+      // get the actual msg payload without the header
+      const msgData = buffer.slice(
         frameParts[0].length + frameParts[1].length + frameParts[2].length + 3
-      ));
+        );
+
+      // do not decode image msg as it is raw compressed png data and not a
+      // protobuf msg
+      if (frameParts[2] === 'ignition.msgs.Image') {
+        msg = msgData;
+      }
+      else {
+        msg = msgType.decode(msgData);
+      }
 
       // Handle actions and messages.
       switch (frameParts[1]) {
@@ -257,7 +292,9 @@ export class WebsocketService {
           break;
         default:
           // Message from a subscribed topic. Get the topic and execute its callback.
-          this.topicMap.get(frameParts[1]).cb(msg);
+          if (this.topicMap.has(frameParts[1])) {
+            this.topicMap.get(frameParts[1]).cb(msg);
+          }
           break;
       }
     };
