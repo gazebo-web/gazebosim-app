@@ -3,6 +3,7 @@ import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
+import { ImageTopic } from '../../../cloudsim/websocket/imageTopic';
 import { PointCloudTopic } from '../../../cloudsim/websocket/pointCloudTopic';
 import { Topic } from '../../../cloudsim/websocket/topic';
 import { WebsocketService } from '../../../cloudsim/websocket/sim-websocket.service';
@@ -235,7 +236,8 @@ export class SimVisualizerComponent implements OnDestroy {
 
         // Record topics that publish sensor data, to display in the entity list.
         this.availableTopics.forEach(pub => {
-          if (pub['msg_type'] === 'ignition.msgs.PointCloudPacked') {
+          if (pub['msg_type'] === 'ignition.msgs.PointCloudPacked' ||
+              pub['msg_type'] === 'ignition.msgs.Image') {
             this.sensorList.push(pub['topic']);
           }
         });
@@ -465,21 +467,29 @@ export class SimVisualizerComponent implements OnDestroy {
     // We don't provide a way to select multiple options at once, so there is only one element.
     const option = event.options[0];
     const topics = this.ws.getSubscribedTopics();
+    const topicStr = option.value;
 
     // Subscribe.
-    if (option.selected && !topics.has(option.value)) {
-      const publisher = this.availableTopics.filter(pub => pub['topic'] === option.value)[0];
+    if (option.selected && !topics.has(topicStr)) {
+      const publisher = this.availableTopics.filter(pub => pub['topic'] === topicStr)[0];
 
       // Verify type.
       if (publisher['msg_type'] === 'ignition.msgs.PointCloudPacked') {
-        const topic = new PointCloudTopic(option.value, this.scene);
+        const topic = new PointCloudTopic(topicStr, this.scene);
+        this.ws.subscribe(topic);
+      }
+      else if (publisher['msg_type'] === 'ignition.msgs.Image') {
+        // create new image element and append it to image streams container
+        const imageContainer =
+            window.document.getElementById('image-streams');
+        const topic = new ImageTopic(topicStr, imageContainer);
         this.ws.subscribe(topic);
       }
     }
 
     // Unsubscribe.
-    if (!option.selected && topics.has(option.value)) {
-      this.ws.unsubscribe(option.value);
+    if (!option.selected && topics.has(topicStr)) {
+      this.ws.unsubscribe(topicStr);
     }
   }
 

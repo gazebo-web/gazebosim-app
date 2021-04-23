@@ -107,7 +107,13 @@ export class WebsocketService {
   public subscribe(topic: Topic): void {
     this.topicMap.set(topic.name, topic);
 
-    this.ws.send(this.buildMsg(['sub', topic.name, '', '']));
+    const publisher = this.availableTopics.filter(pub => pub['topic'] === topic.name)[0];
+    if (publisher['msg_type'] === 'ignition.msgs.Image') {
+      this.ws.send(this.buildMsg(['image', topic.name, '', '']));
+    }
+    else {
+      this.ws.send(this.buildMsg(['sub', topic.name, '', '']));
+    }
   }
 
   /**
@@ -238,9 +244,20 @@ export class WebsocketService {
       const buffer = new Uint8Array(fileReader.result as ArrayBuffer);
 
       // Decode the Message. The "+3" in the slice accounts for the commas in the frame.
-      const msg = msgType.decode(buffer.slice(
+      let msg;
+      // get the actual msg payload without the header
+      const msgData = buffer.slice(
         frameParts[0].length + frameParts[1].length + frameParts[2].length + 3
-      ));
+        );
+
+      // do not decode image msg as it is raw compressed png data and not a
+      // protobuf msg
+      if (frameParts[2] === 'ignition.msgs.Image') {
+        msg = msgData;
+      }
+      else {
+        msg = msgType.decode(msgData);
+      }
 
       // Handle actions and messages.
       switch (frameParts[1]) {
