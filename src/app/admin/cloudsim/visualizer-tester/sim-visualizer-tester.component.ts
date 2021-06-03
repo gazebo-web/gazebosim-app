@@ -477,6 +477,7 @@ export class SimVisualizerComponent implements OnDestroy {
       if (publisher['msg_type'] === 'ignition.msgs.PointCloudPacked') {
         const topic = new PointCloudTopic(topicStr, this.scene);
         this.ws.subscribe(topic);
+        this.ws.throttle(topic, 1);
       }
       else if (publisher['msg_type'] === 'ignition.msgs.Image') {
         // create new image element and append it to image streams container

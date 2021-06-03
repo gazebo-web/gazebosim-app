@@ -134,6 +134,16 @@ export class WebsocketService {
   }
 
   /**
+   * throttle the rate at which messages are published on a topic.
+   *
+   * @param topic The topic to throttle.
+   * @param rate Publish rate.
+   */
+  public throttle(topic: Topic, rate : number): void {
+    this.ws.send(this.buildMsg(['throttle', topic.name, 'na', rate.toString()]));
+  }
+
+  /**
    * Return the list of available topics.
    *
    * @returns The list of topics that can be subscribed to.
