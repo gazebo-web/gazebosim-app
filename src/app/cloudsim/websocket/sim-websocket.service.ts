@@ -139,7 +139,7 @@ export class WebsocketService {
    * @param topic The topic to throttle.
    * @param rate Publish rate.
    */
-  public throttle(topic: Topic, rate : number): void {
+  public throttle(topic: Topic, rate: number): void {
     this.ws.send(this.buildMsg(['throttle', topic.name, 'na', rate.toString()]));
   }
 
