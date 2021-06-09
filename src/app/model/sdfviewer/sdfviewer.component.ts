@@ -333,20 +333,22 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         // In any case, we load the model with the resources available
-        this.obj = this.sdfParser.loadSDF(this.sdfUrl);
+        this.sdfParser.loadSDF(this.sdfUrl, (obj) => {
+          if (!obj) {
+            this.snackBar.open(`Failed load SDF.`, `Got it`, {
+              duration: 2750
+            });
+            return;
+          }
 
-        if (!this.obj) {
-          this.snackBar.open(`Failed load SDF.`, `Got it`, {
-            duration: 2750
-          });
-          return;
-        }
+          this.obj = obj;
 
-        // Add the object to the scene
-        this.scene.add(this.obj);
+          // Add the object to the scene
+          this.scene.add(this.obj);
+        });
       })
-     .catch((error) => {
-       this.onMaterialLoadFail(error);
+      .catch((error) => {
+        this.onMaterialLoadFail(error);
       });
   }
 
