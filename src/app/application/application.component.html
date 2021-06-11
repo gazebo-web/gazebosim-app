@@ -1,0 +1,89 @@
+<div class="content mat-typography" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" fxFill>
+
+  <form fxLayout="row" fxLayoutAlign="space-between start"
+                       fxLayoutGap="20px" (ngSubmit)=start()> 
+
+    <mat-form-field appereance="standard">
+      <mat-label>Docker image</mat-label>
+      <input matInput placeholder="Image" name="image" [(ngModel)]="image">
+      <mat-hint>Docker image</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appereance="standard">
+      <mat-label>Instance name</mat-label>
+      <input matInput placeholder="Name" name="name" [(ngModel)]="name">
+      <mat-hint>Instance name</mat-hint>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Start</button>
+  </form>
+
+  <div fxLayout="column" fxFlex fxFill>
+    <h3>Instances</h3>
+    <mat-table [dataSource]="dataSource" fxFlex>
+      <!-- Start time Column -->
+      <ng-container matColumnDef="created_at">
+        <mat-header-cell *matHeaderCellDef> Started At </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.created_at | date:'short'}} </mat-cell>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <p>{{element.status}}</p>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span>{{element?.name || "N/A"}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- URI Column -->
+      <ng-container matColumnDef="uri">
+        <mat-header-cell *matHeaderCellDef> URI </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a href="{{element.uri}}" target="_blank">
+            <span>{{element?.uri || "N/A"}}</span>
+          </a>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Image Column -->
+      <ng-container matColumnDef="image">
+        <mat-header-cell *matHeaderCellDef> Image </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span>{{element?.image || "N/A"}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- GroupId Column -->
+      <ng-container matColumnDef="groupid">
+        <mat-header-cell *matHeaderCellDef> Group Id </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span>{{element?.groupid}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Buttons Column -->
+      <ng-container matColumnDef="control">
+        <mat-header-cell *matHeaderCellDef style='text-align:center'> Control </mat-header-cell>
+        <mat-cell *matCellDef="let element" style='text-align:center'>
+            <button mat-icon-button (click)="stop(element.groupid)">
+              <mat-icon>stop</mat-icon>
+            </button>
+        </mat-cell>
+      </ng-container>
+
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+
+    </mat-table>
+  </div>
+
+</div>

@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # API related.
-export API_HOST="https://staging-fuel.ignitionrobotics.org"
+#export API_HOST="https://staging-fuel.ignitionrobotics.org"
+#export API_HOST="https://fuel.ignitionrobotics.org"
+export API_HOST="http://localhost:8000"
 export API_VERSION="1.0"
 export CLOUDSIM_HOST="https://staging-cloudsim.ignitionrobotics.org"
 export CLOUDSIM_VERSION="1.0"

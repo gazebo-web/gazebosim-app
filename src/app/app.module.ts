@@ -51,6 +51,7 @@ import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
 import { APIComponent } from './api';
 import { AppComponent } from './app.component';
+import { ApplicationComponent } from './application';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -96,6 +97,7 @@ import { MetadataComponent } from './metadata';
 import { ModelComponent } from './model/model.component';
 import { ModelListComponent } from './model/list/model-list.component';
 import { ModelResolver } from './model/model.resolver';
+import { ApplicationService } from './application/application.service';
 import { ModelService } from './model/model.service';
 import { NewLogfileDialogComponent } from './logfile';
 import { NewModelComponent } from './model/new/new-model.component';
@@ -162,6 +164,7 @@ import { WorldService } from './world/world.service';
     AdminElasticsearchComponent,
     APIComponent,
     AppComponent,
+    ApplicationComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
     AuthPipe,
@@ -271,6 +274,7 @@ import { WorldService } from './world/world.service';
   providers: [
     AdminElasticsearchService,
     AdminGuard,
+    ApplicationService,
     AuthGuard,
     AuthService,
     CategoryService,

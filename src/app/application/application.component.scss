@@ -1,0 +1,36 @@
+@import '~@angular/material/theming';
+@import '../../styles/custom-theme.scss';
+
+.content {
+  padding: 20px;
+}
+
+.mat-column-created_at {
+    white-space: unset !important;
+  flex: 0 0 10% !important;
+  width: 10% !important
+}
+
+.mat-column-name {
+    white-space: unset !important;
+  flex: 0 0 10% !important;
+  width: 10% !important
+}
+
+.mat-column-image {
+    white-space: unset !important;
+  flex: 0 0 20% !important;
+  width: 20% !important
+}
+
+.mat-column-control {
+    white-space: unset !important;
+  flex: 0 0 5% !important;
+  width: 5% !important
+}
+
+.mat-column-status {
+    white-space: unset !important;
+  flex: 0 0 10% !important;
+  width: 10% !important
+}

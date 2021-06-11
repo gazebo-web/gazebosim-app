@@ -5,6 +5,7 @@ import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
 import { APIComponent } from './api/api.component';
+import { ApplicationComponent } from './application';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -62,6 +63,14 @@ export const ROUTES: Routes = [
     data: {
       titlebarTitle: 'Information',
       titlebarSubtitle: 'API'
+    }
+  },
+  {
+    path: 'applications',
+    component: ApplicationComponent,
+    data: {
+      titlebarTitle: 'Applications',
+      titlebarSubtitle: ''
     }
   },
   {
