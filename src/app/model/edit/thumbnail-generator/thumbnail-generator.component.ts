@@ -218,17 +218,19 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
         }
 
         // In any case, we load the model with the resources available
-        this.resourceObj = sdfParser.loadSDF(this.sdfUrl);
+        sdfParser.loadSDF(this.sdfUrl, (obj) => {
+          if (!obj) {
+            this.snackBar.open(`Failed load SDF.`, `Got it`, {
+              duration: 2750
+            });
+            return;
+          }
 
-        if (!this.resourceObj) {
-          this.snackBar.open(`Failed load SDF.`, `Got it`, {
-            duration: 2750
-          });
-          return;
-        }
+          this.resourceObj = obj;
 
-        // Add the object to the scene
-        this.scene.add(this.resourceObj);
+          // Add the object to the scene
+          this.scene.add(this.resourceObj);
+        });
       })
       .catch((error) => {
         this.onMaterialLoadFail(error);

@@ -9,7 +9,7 @@
                 [removable]="!disabled"
                 selectable="false"
                 [disabled]="disabled"
-                (remove)="removeTag(i)">
+                (removed)="removeTag(i)">
                   {{tag}}
                   <mat-icon matChipRemove *ngIf="!disabled">cancel</mat-icon>
       </mat-chip>
