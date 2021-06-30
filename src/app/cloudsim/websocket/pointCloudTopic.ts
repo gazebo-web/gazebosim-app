@@ -90,16 +90,20 @@ export class PointCloudTopic implements Topic {
     );
 
     // Compute the total number of points, assuming each point has an X, Y, and Z component.
-    const vertices = new Float32Array(msg.width * 3);
+    const vertices = new Float32Array(msg.height * msg.width * 3);
 
-    for (let i = 0; i < msg.width; ++i) {
-      const x = view.getFloat32(i * msg.point_step, !msg.is_bigendian);
-      const y = view.getFloat32(i * msg.point_step + 4, !msg.is_bigendian);
-      const z = view.getFloat32(i * msg.point_step + 8, !msg.is_bigendian);
+    for (let j = 0; j < msg.height; ++j) {
+      for (let i = 0; i < msg.width; ++i) {
+        let index = j * msg.row_step + i * msg.point_step;
+        const x = view.getFloat32(index, !msg.is_bigendian);
+        const y = view.getFloat32(index + 4, !msg.is_bigendian);
+        const z = view.getFloat32(index + 8, !msg.is_bigendian);
 
-      vertices[i * 3] = isFinite(x) ? x : 0;
-      vertices[i * 3 + 1] = isFinite(y) ? y : 0;
-      vertices[i * 3 + 2] = isFinite(z) ? z : 0;
+        index = j * msg.width * 3 + i * 3;
+        vertices[index] = isFinite(x) ? x : 0;
+        vertices[index + 1] = isFinite(y) ? y : 0;
+        vertices[index + 2] = isFinite(z) ? z : 0;
+      }
     }
 
     this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
