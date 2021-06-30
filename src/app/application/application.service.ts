@@ -46,13 +46,13 @@ export class ApplicationService {
   }
 
   public stop(groupid: string): any {
-  const url = `${this.baseUrl}/stop/${groupid}`;
-    return this.http.post(url, { observe: 'response' }).pipe(
-      catchError(this.handleError)
-    );
+    const url = `${this.baseUrl}/stop/${groupid}`;
+      return this.http.post(url, { observe: 'response' }).pipe(
+        catchError(this.handleError)
+      );
   }
 
-  public getSimulations(): any {
+  public simulations(): any {
     const url = `${this.baseUrl}/simulations`;
     return this.http.get(url, { observe: 'response' }).pipe(
       catchError(this.handleError)

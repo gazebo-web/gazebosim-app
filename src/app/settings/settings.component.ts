@@ -4,7 +4,7 @@ import { FormBuilder,
          FormGroup,
          FormGroupDirective,
          Validators  } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -37,9 +37,9 @@ import { PaginatedAccessToken } from './paginated-access-token';
 export class SettingsComponent implements OnInit {
 
   /**
-   * Experimental Feature: GzWeb.
+   * Experimental Feature: Apps.
    */
-  public experimentalGzWeb: boolean = false;
+  public experimentalApps: boolean = false;
 
   /**
    * List of Organizations.
@@ -104,7 +104,8 @@ export class SettingsComponent implements OnInit {
     public organizationService: OrganizationService,
     public userService: UserService,
     public snackBar: MatSnackBar,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private router: Router) {
 
   }
 
@@ -112,7 +113,7 @@ export class SettingsComponent implements OnInit {
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-    this.experimentalGzWeb = (localStorage.getItem('experimental_gzweb') === 'true');
+    this.experimentalApps = (localStorage.getItem('experimental_apps') === 'true');
     if (this.authService.userProfile.orgs) {
       this.organizationList = this.authService.userProfile.orgs.sort();
     }
@@ -140,8 +141,8 @@ export class SettingsComponent implements OnInit {
   /**
    * Callback for changes on the GzWeb experimental feature slider.
    */
-  public onToggleGzWebFeature(event: MatSlideToggleChange): void {
-    localStorage.setItem('experimental_gzweb', event.checked.toString());
+  public onToggleAppsFeature(event: MatSlideToggleChange): void {
+    localStorage.setItem('experimental_apps', event.checked.toString());
   }
 
   /**

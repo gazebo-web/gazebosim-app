@@ -68,6 +68,11 @@ export class AppComponent implements OnInit {
   public titlebarSubtitle: string;
 
   /**
+   * Experimental feature: Apps.
+   */
+  public enableApps: boolean = false;
+
+  /**
    * @param authService The Authentication Service.
    * @param deviceService Service used to determine the browser's user agent.
    * @param dialog Allows opening dialogs. Used to open the Settings dialog.
@@ -173,6 +178,8 @@ export class AppComponent implements OnInit {
           }
         }
       });
+
+    this.enableApps = this.authService.isAuthenticated() && (localStorage.getItem('experimental_apps') === 'true');
   }
 
   /**

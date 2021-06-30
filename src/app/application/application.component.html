@@ -1,5 +1,17 @@
 <div class="content mat-typography" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="20px" fxFill>
 
+<div *ngIf="!authService.isAuthenticated(); else isAuthenticated">
+  <p align="center">Log in to use applications.</p>
+</div>
+
+<ng-template #isAuthenticated>
+  <div fxLayout="column" fxLayoutAlign="start start" fxFill>
+    <h2 *ngIf="credits == 1; else pluralCredits">You have {{credits}} credit available.</h2>
+    <ng-template #pluralCredits>
+      <h2> You have {{credits}} credits available.</h2>
+    </ng-template>
+  </div>
+
   <form fxLayout="row" fxLayoutAlign="space-between start"
                        fxLayoutGap="20px" (ngSubmit)=start()> 
 
@@ -15,11 +27,15 @@
       <mat-hint>Instance name</mat-hint>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit">Start</button>
+    <button mat-raised-button color="primary" type="submit"
+      [disabled]="credits <= 0 || !image || !name">Start</button>
   </form>
 
   <div fxLayout="column" fxFlex fxFill>
-    <h3>Instances</h3>
+    <div fxFlex fxLayoutAlign="space-between start">
+      <h3>Instances</h3>
+      <button mat-raised-button color="warn" (click)="stop('all')">Stop All</button>
+    </div>
     <mat-table [dataSource]="dataSource" fxFlex>
       <!-- Start time Column -->
       <ng-container matColumnDef="created_at">
@@ -86,4 +102,5 @@
     </mat-table>
   </div>
 
+</ng-template>
 </div>

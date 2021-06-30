@@ -5,6 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApplicationService } from './application.service';
 import { Simulation } from './simulation';
 import { PaginatedSimulation } from './paginated-simulation';
+import { Subscription, timer } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'ign-application',
@@ -19,7 +22,9 @@ export class ApplicationComponent implements OnInit, OnChanges  {
 
   public image: string;
   public name: string;
+  public credits: number = 0;
   public paginatedSimulations: PaginatedSimulation;
+  private sub: Subscription;
 
   /**
    * Simulation instances to be used as the table's data source.
@@ -42,6 +47,8 @@ export class ApplicationComponent implements OnInit, OnChanges  {
   /**
    */
    constructor(
+     public authService: AuthService,
+     public userService: UserService,
      public applicationService: ApplicationService,
      public snackBar: MatSnackBar) {
   }
@@ -50,8 +57,14 @@ export class ApplicationComponent implements OnInit, OnChanges  {
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-    this.updateInstances();
+    if (this.authService.isAuthenticated()) {
+      const source = timer(0, 60000);
+      this.sub = source.subscribe(val => { this.updateInstances(); });
+
+      this.updateCredits();
+    }
   }
+
 
   /**
    * OnChange lifecycle hook.
@@ -69,6 +82,11 @@ export class ApplicationComponent implements OnInit, OnChanges  {
   }
 
   public start(): void {
+    if (this.credits <= 0) {
+      this.snackBar.open('Insufficient credits', 'Got it');
+      return;
+    }
+
     // Form data to send to the edit request.
     const formData = new FormData();
     formData.append('image', this.image.trim());
@@ -77,6 +95,7 @@ export class ApplicationComponent implements OnInit, OnChanges  {
     this.applicationService.start(formData).subscribe(
         (response) => {
           this.updateInstances();
+          this.updateCredits();
         },
         (error) => {
           this.snackBar.open(`${error.message}`, 'Got it');
@@ -94,15 +113,23 @@ export class ApplicationComponent implements OnInit, OnChanges  {
   }
 
   private updateInstances(): void {
-    this.applicationService.getSimulations().subscribe(
+    this.applicationService.simulations().subscribe(
         (response) => {
           this.paginatedSimulations = response.body.Simulations.reverse();
-          this.dataSource = new MatTableDataSource(this.paginatedSimulations);
+          this.dataSource = new MatTableDataSource(response.body.Simulations);
         },
         (error) => {
           this.snackBar.open(`${error.message}`, 'Got it');
         });
   }
 
-
+  /**
+   * Get the latest credits for the user.
+   */
+  private updateCredits(): void {
+      this.userService.getAccountInfo("nate").subscribe(
+        (response) => {
+          this.credits = response.CloudsimCredit;
+          });
+  }
 }

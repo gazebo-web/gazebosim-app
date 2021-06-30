@@ -117,6 +117,19 @@ export class UserService {
   }
 
   /**
+   * Get an User or Organization, along with it's type. Used by the router to disambiguate them.
+   *
+   * @param name The name of the user or organization.
+   * @returns An observable of the response.
+   */
+  public getAccountInfo(name: string): Observable<any> {
+    const url = `${this.baseUrl}/users/${name}/accountinfo`
+    return this.http.get(url).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
    * Create a new access token for a user.
    * @param name The name of the user.
    * @returns An observable of the response.
