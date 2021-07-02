@@ -29,6 +29,14 @@ export class WebsocketService {
   public sceneInfo$ = new BehaviorSubject<object>(null);
 
   /**
+   * Particle emitter information behavior subject.
+   * Components can subscribe to it to get the particle emitters once it is obtained.
+   * Remove this once we migrate to Ignition Fortress and
+   * Ignition Dome+Edifice are EOL.
+   */
+  public particleEmitters$ = new BehaviorSubject<object>(null);
+
+  /**
    * The Websocket object.
    */
   private ws: WebSocket;
@@ -40,8 +48,10 @@ export class WebsocketService {
 
   /**
    * List of available topics.
+   *
+   * Array of objects containing {topic, msg_type}.
    */
-  private availableTopics: string[] = [];
+  private availableTopics: object[] = [];
 
   /**
    * Map of the subscribed topics.
@@ -97,7 +107,40 @@ export class WebsocketService {
   public subscribe(topic: Topic): void {
     this.topicMap.set(topic.name, topic);
 
-    this.ws.send(this.buildMsg(['sub', topic.name, '', '']));
+    const publisher = this.availableTopics.filter(pub => pub['topic'] === topic.name)[0];
+    if (publisher['msg_type'] === 'ignition.msgs.Image') {
+      this.ws.send(this.buildMsg(['image', topic.name, '', '']));
+    }
+    else {
+      this.ws.send(this.buildMsg(['sub', topic.name, '', '']));
+    }
+  }
+
+  /**
+   * Unsubscribe from a topic.
+   *
+   * @param name The name of the topic to unsubcribe from.
+   */
+  public unsubscribe(name: string): void {
+    if (this.topicMap.has(name)) {
+      const topic = this.topicMap.get(name);
+      if (topic.unsubscribe !== undefined) {
+        topic.unsubscribe();
+      }
+
+      this.topicMap.delete(name);
+      this.ws.send(this.buildMsg(['unsub', name, '', '']));
+    }
+  }
+
+  /**
+   * throttle the rate at which messages are published on a topic.
+   *
+   * @param topic The topic to throttle.
+   * @param rate Publish rate.
+   */
+  public throttle(topic: Topic, rate: number): void {
+    this.ws.send(this.buildMsg(['throttle', topic.name, 'na', rate.toString()]));
   }
 
   /**
@@ -105,17 +148,18 @@ export class WebsocketService {
    *
    * @returns The list of topics that can be subscribed to.
    */
-  public getAvailableTopics(): string[] {
+  public getAvailableTopics(): object[] {
     return this.availableTopics;
   }
 
   /**
    * Return the list of subscribed topics.
    *
-   * @returns The list of topics that we are currently subscribed to.
+   * @returns A map containing the name and message type of topics that we are currently
+   *          subscribed to.
    */
-  public getSubscribedTopics(): string[] {
-    return Array.from(this.topicMap.keys());
+  public getSubscribedTopics(): Map<string, Topic> {
+    return this.topicMap;
   }
 
   /**
@@ -152,6 +196,7 @@ export class WebsocketService {
     this.root = null;
     this.status$.next('Disconnected');
     this.sceneInfo$.next(null);
+    this.particleEmitters$.next(null);
   }
 
   /**
@@ -181,7 +226,7 @@ export class WebsocketService {
             this.root = parse(fileReader.result as string, {keepCase: true}).root;
 
             // Request topics.
-            this.ws.send(this.buildMsg(['topics', '', '', '']));
+            this.ws.send(this.buildMsg(['topics-types', '', '', '']));
 
             // Request world information.
             this.ws.send(this.buildMsg(['worlds', '', '', '']));
@@ -209,12 +254,28 @@ export class WebsocketService {
       const buffer = new Uint8Array(fileReader.result as ArrayBuffer);
 
       // Decode the Message. The "+3" in the slice accounts for the commas in the frame.
-      const msg = msgType.decode(buffer.slice(
+      let msg;
+      // get the actual msg payload without the header
+      const msgData = buffer.slice(
         frameParts[0].length + frameParts[1].length + frameParts[2].length + 3
-      ));
+        );
+
+      // do not decode image msg as it is raw compressed png data and not a
+      // protobuf msg
+      if (frameParts[2] === 'ignition.msgs.Image') {
+        msg = msgData;
+      }
+      else {
+        msg = msgType.decode(msgData);
+      }
 
       // Handle actions and messages.
       switch (frameParts[1]) {
+        case 'topics-types':
+          for (const pub of msg['publisher']) {
+            this.availableTopics.push(pub);
+          }
+          break;
         case 'topics':
           this.availableTopics = msg['data'];
           break;
@@ -222,6 +283,11 @@ export class WebsocketService {
           // The world name needs to be used to get the scene information.
           this.world = msg['data'][0];
           this.ws.send(this.buildMsg(['scene', this.world, '', '']));
+
+          // Get particle emitters. This is only valid for
+          // Ignition Dome and Edifice.  Ignition Fortress and beyond will have
+          // particle emitters contained in the 'scene' message.
+          this.ws.send(this.buildMsg(['particle_emitters', this.world, '', '']));
           break;
         case 'scene':
           // Emit the scene information. Contains all the models used.
@@ -231,9 +297,14 @@ export class WebsocketService {
           // We emit the Ready status to reflect this.
           this.status$.next('Ready');
           break;
+        case 'particle_emitters':
+          this.particleEmitters$.next(msg);
+          break;
         default:
           // Message from a subscribed topic. Get the topic and execute its callback.
-          this.topicMap.get(frameParts[1]).cb(msg);
+          if (this.topicMap.has(frameParts[1])) {
+            this.topicMap.get(frameParts[1]).cb(msg);
+          }
           break;
       }
     };

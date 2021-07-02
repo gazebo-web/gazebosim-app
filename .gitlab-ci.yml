@@ -110,7 +110,7 @@ build_production:
 
 ## Deploying stage jobs:
 integration:
-  image: python:3.5
+  image: python:3
   stage: deploying
   dependencies:
     - build_integration
@@ -128,7 +128,7 @@ integration:
   when: manual
 
 staging:
-  image: python:3.5
+  image: python:3
   stage: deploying
   dependencies:
     - build_staging
@@ -146,7 +146,7 @@ staging:
   when: manual
 
 production:
-  image: python:3.5
+  image: python:3
   stage: deploying
   dependencies:
     - build_production

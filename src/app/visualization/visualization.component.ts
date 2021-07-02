@@ -30,6 +30,11 @@ export class VisualizationComponent implements OnDestroy {
   public sceneInfoSubscription: Subscription;
 
   /**
+   * Particle emitter updates.
+   */
+  public particleEmittersSubscription: Subscription;
+
+  /**
    * Connection status from the Websocket.
    */
   public connectionStatus: string = 'Disconnected';
@@ -42,7 +47,7 @@ export class VisualizationComponent implements OnDestroy {
   /**
    * List of available topics.
    */
-  public availableTopics: string[] = [];
+  public availableTopics: object[] = [];
 
   /**
    * The Websocket URL to connect to.
@@ -106,7 +111,7 @@ export class VisualizationComponent implements OnDestroy {
    */
    constructor(
      public snackBar: MatSnackBar,
-     private ws: WebsocketService) {
+     public ws: WebsocketService) {
   }
 
   /**
@@ -253,6 +258,50 @@ export class VisualizationComponent implements OnDestroy {
           sceneInfo['ambient']['g'],
           sceneInfo['ambient']['b']);
       }
+    });
+
+    // Particle emitters.
+    // Remove this once we migrate to Ignition Fortress and
+    // Ignition Dome+Edifice are EOL.
+    this.particleEmittersSubscription = this.ws.particleEmitters$.subscribe((particleEmitters) => {
+      if (!particleEmitters) {
+        return;
+      }
+
+      particleEmitters['particle_emitter'].forEach((emitter) => {
+        const emitterObj = this.sdfParser.createParticleEmitter(emitter);
+        let topic = '';
+
+        // Ignition Fortress and beyond has a 'topic' field in the particle
+        // message. Ignition Dome and Edifice put the topic information in
+        // the header.
+        if ('topic' in emitter) {
+          topic = emitter.topic;
+        } else if ('header' in emitter) {
+          for (const data of emitter['header'].data)  {
+            if (data.key === 'topic') {
+              topic = data.value[0];
+            }
+          }
+        }
+
+        // Listen for particle emitter updates.
+        if (topic) {
+          const emitterTopic: Topic = {
+            name: topic,
+            cb: (msg) => {
+              if ('emitting' in msg) {
+                if (msg.emitting.data) {
+                  emitterObj.enable();
+                } else {
+                  emitterObj.disable();
+                }
+              }
+            }
+          };
+          this.ws.subscribe(emitterTopic);
+        }
+      });
     });
   }
 
@@ -406,6 +455,13 @@ export class VisualizationComponent implements OnDestroy {
   }
 
   /**
+   * Take a snapshot of the scene.
+   */
+  public snapshot(): void {
+    this.scene.saveScreenshot(this.ws.getWorld());
+  }
+
+  /**
    * Toggle lights
    */
   public toggleLights(): void {
@@ -455,6 +511,9 @@ export class VisualizationComponent implements OnDestroy {
   private unsubscribe(): void {
     if (this.sceneInfoSubscription) {
       this.sceneInfoSubscription.unsubscribe();
+    }
+    if (this.particleEmittersSubscription) {
+      this.particleEmittersSubscription.unsubscribe();
     }
 
     if (this.statusSubscription) {
