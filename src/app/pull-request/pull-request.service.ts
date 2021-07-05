@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { PullRequest } from './pull-request';
+import { Review, PullRequest } from './pull-request';
 import { ReviewComment } from './review-comment';
 
 @Injectable()
@@ -31,19 +31,19 @@ export class PullRequestService {
   }
 
   // create a new model and mark it for review
-  public createNewModel(): Observable<PullRequest> {
+  public createNewModel(): Observable<Review> {
     // path - createNewModelReviweUrl
     return of(this.buildPullRequest());
   }
 
   // get a specific review for a model
-  public getReview(): Observable<PullRequest> {
+  public getReview(): Observable<Review> {
     // path - getModelReviewUrl
     return of(this.buildPullRequest());
   }
 
   // update fields of a review like it's state, description, reviewers, etc
-  public updateReview(): Observable<PullRequest> {
+  public updateReview(): Observable<Review> {
     // path updateReveiwUrl
     return of(this.buildPullRequest());
   }
@@ -57,9 +57,11 @@ export class PullRequestService {
   }
 
   // temp function to return a pull request object
-  private buildPullRequest(): PullRequest {
+  private buildPullRequest(): Review {
+    const review = new Review();
     const pullRequest = new PullRequest();
-    pullRequest.id = '1';
+    pullRequest.createdAt = '2021-04-22T01:16:15Z';
+    pullRequest.updatedAt = '2021-04-22T01:16:15Z';
     pullRequest.owner = 'organization';
     pullRequest.creator = 'boringsquare';
     pullRequest.reviewers = ['reviewer'];
@@ -68,7 +70,11 @@ export class PullRequestService {
     pullRequest.branch = 'new/model';
     pullRequest.status = 'status';
     pullRequest.title = 'Create new model';
-    return pullRequest;
+    pullRequest.private = false;
+
+    review.modelId = '1';
+    review.pullRequest = pullRequest;
+    return review;
   }
 
   // temp function to build a comment

@@ -2,7 +2,7 @@
   <div class="content">
     <mat-toolbar>
       <mat-icon class="repeat-icon">repeat</mat-icon>
-      <span class="heading">{{review.title}}</span>
+      <span class="heading">{{review.pullRequest.title}}</span>
     </mat-toolbar>
 
     <div class='display'>
@@ -36,7 +36,7 @@
         <div class="selected-reviewer" *ngFor="let reviewer of selectedReviewers" fxLayout="row" fxLayoutAlign="space-between">
           <span>{{reviewer}}</span>
           <div>
-            <i *ngIf="checkIsApproved(user, reviewer) && !checkIsApproved(user, review.approvals)" class="material-icons check_circle" button type="button" matSuffix (click)="onApprove(reviewer)">
+            <i *ngIf="checkIsApproved(user, reviewer) && !checkIsApproved(user, review.pullRequest.approvals)" class="material-icons check_circle" button type="button" matSuffix (click)="onApprove(reviewer)">
               check_circle
             </i>
             <i class="material-icons delete" button type="button" matSuffix (click)="deleteReviewer(reviewer)">
@@ -47,11 +47,11 @@
 
         <mat-divider></mat-divider>
 
-        <div *ngIf="review.approvals.length > 0" fxLayout="row" fxLayoutAlign="space-between">
+        <div *ngIf="review.pullRequest.approvals.length > 0" fxLayout="row" fxLayoutAlign="space-between">
           <i class="material-icons done">
             done
           </i>
-          <span><b>{{review.approvals.length}} approval</b></span>
+          <span><b>{{review.pullRequest.approvals.length}} approval</b></span>
         </div>
       </div>
     </div>

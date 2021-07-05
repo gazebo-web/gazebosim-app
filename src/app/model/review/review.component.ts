@@ -37,7 +37,7 @@ export class ReviewComponent implements OnInit {
   /**
    * list of reviwers
    */
-  public reviewers: string[] = ['John', 'steven', 'mary', 'jane', 'extra guy'];
+  public reviewers: string[] = [];
 
   /**
    * reviewer the user selected
@@ -100,7 +100,7 @@ export class ReviewComponent implements OnInit {
       // update description and reviewers of existing pr
       this.pullRequestService.updateReview().subscribe(res => {
         this.router.navigate([
-          `/${res.owner}/pr/model/${this.modelName}/${res.id}`
+          `/${res.pullRequest.owner}/pr/model/${this.modelName}/${res.modelId}`
         ]);
       });
     }

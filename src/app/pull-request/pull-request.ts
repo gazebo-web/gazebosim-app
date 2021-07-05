@@ -4,15 +4,29 @@ export enum PullRequestStatus {
 }
 
 /**
+ * A class that represents review object
+ */
+export class Review {
+  pullRequest: PullRequest;
+  /**
+   * id of review
+   */
+  modelId: string;
+}
+
+/**
  * A class that represents a Pull Request/Review.
  */
 export class PullRequest {
+  /**
+   * date the pull request is created
+   */
+  public createdAt: string;
 
   /**
-   * id of pull request
+   * date the pull request is updated
    */
-  public id: string;
-
+  public updatedAt: string;
   /**
    * name of organization
    */
@@ -52,4 +66,9 @@ export class PullRequest {
    * title
    */
   public title: string;
+
+  /**
+   * review is accessible to public or not
+   */
+  public private: boolean;
 }

@@ -2,7 +2,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
 import { PullRequestService } from './pull-request.service';
-import { PullRequest } from './pull-request';
+import { Review } from './pull-request';
 
 @Component({
   selector: 'ign-pull-request',
@@ -44,7 +44,7 @@ export class PullRequestComponent implements OnInit {
   /**
    * temp review object
    */
-  public review: PullRequest = new PullRequest();
+  public review: Review = new Review();
 
   /**
    * boolean to indicate if a logged in user is a reviewer
@@ -70,7 +70,7 @@ export class PullRequestComponent implements OnInit {
      */
     this.pullRequestService.getReview().subscribe(res => {
       this.review = res;
-      this.prId = this.review.id;
+      this.prId = this.review.modelId;
     });
 
     /**
@@ -83,7 +83,7 @@ export class PullRequestComponent implements OnInit {
      */
     this.isReviewer = this.checkIsReviewer(this.user);
     if (this.isReviewer) {
-      this.isApproved = this.checkIsApproved(this.user, this.review.approvals);
+      this.isApproved = this.checkIsApproved(this.user, this.review.pullRequest.approvals);
     }
   }
 
@@ -131,6 +131,6 @@ export class PullRequestComponent implements OnInit {
    * add user to list of approved reviewers once he/she approves the pull requests
    */
   public onApprove(reviewer: string): void {
-    this.review.approvals = [...this.review.approvals, reviewer];
+    this.review.pullRequest.approvals = [...this.review.pullRequest.approvals, reviewer];
   }
 }

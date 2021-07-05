@@ -367,7 +367,7 @@ export class NewModelComponent implements OnInit {
       // create new model and mark it for review
       this.pullRequestService.createNewModel().subscribe(res => {
         this.router.navigate([
-          `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}/${res.id}`
+          `/${this.ownerList[this.owner]}/fuel/models/review/${this.modelName.trim()}/${res.modelId}`
         ]);
       });
     }
