@@ -1,4 +1,4 @@
-image: trion/ng-cli-karma
+image: trion/ng-cli-karma:12.2.11
 
 # Stages declaration
 stages:
