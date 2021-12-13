@@ -17,9 +17,12 @@ export const environment = {
   API_VERSION: process.env.API_VERSION || '1.0',
   CLOUDSIM_HOST: process.env.CLOUDSIM_HOST || 'http://localhost:8001',
   CLOUDSIM_VERSION: process.env.CLOUDSIM_VERSION || '1.0',
+  CREDITS_REDIRECT: process.env.CREDITS_REDIRECT || '',
   // Other
   AWS_GZ_LOGS_BUCKET: process.env.AWS_GZ_LOGS_BUCKET || '',
   SUBT_PORTAL_URL: process.env.SUBT_PORTAL_URL || '',
+  STRIPE_PK: process.env.STRIPE_PK || '',
+  CREDITS_REQUIRED: process.env.CREDITS_REQUIRED || '0',
 };
 
 /*

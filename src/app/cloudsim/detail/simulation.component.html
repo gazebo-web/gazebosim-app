@@ -68,6 +68,8 @@
               <div fxLayout="column" class="gz3d-side-panel" *ngIf="models.length > 0">
                 <h2>Entities</h2>
                 <mat-list class="entity-list">
+                  <div mat-subheader>Models</div>
+
                   <mat-list-item *ngFor="let model of models" [matMenuTriggerFor]="menu">{{model['name']}}
                     <mat-menu #menu="matMenu">
                       <button mat-menu-item (click)="select(model)">Select</button>
@@ -75,12 +77,26 @@
                       <button mat-menu-item (click)="follow(model)">Follow</button>
                     </mat-menu>
                   </mat-list-item>
+
+                  <div mat-subheader>Sensors</div>
+
+                  <mat-selection-list [multiple]="true" (selectionChange)="handleSensorSubscription($event)">
+                    <mat-list-option *ngFor="let sensor of sensorList"
+                                     [checkboxPosition]="'before'"
+                                     [value]="sensor"
+                                     [title]="sensor">
+                      <span class="sensor-topic">&lrm;{{ sensor }}</span>
+                    </mat-list-option>
+                  </mat-selection-list>
                 </mat-list>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <div id="image-streams" class="image-container">
     </div>
 
     <!-- <ign-simulation-actions [simulation]=simulation></ign-simulation-actions> -->

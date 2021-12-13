@@ -14,6 +14,7 @@ import { SimulationRule, PaginatedSimulationRules } from '../admin/cloudsim/rule
 import { QueueElement } from '../admin/cloudsim/launch-queue/queue-element';
 import { QueueList } from '../admin/cloudsim/launch-queue/queue-list';
 import { environment } from '../../environments/environment';
+import { RobotType } from './robot-type';
 
 @Injectable()
 
@@ -125,7 +126,7 @@ export class SimulationService {
    */
   public launch(formData: FormData): Observable<Simulation> {
     const url: string = `${this.baseUrl}/simulations`;
-    return this.http.post(url, formData).pipe(
+    return this.http.post<Simulation>(url, formData).pipe(
       map((response) => this.factory.fromJson(response, Simulation)),
       catchError(this.handleError)
     );
@@ -371,6 +372,49 @@ export class SimulationService {
       map((item) => ({
         groupId: item,
       })),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Return the robot types available from the Cloudsim server.
+   *
+   * @returns An observable of the HTTP response.
+   */
+  public getRobotTypes(): Observable<RobotType[]> {
+    const url: string = `${this.baseUrl}/competition/robots`;
+    return this.http.get<RobotType[]>(url).pipe(
+      map((robotTypes) => {
+        try {
+          return Object.keys(robotTypes).map(type => robotTypes[type]);
+        } catch (e) {
+          return [];
+        }
+      }),
+      catchError(error => {
+        throw new UiError(error);
+      })
+    );
+  }
+
+  /**
+   * Get the log from a simulation. A robot name can be passed to obtain its logs.
+   *
+   * @param simulation The Simulation to get logs of.
+   * @param robotName Optional. The name of a robot of the simulation to get its logs.
+   * @returns An observable of the Server response.
+   */
+  public getLogs(simulation: Simulation, robotName?: string): Observable<Blob> {
+    const url: string = `${this.baseUrl}/simulations/${simulation.groupId}/logs/file`;
+    let httpParams = new HttpParams();
+
+    httpParams = httpParams.append('link', 'true');
+    if (robotName) {
+      httpParams = httpParams.append('robot', robotName);
+    }
+
+    return this.http.get(url, {params: httpParams}).pipe(
+      mergeMap(awsUrl => this.http.get(awsUrl as string, {responseType: 'blob'})),
       catchError(this.handleError)
     );
   }
