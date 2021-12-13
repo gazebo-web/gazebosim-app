@@ -38,6 +38,7 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { NgxStripeModule } from 'ngx-stripe';
 import 'hammerjs';
 
 /**
@@ -51,6 +52,7 @@ import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
 import { APIComponent } from './api';
 import { AppComponent } from './app.component';
+import { ApplicationsComponent } from './applications/applications.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -66,6 +68,8 @@ import { CollectionResolver } from './collection/collection.resolver';
 import { CollectionService } from './collection/collection.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CopyDialogComponent } from './fuel-resource/copy-dialog/copy-dialog.component';
+import { CreditsComponent } from './settings/credits/credits.component';
+import { CreditsService } from './settings/credits/credits.service';
 import { DashboardComponent } from './dashboard';
 import { DescriptionComponent } from './description';
 import { DndDirective } from './dnd/dnd.directive';
@@ -73,6 +77,7 @@ import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
+import { environment } from '../environments/environment';
 import { ROUTES } from './app.routes';
 import {
   ElasticsearchConfigDialogComponent
@@ -126,6 +131,7 @@ import { SearchComponent } from './search/search.component';
 import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
 import { SimulationComponent } from './cloudsim/detail/simulation.component';
+import { SimulationLaunchDialogComponent } from './applications/launch/simulation-launch-dialog.component';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
 import { SimulationService } from './cloudsim';
@@ -162,6 +168,7 @@ import { WorldService } from './world/world.service';
     AdminElasticsearchComponent,
     APIComponent,
     AppComponent,
+    ApplicationsComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
     AuthPipe,
@@ -171,6 +178,7 @@ import { WorldService } from './world/world.service';
     CollectionListComponent,
     ConfirmationDialogComponent,
     CopyDialogComponent,
+    CreditsComponent,
     DashboardComponent,
     DescriptionComponent,
     DndDirective,
@@ -208,6 +216,7 @@ import { WorldService } from './world/world.service';
     SettingsComponent,
     SimulationActionsComponent,
     SimulationComponent,
+    SimulationLaunchDialogComponent,
     SimulationRulesComponent,
     SimulationTableComponent,
     SimVisualizerComponent,
@@ -262,6 +271,7 @@ import { WorldService } from './world/world.service';
     MatTabsModule,
     MatToolbarModule,
     NgxGalleryModule,
+    NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
   ],
@@ -276,6 +286,7 @@ import { WorldService } from './world/world.service';
     CategoryService,
     CollectionResolver,
     CollectionService,
+    CreditsService,
     JsonClassFactoryService,
     LikedModelsResolver,
     LikedWorldsResolver,
@@ -326,6 +337,7 @@ import { WorldService } from './world/world.service';
     NewOrganizationDialogComponent,
     RegistrationDialogComponent,
     ReportDialogComponent,
+    SimulationLaunchDialogComponent,
     TextInputDialogComponent,
   ]
 })

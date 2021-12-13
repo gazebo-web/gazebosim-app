@@ -1,0 +1,129 @@
+<h1 mat-dialog-title>Launch a SubT Simulation</h1>
+
+<mat-dialog-content>
+  <p>Please name your submission instance and enter the name, type and docker image of your robots.</p>
+
+  <form fxLayout="column">
+    <mat-form-field>
+      <input matInput placeholder="Name" [formControl]="simName" required/>
+      <mat-error *ngIf="simName.hasError('required')">
+        You must enter a value
+      </mat-error>
+      <mat-error *ngIf="simName.hasError('minlength')">
+        Name must have more than 3 characters
+      </mat-error>
+      <mat-error *ngIf="simName.hasError('pattern')">
+        Use only alphanumeric characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Scenario" [formControl]="circuitDropdownForm" required>
+        <mat-option *ngFor="let circuit of circuits" [value]="circuit">
+          {{circuit}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="circuitDropdownForm.hasError('required')">
+        Please select a scenario
+      </mat-error>
+    </mat-form-field>
+
+    <h1 mat-dialog-title>Robots</h1>
+
+    <p [ngClass]="{'negative-credits': credits < 0}" *ngIf="creditsEnabled"><strong>SubT Credits left:</strong> {{credits}}</p>
+
+    <p *ngIf="!types || types.length === 0">Loading robot types, please wait...</p>
+
+    <form fxLayout="column" (ngSubmit)="addRobot()" *ngIf="types && types.length > 0">
+      <mat-form-field>
+        <input matInput placeholder="Robot name" [formControl]="robotName" required [errorStateMatcher]="robotErrorStateMatcher"/>
+        <mat-error *ngIf="robotName.hasError('required')">
+          You must enter a value
+        </mat-error>
+        <mat-error *ngIf="robotName.hasError('minlength')">
+          Name must have more than 2 characters
+        </mat-error>
+        <mat-error *ngIf="robotName.hasError('maxlength')">
+          Name can't have more than 24 characters
+        </mat-error>
+        <mat-error *ngIf="robotName.hasError('pattern')">
+          Use only alphanumeric characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Docker Image URL" [formControl]="robotImageUrl" required [errorStateMatcher]="robotErrorStateMatcher"/>
+        <mat-error *ngIf="robotImageUrl.hasError('required')">
+          You must enter a value
+        </mat-error>
+        <a *ngIf="teambaseSelected()" matSuffix href="https://github.com/osrf/subt/wiki/Team-Base-Station-tutorial" target="_blank" matTooltip="The Team Base Station is an optional zero-cost computer in the staging area. Teams may assign a docker image to run on this stationary computer. [Click for more info]">
+          <mat-icon>help_outline</mat-icon>
+        </a>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Robot type" [formControl]="typeDropdownForm" required [errorStateMatcher]="robotErrorStateMatcher" (selectionChange)="typeChange($event)">
+          <mat-option *ngFor="let type of types" [value]="type" [disabled]="teambaseExists(type)">{{type.name}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="typeDropdownForm.hasError('required')">
+          Please select a type
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="showMarsupialPartner()">
+        <input matInput placeholder="Marsupial Partner (optional)" [formControl]="marsupialPartner" [errorStateMatcher]="robotErrorStateMatcher"/>
+        <a matSuffix href="https://github.com/osrf/subt/wiki/api#marsupials" target="_blank" matTooltip="Enter the name of a marsupial child platform. [Click for more info]">
+          <mat-icon>help_outline</mat-icon>
+        </a>
+
+        <mat-error *ngIf="marsupialPartner.hasError('minlength')">
+          Marsupial Partner Name must have more than 2 characters
+        </mat-error>
+        <mat-error *ngIf="marsupialPartner.hasError('maxlength')">
+          Marsupial Partner Name can't have more than 24 characters
+        </mat-error>
+        <mat-error *ngIf="marsupialPartner.hasError('pattern')">
+          Use only alphanumeric characters
+        </mat-error>
+      </mat-form-field>
+
+      <div fxLayoutAlign="end center">
+        <button mat-raised-button type="submit">
+          Add
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="robots.length === 0; else imageList">
+      <p>No robots were submitted. Please submit at least one.</p>
+    </div>
+    <ng-template #imageList>
+      <mat-list>
+        <h3 mat-subheader>Robots to submit</h3>
+
+        <mat-list-item *ngFor="let robot of robots; let i = index" class="list-divider">
+          <h4 mat-line>{{robot.name}}</h4>
+          <p mat-line>{{robot.image}}</p>
+          <p mat-line>{{robot.type.name}} (SubT Credits: {{robot.type.credits}})</p>
+          <p mat-line *ngIf="robot.partner">Marsupial Partner: {{robot.partner}}</p>
+
+          <div>
+            <button mat-icon-button title="remove this" type="button" (click)="removeRobot(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </ng-template>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">
+    Cancel
+  </button>
+
+  <button color="primary" mat-raised-button type="button" (click)="upload()" [disabled]="robots.length === 0">
+    Submit
+  </button>
+</mat-dialog-actions>

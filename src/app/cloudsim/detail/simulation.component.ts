@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { ImageTopic } from '../websocket/imageTopic';
+import { PointCloudTopic } from '../websocket/pointCloudTopic';
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
 import { Topic } from '../websocket/topic';
@@ -61,6 +64,16 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * List of 3d models.
    */
   public models: any[] = [];
+
+  /**
+   * List of Sensors.
+   */
+  public sensorList: string[] = [];
+
+  /**
+   * List of available topics.
+   */
+  public availableTopics: object[] = [];
 
   /**
    * True if the camera is following a model
@@ -185,13 +198,16 @@ export class SimulationComponent implements OnInit, OnDestroy {
 
       // Once the status is Ready, we have the world and scene information available.
       if (response === 'Ready') {
+        // Get the list of topics.
+        this.getAvailableTopics();
+
         // Subscribe to the pose topic and modify the models' poses.
         const poseTopic: Topic = {
           name: `/world/${this.ws.getWorld()}/dynamic_pose/info`,
           cb: (msg) => {
             msg['pose'].forEach((pose) => {
               // Objects created by Gz3D have an unique name, which is the name plus the id.
-              const entity = this.scene.getByName(`${pose['name']}${pose['id']}`);
+              const entity = this.scene.getByProperty('uniqueName', `${pose['name']}${pose['id']}`);
 
               if (entity) {
                 this.scene.setPose(entity, pose.position, pose.orientation);
@@ -199,6 +215,8 @@ export class SimulationComponent implements OnInit, OnDestroy {
             });
           }
         };
+
+        this.ws.subscribe(poseTopic);
 
         // create a sun light
         this.sunLight = this.scene.createLight(3,
@@ -209,8 +227,6 @@ export class SimulationComponent implements OnInit, OnDestroy {
 
         this.scene.add(this.sunLight);
         this.scene.ambient.color = new THREE.Color(0x666666);
-
-        this.ws.subscribe(poseTopic);
 
         // Subscribe to the World Stats, to get Clock data.
         const statsTopic: Topic = {
@@ -265,6 +281,14 @@ export class SimulationComponent implements OnInit, OnDestroy {
           }
         };
         this.ws.subscribe(sceneTopic);
+
+        // Record topics that publish sensor data, to display in the entity list.
+        this.availableTopics.forEach(pub => {
+          if (pub['msg_type'] === 'ignition.msgs.PointCloudPacked' ||
+              pub['msg_type'] === 'ignition.msgs.Image') {
+            this.sensorList.push(pub['topic']);
+          }
+        });
       }
     });
 
@@ -304,8 +328,20 @@ export class SimulationComponent implements OnInit, OnDestroy {
    */
   public disconnect(): void {
     this.ws.disconnect();
+    this.availableTopics = [];
+    this.models = [];
+    this.sensorList = [];
     this.connectionStatus = 'Disconnected';
     this.unsubscribe();
+  }
+
+  /**
+   * Get the available topics from the Websocket Service.
+   *
+   * This is for Admins to easily debug topics.
+   */
+  public getAvailableTopics(): void {
+    this.availableTopics = this.ws.getAvailableTopics();
   }
 
   /**
@@ -371,7 +407,6 @@ export class SimulationComponent implements OnInit, OnDestroy {
       }
     }
     this.fullscreen = !this.fullscreen;
-
   }
 
   /**
@@ -385,7 +420,9 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * Change the width and height of the visualization upon a resize event.
    */
   public resize(): void {
-    this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
+    if (this.scene) {
+      this.scene.setSize(this.sceneElement.clientWidth, this.sceneElement.clientHeight);
+    }
   }
 
   /**
@@ -441,8 +478,43 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Take a snapshot of the scene.
    */
-   public snapshot(): void {
+  public snapshot(): void {
     this.scene.saveScreenshot(this.ws.getWorld());
+  }
+
+  /**
+   * Subscribe/Unsubscribe to a Sensor topic.
+   *
+   * @param event The event coming from a change on the selection list.
+   */
+  public handleSensorSubscription(event: MatSelectionListChange): void {
+    // We don't provide a way to select multiple options at once, so there is only one element.
+    const option = event.options[0];
+    const topics = this.ws.getSubscribedTopics();
+    const topicStr = option.value;
+
+    // Subscribe.
+    if (option.selected && !topics.has(topicStr)) {
+      const publisher = this.availableTopics.filter(pub => pub['topic'] === topicStr)[0];
+
+      // Verify type.
+      if (publisher['msg_type'] === 'ignition.msgs.PointCloudPacked') {
+        const topic = new PointCloudTopic(topicStr, this.scene);
+        this.ws.subscribe(topic);
+        this.ws.throttle(topic, 1);
+      }
+      else if (publisher['msg_type'] === 'ignition.msgs.Image') {
+        // create new image element and append it to image streams container
+        const imageContainer = window.document.getElementById('image-streams');
+        const topic = new ImageTopic(topicStr, imageContainer);
+        this.ws.subscribe(topic);
+      }
+    }
+
+    // Unsubscribe.
+    if (!option.selected && topics.has(topicStr)) {
+      this.ws.unsubscribe(topicStr);
+    }
   }
 
   /**

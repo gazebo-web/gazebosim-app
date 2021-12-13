@@ -5,6 +5,7 @@ import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
 import { APIComponent } from './api/api.component';
+import { ApplicationsComponent } from './applications/applications.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -177,6 +178,14 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'applications',
+    component: ApplicationsComponent,
+    data: {
+      titlebarTitle: 'Applications',
+      titlebarSubtitle: ''
+    }
+  },
+  {
     path: ':owner/portals/:portalname',
     component: AssetDisplayComponent,
     canActivate: [PortalRedirectGuard],
@@ -207,6 +216,32 @@ export const ROUTES: Routes = [
       titlebarSubtitle: '',
       title: 'Search Results'
     },
+  },
+  {
+    path: 'simulations',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: '/home'
+      },
+      {
+        path: ':groupId',
+        component: AssetDisplayComponent,
+        pathMatch: 'full',
+        resolve: {
+          resolvedData: SimulationResolver
+        },
+        data: {
+          component: SimulationComponent,
+          titlebarTitle: 'Cloudsim',
+          titlebarSubtitle: 'Simulation Details',
+          title: (route: ActivatedRoute) => {
+            return route.snapshot.params['groupId'];
+          }
+        },
+      },
+    ],
   },
   {
     path: 'models',
