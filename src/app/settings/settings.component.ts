@@ -21,6 +21,17 @@ import { AccessToken } from './access-token';
 import { AccessTokenDialogComponent } from './access-token-dialog.component';
 import { PaginatedAccessToken } from './paginated-access-token';
 
+/**
+ * Enum of tabs the Settings component has. This allows easier navigation via fragments.
+ */
+enum Tabs {
+  account,
+  access_tokens,
+  credits,
+  organizations,
+  labs,
+}
+
 @Component({
   selector: 'ign-settings',
   templateUrl: 'settings.component.html',
@@ -112,6 +123,10 @@ export class SettingsComponent implements OnInit {
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+
     this.experimentalGzWeb = (localStorage.getItem('experimental_gzweb') === 'true');
     if (this.authService.userProfile.orgs) {
       this.organizationList = this.authService.userProfile.orgs.sort();
@@ -119,16 +134,8 @@ export class SettingsComponent implements OnInit {
 
     /* Select the tab indicated by the URL fragment. */
     this.route.fragment.subscribe((fragment) => {
-      if (fragment === 'account') {
-        this.selected.setValue(0);
-      } else if (fragment === 'access_tokens') {
-        this.selected.setValue(1);
-      } else if (fragment === 'organizations') {
-        this.selected.setValue(2);
-      } else if (fragment === 'labs') {
-        this.selected.setValue(3);
-      }
-      });
+      this.selected.setValue(Tabs[fragment]);
+    });
     if (window.screen.width <= 600) {
       this.activeAccessTokensColumns = ['name', 'revoke'];
     } else {

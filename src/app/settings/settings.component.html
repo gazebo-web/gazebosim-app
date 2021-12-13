@@ -1,4 +1,8 @@
-<div fxLayout="row" fxLayoutAlign="center start" class='page-content-inner'>
+<div class="mat-typography" *ngIf="!authService.isAuthenticated()" fxLayout="column" fxLayoutAlign="start center">
+  <h1>Please log in to see your user settings.</h1>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center start" class='page-content-inner' *ngIf="authService.isAuthenticated()">
   <div fxFlex.gt-xs="60%" fxFlex.lt-sm="100%">
     <mat-tab-group dynamicHeight [selectedIndex]='selected.value'>
       <mat-tab label="Account">
@@ -83,6 +87,14 @@
                            (page)="accessTokensPageChange($event)">
             </mat-paginator>
           </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label='Credits'>
+        <div class='tab-content' fxLayout='column' fxLayoutGap='20px'>
+
+          <ign-credits></ign-credits>
+
         </div>
       </mat-tab>
 
