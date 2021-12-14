@@ -1,6 +1,14 @@
 <div class="content" fxLayout="column" fxLayoutAlign="start" fxLayoutGap="20px" fxFill>
   <div *ngIf="!authService.isAuthenticated()">
     <h1 class="unauthorized">Log in to use applications.</h1>
+
+    <p>
+      Applications are cloud hosted simulation instances. An example is application is the <a href='https://github.com/osrf/subt'>SubT Simulator</a>. When logged in, you will be able to see a history of your application instances, and launch new instances.
+    </p>
+
+    <p>
+      <a href='https://openrobotics.freshdesk.com/support/solutions/43000370684'>Click here for more information</a>
+    </p>
   </div>
 
   <div *ngIf="authService.isAuthenticated()">
