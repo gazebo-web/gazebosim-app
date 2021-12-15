@@ -21,6 +21,10 @@
 
     <button mat-raised-button color="primary" class="launch-btn" (click)="openLaunchDialog()">Launch Simulation</button>
 
+    <button mat-icon-button (click)="openInfoDialog()">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+
     <div *ngIf="paginatedSimulations && paginatedSimulations.simulations.length === 0">
       <h1>You have no simulations.</h1>
     </div>
