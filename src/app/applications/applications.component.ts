@@ -259,4 +259,27 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  /**
+   * Opens the Information Dialog.
+   */
+  public openInfoDialog(): void {
+    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: `Applications`,
+        message: `
+          <p>
+            Applications are cloud hosted simulation instances. An example is application is the
+            <a href='https://github.com/osrf/subt'>SubT Simulator</a>.
+          </p>
+
+          <p>
+            <a href='https://openrobotics.freshdesk.com/support/solutions/43000370684'>
+              Click here for more information about applications
+            </a>
+          </p>`,
+        buttonText: 'OK',
+      }
+    });
+  }
 }
