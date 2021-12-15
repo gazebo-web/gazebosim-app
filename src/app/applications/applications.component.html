@@ -7,14 +7,23 @@
     </p>
 
     <p>
-      <a href='https://openrobotics.freshdesk.com/support/solutions/43000370684'>Click here for more information</a>
+      <a href='https://openrobotics.freshdesk.com/support/solutions/43000370684'>Click here for more information about applications</a>
     </p>
+
+    <p>
+      <a href='https://github.com/osrf/subt/wiki/Cloudsim'>Click here for more information about our cloud architecture and how it is used for SubT.</a>
+    </p>
+
   </div>
 
   <div *ngIf="authService.isAuthenticated()">
     <ign-credits></ign-credits>
 
     <button mat-raised-button color="primary" class="launch-btn" (click)="openLaunchDialog()">Launch Simulation</button>
+
+    <button mat-icon-button (click)="openInfoDialog()">
+      <mat-icon>help_outline</mat-icon>
+    </button>
 
     <div *ngIf="paginatedSimulations && paginatedSimulations.simulations.length === 0">
       <h1>You have no simulations.</h1>
