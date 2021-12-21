@@ -26,6 +26,7 @@ export class Model extends FuelResource {
     'sdf.erb',
     'stl',
     'tga',
+    'tif',
     ];
 
   /**
