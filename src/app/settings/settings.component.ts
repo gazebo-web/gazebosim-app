@@ -218,16 +218,19 @@ export class SettingsComponent implements OnInit {
     this.confirmationDialog.afterClosed().subscribe(
       (result) => {
         if (result === true) {
-        const org = new Organization({name: orgName});
-        this.organizationService.deleteOrganization(org).subscribe(
+          const org = new Organization({name: orgName});
+          this.organizationService.deleteOrganization(org).subscribe(
             (response) => {
-              this.authService.userProfile.orgs = this.authService.userProfile.orgs.filter(item => item != orgName);
+              this.authService.userProfile.orgs =
+                this.authService.userProfile.orgs.filter(
+                item => item !== orgName);
               this.organizationList = this.authService.userProfile.orgs.sort();
-              this.snackBar.open('Organization deleted', 'Got it', { duration: 2750 });
+              this.snackBar.open('Organization deleted', 'Got it',
+                { duration: 2750 });
             },
             (error) => {
               this.snackBar.open(error.message, 'Got it', { duration: 2750 });
-              });
+            });
         }
       });
   }
