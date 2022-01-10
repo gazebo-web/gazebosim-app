@@ -202,6 +202,47 @@ export class SettingsComponent implements OnInit {
   }
 
   /**
+   * Open the modal dialog to alert the user about deleting an organization.
+   */
+  public confirmationDeleteOrg(orgName: string): void {
+
+    // Options of the Confirmation Dialog.
+    const dialogOps = {
+      data: {
+        title: `Delete ${orgName}`,
+        message: `Are you sure you want to delete the ${orgName} organization? <b>This can't be undone.</b>`,
+        buttonText: 'Delete',
+        hasInput: true,
+        inputMessage: 'To confirm, please enter the organization name.',
+        inputPlaceholder: 'Organization name',
+        inputTarget: orgName
+      }
+    };
+
+    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+
+    // Check for the result of the dialog. Delete the account if the user accepts.
+    this.confirmationDialog.afterClosed().subscribe(
+      (result) => {
+        if (result === true) {
+          const org = new Organization({name: orgName});
+          this.organizationService.deleteOrganization(org).subscribe(
+            (response) => {
+              this.authService.userProfile.orgs =
+                this.authService.userProfile.orgs.filter(
+                item => item !== orgName);
+              this.organizationList = this.authService.userProfile.orgs.sort();
+              this.snackBar.open('Organization deleted', 'Got it',
+                { duration: 2750 });
+            },
+            (error) => {
+              this.snackBar.open(error.message, 'Got it', { duration: 2750 });
+            });
+        }
+      });
+  }
+
+  /**
    * Open the modal dialog to alert the user about deleting their account.
    */
   public confirmationDeleteAccount(): void {
