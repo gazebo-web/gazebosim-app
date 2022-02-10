@@ -124,6 +124,14 @@
                     Leave
                   </button>
                 </ng-template>
+
+                <button class="hover-display"
+                  mat-button color="accent"
+                  (click)="confirmationDeleteOrg(org)"
+                  *ngIf="authService.isOwner(org)">
+                  Delete
+                </button>
+
               </mat-list-item>
             </mat-list>
           </div>

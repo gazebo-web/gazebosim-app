@@ -310,10 +310,8 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
 
         // Convert material file to json
         pendingMaterials.push(this.ogre2json.LoadFromUrl(fileUrl));
-      } else if (this.resource.type === 'models' && file.path.indexOf('model.sdf') >= 0) {
+      } else if (file.path.endsWith('.sdf')) {
         // Set SDF file
-        this.sdfUrl = fileUrl;
-      } else if (this.resource.type === 'worlds' && file.path.indexOf('.sdf') >= 0) {
         this.sdfUrl = fileUrl;
       } else {
         // Add URLs to the rest of resources

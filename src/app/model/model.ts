@@ -18,6 +18,7 @@ export class Model extends FuelResource {
     'glsl',
     'jpg',
     'material',
+    'metal',
     'mtl',
     'obj',
     'png',
