@@ -8,7 +8,7 @@ import { Component,
        } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-declare let Detector: any;
+import { WEBGL } from 'three/examples/jsm/WebGL';
 
 @Component({
   selector: 'ign-file-upload',
@@ -78,9 +78,11 @@ export class FileUploadComponent implements OnInit {
   public ngOnInit(): void {
 
     // Check if the browser supports WebGL.
-    const hasWebGL = (typeof Detector === 'function' || Detector.webgl);
+    const hasWebGL = WEBGL.isWebGLAvailable();
     if (!hasWebGL) {
-      Detector.addGetWebGLMessage();
+      const container = WEBGL.addGetWebGLMessage();
+      const text = container.textContent || container.innerText || '';
+      this.snackBar.open(text, 'Got it');
     }
 
     // Enable GzWeb as an experimental feature.

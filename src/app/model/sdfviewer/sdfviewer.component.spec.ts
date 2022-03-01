@@ -11,7 +11,6 @@ import { ModelService } from '../model.service';
 import { SdfViewerComponent } from './sdfviewer.component';
 import { WorldService } from '../../world/world.service';
 
-declare var Detector: any;
 declare var GZ3D: any;
 
 // This is the equivalent of the old waitsFor/runs syntax
@@ -72,7 +71,6 @@ describe('SdfViewerComponent', () => {
   });
 
   it('should have types available', () => {
-    expect(Detector).toBeDefined();
     expect(GZ3D).toBeDefined();
     expect(GZ3D.Shaders).toBeDefined();
     expect(GZ3D.SdfParser).toBeDefined();

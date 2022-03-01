@@ -20,8 +20,7 @@ import * as FileSaver from 'file-saver';
 import { NgxGalleryOptions,
          NgxGalleryImage,
          NgxGalleryImageSize } from '@kolkov/ngx-gallery';
-
-declare let Detector: any;
+import { WEBGL } from 'three/examples/jsm/WebGL';
 
 @Component({
   selector: 'ign-model',
@@ -161,9 +160,12 @@ export class ModelComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     // Check if the browser supports WebGL.
-    this.hasGzWeb = (typeof Detector === 'function' || Detector.webgl);
+    this.hasGzWeb = WEBGL.isWebGLAvailable();
+
     if (!this.hasGzWeb) {
-      Detector.addGetWebGLMessage();
+      const container = WEBGL.addGetWebGLMessage();
+      const text = container.textContent || container.innerText || '';
+      this.snackBar.open(text, 'Got it');
     }
 
     if (this.activatedRoute.snapshot.data['resolvedData'] !== undefined) {
