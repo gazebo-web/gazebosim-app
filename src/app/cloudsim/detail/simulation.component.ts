@@ -3,6 +3,7 @@ import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Color } from 'three';
 
 import { ImageTopic } from '../websocket/imageTopic';
 import { PointCloudTopic } from '../websocket/pointCloudTopic';
@@ -12,7 +13,6 @@ import { Topic } from '../websocket/topic';
 import { WebsocketService } from '../websocket/sim-websocket.service';
 
 declare let GZ3D: any;
-declare let THREE: any;
 
 @Component({
   selector: 'ign-simulation',
@@ -220,13 +220,13 @@ export class SimulationComponent implements OnInit, OnDestroy {
 
         // create a sun light
         this.sunLight = this.scene.createLight(3,
-          new THREE.Color(0.8, 0.8, 0.8), 0.9,
+          new Color(0.8, 0.8, 0.8), 0.9,
           {position: {x: 0, y: 0, z: 10},
            orientation: {x: 0, y: 0, z: 0, w: 1}},
           null, true, 'sun', {x: 0.5, y: 0.1, z: -0.9});
 
         this.scene.add(this.sunLight);
-        this.scene.ambient.color = new THREE.Color(0x666666);
+        this.scene.ambient.color = new Color(0x666666);
 
         // Subscribe to the World Stats, to get Clock data.
         const statsTopic: Topic = {
@@ -315,7 +315,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
       // Set the ambient color, if present
       if (sceneInfo['ambient'] !== undefined &&
           sceneInfo['ambient'] !== null) {
-        this.scene.ambient.color = new THREE.Color(
+        this.scene.ambient.color = new Color(
           sceneInfo['ambient']['r'],
           sceneInfo['ambient']['g'],
           sceneInfo['ambient']['b']);
@@ -465,9 +465,9 @@ export class SimulationComponent implements OnInit, OnDestroy {
 
     // Toggle ambient light
     if (this.sunLight['visible']) {
-      this.scene.ambient.color = new THREE.Color(0x666666);
+      this.scene.ambient.color = new Color(0x666666);
     } else {
-      this.scene.ambient.color = new THREE.Color(0x191919);
+      this.scene.ambient.color = new Color(0x191919);
 
     }
     for (const model of this.models) {

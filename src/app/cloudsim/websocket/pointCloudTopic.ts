@@ -1,6 +1,10 @@
+import {
+  BufferAttribute,
+  BufferGeometry,
+  Points,
+  PointsMaterial,
+} from 'three';
 import { Topic } from './topic';
-
-declare let THREE: any;
 
 /**
  * A class that represents the topic of a Point Cloud.
@@ -52,14 +56,14 @@ export class PointCloudTopic implements Topic {
   constructor(topicName: string, scene: object) {
     this.name = topicName;
 
-    this.geometry = new THREE.BufferGeometry();
-    this.material = new THREE.PointsMaterial({
+    this.geometry = new BufferGeometry();
+    this.material = new PointsMaterial({
       size: 0.1,
       sizeAttenuation: true,
       color: 0x0000ff,
     });
 
-    this.points = new THREE.Points(this.geometry, this.material);
+    this.points = new Points(this.geometry, this.material);
 
     this.scene = scene;
   }
@@ -106,7 +110,7 @@ export class PointCloudTopic implements Topic {
       }
     }
 
-    this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    this.geometry.setAttribute('position', new BufferAttribute(vertices, 3));
   }
 
   /**
@@ -117,7 +121,7 @@ export class PointCloudTopic implements Topic {
       const points = [];
       // Removal of elements during traverse is discouraged.
       this.lidar.traverse((child) => {
-        if (child instanceof THREE.Points) {
+        if (child instanceof Points) {
           points.push(child);
         }
       });

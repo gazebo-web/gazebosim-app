@@ -1,12 +1,18 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  Box3,
+  Color,
+  Light,
+  Vector2,
+  Vector3,
+} from 'three';
 
 import { FuelResource, FuelResourceService } from '../../../fuel-resource';
 import { ModelService } from '../../model.service';
 import { WorldService } from '../../../world/world.service';
 
 declare let GZ3D: any;
-declare let THREE: any;
 
 @Component({
   selector: 'ign-thumbnail-generator',
@@ -29,7 +35,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    * Size of the thumbnails.
    * Aspect ratio should be 16:9.
    */
-  public size = new THREE.Vector2(960, 540);
+  public size = new Vector2(960, 540);
 
   /**
    * State of the thumbnail generation. Used to reflect changes on the UI.
@@ -111,7 +117,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
 
     // Initialize GZ3D objects.
     const shaders = new GZ3D.Shaders();
-    this.scene = new GZ3D.Scene(shaders, undefined, undefined, new THREE.Color(0xffffff));
+    this.scene = new GZ3D.Scene(shaders, undefined, undefined, new Color(0xffffff));
     const sdfParser = new GZ3D.SdfParser(this.scene);
     const ogre2json = new GZ3D.Ogre2Json();
     sdfParser.enablePBR = false;
@@ -243,21 +249,21 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    */
   public scale(obj: any): void {
     // Get the bounding box.
-    const boundingBox = new THREE.Box3();
+    const boundingBox = new Box3();
     boundingBox.setFromObject(obj);
 
     // Get the dimensions.
-    const size = new THREE.Vector3();
+    const size = new Vector3();
     boundingBox.getSize(size);
     const max = Math.max(size.x, size.y, size.z);
 
     // Normalize scale.
     const scaling = 1.0 / max;
-    obj.scale.copy(new THREE.Vector3().addScalar(scaling));
+    obj.scale.copy(new Vector3().addScalar(scaling));
 
     // Change the distance of lights.
     this.scene.scene.traverse((child) => {
-      if (child instanceof THREE.Light) {
+      if (child instanceof Light) {
         child.distance = child.distance * scaling;
       }
     });
@@ -270,7 +276,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    */
   public getCenter(obj: any): any {
     // Get the bounding box.
-    const boundingBox = new THREE.Box3();
+    const boundingBox = new Box3();
     boundingBox.setFromObject(obj);
     return boundingBox.getCenter();
   }
