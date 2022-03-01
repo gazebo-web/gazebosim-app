@@ -12,8 +12,13 @@ import { Model } from '../model';
 import { ModelService } from './../model.service';
 import { WorldService } from './../../world/world.service';
 
+import {
+  Box3,
+  Cache,
+  Vector3,
+} from 'three';
+
 declare let GZ3D: any;
-declare let THREE: any;
 
 @Component({
   selector: 'ign-sdfviewer',
@@ -135,7 +140,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
     this.scene.remove(this.obj);
 
     // Reset state
-    THREE.Cache.clear();
+    Cache.clear();
     this.obj = undefined;
     this.objPositioned = false;
     this.resetCameraPose();
@@ -177,7 +182,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
 
     // After all resources have been processed
     const that = this;
-    THREE.Cache.enabled = true;
+    Cache.enabled = true;
     Promise.all(pendingFiles)
       .then((results) => {
 
@@ -202,7 +207,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
           } else if (fileName.toLowerCase().endsWith('.png') ||
                      fileName.toLowerCase().endsWith('.jpg') ||
                      fileName.toLowerCase().endsWith('.jpeg')) {
-            THREE.Cache.add(fileName, fileContent);
+                     Cache.add(fileName, fileContent);
           } else {
             console.error('Unhandled file type [', fileName, ']');
           }
@@ -275,7 +280,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
       const token = localStorage.getItem('token');
 
       this.scene.setRequestHeader('Authorization', `Bearer ${token}`);
-      this.sdfParser.setRequestHeader('Authorization', `Bearer ${token}`);
+      this.sdfParser.fuelServer.setRequestHeader('Authorization', `Bearer ${token}`);
       this.ogre2json.setRequestHeader('Authorization', `Bearer ${token}`);
     }
 
@@ -382,17 +387,17 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         this.obj && !this.objPositioned) {
 
       // Get object's bounding box
-      const bb = new THREE.Box3();
+      const bb = new Box3();
       this.scene.setFromObject(bb, this.obj);
 
       // Check if bb is already valid
       if (!bb.isEmpty()) {
 
         // Obj's bounding box
-        const size = new THREE.Vector3();
+        const size = new Vector3();
         bb.getSize(size);
 
-        const center = new THREE.Vector3();
+        const center = new Vector3();
         bb.getCenter(center);
 
         const max = Math.max(size.x, size.y, size.z);
