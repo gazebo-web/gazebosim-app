@@ -117,7 +117,8 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
 
     // Initialize GZ3D objects.
     const shaders = new GZ3D.Shaders();
-    this.scene = new GZ3D.Scene(shaders, undefined, undefined, new Color(0xffffff));
+    this.scene = new GZ3D.Scene(shaders);
+    this.scene.setBackgroundColor(new Color(0xffffff));
     const sdfParser = new GZ3D.SdfParser(this.scene);
     const ogre2json = new GZ3D.Ogre2Json();
     sdfParser.enablePBR = false;

@@ -6,6 +6,7 @@ const webpack = require('webpack');
  * src/environments/environment.*.ts file.
  */
 module.exports = {
+  externals: {three: 'THREE'},
   plugins: [
     new webpack.EnvironmentPlugin({
       // Auth0
