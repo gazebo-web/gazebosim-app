@@ -387,8 +387,7 @@ export class SdfViewerComponent implements OnInit, OnChanges, OnDestroy {
         this.obj && !this.objPositioned) {
 
       // Get object's bounding box
-      const bb = new Box3();
-      this.scene.setFromObject(bb, this.obj);
+      const bb = this.scene.getObjectBoundingBox(this.obj);
 
       // Check if bb is already valid
       if (!bb.isEmpty()) {

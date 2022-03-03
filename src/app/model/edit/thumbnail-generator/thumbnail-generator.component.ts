@@ -249,9 +249,9 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    * @param obj A THREE.Object3D to scale. The object is modified.
    */
   public scale(obj: any): void {
+
     // Get the bounding box.
-    const boundingBox = new Box3();
-    boundingBox.setFromObject(obj);
+    const boundingBox = this.scene.getObjectBoundingBox(obj);
 
     // Get the dimensions.
     const size = new Vector3();
@@ -277,8 +277,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    */
   public getCenter(obj: any): any {
     // Get the bounding box.
-    const boundingBox = new Box3();
-    boundingBox.setFromObject(obj);
+    const boundingBox = this.scene.getObjectBoundingBox(obj);
     return boundingBox.getCenter();
   }
 
