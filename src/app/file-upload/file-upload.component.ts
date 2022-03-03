@@ -8,7 +8,7 @@ import { Component,
        } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { WEBGL } from 'three/examples/jsm/WebGL';
+import WebGL from 'three/examples/jsm/capabilities/WebGL.js';
 
 @Component({
   selector: 'ign-file-upload',
@@ -78,9 +78,9 @@ export class FileUploadComponent implements OnInit {
   public ngOnInit(): void {
 
     // Check if the browser supports WebGL.
-    const hasWebGL = WEBGL.isWebGLAvailable();
+    const hasWebGL = WebGL.isWebGLAvailable();
     if (!hasWebGL) {
-      const container = WEBGL.addGetWebGLMessage();
+      const container = WebGL.addGetWebGLMessage();
       const text = container.textContent || container.innerText || '';
       this.snackBar.open(text, 'Got it');
     }
