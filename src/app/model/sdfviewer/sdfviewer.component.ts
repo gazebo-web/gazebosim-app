@@ -18,7 +18,6 @@ import {
   Vector3,
 } from 'three';
 declare let GZ3D: any;
-// declare let THREE: any;
 
 @Component({
   selector: 'ign-sdfviewer',
