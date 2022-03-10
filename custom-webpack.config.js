@@ -26,7 +26,6 @@ module.exports = {
       SUBT_PORTAL_URL: null,
       STRIPE_PK: null,
       CREDITS_REQUIRED: null
-    }),
-    ["@babel/transform-runtime"]
+    })
   ]
 }
