@@ -39,6 +39,18 @@ export class UserComponent implements OnInit {
   public paginatedModels: PaginatedModels;
 
   /**
+   * The list of models of the user that are currently under review.
+   */
+  public underReviewModels: Model[];
+
+  /**
+   * Paginated Models that are under review.
+   * Contains the amount of models the user has uploaded, as well as
+   * the page the following models should be obtained.
+   */
+  public paginatedUnderReviewModels: PaginatedModels;
+
+  /**
    * The list of models the user has liked.
    */
   public modelsLiked: Model[];
@@ -84,8 +96,9 @@ export class UserComponent implements OnInit {
 
   /**
    * Active tab in the tab group.
+   * Note: Layout would have to change when there are more tabs added
    */
-  public activeTab: 'models' | 'modelsLiked' | 'worlds' | 'worldsLiked' | 'collections' = 'models';
+  public activeTab: 'models' | 'modelsUnderReview' | 'modelsLiked' | 'worlds' | 'worldsLiked' | 'collections' = 'models';
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data.
@@ -115,6 +128,17 @@ export class UserComponent implements OnInit {
       (response) => {
         this.paginatedModels = response;
         this.models = response.resources;
+      },
+      (error) => {
+        this.snackBar.open(error.message, 'Got it');
+      }
+    );
+
+    // Get the User's models that are under review.
+    this.modelService.getModelsUnderReviewList(this.user.username).subscribe(
+      (response) => {
+        this.paginatedUnderReviewModels = response;
+        this.underReviewModels = response.resources;
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
@@ -207,6 +231,26 @@ export class UserComponent implements OnInit {
   }
 
   /**
+   * Loads the next page of models under review.
+   */
+  public loadNextUnderReviewModelsPage(): void {
+    if (this.paginatedUnderReviewModels.hasNextPage()) {
+      this.modelService.getNextPage(this.paginatedUnderReviewModels).subscribe(
+        (pagModels) => {
+          this.paginatedModels = pagModels;
+          // Copy and extend the existing array of models with the new ones.
+          // A copy is required in order to trigger changes.
+          const newModels = this.underReviewModels.slice();
+          for (const model of pagModels.resources) {
+            newModels.push(model);
+          }
+          this.underReviewModels = newModels;
+        }
+      );
+    }
+  }
+
+  /**
    * Loads the next page of liked models.
    */
   public loadNextLikedModelsPage(): void {
@@ -276,18 +320,22 @@ export class UserComponent implements OnInit {
         break;
       }
       case 1: {
-        this.activeTab = 'modelsLiked';
+        this.activeTab = 'modelsUnderReview';
         break;
       }
       case 2: {
-        this.activeTab = 'worlds';
+        this.activeTab = 'modelsLiked';
         break;
       }
       case 3: {
-        this.activeTab = 'worldsLiked';
+        this.activeTab = 'worlds';
         break;
       }
       case 4: {
+        this.activeTab = 'worldsLiked';
+        break;
+      }
+      case 5: {
         this.activeTab = 'collections';
         break;
       }

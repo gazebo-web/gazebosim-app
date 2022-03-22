@@ -53,6 +53,11 @@ export class SettingsComponent implements OnInit {
   public experimentalGzWeb: boolean = false;
 
   /**
+   * In development: Notifications
+   */
+  public notifications: boolean = false;
+
+  /**
    * List of Organizations.
    */
   public organizationList: string[] = [];
@@ -128,6 +133,7 @@ export class SettingsComponent implements OnInit {
     }
 
     this.experimentalGzWeb = (localStorage.getItem('experimental_gzweb') === 'true');
+    this.notifications = (localStorage.getItem('notifications') === 'true');
     if (this.authService.userProfile.orgs) {
       this.organizationList = this.authService.userProfile.orgs.sort();
     }
@@ -149,6 +155,14 @@ export class SettingsComponent implements OnInit {
    */
   public onToggleGzWebFeature(event: MatSlideToggleChange): void {
     localStorage.setItem('experimental_gzweb', event.checked.toString());
+  }
+
+  /**
+   * TODO: implement Notification feature when backend API is up
+   */
+
+  public onToggleNotifications(event: MatSlideToggleChange): void {
+    localStorage.setItem('notifications', event.checked.toString());
   }
 
   /**

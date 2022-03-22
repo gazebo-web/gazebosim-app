@@ -340,12 +340,14 @@ describe('UserComponent', () => {
     expect(component.activeTab).toBe('models');
 
     component.setActiveTab(1);
-    expect(component.activeTab).toBe('modelsLiked');
+    expect(component.activeTab).toBe('modelsUnderReview');
     component.setActiveTab(2);
-    expect(component.activeTab).toBe('worlds');
+    expect(component.activeTab).toBe('modelsLiked');
     component.setActiveTab(3);
-    expect(component.activeTab).toBe('worldsLiked');
+    expect(component.activeTab).toBe('worlds');
     component.setActiveTab(4);
+    expect(component.activeTab).toBe('worldsLiked');
+    component.setActiveTab(5);
     expect(component.activeTab).toBe('collections');
     component.setActiveTab(0);
     expect(component.activeTab).toBe('models');

@@ -24,7 +24,6 @@ import * as linkParser from 'parse-link-header';
  * extends this one.
  */
 export abstract class FuelResourceService {
-
   /**
    * Private field used as a constant to represent X-Total-Count header name.
    */
@@ -67,6 +66,27 @@ export abstract class FuelResourceService {
     protected authService: AuthService,
     protected factory: JsonClassFactoryService,
     protected http: HttpClient) {
+    }
+
+  /**
+   * Return value of private field headerTotalCount
+   */
+  static returnHeaderTotalCount(): string {
+    return FuelResourceService.headerTotalCount;
+  }
+
+  /**
+   * Return private method parseLinkHeader
+   */
+  public returnLinkHeaderParser(response: HttpResponse<any>): string {
+    return this.parseLinkHeader(response);
+  }
+
+  /**
+   * Return private method handleError
+   */
+  public returnErrorHandler(response: HttpErrorResponse): Observable<never> {
+    return this.handleError(response);
   }
 
   /**

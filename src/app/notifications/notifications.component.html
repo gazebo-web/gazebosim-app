@@ -1,0 +1,61 @@
+<div class="page-content-inner" fxFlex fxLayoutAlign='center'>
+  <div class="content mat-typography">
+    <div fxLayout="column" fxLayoutAlign='start' class="header">
+      <ign-page-title title="Notifications"></ign-page-title>
+      <mat-divider></mat-divider>
+      <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon aria-label="notifications-inbox-icon">inbox</mat-icon>
+              <span>Inbox</span>
+            </div>
+          </ng-template>
+
+          <div class="tab-content">
+            <ign-notifications-table [notificationData]="inboxData"></ign-notifications-table>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon aria-label="review-icon">rate_review</mat-icon>
+              <span>Review Requested</span>
+            </div>
+          </ng-template>
+
+          <div class="tab-content">
+            <ign-notifications-table [notificationData]="reviewRequestedData"></ign-notifications-table>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon aria-label="review-icon">subscriptions</mat-icon>
+              <span>Subscribed</span>
+            </div>
+          </ng-template>
+
+          <div class="tab-content">
+            <ign-notifications-table [notificationData]="subscribedData"></ign-notifications-table>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon aria-label="mentioned-icon">alternate_email</mat-icon>
+              <span>Mentioned</span>
+            </div>
+          </ng-template>
+
+          <div class="tab-content">
+            <ign-notifications-table [notificationData]="mentionedData"></ign-notifications-table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>

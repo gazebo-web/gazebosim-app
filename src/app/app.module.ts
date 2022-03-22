@@ -109,6 +109,8 @@ import { NewOrganizationDialogComponent } from './organization';
 import { NewWorldComponent } from './world/new/new-world.component';
 import { NewWorldGuard } from './world/new/new-world-guard.service';
 import { Ng2DeviceService } from './device-detector';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationsTableComponent } from './notifications/notifications-table/notifications-table.component';
 import { OrganizationComponent } from './organization/organization.component';
 import { OrganizationService } from './organization/organization.service';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
@@ -204,6 +206,8 @@ import { WorldService } from './world/world.service';
     NewModelComponent,
     NewOrganizationDialogComponent,
     NewWorldComponent,
+    NotificationsComponent,
+    NotificationsTableComponent,
     OrganizationComponent,
     PageNotFoundComponent,
     PageTitleComponent,

@@ -27,6 +27,7 @@ import { NewModelComponent } from './model/new/new-model.component';
 import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewWorldComponent } from './world/new/new-world.component';
 import { NewWorldGuard } from './world/new/new-world-guard.service';
+import { NotificationsComponent } from './notifications/notifications.component';
 import { OrganizationComponent } from './organization';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
 import { OwnerProfileResolver } from './user/owner-profile.resolver';
@@ -87,6 +88,14 @@ export const ROUTES: Routes = [
     data: {
       titlebarTitle: 'Visualization',
       titlebarSubtitle: ''
+    }
+  },
+  {
+    path: 'notifications',
+    component: NotificationsComponent,
+    data: {
+      titlebarTitle: 'Fuel',
+      titlebarSubtitle: 'Notifications'
     }
   },
   {
@@ -663,5 +672,5 @@ export const ROUTES: Routes = [
 
       title: 'Page not found'
     }
-  }
+  },
 ];
