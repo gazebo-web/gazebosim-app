@@ -7,7 +7,7 @@ import { DndDirective } from './dnd.directive';
  * Dummy component to test directive
  */
 @Component({
-  template: `<div ignDnd>`
+  template: `<div gzDnd>`
 })
 class TestDndComponent {
 }

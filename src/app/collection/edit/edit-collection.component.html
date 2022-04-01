@@ -29,12 +29,12 @@
 
       <h2>Edit description</h2>
 
-      <ign-description [description]="collection.description"
+      <gz-description [description]="collection.description"
                        [edit]="true"
                        [disabled]="updating"
                        (onModify)="onModifyDescription($event)"
                        fxFill>
-      </ign-description>
+      </gz-description>
 
       <div fxLayout="column" fxFill>
         <p>Select if your collection is public or private:</p>

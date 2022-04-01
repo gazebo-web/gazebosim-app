@@ -17,7 +17,7 @@ import { AuthService } from './auth/auth.service';
 import { Ng2DeviceService } from './device-detector';
 
 @Component({
-  selector: 'ign-app-root',
+  selector: 'gz-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
   /**
    * Title of the Web Application.
    */
-  public readonly title = 'Ignition Robotics';
+  public readonly title = 'Gazebo';
 
   /**
    * Current year to display in the copyright.

@@ -8,7 +8,7 @@ import { LeaderBoardEntry } from './leaderboard-entry';
 import { PaginatedLeaderBoardEntry } from './paginated-leaderboard-entry';
 
 @Component({
-  selector: 'ign-leaderboard',
+  selector: 'gz-leaderboard',
   templateUrl: 'leaderboard.component.html',
   styleUrls: ['../portal.component.scss']
 })

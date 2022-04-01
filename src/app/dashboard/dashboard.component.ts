@@ -7,7 +7,7 @@ import { WorldService } from '../world/world.service';
 import { World } from '../world/world';
 
 @Component({
-  selector: 'ign-dashboard',
+  selector: 'gz-dashboard',
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss']
 })

@@ -7,7 +7,7 @@ import { LogfileService } from '../logfile.service';
 import { Organization } from '../../organization';
 
 @Component({
-  selector: 'ign-new-logfile-dialog',
+  selector: 'gz-new-logfile-dialog',
   templateUrl: 'new-logfile-dialog.component.html',
   styleUrls: ['new-logfile-dialog.component.scss']
 })

@@ -1,7 +1,8 @@
 <div align="center">
-  <img src="./src/assets/images/ignition_icon_color.svg" width="200" alt="Ignition Robotics" />
-  <h1>Ignition Robotics</h1>
-  <p>Ignition Web Application</p>
+  <img src="./src/assets/images/gazebo_icon_color.svg" width="200"
+  alt="Gazebo" />
+  <h1>Gazebo</h1>
+  <p>Gazebo Web Application</p>
 </div>
 
 * Framework: Angular 10
@@ -48,7 +49,7 @@ If you don't want to use NVM, you can install node the following way.
 
 1. Clone this repo and change directory into it:
 
-        git clone https://gitlab.com/ignitionrobotics/web/app.git
+        git clone https://github.com/gazebo-web/gazebosim-frontend.git
         cd app
 
 1. Install dependencies

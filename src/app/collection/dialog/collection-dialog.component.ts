@@ -12,7 +12,7 @@ import { ErrMsg } from '../../server/err-msg';
 import { FuelResource } from '../../fuel-resource';
 
 @Component({
-  selector: 'ign-collection-dialog',
+  selector: 'gz-collection-dialog',
   templateUrl: 'collection-dialog.component.html',
   styleUrls: ['collection-dialog.component.scss']
 })

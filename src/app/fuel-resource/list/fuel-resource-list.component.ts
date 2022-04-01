@@ -10,7 +10,7 @@ import { Component,
 import { FuelResource } from '../fuel-resource';
 
 @Component({
-selector: 'ign-fuel-resource-list',
+selector: 'gz-fuel-resource-list',
 templateUrl: 'fuel-resource-list.component.html',
 styleUrls: ['fuel-resource-list.component.scss']
 })

@@ -132,7 +132,7 @@
     "component-selector": [
       true,
       "element",
-      "ign",
+      "gz",
       "kebab-case"
     ],
     "contextual-lifecycle": true,
@@ -140,7 +140,7 @@
     "directive-selector": [
       true,
       "attribute",
-      "ign",
+      "gz",
       "camelCase"
     ],
     "no-conflicting-lifecycle": true,
@@ -153,7 +153,7 @@
     "no-outputs-metadata-property": true,
     "pipe-prefix": [
       true,
-      "ign"
+      "gz"
     ],
     "template-banana-in-box": true,
     "template-no-negated-async": true,

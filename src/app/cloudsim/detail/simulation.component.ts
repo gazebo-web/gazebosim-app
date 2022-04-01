@@ -15,7 +15,7 @@ declare let GZ3D: any;
 declare let THREE: any;
 
 @Component({
-  selector: 'ign-simulation',
+  selector: 'gz-simulation',
   templateUrl: 'simulation.component.html',
   styleUrls: ['simulation.component.scss']
 })
@@ -285,7 +285,9 @@ export class SimulationComponent implements OnInit, OnDestroy {
         // Record topics that publish sensor data, to display in the entity list.
         this.availableTopics.forEach(pub => {
           if (pub['msg_type'] === 'ignition.msgs.PointCloudPacked' ||
-              pub['msg_type'] === 'ignition.msgs.Image') {
+              pub['msg_type'] === 'ignition.msgs.Image' ||
+              pub['msg_type'] === 'gazebo.msgs.PointCloudPacked' ||
+              pub['msg_type'] === 'gazebo.msgs.Image') {
             this.sensorList.push(pub['topic']);
           }
         });
@@ -498,12 +500,14 @@ export class SimulationComponent implements OnInit, OnDestroy {
       const publisher = this.availableTopics.filter(pub => pub['topic'] === topicStr)[0];
 
       // Verify type.
-      if (publisher['msg_type'] === 'ignition.msgs.PointCloudPacked') {
+      if (publisher['msg_type'] === 'ignition.msgs.PointCloudPacked' ||
+          publisher['msg_type'] === 'gazebo.msgs.PointCloudPacked') {
         const topic = new PointCloudTopic(topicStr, this.scene);
         this.ws.subscribe(topic);
         this.ws.throttle(topic, 1);
       }
-      else if (publisher['msg_type'] === 'ignition.msgs.Image') {
+      else if (publisher['msg_type'] === 'ignition.msgs.Image' ||
+               publisher['msg_type'] === 'gazebo.msgs.Image') {
         // create new image element and append it to image streams container
         const imageContainer = window.document.getElementById('image-streams');
         const topic = new ImageTopic(topicStr, imageContainer);

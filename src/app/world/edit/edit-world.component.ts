@@ -14,7 +14,7 @@ import {
 } from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'ign-edit-world',
+  selector: 'gz-edit-world',
   templateUrl: 'edit-world.component.html',
   styleUrls: ['edit-world.component.scss']
 })

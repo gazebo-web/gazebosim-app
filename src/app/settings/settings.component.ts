@@ -33,7 +33,7 @@ enum Tabs {
 }
 
 @Component({
-  selector: 'ign-settings',
+  selector: 'gz-settings',
   templateUrl: 'settings.component.html',
   styleUrls: ['settings.component.scss']
 })
@@ -156,7 +156,7 @@ export class SettingsComponent implements OnInit {
    */
   public newOrganizationDialog(): void {
     this.dialog.open(NewOrganizationDialogComponent, {id: 'new-organization-dialog',
-      panelClass: 'ign-modal-panel'});
+      panelClass: 'gz-modal-panel'});
   }
 
   /**
@@ -302,7 +302,7 @@ export class SettingsComponent implements OnInit {
       data: {
         title: 'Are you sure you want to delete this token?',
         message: 'Any applications or scripts using this token will no longer be able to access ' +
-        'the Ignition API. You cannot undo this action.',
+        'the Gazebo API. You cannot undo this action.',
         buttonText: 'Delete',
         hasInput: false,
       }

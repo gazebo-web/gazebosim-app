@@ -15,7 +15,7 @@ import { World } from '../world';
 import { WorldService } from '../world.service';
 
 @Component({
-  selector: 'ign-new-world',
+  selector: 'gz-new-world',
   templateUrl: 'new-world.component.html',
   styleUrls: ['new-world.component.scss']
 })

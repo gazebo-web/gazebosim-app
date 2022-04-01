@@ -1,8 +1,8 @@
 <div class="page-content-inner mat-typography" fxLayout="column">
-  <ign-fuel-resource-list [resources]="models"
+  <gz-fuel-resource-list [resources]="models"
                           resourceType="models"
                           [finished]="!paginatedModels.hasNextPage()"
                           (onLoadMore)="loadNextPage()"
                           fxFlex>
-  </ign-fuel-resource-list>
+  </gz-fuel-resource-list>
 </div>

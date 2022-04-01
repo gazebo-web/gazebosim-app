@@ -1,6 +1,6 @@
 <div class="mat-typography" fxLayout="column" fxLayoutAlign="start center">
   <div class="banner" *ngIf="portal?.getThumbnail()">
-    <img *ngIf="(portal?.getThumbnail().url | ignAuthHeader | async) as result"
+    <img *ngIf="(portal?.getThumbnail().url | gzAuthHeader | async) as result"
       [src]="result" alt="Portal Banner">
   </div>
 
@@ -12,8 +12,8 @@
        fxLayoutAlign='center' fxFill>
 
     <!-- Leaderboard -->
-    <ign-leaderboard fxLayout='column' fxFlex='auto' *ngIf="portal.participants && portal.participants.length">
-    </ign-leaderboard>
+    <gz-leaderboard fxLayout='column' fxFlex='auto' *ngIf="portal.participants && portal.participants.length">
+    </gz-leaderboard>
     <!-- End leaderboard -->
 
     <!-- Participants -->

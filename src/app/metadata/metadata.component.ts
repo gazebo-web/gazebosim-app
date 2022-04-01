@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Metadatum } from './metadatum';
 
 @Component({
-  selector: 'ign-metadata',
+  selector: 'gz-metadata',
   templateUrl: 'metadata.component.html',
   styleUrls: ['metadata.component.scss']
 })

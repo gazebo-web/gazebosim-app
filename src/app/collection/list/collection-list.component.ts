@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Collection, CollectionService, PaginatedCollection } from '../../collection';
 
 @Component({
-  selector: 'ign-collections',
+  selector: 'gz-collections',
   templateUrl: 'collection-list.component.html',
   styleUrls: ['collection-list.component.scss']
 })

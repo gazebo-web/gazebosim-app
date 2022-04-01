@@ -26,7 +26,7 @@
     <div class="image-container">
       <a routerLink="/{{resource.owner}}/{{type}}/{{resource.name}}">
         <div *ngIf="resource.hasThumbnail(); else noImage">
-          <img *ngIf="(resource.getThumbnail().url | ignAuthHeader | async) as result"
+          <img *ngIf="(resource.getThumbnail().url | gzAuthHeader | async) as result"
                [src]="result" [alt]="resource.name" class="thumbnail">
         </div>
 

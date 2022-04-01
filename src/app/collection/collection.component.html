@@ -1,13 +1,13 @@
 <div fxLayout="column" fxLayoutAlign="start center">
   <div class="banner" *ngIf="collection?.getThumbnail()">
-    <img *ngIf="(collection?.getThumbnail().url | ignAuthHeader | async) as result"
+    <img *ngIf="(collection?.getThumbnail().url | gzAuthHeader | async) as result"
       [src]="result" alt="Collection Banner">
   </div>
 
   <div class="header" fxLayout="row" fxLayoutAlign="space-between" fxFill>
     <div fxFlex="30%">
       
-      <ign-page-title [title]="collection.name" icon="collections"></ign-page-title>
+      <gz-page-title [title]="collection.name" icon="collections"></gz-page-title>
       <h4>
         By <a class="color-link" routerLink="/{{collection?.owner}}" routerLinkActive="active">{{collection?.owner}}</a>
       </h4>
@@ -64,7 +64,7 @@
   </div>
 
     <div class="header" fxLayout="row" fxFill>
-    <ign-description [description]="collection?.description"></ign-description>
+    <gz-description [description]="collection?.description"></gz-description>
   </div>
 
 
@@ -72,13 +72,13 @@
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-          <mat-icon svgIcon="ign-model"></mat-icon>
+          <mat-icon svgIcon="gz-model"></mat-icon>
           <span>Models ({{paginatedModels?.totalCount}})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <ign-fuel-resource-list [resources]="collection.models"
+        <gz-fuel-resource-list [resources]="collection.models"
                                 resourceType="models"
                                 [removable]="canEdit"
                                 [disabled]="activeTab !== 'models'"
@@ -86,20 +86,20 @@
                                 (onLoadMore)="loadNextModelsPage()"
                                 (onRemoveItem)="removeItem($event)"
                                 fxFlex>
-        </ign-fuel-resource-list>
+        </gz-fuel-resource-list>
       </div>
     </mat-tab>
 
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-          <mat-icon svgIcon="ign-world"></mat-icon>
+          <mat-icon svgIcon="gz-world"></mat-icon>
           <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <ign-fuel-resource-list [resources]="collection.worlds"
+        <gz-fuel-resource-list [resources]="collection.worlds"
                                 resourceType="worlds"
                                 [removable]="canEdit"
                                 [disabled]="activeTab !== 'worlds'"
@@ -107,7 +107,7 @@
                                 (onLoadMore)="loadNextWorldsPage()"
                                 (onRemoveItem)="removeItem($event)"
                                 fxFlex>
-        </ign-fuel-resource-list>
+        </gz-fuel-resource-list>
       </div>
     </mat-tab>
   </mat-tab-group>

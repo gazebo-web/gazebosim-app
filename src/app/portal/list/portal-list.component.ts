@@ -4,7 +4,7 @@ import { Portal } from '../portal';
 import { PortalService } from '../portal.service';
 
 @Component({
-  selector: 'ign-portal-list',
+  selector: 'gz-portal-list',
   templateUrl: 'portal-list.component.html',
   styleUrls: ['portal-list.component.scss']
 })

@@ -24,7 +24,7 @@ import { NgxGalleryOptions,
 declare let Detector: any;
 
 @Component({
-  selector: 'ign-model',
+  selector: 'gz-model',
   templateUrl: 'model.component.html',
   styleUrls: ['model.component.scss']
 })
@@ -127,7 +127,7 @@ export class ModelComponent implements OnInit, OnDestroy {
   @ViewChild('fullScreen') private divRef;
 
   /**
-   * Reference to the <ign-sdfviewer>.
+   * Reference to the <gz-sdfviewer>.
    */
   @ViewChild(SdfViewerComponent) private sdfViewer: SdfViewerComponent;
 
@@ -199,7 +199,7 @@ export class ModelComponent implements OnInit, OnDestroy {
 
     const url = decodeURIComponent(this.modelService.getBaseUrl(this.model.owner, this.model.name));
 
-    this.bibTex = `@online{IgnitionFuel-` +
+    this.bibTex = `@online{GazeboFuel-` +
     `${this.model.owner.split(' ').join('-')}-` +
     `${this.model.name.split(' ').join('-')},`;
     this.bibTex += `\n\ttitle={${this.model.name}},`;
@@ -213,7 +213,7 @@ export class ModelComponent implements OnInit, OnDestroy {
     // The model's description, used to set meta tags.
     const description = this.model.description !== undefined &&
       this.model.description !== '' ? this.model.description :
-      'A model on the Ignition App.';
+      'A model on the Gazebo App.';
 
     // Update header meta data. This assumes that index.html has been
     // populated with default values for each of the tags. If you add new tags,
@@ -442,7 +442,7 @@ export class ModelComponent implements OnInit, OnDestroy {
 
   /**
    * Open / close SDF viewer.
-   * Note: since we're using ngIf, a new <ign-sdfviewer> is created each time this
+   * Note: since we're using ngIf, a new <gz-sdfviewer> is created each time this
    * is toggled.
    */
   public toggle3D(): void {

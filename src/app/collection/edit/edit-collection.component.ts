@@ -12,7 +12,7 @@ import { AuthService } from '../../auth/auth.service';
 import { Collection, CollectionService } from '../../collection';
 
 @Component({
-  selector: 'ign-edit-collection',
+  selector: 'gz-edit-collection',
   templateUrl: 'edit-collection.component.html',
   styleUrls: ['edit-collection.component.scss']
 })

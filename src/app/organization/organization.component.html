@@ -1,42 +1,42 @@
 <div fxLayout="column" class='page-content-inner'>
-  <ign-page-title title="Organization: {{organization.name}}"></ign-page-title>
+  <gz-page-title title="Organization: {{organization.name}}"></gz-page-title>
 
   <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon="ign-model"></mat-icon>
+          <mat-icon svgIcon="gz-model"></mat-icon>
           <span>Models ({{paginatedModels?.totalCount}})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <ign-fuel-resource-list [resources]="models"
+        <gz-fuel-resource-list [resources]="models"
                                 resourceType="models"
                                 [disabled]="activeTab !== 'models'"
                                 [finished]="!this.paginatedModels?.hasNextPage()"
                                 (onLoadMore)="loadNextModelsPage()"
                                 fxFlex>
-        </ign-fuel-resource-list>
+        </gz-fuel-resource-list>
       </div>
     </mat-tab>
 
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon="ign-world"></mat-icon>
+          <mat-icon svgIcon="gz-world"></mat-icon>
           <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <ign-fuel-resource-list [resources]="worlds"
+        <gz-fuel-resource-list [resources]="worlds"
                                 resourceType="worlds"
                                 [disabled]="activeTab !== 'worlds'"
                                 [finished]="!this.paginatedWorlds?.hasNextPage()"
                                 (onLoadMore)="loadNextWorldsPage()"
                                 fxFlex>
-        </ign-fuel-resource-list>
+        </gz-fuel-resource-list>
       </div>
     </mat-tab>
 
@@ -49,13 +49,13 @@
       </ng-template>
 
       <div class="tab-content">
-        <ign-fuel-resource-list [resources]="collections"
+        <gz-fuel-resource-list [resources]="collections"
                                 resourceType="collections"
                                 [disabled]="activeTab !== 'collections'"
                                 [finished]="!this.paginatedCollections?.hasNextPage()"
                                 (onLoadMore)="loadNextCollectionsPage()"
                                 fxFlex>
-        </ign-fuel-resource-list>
+        </gz-fuel-resource-list>
       </div>
     </mat-tab>
 

@@ -10,7 +10,7 @@ export class UiError {
 
   /**
    * Associated Error Code.
-   * If the error does not comes from the Ign server, the status code is used.
+   * If the error does not comes from the Gazebo server, the status code is used.
    */
   public code: number;
 
@@ -23,7 +23,7 @@ export class UiError {
    * @param httpResponse The HttpErrorResponse caught in the http requests.
    */
   constructor(httpResponse: HttpErrorResponse) {
-    // Check if the error comes from the Ign server.
+    // Check if the error comes from the Gazebo server.
     if (httpResponse.error.errcode) {
       this.code = httpResponse.error.errcode;
       this.message = `Error #${httpResponse.error.errcode}: ${httpResponse.error.msg}`;

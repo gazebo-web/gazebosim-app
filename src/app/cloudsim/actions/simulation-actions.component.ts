@@ -11,7 +11,7 @@ import { ExtraDialogComponent } from '../extra-dialog/extra-dialog.component';
 import * as FileSaver from 'file-saver';
 
 @Component({
-  selector: 'ign-simulation-actions',
+  selector: 'gz-simulation-actions',
   templateUrl: 'simulation-actions.component.html',
 })
 

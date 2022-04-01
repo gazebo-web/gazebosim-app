@@ -6,7 +6,7 @@ import { AuthService } from '../../auth/auth.service';
 import { Portal } from '../portal';
 
 @Component({
-  selector: 'ign-registration-dialog',
+  selector: 'gz-registration-dialog',
   templateUrl: 'registration-dialog.component.html',
   styleUrls: ['registration-dialog.component.scss']
 })

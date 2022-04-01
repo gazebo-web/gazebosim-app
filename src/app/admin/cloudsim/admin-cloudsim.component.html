@@ -7,7 +7,7 @@
           <mat-icon>link</mat-icon>
           S3 Bucket
         </a>
-        <ign-simulation-table [paginatedSimulations]="paginatedSimulations"></ign-simulation-table>
+        <gz-simulation-table [paginatedSimulations]="paginatedSimulations"></gz-simulation-table>
       </mat-tab>
 
       <!-- Machine Instances tab -->
@@ -67,15 +67,15 @@
       <!-- End Machine Instances tab -->
 
       <mat-tab label="Simulation rules">
-        <ign-simulation-rules [paginatedRules]="paginatedRules"></ign-simulation-rules>
+        <gz-simulation-rules [paginatedRules]="paginatedRules"></gz-simulation-rules>
       </mat-tab>
 
       <mat-tab label="Launch Queue">
-        <ign-launch-queue></ign-launch-queue>
+        <gz-launch-queue></gz-launch-queue>
       </mat-tab>
 
       <mat-tab label="Websocket">
-        <ign-sim-visualizer></ign-sim-visualizer>
+        <gz-sim-visualizer></gz-sim-visualizer>
       </mat-tab>
     </mat-tab-group>
   </div>

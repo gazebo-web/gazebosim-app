@@ -7,7 +7,7 @@
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
           <div fxLayout="row" fxLayoutAlign="start center">
-            <mat-icon svgIcon='ign-model'></mat-icon>
+            <mat-icon svgIcon='gz-model'></mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Models</h2>
           </div>
           <div><h2>{{modelsQuantity}}</h2></div>
@@ -18,7 +18,7 @@
         <div class='stats-box' fxLayout='column'
              fxLayoutAlign='center center'>
           <div fxLayout="row" fxLayoutAlign="start center">
-            <mat-icon svgIcon='ign-world'></mat-icon>
+            <mat-icon svgIcon='gz-world'></mat-icon>
             <h2 style='text-align: left; margin: 10px 10px'>Worlds</h2>
           </div>
           <div><h2>{{worldsQuantity}}</h2></div>
@@ -43,7 +43,7 @@
 
       <div class='stats-box' fxFlex='0 1 250px'>
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon='ign-model'></mat-icon>
+          <mat-icon svgIcon='gz-model'></mat-icon>
           <h2 style='text-align: left; margin: 10px 10px'>Models</h2>
         </div>
         <table>
@@ -61,7 +61,7 @@
 
       <div class='stats-box' fxFlex="0 1 250px">
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon='ign-world'></mat-icon>
+          <mat-icon svgIcon='gz-world'></mat-icon>
           <h2 style='text-align: left; margin: 10px 10px'>Worlds</h2>
         </div>
         <table>
@@ -102,7 +102,7 @@
     <div class="section-title mat-typography">
       <a href='#' routerLink='/models'
         fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-        <mat-icon svgIcon="ign-model"></mat-icon>
+        <mat-icon svgIcon="gz-model"></mat-icon>
         <h2>Latest models</h2>
       </a>
     </div>
@@ -112,12 +112,12 @@
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="center center">
-      <ign-item-card class="card"
+      <gz-item-card class="card"
         fxFlex.xs="100%"
         fxFlex.gt-xs="50%"
         fxFlex.gt-md="25%"
         [resource]="model" type="models" *ngFor="let model of models">
-      </ign-item-card>
+      </gz-item-card>
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">
@@ -137,7 +137,7 @@
     <div class="section-title mat-typography">
       <a href='#' routerLink='/worlds'
         fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-        <mat-icon svgIcon="ign-world"></mat-icon>
+        <mat-icon svgIcon="gz-world"></mat-icon>
         <h2>Latest worlds</h2>
       </a>
     </div>
@@ -147,12 +147,12 @@
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="center center">
-      <ign-item-card class="card"
+      <gz-item-card class="card"
         fxFlex.xs="100%"
         fxFlex.gt-xs="50%"
         fxFlex.gt-md="25%"
         [resource]="world" type="worlds" *ngFor="let world of worlds">
-      </ign-item-card>
+      </gz-item-card>
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">
@@ -182,12 +182,12 @@
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="center center">
-      <ign-item-card class="card"
+      <gz-item-card class="card"
         fxFlex.xs="100%"
         fxFlex.gt-xs="50%"
         fxFlex.gt-md="25%"
         [resource]="collection" type="collections" *ngFor="let collection of collections">
-      </ign-item-card>
+      </gz-item-card>
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">

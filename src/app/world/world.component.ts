@@ -24,7 +24,7 @@ import { NgxGalleryOptions,
 declare let Detector: any;
 
 @Component({
-  selector: 'ign-world',
+  selector: 'gz-world',
   templateUrl: 'world.component.html',
   styleUrls: ['world.component.scss']
 })
@@ -127,7 +127,7 @@ export class WorldComponent implements OnInit, OnDestroy {
   @ViewChild('fullScreen') private divRef;
 
   /**
-   * Reference to the <ign-sdfviewer>.
+   * Reference to the <gz-sdfviewer>.
    */
   @ViewChild(SdfViewerComponent) private sdfViewer: SdfViewerComponent;
 
@@ -199,7 +199,7 @@ export class WorldComponent implements OnInit, OnDestroy {
 
     const url = decodeURIComponent(this.worldService.getBaseUrl(this.world.owner, this.world.name));
 
-    this.bibTex = `@online{IgnitionFuel-` +
+    this.bibTex = `@online{GazeboFuel-` +
     `${this.world.owner.split(' ').join('-')}-` +
     `${this.world.name.split(' ').join('-')},`;
     this.bibTex += `\n\ttitle={${this.world.name}},`;
@@ -213,7 +213,7 @@ export class WorldComponent implements OnInit, OnDestroy {
     // The world's description, used to set meta tags.
     const description = this.world.description !== undefined &&
       this.world.description !== '' ? this.world.description :
-      'A world on the Ignition App.';
+      'A world on the Gazebo App.';
 
     // Update header meta data. This assumes that index.html has been
     // populated with default values for each of the tags. If you add new tags,
@@ -625,7 +625,7 @@ export class WorldComponent implements OnInit, OnDestroy {
 
   /**
    * Open / close SDF viewer.
-   * Note: since we're using ngIf, a new <ign-sdfviewer> is created each time this
+   * Note: since we're using ngIf, a new <gz-sdfviewer> is created each time this
    * is toggled.
    */
   public toggle3D(): void {

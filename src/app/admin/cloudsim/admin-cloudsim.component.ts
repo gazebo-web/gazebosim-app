@@ -14,7 +14,7 @@ import {
 import { PaginatedSimulationRules } from './rules';
 
 @Component({
-  selector: 'ign-admin-cloudsim',
+  selector: 'gz-admin-cloudsim',
   templateUrl: 'admin-cloudsim.component.html',
   styleUrls: ['admin-cloudsim.component.scss']
 })

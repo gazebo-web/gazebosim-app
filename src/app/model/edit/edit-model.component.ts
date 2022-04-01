@@ -14,7 +14,7 @@ import {
 } from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'ign-edit-model',
+  selector: 'gz-edit-model',
   templateUrl: 'edit-model.component.html',
   styleUrls: ['edit-model.component.scss']
 })
@@ -258,7 +258,7 @@ export class EditModelComponent implements OnInit {
           this.back();
         },
         (error) => {
-          // The error code comes from ign-go and is specified by the fuelserver.
+          // The error code comes from gz-go and is specified by the fuelserver.
           if (error.code === 4002) {
             this.snackBar.open('Organization members cannot modify ' +
             'this model\'s permissions.', 'Got it');

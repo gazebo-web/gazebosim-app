@@ -13,7 +13,7 @@
         </div> -->
 
         <div fxLayout="column">
-          <ign-page-title [title]="model.name" svgIcon="ign-model"></ign-page-title>
+          <gz-page-title [title]="model.name" svgIcon="gz-model"></gz-page-title>
           <h4>
             By <a class="color-link" routerLink="/{{model?.owner}}">{{model?.owner}}</a>
           </h4>
@@ -33,18 +33,18 @@
           <a *ngIf="view3d" mat-icon-button (click)="resetView()" title="Reset view" class="buttonResetView"><mat-icon>home</mat-icon></a>
 
           <div *ngIf="view3d" #fullScreen>
-            <ign-sdfviewer
+            <gz-sdfviewer
               class="sdfviewer"
               [resource]="model"
               [currentVersion]="currentVersion">
-             </ign-sdfviewer>
+             </gz-sdfviewer>
           </div>
         </div>
         <div class="gallery-container-outer">
           <div class="gallery-container-inner" fxLayoutAlign="center center">
 
             <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!galleryImages">
-              <img class="loading-gif" src="assets/images/ign.gif">
+              <img class="loading-gif" src="assets/images/gz.gif">
               <span class="mat-typography">Fetching images from server</span>
             </div>
 
@@ -119,7 +119,7 @@
           <mat-list-item>
             <div class="stat-item">
               <span>File size</span>
-              <span>{{model?.filesize | ignFileSize}}</span>
+              <span>{{model?.filesize | gzFileSize}}</span>
             </div>
           </mat-list-item>
           <mat-list-item>
@@ -152,7 +152,7 @@
           </mat-list-item>
         </mat-list>
 
-        <!-- Disable because it doesn' work with Ignition
+        <!-- Disable because it doesn' work with Gazebo
         <a [href]="getDragUrl()" class="drag-button">
           <mat-icon _ngcontent-c20="" class="mat-icon material-icons" role="img" aria-hidden="true">mouse</mat-icon>
           Drag me!
@@ -168,11 +168,11 @@
         <mat-tab label="Model Description">
           <div fxLayout="column" fxLayoutGap="20px" class="tab-body">
 
-            <ign-description [description]="model.description"></ign-description>
+            <gz-description [description]="model.description"></gz-description>
 
-            <ign-categories [categories]="model.categories"></ign-categories>
+            <gz-categories [categories]="model.categories"></gz-categories>
 
-            <ign-tags [tags]="model.tags"></ign-tags>
+            <gz-tags [tags]="model.tags"></gz-tags>
 
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
               <mat-icon class="material-icons">{{model.private ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -234,12 +234,12 @@
         <mat-tab label="Collections">
           <div *ngIf="collections && collections.length > 0; else noCollections"
                class="tab-body">
-            <ign-fuel-resource-list [resources]="collections"
+            <gz-fuel-resource-list [resources]="collections"
                                     resourceType="collections"
                                     [finished]="!paginatedCollections.hasNextPage()"
                                     (onLoadMore)="loadNextCollections()"
                                     fxFlex>
-            </ign-fuel-resource-list>
+            </gz-fuel-resource-list>
           </div>
           <ng-template #noCollections>
             <div class="tab-body">
@@ -249,8 +249,8 @@
         </mat-tab>
 
         <mat-tab label="Metadata">
-          <ign-metadata [metadata]="model.metadata" [edit]="false" fxFill>
-          </ign-metadata>
+          <gz-metadata [metadata]="model.metadata" [edit]="false" fxFill>
+          </gz-metadata>
         </mat-tab>
       </mat-tab-group>
 

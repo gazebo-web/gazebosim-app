@@ -3,10 +3,10 @@ import { UiError } from './ui-error';
 
 describe('UiError', () => {
 
-  it('should have the error code and message of the Ign server error', () => {
+  it('should have the error code and message of the Gazebo server error', () => {
     const mockServerError = {
       errcode: 1000,
-      msg: 'Error from the Ign Server'
+      msg: 'Error from the Gazebo Server'
     };
 
     const response = new HttpErrorResponse({
@@ -18,12 +18,12 @@ describe('UiError', () => {
     const uiError = new UiError(response);
 
     expect(uiError.code).toBe(1000);
-    expect(uiError.message).toBe('Error #1000: Error from the Ign Server');
+    expect(uiError.message).toBe('Error #1000: Error from the Gazebo Server');
   });
 
-  it(`should have the status code and text if the error doesn't comes from the Ign server`, () => {
+  it(`should have the status code and text if the error doesn't comes from the Gazebo server`, () => {
     const response = new HttpErrorResponse({
-      error: 'Not an Ign server error',
+      error: 'Not an Gazebo server error',
       status: 400,
       statusText: 'Bad Request'
     });

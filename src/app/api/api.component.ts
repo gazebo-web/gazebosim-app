@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 declare const SwaggerUIBundle: any;
 
 @Component({
-  selector: 'ign-api',
+  selector: 'gz-api',
   templateUrl: 'api.component.html',
   styleUrls: ['api.component.scss']
 })

@@ -2,7 +2,7 @@ import { Component, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ign-copy-dialog',
+  selector: 'gz-copy-dialog',
   templateUrl: 'copy-dialog.component.html',
   styleUrls: ['copy-dialog.component.scss']
 })

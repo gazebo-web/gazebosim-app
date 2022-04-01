@@ -23,7 +23,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog';
 import * as FileSaver from 'file-saver';
 
 @Component({
-  selector: 'ign-portal',
+  selector: 'gz-portal',
   templateUrl: 'portal.component.html',
   styleUrls: ['portal.component.scss']
 })

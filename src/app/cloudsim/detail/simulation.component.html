@@ -4,7 +4,7 @@
     <div fxLayoutAlign="space-between">
       <div fxLayout="row" fxAlign="start">
         <div fxLayout="column">
-          <ign-page-title [title]="simulation.name || simulation.groupId" icon="computer"></ign-page-title>
+          <gz-page-title [title]="simulation.name || simulation.groupId" icon="computer"></gz-page-title>
           <h4>
             By <a routerLink="/{{simulation?.owner}}">{{simulation?.owner}}</a>
           </h4>
@@ -27,12 +27,12 @@
           <div fxLayout="row" fxLayoutGap="20px" *ngIf="simulation.status == 'Running'">
           <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between">
             <div class="statusTitle">Real Time</div>
-            <div class="statusData" *ngIf="realTime">{{realTime | ignDuration}}</div>
+            <div class="statusData" *ngIf="realTime">{{realTime | gzDuration}}</div>
           </div>
 
           <div fxLayout="row"  fxLayoutGap="10px" fxLayoutAlign="space-between">
             <div class="statusTitle">Simulation Time</div>
-            <div class="statusData" *ngIf="simTime">{{simTime | ignDuration}}</div>
+            <div class="statusData" *ngIf="simTime">{{simTime | gzDuration}}</div>
           </div>
 
           <div fxLayout="row" fxLayoutGap="10px"  fxLayoutAlign="space-between">
@@ -99,6 +99,6 @@
     <div id="image-streams" class="image-container">
     </div>
 
-    <!-- <ign-simulation-actions [simulation]=simulation></ign-simulation-actions> -->
+    <!-- <gz-simulation-actions [simulation]=simulation></gz-simulation-actions> -->
   </div>
 </div>

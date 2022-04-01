@@ -7,10 +7,10 @@
           <mat-form-field class="form-field">
             <input matInput required placeholder="Organization name" [formControl]="organizationName">
             <mat-hint *ngIf="organizationName.value.trim() === ''; else organizationLink">
-              This will be the organization name on Ignition Fuel
+              This will be the organization name on Gazebo Fuel
             </mat-hint>
             <ng-template #organizationLink>
-              <mat-hint>The organization will be accesible on https://ignitionfuel.org/{{organizationName.value}}</mat-hint>
+              <mat-hint>The organization will be accesible on https://app.gazebosim.org/{{organizationName.value}}</mat-hint>
             </ng-template>
             <mat-error>{{getNameError()}}</mat-error>
           </mat-form-field>

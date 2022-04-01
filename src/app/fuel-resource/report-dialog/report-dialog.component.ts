@@ -5,7 +5,7 @@ import {
 } from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-    selector: 'ign-report-dialog',
+    selector: 'gz-report-dialog',
     templateUrl: 'report-dialog.component.html',
     styleUrls: ['report-dialog.component.scss']
 })

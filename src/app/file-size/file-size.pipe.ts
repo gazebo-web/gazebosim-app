@@ -12,7 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Based on gist:
  * https://gist.github.com/JonCatmull/ecdf9441aaa37336d9ae2c7f9cb7289a
 */
-@Pipe({name: 'ignFileSize'})
+@Pipe({name: 'gzFileSize'})
 export class FileSizePipe implements PipeTransform {
 
   /**

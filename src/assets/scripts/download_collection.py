@@ -39,7 +39,7 @@ page = 1
 count = 0
 
 # The Fuel server URL.
-base_url ='https://fuel.ignitionrobotics.org/'
+base_url ='https://fuel.gazebosim.org/'
 
 # Fuel server version.
 fuel_version = '1.0'

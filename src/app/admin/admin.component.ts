@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'ign-admin',
+  selector: 'gz-admin',
   templateUrl: 'admin.component.html',
 })
 

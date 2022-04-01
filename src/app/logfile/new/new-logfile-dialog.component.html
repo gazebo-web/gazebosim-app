@@ -9,12 +9,12 @@
 
   <div *ngIf="logfile">
     <p class="error" *ngIf="!isLogfileValid; else sizeOk">
-      <strong>File size:</strong> {{logfile.size | ignFileSize }}. Please upload logfiles smaller than 800 MB.
+      <strong>File size:</strong> {{logfile.size | gzFileSize }}. Please upload logfiles smaller than 800 MB.
     </p>
 
     <ng-template #sizeOk>
       <p>
-        <strong>File size:</strong> {{logfile.size | ignFileSize }}
+        <strong>File size:</strong> {{logfile.size | gzFileSize }}
       </p>
     </ng-template>
   </div>

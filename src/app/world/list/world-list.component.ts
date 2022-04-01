@@ -6,7 +6,7 @@ import { WorldService } from '../world.service';
 import { PaginatedWorlds } from '../paginated-worlds';
 
 @Component({
-  selector: 'ign-worlds',
+  selector: 'gz-worlds',
   templateUrl: 'world-list.component.html',
   styleUrls: ['world-list.component.scss']
 })

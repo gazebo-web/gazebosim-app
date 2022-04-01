@@ -30,7 +30,7 @@
       <mat-tab label='Access Tokens'>
         <div class='tab-content' fxLayout='column' fxLayoutGap='20px'>
           <div>
-            <p>Access tokens can be used by your applications to gain access to the Ignition API.</p>
+            <p>Access tokens can be used by your applications to gain access to the Gazebo API.</p>
           </div>
           <form [formGroup]='createAccessTokenForm' (ngSubmit)='createAccessToken()'
                 fxLayoutAlign='start' fxLayoutGap='20px' fxlayout='row' fxFlex.gt-sm='80%' fxFlex.lt-md='100%' fxFill>
@@ -93,7 +93,7 @@
       <mat-tab label='Credits'>
         <div class='tab-content' fxLayout='column' fxLayoutGap='20px'>
 
-          <ign-credits></ign-credits>
+          <gz-credits></gz-credits>
 
         </div>
       </mat-tab>

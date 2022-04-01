@@ -1,7 +1,7 @@
 {
-  "name": "app-ignition-robotics-ui",
+  "name": "gazebosim-frontend",
   "version": "3.0.0",
-  "description": "App Ignition Robotics UI",
+  "description": "Frontend to gazebosim.org",
   "license": "Apache 2",
   "private": true,
   "scripts": {
@@ -65,10 +65,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/ignitionrobotics/web/app"
+    "url": "https://github.com/gazebo-web/gazebosim-frontend"
   },
   "bugs": {
-    "url": "https://gitlab.com/ignitionrobotics/web/app/-/issues"
+    "url": "https://github.com/gazebo-web/gazebosim-frontend/issues"
   },
   "engines": {
     "node": "~14.14.0",

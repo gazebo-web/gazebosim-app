@@ -15,7 +15,7 @@ import { Model } from '../model';
 import { ModelService } from '../model.service';
 
 @Component({
-  selector: 'ign-new-model',
+  selector: 'gz-new-model',
   templateUrl: 'new-model.component.html',
   styleUrls: ['new-model.component.scss']
 })

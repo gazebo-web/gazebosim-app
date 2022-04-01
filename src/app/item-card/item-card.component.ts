@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: 'ign-item-card',
+  selector: 'gz-item-card',
   templateUrl: 'item-card.component.html',
   styleUrls: ['item-card.component.scss']
 })

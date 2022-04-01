@@ -5,7 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { CreditsService } from './credits.service';
 
 @Component({
-  selector: 'ign-credits',
+  selector: 'gz-credits',
   templateUrl: 'credits.component.html',
   styleUrls: ['credits.component.scss']
 })

@@ -29,14 +29,6 @@ export class WebsocketService {
   public sceneInfo$ = new BehaviorSubject<object>(null);
 
   /**
-   * Particle emitter information behavior subject.
-   * Components can subscribe to it to get the particle emitters once it is obtained.
-   * Remove this once we migrate to Ignition Fortress and
-   * Ignition Dome+Edifice are EOL.
-   */
-  public particleEmitters$ = new BehaviorSubject<object>(null);
-
-  /**
    * The Websocket object.
    */
   private ws: WebSocket;
@@ -108,7 +100,8 @@ export class WebsocketService {
     this.topicMap.set(topic.name, topic);
 
     const publisher = this.availableTopics.filter(pub => pub['topic'] === topic.name)[0];
-    if (publisher['msg_type'] === 'ignition.msgs.Image') {
+    if (publisher['msg_type'] === 'ignition.msgs.Image' ||
+        publisher['msg_type'] === 'gazebo.msgs.Image') {
       this.ws.send(this.buildMsg(['image', topic.name, '', '']));
     }
     else {
@@ -196,13 +189,12 @@ export class WebsocketService {
     this.root = null;
     this.status$.next('Disconnected');
     this.sceneInfo$.next(null);
-    this.particleEmitters$.next(null);
   }
 
   /**
    * Handler for the message event of a Websocket.
    *
-   * Parses message responses from Ignition and sends to the corresponding topic.
+   * Parses message responses from Gazebo and sends to the corresponding topic.
    */
   private onMessage(event: MessageEvent): void {
     // If there is no Root, then handle authentication and the message definitions.
@@ -262,7 +254,8 @@ export class WebsocketService {
 
       // do not decode image msg as it is raw compressed png data and not a
       // protobuf msg
-      if (frameParts[2] === 'ignition.msgs.Image') {
+      if (frameParts[2] === 'ignition.msgs.Image' ||
+          frameParts[2] === 'gazebo.msgs.Image') {
         msg = msgData;
       }
       else {
@@ -283,11 +276,6 @@ export class WebsocketService {
           // The world name needs to be used to get the scene information.
           this.world = msg['data'][0];
           this.ws.send(this.buildMsg(['scene', this.world, '', '']));
-
-          // Get particle emitters. This is only valid for
-          // Ignition Dome and Edifice.  Ignition Fortress and beyond will have
-          // particle emitters contained in the 'scene' message.
-          this.ws.send(this.buildMsg(['particle_emitters', this.world, '', '']));
           break;
         case 'scene':
           // Emit the scene information. Contains all the models used.
@@ -296,9 +284,6 @@ export class WebsocketService {
           // Once we received the Scene Information, we can start working.
           // We emit the Ready status to reflect this.
           this.status$.next('Ready');
-          break;
-        case 'particle_emitters':
-          this.particleEmitters$.next(msg);
           break;
         default:
           // Message from a subscribed topic. Get the topic and execute its callback.

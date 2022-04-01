@@ -12,7 +12,7 @@ import { SimulationService } from '../../cloudsim/simulation.service';
 import { validParents } from './valid-parents';
 
 @Component({
-  selector: 'ign-simulation-launch-dialog',
+  selector: 'gz-simulation-launch-dialog',
   templateUrl: 'simulation-launch-dialog.component.html',
   styleUrls: ['simulation-launch-dialog.component.scss']
 })

@@ -9,7 +9,7 @@ declare let GZ3D: any;
 declare let THREE: any;
 
 @Component({
-  selector: 'ign-thumbnail-generator',
+  selector: 'gz-thumbnail-generator',
   templateUrl: 'thumbnail-generator.component.html',
   styleUrls: ['thumbnail-generator.component.scss']
 })

@@ -19,7 +19,7 @@
 
   <div fxLayout="row" fxLayoutAlign="center center" fxFill fxLayout.xs="column">
     <div fxFlex
-         ignDnd
+         gzDnd
          class="dropzone-list"
          (newValidFilesEmitter)="onValidFiles($event)"
          (newInvalidFilesEmitter)="onInvalidFiles($event)"
@@ -48,14 +48,14 @@
     </div>
 
     <div *ngIf="hasGzWeb" fxFlex="50" class="viewer-wrapper">
-      <ign-sdfviewer
+      <gz-sdfviewer
         class="sdfviewer"
         [fileList]="fileList">
-       </ign-sdfviewer>
+       </gz-sdfviewer>
     </div>
   </div>
 
   <div *ngIf="uploading" fxLayout="row" fxLayoutAlign="center center" fxFill>
-    <img class="uploading-gif" src="assets/images/ign.gif">
+    <img class="uploading-gif" src="assets/images/gz.gif">
   </div>
 </div>

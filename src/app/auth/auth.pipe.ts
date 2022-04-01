@@ -8,9 +8,9 @@ import { map } from 'rxjs/operators';
  * Pipe used to get a resource using an explicit GET request that contains an Authorization header.
  *
  * Usage:
- * <img *ngIf="(url | ignAuthHeader | async) as result" [src]=result>
+ * <img *ngIf="(url | gzAuthHeader | async) as result" [src]=result>
  */
-@Pipe({name: 'ignAuthHeader'})
+@Pipe({name: 'gzAuthHeader'})
 export class AuthPipe implements PipeTransform, OnDestroy {
 
   /**

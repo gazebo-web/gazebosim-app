@@ -16,7 +16,7 @@ declare let GZ3D: any;
 declare let THREE: any;
 
 @Component({
-  selector: 'ign-sdfviewer',
+  selector: 'gz-sdfviewer',
   templateUrl: 'sdfviewer.component.html',
   styleUrls: ['sdfviewer.component.scss']
 })

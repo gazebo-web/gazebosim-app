@@ -16,7 +16,7 @@ import { PaginatedSimulation, Simulation, SimulationService } from '../cloudsim'
 import { SimulationLaunchDialogComponent } from './launch/simulation-launch-dialog.component';
 
 @Component({
-  selector: 'ign-applications',
+  selector: 'gz-applications',
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss']
 })

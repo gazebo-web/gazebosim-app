@@ -350,9 +350,9 @@ export class AppModule {
     // This was taken from https://materialdesignicons.com/getting-started
     matIconRegistry.addSvgIconSet(
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/mdi.svg'));
-    matIconRegistry.addSvgIcon('ign-world',
+    matIconRegistry.addSvgIcon('gz-world',
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/world.svg'));
-    matIconRegistry.addSvgIcon('ign-model',
+    matIconRegistry.addSvgIcon('gz-model',
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/model.svg'));
   }
 }

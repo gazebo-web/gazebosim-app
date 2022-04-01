@@ -6,26 +6,26 @@
 
   <ng-template #isAuthorized>
 
-    <ign-page-title title="Editing {{world.owner}}'s {{world.name}} world" svgIcon="ign-world"></ign-page-title>
+    <gz-page-title title="Editing {{world.owner}}'s {{world.name}} world" svgIcon="gz-world"></gz-page-title>
 
     <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
       (ngSubmit)=onEdit()>
 
       <h2>Edit World details</h2>
 
-      <ign-description [description]="world.description"
+      <gz-description [description]="world.description"
                        [edit]="true"
                        [disabled]="updating"
                        (onModify)="onModifyDescription($event)"
                        fxFill>
-      </ign-description>
+      </gz-description>
 
-      <ign-tags [tags]="world.tags"
+      <gz-tags [tags]="world.tags"
                 [edit]="true"
                 [disabled]="updating"
                 (onModify)="onModifyTags()"
                 fxFill>
-      </ign-tags>
+      </gz-tags>
 
       <div fxLayout="column" fxFill>
         <p>Select if your world is public or private:</p>
@@ -38,20 +38,20 @@
 
       <h2>Metadata</h2>
 
-      <ign-metadata [metadata]="world.metadata"
+      <gz-metadata [metadata]="world.metadata"
                     [edit]="true"
                     [disabled]="updating"
                     (onModify)="onModifyMetadata()"
                     fxFill>
-      </ign-metadata>
+      </gz-metadata>
 
       <h2>Thumbnails</h2>
 
-      <ign-thumbnail-generator [resource]="world"></ign-thumbnail-generator>
+      <gz-thumbnail-generator [resource]="world"></gz-thumbnail-generator>
 
       <h2>Replace files</h2>
 
-      <ign-file-upload (files)="onReceiveFiles($event)"
+      <gz-file-upload (files)="onReceiveFiles($event)"
                        [allowedExtensions]="allowedExtensions"
                        [uploading]="updating"
                        [resourceType]="'world'"
@@ -59,7 +59,7 @@
                                    Leave empty to keep the current files.<br/>
                                    If any files are uploaded, a new world version will be created with those files.<br/>'"
                        fxFill>
-      </ign-file-upload>
+      </gz-file-upload>
 
       <div class="save-buttons" fxLayout="row" fxLayoutAlign="space-between center" fxFill>
         <button mat-raised-button type="button" (click)="back()">Cancel</button>

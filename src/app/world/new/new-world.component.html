@@ -15,18 +15,18 @@
       <mat-error>{{getWorldNameError()}}</mat-error>
     </mat-form-field>
 
-    <ign-description [description]="description"
+    <gz-description [description]="description"
                      [edit]="true"
                      [disabled]="uploading"
                      (onModify)="onModifyDescription($event)"
                      fxFill>
-    </ign-description>
+    </gz-description>
 
-    <ign-tags [tags]="tags"
+    <gz-tags [tags]="tags"
               [edit]="true"
               [disabled]="uploading"
               fxFill>
-    </ign-tags>
+    </gz-tags>
 
     <div fxLayout="row" fxFill fxLayoutGap="20px" fxLayoutAlign="space-between start">
       <mat-form-field fxFlex="50%">
@@ -60,12 +60,12 @@
       </mat-radio-group>
     </div>
 
-    <ign-file-upload (files)="onReceiveFiles($event)"
+    <gz-file-upload (files)="onReceiveFiles($event)"
                      [allowedExtensions]="allowedExtensions"
                      [uploading]="uploading"
                      [resourceType]="'world'"
                      fxFill>
-    </ign-file-upload>
+    </gz-file-upload>
 
     <div fxLayout="row" fxLayoutAlign="space-between start" fxFill *ngIf="!uploading; else isUploading">
       <button mat-raised-button (click)="location.back()">Cancel</button>

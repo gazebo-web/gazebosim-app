@@ -6,33 +6,33 @@
 
   <ng-template #isAuthorized>
 
-    <ign-page-title title="Editing {{model.owner}}'s {{model.name}} model" svgIcon="ign-model"></ign-page-title>
+    <gz-page-title title="Editing {{model.owner}}'s {{model.name}} model" svgIcon="gz-model"></gz-page-title>
 
     <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
       (ngSubmit)=onEdit()>
 
       <h2>Edit Model details</h2>
 
-      <ign-description [description]="model.description"
+      <gz-description [description]="model.description"
                        [edit]="true"
                        [disabled]="updating"
                        (onModify)="onModifyDescription($event)"
                        fxFill>
-      </ign-description>
+      </gz-description>
 
-      <ign-categories [categories]="model.categories"
+      <gz-categories [categories]="model.categories"
                       [edit]="true"
                       [disabled]="updating"
                       (onModify)="onModifyCategories($event)"
                       fxFill>
-      </ign-categories>
+      </gz-categories>
 
-      <ign-tags [tags]="model.tags"
+      <gz-tags [tags]="model.tags"
                 [edit]="true"
                 [disabled]="updating"
                 (onModify)="onModifyTags()"
                 fxFill>
-      </ign-tags>
+      </gz-tags>
 
       <div fxLayout="column" fxFill>
         <p>Select if your model is public or private:</p>
@@ -44,20 +44,20 @@
       </div>
 
       <h2>Metadata</h2>
-      <ign-metadata [metadata]="model.metadata"
+      <gz-metadata [metadata]="model.metadata"
                 [edit]="true"
                 [disabled]="updating"
                 (onModify)="onModifyMetadata()"
                 fxFill>
-      </ign-metadata>
+      </gz-metadata>
 
       <h2>Thumbnails</h2>
 
-      <ign-thumbnail-generator [resource]="model"></ign-thumbnail-generator>
+      <gz-thumbnail-generator [resource]="model"></gz-thumbnail-generator>
 
       <h2>Replace files</h2>
 
-      <ign-file-upload (files)="onReceiveFiles($event)"
+      <gz-file-upload (files)="onReceiveFiles($event)"
                        [allowedExtensions]="allowedExtensions"
                        [uploading]="updating"
                        [resourceType]="'model'"
@@ -65,7 +65,7 @@
                                    Leave empty to keep the current files.<br/>
                                    If any files are uploaded, a new model version will be created with those files.<br/>'"
                        fxFill>
-      </ign-file-upload>
+      </gz-file-upload>
 
       <div class="save-buttons" fxLayout="row" fxLayoutAlign="space-between center" fxFill>
         <button mat-raised-button type="button" (click)="back()">Cancel</button>

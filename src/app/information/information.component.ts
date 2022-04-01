@@ -4,13 +4,13 @@ import { environment } from '../../environments/environment';
 declare const SwaggerUIBundle: any;
 
 @Component({
-  selector: 'ign-information',
+  selector: 'gz-information',
   templateUrl: 'information.component.html',
   styleUrls: ['information.component.scss']
 })
 
 /**
- * Information Component contains documentation about the Ignition App.
+ * Information Component contains documentation about the Gazebo App.
  */
 export class InformationComponent {
 }

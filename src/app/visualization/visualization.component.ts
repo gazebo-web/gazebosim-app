@@ -9,7 +9,7 @@ declare let GZ3D: any;
 declare let THREE: any;
 
 @Component({
-  selector: 'ign-visualization',
+  selector: 'gz-visualization',
   templateUrl: 'visualization.component.html',
   styleUrls: ['visualization.component.scss']
 })
@@ -258,50 +258,6 @@ export class VisualizationComponent implements OnDestroy {
           sceneInfo['ambient']['g'],
           sceneInfo['ambient']['b']);
       }
-    });
-
-    // Particle emitters.
-    // Remove this once we migrate to Ignition Fortress and
-    // Ignition Dome+Edifice are EOL.
-    this.particleEmittersSubscription = this.ws.particleEmitters$.subscribe((particleEmitters) => {
-      if (!particleEmitters) {
-        return;
-      }
-
-      particleEmitters['particle_emitter'].forEach((emitter) => {
-        const emitterObj = this.sdfParser.createParticleEmitter(emitter);
-        let topic = '';
-
-        // Ignition Fortress and beyond has a 'topic' field in the particle
-        // message. Ignition Dome and Edifice put the topic information in
-        // the header.
-        if ('topic' in emitter) {
-          topic = emitter.topic;
-        } else if ('header' in emitter) {
-          for (const data of emitter['header'].data)  {
-            if (data.key === 'topic') {
-              topic = data.value[0];
-            }
-          }
-        }
-
-        // Listen for particle emitter updates.
-        if (topic) {
-          const emitterTopic: Topic = {
-            name: topic,
-            cb: (msg) => {
-              if ('emitting' in msg) {
-                if (msg.emitting.data) {
-                  emitterObj.enable();
-                } else {
-                  emitterObj.disable();
-                }
-              }
-            }
-          };
-          this.ws.subscribe(emitterTopic);
-        }
-      });
     });
   }
 

@@ -10,7 +10,7 @@ import { Simulation } from '../simulation';
 import { PaginatedSimulation } from '../paginated-simulation';
 
 @Component({
-  selector: 'ign-simulation-table',
+  selector: 'gz-simulation-table',
   templateUrl: 'simulation-table.component.html',
   styleUrls: ['simulation-table.component.scss']
 })

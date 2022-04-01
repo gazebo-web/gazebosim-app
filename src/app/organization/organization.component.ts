@@ -19,7 +19,7 @@ import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 
 @Component({
-  selector: 'ign-organization',
+  selector: 'gz-organization',
   templateUrl: 'organization.component.html',
   styleUrls: ['organization.component.scss']
 })

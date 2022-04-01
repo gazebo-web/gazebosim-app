@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 declare let Detector: any;
 
 @Component({
-  selector: 'ign-file-upload',
+  selector: 'gz-file-upload',
   templateUrl: 'file-upload.component.html',
   styleUrls: ['file-upload.component.scss']
 })

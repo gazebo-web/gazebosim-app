@@ -8,7 +8,7 @@ import {
 import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: 'ign-confirmation-dialog',
+  selector: 'gz-confirmation-dialog',
   templateUrl: 'confirmation-dialog.component.html',
   styleUrls: ['confirmation-dialog.component.scss']
 })

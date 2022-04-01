@@ -6,7 +6,7 @@ import { ModelService } from '../model.service';
 import { PaginatedModels } from '../paginated-models';
 
 @Component({
-  selector: 'ign-models',
+  selector: 'gz-models',
   templateUrl: 'model-list.component.html',
   styleUrls: ['model-list.component.scss']
 })

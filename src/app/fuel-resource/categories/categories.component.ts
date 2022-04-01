@@ -5,7 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { CategoryService } from '../../fuel-resource/categories/category.service';
 
 @Component({
-  selector: 'ign-categories',
+  selector: 'gz-categories',
   templateUrl: 'categories.component.html',
 })
 

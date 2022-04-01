@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AdminElasticsearchService } from '../admin-elasticsearch.service';
 
 @Component({
-  selector: 'ign-elasticsearch-config-dialog',
+  selector: 'gz-elasticsearch-config-dialog',
   templateUrl: 'config-dialog.component.html',
   styleUrls: ['config-dialog.component.scss']
 })

@@ -8,7 +8,7 @@ import { Logfile } from '../logfile';
 import { LogfileService } from '../logfile.service';
 
 @Component({
-  selector: 'ign-logfile-score-dialog',
+  selector: 'gz-logfile-score-dialog',
   templateUrl: 'logfile-score-dialog.component.html',
 })
 

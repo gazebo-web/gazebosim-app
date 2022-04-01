@@ -13,14 +13,13 @@ export const environment = {
   AUTH0_LOGOUT_REDIRECT: process.env.AUTH0_LOGOUT_REDIRECT,
   AUTH0_SCOPE: process.env.AUTH0_SCOPE || 'openid profile email',
   // Backend
-  API_HOST: process.env.API_HOST || 'https://staging-fuel.ignitionrobotics.org',
+  API_HOST: process.env.API_HOST || 'https://staging-fuel.gazebosim.org',
   API_VERSION: process.env.API_VERSION || '1.0',
-  CLOUDSIM_HOST: process.env.CLOUDSIM_HOST || 'https://staging-cloudsim.ignitionrobotics.org',
+  CLOUDSIM_HOST: process.env.CLOUDSIM_HOST || 'https://staging-cloudsim.gazebosim.org',
   CLOUDSIM_VERSION: process.env.CLOUDSIM_VERSION || '1.0',
   CREDITS_REDIRECT: process.env.CREDITS_REDIRECT || '',
   // Other
   AWS_GZ_LOGS_BUCKET: process.env.AWS_GZ_LOGS_BUCKET || 'web-cloudsim-staging-logs',
-  SUBT_PORTAL_URL: process.env.SUBT_PORTAL_URL || 'https://staging.subtchallenge.world',
   STRIPE_PK: process.env.STRIPE_PK || '',
   CREDITS_REQUIRED: process.env.CREDITS_REQUIRED || '0',
 };

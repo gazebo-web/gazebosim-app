@@ -17,7 +17,7 @@ import {
 import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
 
 @Component({
-  selector: 'ign-collection',
+  selector: 'gz-collection',
   templateUrl: 'collection.component.html',
   styleUrls: ['collection.component.scss']
 })
@@ -140,7 +140,7 @@ export class CollectionComponent implements OnInit {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
 
-    this.bibTex = `@online{IgnitionFuel-` +
+    this.bibTex = `@online{GazeboFuel-` +
     `${this.collection.owner.split(' ').join('-')}-` +
     `${this.collection.name.split(' ').join('-')},`;
     this.bibTex += `\n\ttitle={${this.collection.name}},`;
@@ -157,7 +157,7 @@ export class CollectionComponent implements OnInit {
     // The collections's description, used to set meta tags.
     const description = this.collection.description !== undefined &&
       this.collection.description !== '' ? this.collection.description :
-      'A collection on the Ignition App.';
+      'A collection on the Gazebo App.';
 
     // Update header meta data. This assumes that index.html has been
     // populated with default values for each of the tags. If you add new tags,
