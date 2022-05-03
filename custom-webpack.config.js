@@ -23,7 +23,6 @@ module.exports = {
       CREDITS_REDIRECT: null,
       // Other
       AWS_GZ_LOGS_BUCKET: null,
-      SUBT_PORTAL_URL: null,
       STRIPE_PK: null,
       CREDITS_REQUIRED: null
     })

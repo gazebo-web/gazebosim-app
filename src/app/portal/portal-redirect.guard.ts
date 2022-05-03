@@ -16,10 +16,7 @@ export class PortalRedirectGuard implements CanActivate {
    * @returns A boolean indicating whether the navigation can be achieved or not.
    */
   public canActivate(route: ActivatedRouteSnapshot): boolean {
-    if (route.params['owner'] === 'DARPA' && route.params['portalname'] === 'SubT') {
-      window.location.href = environment.SUBT_PORTAL_URL;
-      return false;
-    }
+    window.location.href = "https://app.gazebosim.org";
     return true;
   }
 }

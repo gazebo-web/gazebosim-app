@@ -20,7 +20,6 @@ export const environment = {
   CREDITS_REDIRECT: process.env.CREDITS_REDIRECT || '',
   // Other
   AWS_GZ_LOGS_BUCKET: process.env.AWS_GZ_LOGS_BUCKET || '',
-  SUBT_PORTAL_URL: process.env.SUBT_PORTAL_URL || '',
   STRIPE_PK: process.env.STRIPE_PK || '',
   CREDITS_REQUIRED: process.env.CREDITS_REQUIRED || '0',
 };
