@@ -140,11 +140,11 @@ First, you need the AWS CLI installed and configured. You can do it the followin
 
     Where `APPLICATION_ENVIRONMENT` can be
 
-    - Integration: `integration-app.ignitionrobotics.org`
+    - Integration: `integration-app.gazebosim.org`
 
-    - Staging: `staging-app.ignitionrobotics.org`
+    - Staging: `staging-app.gazebosim.org`
 
-    - Production: `app.ignitionrobotics.org`
+    - Production: `app.gazebosim.org`
 
         aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
 
@@ -166,7 +166,7 @@ Each component and service being test requires a [TestBed](https://angular.io/ap
 
 ## Naming conventions
 
-Following the [Angular Style Guide](https://angular.io/guide/styleguide), we use the `ign` prefix for the selector of our Components and Directives. This is configured in the linter.
+Following the [Angular Style Guide](https://angular.io/guide/styleguide), we use the `gz` prefix for the selector of our Components and Directives. This is configured in the linter.
 
 ## Templates and variable scope
 
