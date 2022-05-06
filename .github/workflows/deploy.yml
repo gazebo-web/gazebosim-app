@@ -1,0 +1,87 @@
+name: deploy
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ staging, production ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '14.x'
+
+jobs:
+  staging-deploy:
+    if: github.ref == 'refs/heads/staging'
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      API_HOST:  ${{ secrets.API_HOST }}
+      APP_HOST: ${{ secrets.APP_HOST }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build:prod
+
+      - name: Deploy
+        uses: lbertenasco/s3-deploy@v1
+        with:
+          folder: dist
+          bucket: ${{ secrets.S3_BUCKET }}
+          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          invalidation: / *
+
+  production-deploy:
+    if: github.ref == 'refs/heads/production'
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      API_HOST:  ${{ secrets.API_HOST }}
+      APP_HOST: ${{ secrets.APP_HOST }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build:prod
+
+      - name: Deploy
+        uses: lbertenasco/s3-deploy@v1
+        with:
+          folder: dist
+          bucket: ${{ secrets.S3_BUCKET }}
+          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          invalidation: / *
