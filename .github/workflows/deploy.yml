@@ -22,7 +22,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       API_HOST:  ${{ secrets.API_HOST }}
-      APP_HOST: ${{ secrets.APP_HOST }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -59,7 +58,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       API_HOST:  ${{ secrets.API_HOST }}
-      APP_HOST: ${{ secrets.APP_HOST }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
