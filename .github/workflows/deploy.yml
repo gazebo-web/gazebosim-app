@@ -22,6 +22,15 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       API_HOST:  ${{ secrets.API_HOST }}
+      API_VERSION:  ${{ secrets.API_VERSION }}
+      AUTH0_AUDIENCE:  ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_DOMAIN:  ${{ secrets.AUTH0_CLIENT_DOMAIN }}
+      AUTH0_CLIENT_ID:  ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_LOGOUT_REDIRECT:  ${{ secrets.AUTH0_LOGOUT_REDIRECT }}
+      AUTH0_REDIRECT:  ${{ secrets.AUTH0_REDIRECT }}
+      AWS_GZ_LOGS_BUCKET:  ${{ secrets.AWS_GZ_LOGS_BUCKET }}
+      CLOUDSIM_HOST:  ${{ secrets.CLOUDSIM_HOST }}
+      CLOUDSIM_VERSION:  ${{ secrets.CLOUDSIM_VERSION }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -63,6 +72,15 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       API_HOST:  ${{ secrets.API_HOST }}
+      API_VERSION:  ${{ secrets.API_VERSION }}
+      AUTH0_AUDIENCE:  ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_DOMAIN:  ${{ secrets.AUTH0_CLIENT_DOMAIN }}
+      AUTH0_CLIENT_ID:  ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_LOGOUT_REDIRECT:  ${{ secrets.AUTH0_LOGOUT_REDIRECT }}
+      AUTH0_REDIRECT:  ${{ secrets.AUTH0_REDIRECT }}
+      AWS_GZ_LOGS_BUCKET:  ${{ secrets.AWS_GZ_LOGS_BUCKET }}
+      CLOUDSIM_HOST:  ${{ secrets.CLOUDSIM_HOST }}
+      CLOUDSIM_VERSION:  ${{ secrets.CLOUDSIM_VERSION }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
