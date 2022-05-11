@@ -38,7 +38,7 @@
 
 <ng-template #busyAnimation>
   <div fxLayout="column" fxLayoutAlign="center center">
-    <img class="loading-gif" src="assets/images/gz.gif" alt="Loading">
+    <div id="html-spinner"></div>
     <p class="mat-typography" *ngIf="!data.busyMessage else busyMessage">
       Please wait...
     </p>
