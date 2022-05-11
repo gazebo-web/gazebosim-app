@@ -16,7 +16,7 @@
     </div>
 
     <div class="loading-footer mat-typography">
-      <img src="assets/images/gz.gif" *ngIf="loading || !resources">
+      <div id="html-spinner" *ngIf="loading || !resources"></div>
 
       <h3 *ngIf="finished && resources && resources.length !== 0">
         No more {{resourceType}} to load.
