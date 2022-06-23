@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 @import '../../styles/custom-theme.scss';
 
 .hide-element {
@@ -6,7 +6,7 @@
 }
 
 #description-field ::ng-deep a {
-  color: mat-color($custom-theme-primary, 800);
+  color: mat.get-color-from-palette($custom-theme-primary, 800);
 }
 
 #description-field {

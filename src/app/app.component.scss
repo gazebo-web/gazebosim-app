@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 @import '../styles/custom-theme.scss';
 
 // Local variables.
@@ -60,7 +60,7 @@ mat-sidenav mat-divider {
 }
 
 .mat-drawer {
-  background-color: mat-color($custom-theme-primary);
+  background-color: mat.get-color-from-palette($custom-theme-primary);
 }
 
 gz-page-title {

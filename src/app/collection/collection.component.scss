@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 @import '../../styles/custom-theme.scss';
 
 div ::ng-deep .mat-tab-header {
@@ -26,7 +26,7 @@ div ::ng-deep .mat-tab-label {
 }
 
 .color-primary {
-  color: mat-color($custom-theme-primary);
+  color: mat.get-color-from-palette($custom-theme-primary);
 }
 
 .header {
@@ -72,7 +72,7 @@ input.search {
 
 .bibtex:hover {
   cursor: pointer;
-  color: mat-color($custom-theme-primary);
+  color: mat.get-color-from-palette($custom-theme-primary);
 }
 
 .mat-expansion-panel {
@@ -96,7 +96,7 @@ input.search {
   margin-bottom: 4px;
 }
 .download-link a {
-  color: mat-color($custom-theme-primary);
+  color: mat.get-color-from-palette($custom-theme-primary);
   padding: 10px;
 }
 .download-link a:hover {

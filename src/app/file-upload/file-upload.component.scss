@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 @import '../../styles/custom-theme.scss';
 
 .button-row {
@@ -40,7 +40,7 @@
 }
 
 .file:hover {
-  background-color: mat-color($custom-theme-accent, A100);
+  background-color: mat.get-color-from-palette($custom-theme-accent, A100);
 }
 
 .file > i {
@@ -48,7 +48,7 @@
 }
 
 .file > i:hover {
-  color: mat-color($custom-theme-accent, A700);
+  color: mat.get-color-from-palette($custom-theme-accent, A700);
 }
 
 .viewer-wrapper {

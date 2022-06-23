@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 @import '../../styles/custom-theme.scss';
 
 .content {
@@ -29,7 +29,7 @@
 }
 
 .model-name {
-  color: mat-color($custom-theme-primary);
+  color: mat.get-color-from-palette($custom-theme-primary);
 }
 
 .model-name h1 {
@@ -152,7 +152,7 @@
   right: 2em;
   position: absolute;
   z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
+  color: mat.get-color-from-palette($custom-theme-accent, A700);
 }
 
 .buttonFullscreen {
@@ -160,7 +160,7 @@
   right: 6em;
   position: absolute;
   z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
+  color: mat.get-color-from-palette($custom-theme-accent, A700);
 }
 
 .buttonResetView {
@@ -168,7 +168,7 @@
   right: 10em;
   position: absolute;
   z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
+  color: mat.get-color-from-palette($custom-theme-accent, A700);
 }
 
 
@@ -204,7 +204,7 @@ pre.bibtex {
 
 .bibtex:hover {
   cursor: pointer;
-  color: mat-color($custom-theme-primary);
+  color: mat.get-color-from-palette($custom-theme-primary);
 }
 
 ngx-gallery ::ng-deep .ngx-gallery-thumbnails .ngx-gallery-thumbnail {

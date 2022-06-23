@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 @import 'custom-theme.scss';
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 /* Required for ngx-gallery Icons */
@@ -28,11 +28,11 @@ a {
 }
 
 a:hover {
-  color: mat-color($custom-theme-primary, 800);
+  color: mat.get-color-from-palette($custom-theme-primary, 800);
 }
 
 a.color-link {
-  color: mat-color($custom-theme-primary, 700);
+  color: mat.get-color-from-palette($custom-theme-primary, 700);
 }
 
 // The following is from: https://materialdesignicons.com/getting-started
