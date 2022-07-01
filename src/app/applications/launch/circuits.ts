@@ -2,7 +2,6 @@
  * List of available simulation circuits.
  */
 export const circuits: string[] = [
-  'SubT Portal Access',
   'Systems Finals Prize Round',
   'Systems Finals Preliminary Round 1',
   'Systems Finals Preliminary Round 2',
