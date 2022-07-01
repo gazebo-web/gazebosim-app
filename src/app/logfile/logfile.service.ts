@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError, mergeMap } from 'rxjs/operators';
+import { parseLinkHeader as linkParser } from '@web3-storage/parse-link-header'
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
 import { environment } from '../../environments/environment';
 import { Logfile } from './logfile';
 import { PaginatedLogfile } from './paginated-logfile';
-
-import * as linkParser from 'parse-link-header';
 
 @Injectable()
 

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { parseLinkHeader as linkParser } from '@web3-storage/parse-link-header'
 
 import { AuthService } from '../auth/auth.service';
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
@@ -13,8 +14,6 @@ import { LeaderBoardEntry } from './leaderboard/leaderboard-entry';
 import { PaginatedLeaderBoardEntry } from './leaderboard/paginated-leaderboard-entry';
 import { UiError } from '../ui-error';
 import { environment } from '../../environments/environment';
-
-import * as linkParser from 'parse-link-header';
 
 @Injectable()
 

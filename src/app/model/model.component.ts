@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Meta } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription, forkJoin, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
@@ -584,7 +584,8 @@ export class ModelComponent implements OnInit, OnDestroy {
       const newGalleryImages = [];
 
       // To ensure the thumbnails are received in order.
-      const requests = [];
+      const requests: Observable<Blob>[] = [];
+
       this.model.images.forEach((image) => {
         requests.push(this.modelService.getFileAsBlob(image.url));
       });

@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Meta } from '@angular/platform-browser';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription, forkJoin, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
@@ -544,7 +544,7 @@ export class WorldComponent implements OnInit, OnDestroy {
       const newGalleryImages = [];
 
       // To ensure the thumbnails are received in order.
-      const requests = [];
+      const requests: Observable<Blob>[] = [];
       this.world.images.forEach((image) => {
         requests.push(this.worldService.getFileAsBlob(image.url));
       });

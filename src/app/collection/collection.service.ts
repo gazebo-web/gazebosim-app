@@ -2,6 +2,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { parseLinkHeader as linkParser } from '@web3-storage/parse-link-header'
 
 import { Collection } from './collection';
 import { FuelResource } from '../fuel-resource';
@@ -13,8 +14,6 @@ import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 import { UiError } from '../ui-error';
 import { environment } from '../../environments/environment';
-
-import * as linkParser from 'parse-link-header';
 
 @Injectable()
 
