@@ -82,8 +82,6 @@ export class DndDirective {
    */
   @HostListener('drop', ['$event']) public onDrop(event): void {
 
-    console.log('DROP EVENT', event);
-
     if (this.disabled) {
       return;
     }
@@ -101,16 +99,10 @@ export class DndDirective {
       this.pendingFiles.push(this.traverseEntry(entry));
     }
 
-    console.log('All files pending', this.pendingFiles);
-
     // Once all files are traversed, emit events
     const that = this;
-    console.log('Waiting for files');
-
     this.waitForFiles()
       .then((results) => {
-
-        console.log('RESULTS', results);
 
         // Concatenate results into valid and invalid
         let validFiles = [];
@@ -144,8 +136,6 @@ export class DndDirective {
    */
   private traverseEntry(entry: any): Promise<any> {
 
-    console.log('TRAVERSING FILE', entry);
-
     if (entry.isFile) {
 
       // Copy fullPath
@@ -171,9 +161,6 @@ export class DndDirective {
       });
     } else {
       return new Promise((resolve, reject) => {
-
-        console.log('TEEEST', entry);
-        debugger;
 
         const dirReader = entry.createReader();
         dirReader.readEntries((entries) => {

@@ -2,7 +2,7 @@
  * Created by ahsanayaz on 08/11/2016.
  */
 
-/* tslint:disable */
+/* eslint-disable */
 
 export const BROWSERS: any = {
     CHROME: 'chrome',
