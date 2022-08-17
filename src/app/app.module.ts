@@ -273,7 +273,7 @@ import { WorldService } from './world/world.service';
     NgxGalleryModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,
-    RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' }),
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.

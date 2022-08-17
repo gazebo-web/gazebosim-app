@@ -1,4 +1,4 @@
-import { async, inject } from '@angular/core/testing';
+import { inject, waitForAsync } from '@angular/core/testing';
 
 import { FileSizePipe } from './file-size.pipe';
 
