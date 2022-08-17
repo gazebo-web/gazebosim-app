@@ -1,7 +1,7 @@
 {
-  "name": "gazebosim-frontend",
-  "version": "3.0.0",
-  "description": "Frontend to gazebosim.org",
+  "name": "gazebosim-app",
+  "version": "4.0.0",
+  "description": "Frontend to app.gazebosim.org",
   "license": "Apache 2",
   "private": true,
   "scripts": {
@@ -26,7 +26,6 @@
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
     "@angular/router": "~11.2.14",
-    "@kolkov/ngx-gallery": "^1.2.3",
     "@stripe/stripe-js": "^1.20.3",
     "auth0-js": "^9.14.0",
     "file-saver": "^2.0.2",
@@ -50,8 +49,6 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.19.3",
     "codelyzer": "^6.0.0",
-    "jasmine-core": "~3.6.0",
-    "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
