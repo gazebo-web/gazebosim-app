@@ -542,15 +542,6 @@ export class WorldComponent implements OnInit, OnDestroy {
 
           // Set the images and correct options.
           this.galleryImages = newGalleryImages;
-          /*if (this.galleryImages.length === 1) {
-            newGalleryOptions['imageArrowsAutoHide'] = false;
-            newGalleryOptions['imageArrows'] = false;
-            newGalleryOptions['thumbnails'] = false;
-          }
-          if (this.galleryImages.length === 2) {
-            newGalleryOptions['thumbnailsColumns'] = 2;
-          }
-         */
         }
       );
     } else {

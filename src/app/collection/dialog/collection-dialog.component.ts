@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, switchMap, debounceTime } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Collection } from '../collection';
 import { CollectionService } from '../collection.service';

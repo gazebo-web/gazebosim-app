@@ -50,12 +50,6 @@ export class ModelComponent implements OnInit, OnDestroy {
   public canEdit: boolean = false;
 
   /**
-   * The gallery options. Determines the behavior of the gallery component.
-   *
-   */
-  public galleryOptions: SwiperOptions;
-
-  /**
    * The images to be displayed in the gallery.
    */
   public galleryImages: SafeUrl[];
@@ -569,22 +563,6 @@ export class ModelComponent implements OnInit, OnDestroy {
    * Populates the image gallery with the model images and sets the options.
    */
   public setupGallery(): void {
-    // Set the Gallery Options.
-    /*const newGalleryOptions = {
-      imageSize: NgxGalleryImageSize.Contain,
-      thumbnailSize: NgxGalleryImageSize.Contain,
-      width: '100%',
-      height: '100%',
-      thumbnailsColumns: 3,
-      imageArrowsAutoHide: true,
-      thumbnailsArrowsAutoHide: true,
-      arrowPrevIcon: 'gallery-ic_chevron_left circle-icon',
-      arrowNextIcon: 'gallery-ic_chevron_right circle-icon',
-      preview: false,
-    };
-    this.galleryOptions = [newGalleryOptions];
-   */
-
     // Verify that the model has images.
     if (this.model.images && this.model.images.length !== 0) {
       const newGalleryImages: SafeUrl[] = [];
@@ -606,16 +584,6 @@ export class ModelComponent implements OnInit, OnDestroy {
 
           // Set the images and correct options.
           this.galleryImages = newGalleryImages;
-          /*if (this.galleryImages.length === 1) {
-            newGalleryOptions['imageArrowsAutoHide'] = false;
-            newGalleryOptions['imageArrows'] = false;
-            newGalleryOptions['thumbnails'] = false;
-          }
-          if (this.galleryImages.length === 2) {
-            newGalleryOptions['thumbnailsColumns'] = 2;
-          }
-          this.galleryOptions = [newGalleryOptions];
-         */
         }
       );
     } else {
