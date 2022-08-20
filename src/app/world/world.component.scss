@@ -1,9 +1,6 @@
 @import '~@angular/material/theming';
 @import '../../styles.scss';
-@import 'swiper/scss';
-@import 'swiper/scss/navigation';
-@import 'swiper/scss/pagination';
-
+@import '../../swiper.scss';
 
 .content {
   width: 100%;
@@ -201,5 +198,3 @@ pre.bibtex {
   cursor: pointer;
   color: mat-color($custom-theme-primary);
 }
-
-

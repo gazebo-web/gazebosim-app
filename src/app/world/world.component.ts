@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, SecurityContext, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Meta } from '@angular/platform-browser';
+import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription, forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
@@ -25,7 +25,8 @@ declare let Detector: any;
 @Component({
   selector: 'gz-world',
   templateUrl: 'world.component.html',
-  styleUrls: ['world.component.scss']
+  styleUrls: ['world.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 /**
@@ -47,14 +48,14 @@ export class WorldComponent implements OnInit, OnDestroy {
   public canEdit: boolean = false;
 
   /**
-   * The gallery options. Determines the behavior of the gallery component.
-   */
-  public galleryOptions: SwiperOptions;
-
-  /**
    * The images to be displayed in the gallery.
    */
-  public galleryImages: string[];
+  public galleryImages: SafeUrl[];
+
+  /**
+   * Thumb swiper helper
+   */
+  public thumbsSwiper: any;
 
   /**
    * Disable the like button. This helps to prevent multiple calls.
@@ -146,7 +147,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     private worldService: WorldService,
     private router: Router,
     public snackBar: MatSnackBar,
-    private metaService: Meta) {
+    private metaService: Meta,
+    private sanitizer: DomSanitizer) {
   }
 
   /**
@@ -245,7 +247,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     // Revoke the URLs of the Gallery.
     if (this.galleryImages && this.galleryImages.length !== 0) {
       this.galleryImages.forEach((galleryImage) => {
-        URL.revokeObjectURL(galleryImage);
+        URL.revokeObjectURL(
+          this.sanitizer.sanitize(SecurityContext.URL, galleryImage));
       });
     }
   }
@@ -518,25 +521,9 @@ export class WorldComponent implements OnInit, OnDestroy {
    * Populates the image gallery with the world images and sets the options.
    */
   public setupGallery(): void {
-    // Set the Gallery Options.
-    /*const newGalleryOptions = {
-      imageSize: NgxGalleryImageSize.Contain,
-      thumbnailSize: NgxGalleryImageSize.Contain,
-      width: '100%',
-      height: '100%',
-      thumbnailsColumns: 3,
-      imageArrowsAutoHide: true,
-      thumbnailsArrowsAutoHide: true,
-      arrowPrevIcon: 'gallery-ic_chevron_left circle-icon',
-      arrowNextIcon: 'gallery-ic_chevron_right circle-icon',
-      preview: false,
-    };
-    this.galleryOptions = [newGalleryOptions];
-   */
-
     // Verify that the world has images.
     if (this.world.images && this.world.images.length !== 0) {
-      const newGalleryImages: string[] = [];
+      const newGalleryImages: SafeUrl[] = [];
 
       // To ensure the thumbnails are received in order.
       const requests = [];
@@ -547,7 +534,8 @@ export class WorldComponent implements OnInit, OnDestroy {
         (response) => {
           // The response contains the Blobs of all thumbnails, in the order they were requested.
           response.forEach((blob) => {
-            const imageUrl = URL.createObjectURL(blob);
+            const imageUrl: SafeUrl = this.sanitizer.bypassSecurityTrustUrl(
+              URL.createObjectURL(blob));
             newGalleryImages.push(imageUrl);
           });
           // All the images were processed at this point.
@@ -562,7 +550,6 @@ export class WorldComponent implements OnInit, OnDestroy {
           if (this.galleryImages.length === 2) {
             newGalleryOptions['thumbnailsColumns'] = 2;
           }
-          this.galleryOptions = [newGalleryOptions];
          */
         }
       );

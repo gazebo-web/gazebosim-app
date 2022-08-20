@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="gallery-container-outer">
-          <div class="gallery-container-inner" fxLayoutAlign="center center">
+          <div class="gallery-container-inner" fxLayout="column" fxLayoutAlign="center center">
 
             <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!galleryImages">
               <div id="html-spinner" *ngIf="loading || !resources"></div>
@@ -52,10 +52,23 @@
               <span class="mat-typography font-x-large">This model has no thumbnails.</span>
             </div>
 
+            <swiper  *ngIf="galleryImages && galleryImages.length > 0"
+                    style="--swiper-navigation-color: #000;--swiper-pagination-color: #000"
+                    [spaceBetween]="0"
+                    [navigation]="true"
+                    [thumbs]="{ swiper: thumbsSwiper }"
+                    class="mainSwiper">
+            <ng-template *ngFor="let img of galleryImages" swiperSlide><img [src]="img"/></ng-template>
+            </swiper>
 
-            <swiper *ngIf="galleryImages && galleryImages.length != 0"
-              [config]="galleryOptions">
-              <ng-template *ngFor="let img of galleryImages" swiperSlide><img src="{{img}}"/></ng-template>
+            <swiper *ngIf="galleryImages && galleryImages.length > 0"
+              (swiper)="thumbsSwiper = $event"
+              [spaceBetween]="0"
+              [slidesPerView]="galleryImages !== undefined ? galleryImages.length : 0"
+              [freeMode]="true"
+              [watchSlidesProgress]="true"
+              class="thumbSwiper">
+            <ng-template *ngFor="let img of galleryImages" swiperSlide><img [src]="img"/></ng-template>
             </swiper>
 
           </div>

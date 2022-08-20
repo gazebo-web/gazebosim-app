@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, SecurityContext, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Meta } from '@angular/platform-browser';
+import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 
 import * as FileSaver from 'file-saver';
 
+import { SwiperComponent } from "swiper/angular";
 import SwiperCore, {FreeMode, Navigation, Thumbs, SwiperOptions} from 'swiper';
 SwiperCore.use([FreeMode, Navigation, Thumbs]);
 
@@ -26,7 +27,8 @@ declare let Detector: any;
 @Component({
   selector: 'gz-model',
   templateUrl: 'model.component.html',
-  styleUrls: ['model.component.scss']
+  styleUrls: ['model.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 
 /**
@@ -56,7 +58,12 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * The images to be displayed in the gallery.
    */
-  public galleryImages: string[];
+  public galleryImages: SafeUrl[];
+
+  /**
+   * Thumb swiper helper
+   */
+  public thumbsSwiper: any;
 
   /**
    * GzWeb visualizer flag.
@@ -148,7 +155,8 @@ export class ModelComponent implements OnInit, OnDestroy {
     private modelService: ModelService,
     private router: Router,
     public snackBar: MatSnackBar,
-    private metaService: Meta) {
+    private metaService: Meta,
+    private sanitizer: DomSanitizer) {
   }
 
   /**
@@ -247,7 +255,8 @@ export class ModelComponent implements OnInit, OnDestroy {
     // Revoke the URLs of the Gallery.
     if (this.galleryImages && this.galleryImages.length !== 0) {
       this.galleryImages.forEach((galleryImage) => {
-        URL.revokeObjectURL(galleryImage);
+        URL.revokeObjectURL(
+          this.sanitizer.sanitize(SecurityContext.URL, galleryImage));
       });
     }
   }
@@ -578,7 +587,7 @@ export class ModelComponent implements OnInit, OnDestroy {
 
     // Verify that the model has images.
     if (this.model.images && this.model.images.length !== 0) {
-      const newGalleryImages: string[] = [];
+      const newGalleryImages: SafeUrl[] = [];
 
       // To ensure the thumbnails are received in order.
       const requests = [];
@@ -589,7 +598,8 @@ export class ModelComponent implements OnInit, OnDestroy {
         (response) => {
           // The response contains the Blobs of all thumbnails, in the order they were requested.
           response.forEach((blob) => {
-            const imageUrl = URL.createObjectURL(blob);
+            const imageUrl: SafeUrl = this.sanitizer.bypassSecurityTrustUrl(
+              URL.createObjectURL(blob));
             newGalleryImages.push(imageUrl);
           });
           // All the images were processed at this point.
