@@ -14,7 +14,7 @@ import { PaginatedWorlds } from '../world/paginated-worlds';
 import { UiError } from '../ui-error';
 import { environment } from '../../environments/environment';
 
-import * as linkParser from 'parse-link-header';
+import { parseLinkHeader } from '@web3-storage/parse-link-header'
 
 @Injectable()
 
@@ -62,7 +62,7 @@ export class CollectionService {
         paginatedCollection.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
-        paginatedCollection.nextPage = this.parseLinkHeader(response);
+        paginatedCollection.nextPage = this.parseHeader(response);
         return paginatedCollection;
       }),
       catchError(this.handleError)
@@ -86,7 +86,7 @@ export class CollectionService {
         paginatedCollection.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
-        paginatedCollection.nextPage = this.parseLinkHeader(response);
+        paginatedCollection.nextPage = this.parseHeader(response);
         return paginatedCollection;
       }),
       catchError(this.handleError)
@@ -107,7 +107,7 @@ export class CollectionService {
         paginatedCollection.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
-        paginatedCollection.nextPage = this.parseLinkHeader(response);
+        paginatedCollection.nextPage = this.parseHeader(response);
         return paginatedCollection;
       }),
       catchError(this.handleError)
@@ -146,7 +146,7 @@ export class CollectionService {
         paginatedModels.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedModels.resources = this.factory.fromJson(response.body, Model);
-        paginatedModels.nextPage = this.parseLinkHeader(response);
+        paginatedModels.nextPage = this.parseHeader(response);
         return paginatedModels;
       }),
       catchError(this.handleError)
@@ -168,7 +168,7 @@ export class CollectionService {
         paginatedWorlds.totalCount = +response.headers.get(
           CollectionService.headerTotalCount);
         paginatedWorlds.resources = this.factory.fromJson(response.body, World);
-        paginatedWorlds.nextPage = this.parseLinkHeader(response);
+        paginatedWorlds.nextPage = this.parseHeader(response);
         return paginatedWorlds;
       }),
       catchError(this.handleError)
@@ -279,7 +279,7 @@ export class CollectionService {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(CollectionService.headerTotalCount);
         paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
-        paginatedCollection.nextPage = this.parseLinkHeader(response);
+        paginatedCollection.nextPage = this.parseHeader(response);
         return paginatedCollection;
       }),
       catchError(this.handleError)
@@ -300,7 +300,7 @@ export class CollectionService {
           res.totalCount = +response.headers.get(
             CollectionService.headerTotalCount);
           res.collections = this.factory.fromJson(response.body, Collection);
-          res.nextPage = this.parseLinkHeader(response);
+          res.nextPage = this.parseHeader(response);
           return res;
         }),
         catchError(this.handleError)
@@ -434,13 +434,13 @@ export class CollectionService {
    * @param response The response that has a Link header to parse.
    * @returns The URL of the next page or null if there is none.
    */
-  private parseLinkHeader(response: HttpResponse<any>): string {
+  private parseHeader(response: HttpResponse<any>): string {
     const link = response.headers.get('link');
     let nextUrl = null;
     if (link &&
-      linkParser(link) &&
-      linkParser(link).next) {
-      const url = linkParser(link).next.url;
+      parseLinkHeader(link) &&
+      parseLinkHeader(link).next) {
+      const url = parseLinkHeader(link).next.url;
       nextUrl = `${environment.API_HOST}${url}`;
     }
     return nextUrl;

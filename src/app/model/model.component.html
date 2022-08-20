@@ -52,10 +52,11 @@
               <span class="mat-typography font-x-large">This model has no thumbnails.</span>
             </div>
 
-            <ngx-gallery *ngIf="galleryImages && galleryImages.length != 0"
-              [options]="galleryOptions"
-              [images]="galleryImages">
-            </ngx-gallery>
+
+            <swiper *ngIf="galleryImages && galleryImages.length != 0"
+              [config]="galleryOptions">
+              <ng-template *ngFor="let img of galleryImages" swiperSlide><img src="{{img}}"/></ng-template>
+            </swiper>
 
           </div>
         </div>

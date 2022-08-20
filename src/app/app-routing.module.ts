@@ -1,4 +1,5 @@
-import { Routes, ActivatedRoute } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
 
 import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
 import { AdminComponent } from './admin';
@@ -31,11 +32,6 @@ import { OrganizationComponent } from './organization';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
 import { OwnerProfileResolver } from './user/owner-profile.resolver';
 import { PageNotFoundComponent } from './page-not-found';
-import { PortalComponent } from './portal';
-import { PortalListComponent } from './portal';
-import { PortalListResolver } from './portal';
-import { PortalRedirectGuard } from './portal/portal-redirect.guard';
-import { PortalResolver } from './portal';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
@@ -51,7 +47,7 @@ import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 
-export const ROUTES: Routes = [
+const routes: Routes = [
   {
     path: '',
     redirectTo: '/dashboard',
@@ -166,36 +162,11 @@ export const ROUTES: Routes = [
     }
   },
   {
-    path: 'portal',
-    component: AssetDisplayComponent,
-    data: {
-      component: PortalListComponent,
-      title: 'Portals',
-      titlebarTitle: 'Portals',
-    },
-    resolve: {
-      resolvedData: PortalListResolver,
-    }
-  },
-  {
     path: 'applications',
     component: ApplicationsComponent,
     data: {
       titlebarTitle: 'Applications',
       titlebarSubtitle: ''
-    }
-  },
-  {
-    path: ':owner/portals/:portalname',
-    component: AssetDisplayComponent,
-    canActivate: [PortalRedirectGuard],
-    data: {
-      component: PortalComponent,
-      title: 'Portal',
-      titlebarTitle: 'Portal',
-    },
-    resolve: {
-      resolvedData: PortalResolver,
     }
   },
   {
@@ -665,3 +636,9 @@ export const ROUTES: Routes = [
     }
   }
 ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes, {anchorScrolling: 'enabled'})],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

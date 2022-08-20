@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, switchMap, debounceTime } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 import { Collection } from '../collection';
 import { CollectionService } from '../collection.service';
@@ -100,12 +100,12 @@ export class CollectionDialogComponent implements OnInit {
     // Prepare the collection list filter by input.
     this.collectionList = this.collectionAddInputForm.valueChanges.pipe(
       debounceTime(300),
-      switchMap((value) => {
+      switchMap((value, index) => {
         // Value is a string until a collection is selected.
         // Once selected, the value is a Collection instead of a string. A collection is useful
         // because we need both name and owner, but we need a string to pass to the search query.
-        if (value.name) {
-          value = value.name;
+        if (typeof value !== 'string') {
+          value = (value as Collection).name;
         }
         return this.collectionService.getCollectionExtensibleList(value).pipe(
           map((paginatedCollections) => {
@@ -122,12 +122,12 @@ export class CollectionDialogComponent implements OnInit {
     // Verify the input field contains a collection. If none was selected, it is only
     // a string.
     if (!this.collectionAddInputForm.value ||
-      this.collectionAddInputForm.value.name === undefined) {
+        typeof this.collectionAddInputForm.value === 'string') {
       return;
     }
 
-    const selectedName = this.collectionAddInputForm.value.name;
-    const selectedOwner = this.collectionAddInputForm.value.owner;
+    const selectedName = (this.collectionAddInputForm.value as Collection).name;
+    const selectedOwner = (this.collectionAddInputForm.value as Collection).owner;
 
     this.collectionService.addAsset(selectedOwner, selectedName, this.resource).subscribe(
       (response) => {

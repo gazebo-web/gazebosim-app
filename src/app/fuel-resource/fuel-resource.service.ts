@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
 import { FuelResource } from './fuel-resource';
 import { FuelPaginatedResource } from './fuel-paginated-resource';
 
-import * as linkParser from 'parse-link-header';
+import { parseLinkHeader } from '@web3-storage/parse-link-header'
 
 @Injectable()
 
@@ -91,7 +91,7 @@ export abstract class FuelResourceService {
         paginatedResource.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
-        paginatedResource.nextPage = this.parseLinkHeader(response);
+        paginatedResource.nextPage = this.parseHeader(response);
         return paginatedResource;
       }),
       catchError(this.handleError)
@@ -113,7 +113,7 @@ export abstract class FuelResourceService {
         paginatedResource.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
-        paginatedResource.nextPage = this.parseLinkHeader(response);
+        paginatedResource.nextPage = this.parseHeader(response);
         return paginatedResource;
       }),
       catchError(this.handleError)
@@ -135,7 +135,7 @@ export abstract class FuelResourceService {
         paginatedResource.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
-        paginatedResource.nextPage = this.parseLinkHeader(response);
+        paginatedResource.nextPage = this.parseHeader(response);
         return paginatedResource;
       }),
       catchError(this.handleError)
@@ -156,7 +156,7 @@ export abstract class FuelResourceService {
         res.totalCount = +response.headers.get(
           FuelResourceService.headerTotalCount);
         res.resources = this.factory.fromJson(response.body, this.resourceClass);
-        res.nextPage = this.parseLinkHeader(response);
+        res.nextPage = this.parseHeader(response);
         return res;
       }),
       catchError(this.handleError)
@@ -505,12 +505,12 @@ export abstract class FuelResourceService {
    * @param response The response that has a Link header to parse.
    * @returns The URL of the next page or null if there is none.
    */
-  private parseLinkHeader(response: HttpResponse<any>): string {
+  private parseHeader(response: HttpResponse<any>): string {
     const link = response.headers.get('link');
     if (link &&
-      linkParser(link) &&
-      linkParser(link).next) {
-      const url = linkParser(link).next.url;
+      parseLinkHeader(link) &&
+      parseLinkHeader(link).next) {
+      const url = parseLinkHeader(link).next.url;
       this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
       this.nextUrl = null;

@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 import { Logfile } from './logfile';
 import { PaginatedLogfile } from './paginated-logfile';
 
-import * as linkParser from 'parse-link-header';
+import { parseLinkHeader } from '@web3-storage/parse-link-header'
 
 @Injectable()
 
@@ -64,7 +64,7 @@ export class LogfileService {
         paginatedLogfile.totalCount = +response.headers.get(
           LogfileService.headerTotalCount);
         paginatedLogfile.logfiles = this.factory.fromJson(response.body, Logfile);
-        paginatedLogfile.nextPage = this.parseLinkHeader(response);
+        paginatedLogfile.nextPage = this.parseHeader(response);
         return paginatedLogfile;
       }),
       catchError(this.handleError)
@@ -175,7 +175,7 @@ export class LogfileService {
         res.totalCount = +response.headers.get(
           LogfileService.headerTotalCount);
         res.logfiles = this.factory.fromJson(response.body, Logfile);
-        res.nextPage = this.parseLinkHeader(response);
+        res.nextPage = this.parseHeader(response);
         return res;
       }),
       catchError(this.handleError)
@@ -189,13 +189,13 @@ export class LogfileService {
    * @param response The response that has a Link header to parse.
    * @returns The URL of the next page or null if there is none.
    */
-  private parseLinkHeader(response: HttpResponse<any>): string {
+  private parseHeader(response: HttpResponse<any>): string {
     const link = response.headers.get('link');
     let nextUrl = null;
     if (link &&
-      linkParser(link) &&
-      linkParser(link).next) {
-      const url = linkParser(link).next.url;
+      parseLinkHeader(link) &&
+      parseLinkHeader(link).next) {
+      const url = parseLinkHeader(link).next.url;
       nextUrl = `${environment.API_HOST}${url}`;
     }
     return nextUrl;

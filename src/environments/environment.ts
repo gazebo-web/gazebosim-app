@@ -1,7 +1,6 @@
 // This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
+// `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-// Devnote: Environment variables are handled with a custom Webpack configuration.
 
 export const environment = {
   production: false,
@@ -31,4 +30,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-import 'zone.js/dist/zone-error';
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

@@ -1,5 +1,8 @@
 @import '~@angular/material/theming';
-@import '../../styles/custom-theme.scss';
+@import '../../styles.scss';
+@import 'swiper/scss';
+@import 'swiper/scss/navigation';
+@import 'swiper/scss/pagination';
 
 .content {
   width: 100%;
@@ -205,8 +208,4 @@ pre.bibtex {
 .bibtex:hover {
   cursor: pointer;
   color: mat-color($custom-theme-primary);
-}
-
-ngx-gallery ::ng-deep .ngx-gallery-thumbnails .ngx-gallery-thumbnail {
-  border: none !important;
 }

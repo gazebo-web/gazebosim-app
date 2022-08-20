@@ -19,7 +19,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { Observable, Subscription, of, throwError } from 'rxjs';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule } from 'ngx-markdown';
-import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import * as FileSaver from 'file-saver';
 
 import { AuthPipe } from '../auth/auth.pipe';

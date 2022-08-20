@@ -17,9 +17,9 @@ import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dia
 import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 
 import * as FileSaver from 'file-saver';
-import { NgxGalleryOptions,
-         NgxGalleryImage,
-         NgxGalleryImageSize } from '@kolkov/ngx-gallery';
+
+import SwiperCore, {FreeMode, Navigation, Thumbs, SwiperOptions} from 'swiper';
+SwiperCore.use([FreeMode, Navigation, Thumbs]);
 
 declare let Detector: any;
 
@@ -50,16 +50,13 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * The gallery options. Determines the behavior of the gallery component.
    *
-   * See https://github.com/lukasz-galka/ngx-gallery#ngxgalleryoptions for more details.
    */
-  public galleryOptions: NgxGalleryOptions[];
+  public galleryOptions: SwiperOptions;
 
   /**
    * The images to be displayed in the gallery.
-   *
-   * See https://github.com/lukasz-galka/ngx-gallery#ngxgalleryimage for more details.
    */
-  public galleryImages: NgxGalleryImage[];
+  public galleryImages: string[];
 
   /**
    * GzWeb visualizer flag.
@@ -250,8 +247,7 @@ export class ModelComponent implements OnInit, OnDestroy {
     // Revoke the URLs of the Gallery.
     if (this.galleryImages && this.galleryImages.length !== 0) {
       this.galleryImages.forEach((galleryImage) => {
-        URL.revokeObjectURL(galleryImage.small as string);
-        URL.revokeObjectURL(galleryImage.medium as string);
+        URL.revokeObjectURL(galleryImage);
       });
     }
   }
@@ -565,7 +561,7 @@ export class ModelComponent implements OnInit, OnDestroy {
    */
   public setupGallery(): void {
     // Set the Gallery Options.
-    const newGalleryOptions = {
+    /*const newGalleryOptions = {
       imageSize: NgxGalleryImageSize.Contain,
       thumbnailSize: NgxGalleryImageSize.Contain,
       width: '100%',
@@ -578,10 +574,11 @@ export class ModelComponent implements OnInit, OnDestroy {
       preview: false,
     };
     this.galleryOptions = [newGalleryOptions];
+   */
 
     // Verify that the model has images.
     if (this.model.images && this.model.images.length !== 0) {
-      const newGalleryImages = [];
+      const newGalleryImages: string[] = [];
 
       // To ensure the thumbnails are received in order.
       const requests = [];
@@ -593,16 +590,13 @@ export class ModelComponent implements OnInit, OnDestroy {
           // The response contains the Blobs of all thumbnails, in the order they were requested.
           response.forEach((blob) => {
             const imageUrl = URL.createObjectURL(blob);
-            newGalleryImages.push({
-              medium: imageUrl,
-              small: imageUrl,
-            });
+            newGalleryImages.push(imageUrl);
           });
           // All the images were processed at this point.
 
           // Set the images and correct options.
           this.galleryImages = newGalleryImages;
-          if (this.galleryImages.length === 1) {
+          /*if (this.galleryImages.length === 1) {
             newGalleryOptions['imageArrowsAutoHide'] = false;
             newGalleryOptions['imageArrows'] = false;
             newGalleryOptions['thumbnails'] = false;
@@ -611,6 +605,7 @@ export class ModelComponent implements OnInit, OnDestroy {
             newGalleryOptions['thumbnailsColumns'] = 2;
           }
           this.galleryOptions = [newGalleryOptions];
+         */
         }
       );
     } else {

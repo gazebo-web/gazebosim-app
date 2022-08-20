@@ -14,7 +14,7 @@ import { PaginatedLeaderBoardEntry } from './leaderboard/paginated-leaderboard-e
 import { UiError } from '../ui-error';
 import { environment } from '../../environments/environment';
 
-import * as linkParser from 'parse-link-header';
+import { parseLinkHeader } from '@web3-storage/parse-link-header'
 
 @Injectable()
 
@@ -128,7 +128,7 @@ export class PortalService {
         const res = new PaginatedRegistration();
         res.totalCount = +response.headers.get(this.headerTotalCount);
         res.registrations = this.factory.fromJson(response.body, Registration);
-        res.nextPage = this.parseLinkHeader(response);
+        res.nextPage = this.parseHeader(response);
         return res;
       }),
       catchError(this.handleError)
@@ -201,7 +201,7 @@ export class PortalService {
     }
     return this.http.get(url, {observe: 'response'}).pipe(
       map((response) => {
-        this.parseLinkHeader(response);
+        this.parseHeader(response);
         if (response.body) {
           const paginatedOrg = new PaginatedOrganizations();
           paginatedOrg.totalCount = +response.headers.get(this.headerTotalCount);
@@ -248,12 +248,12 @@ export class PortalService {
    * @param response The response that has a Link header to parse.
    * @returns The URL of the next page or null if there is none.
    */
-  private parseLinkHeader(response: HttpResponse<any>): string {
+  private parseHeader(response: HttpResponse<any>): string {
     const link = response.headers.get('link');
     if (link &&
-        linkParser(link) &&
-        linkParser(link).next) {
-      const url = linkParser(link).next.url;
+        parseLinkHeader(link) &&
+        parseLinkHeader(link).next) {
+      const url = parseLinkHeader(link).next.url;
       this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
       this.nextUrl = null;
