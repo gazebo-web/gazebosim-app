@@ -79,6 +79,7 @@ export class VisualizationComponent implements OnDestroy {
       websocketUrl: this.wsUrl,
       websocketKey: this.authKey,
     });
+    this.connectionStatus = 'connected';
   }
 
   /**

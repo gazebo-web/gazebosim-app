@@ -13,11 +13,11 @@
           <input matInput [(ngModel)]="authKey" placeholder="Authorization Key">
         </mat-form-field>
 
-        <button mat-raised-button (click)="connect()" *ngIf="connectionStatus === 'Disconnected'">
+        <button mat-raised-button (click)="connect()" *ngIf="connectionStatus === 'disconnected'">
           Connect
         </button>
 
-        <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'Disconnected'">
+        <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'disconnected'">
           Disconnect
         </button>
       </div>
