@@ -97,8 +97,6 @@ export class AppComponent implements OnInit {
    * to media events in order to control the behavior of the sidenav.
    */
   public ngOnInit(): void {
-    console.log(this.authService.userProfile);
-
     // Subscribe to media changes. Detects the change in a layout breakpoint.
     this.media.asObservable().subscribe((changes: MediaChange[]) => {
       if (changes.some(change => change.mqAlias === 'xs')) {

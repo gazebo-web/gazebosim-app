@@ -2,7 +2,9 @@ import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
-import { SceneManager } from 'gzweb';
+import { SceneManager, Logplayback } from 'gzweb';
+
+import initSqlJs, { Database, SqlJsStatic, Statement } from "@foxglove/sql.js";
 
 @Component({
   selector: 'gz-visualization',
@@ -51,6 +53,8 @@ export class VisualizationComponent implements OnDestroy {
    */
   private fullscreen: boolean = false;
 
+  private logPlay: Logplayback;
+
   /**
    * Reference to the <div> that can be toggled fullscreen.
    */
@@ -62,6 +66,49 @@ export class VisualizationComponent implements OnDestroy {
    */
    constructor(
      public snackBar: MatSnackBar) {
+/*
+    // this.logPlay = new Logplayback();
+    fetch(
+      //new URL("@foxglove/sql.js/dist/sql-wasm.wasm", import.meta.url).toString())
+      new URL("https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.2.1/dist/sql-wasm.wasm").toString())
+      .then((response) => {
+        console.log('Got ', response);
+      });
+     */
+  }
+
+  async init(dbFile: File) {
+
+    console.log('SQL DB initialized');
+    const res = await fetch(
+      //new URL("https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.2.1/dist/sql-wasm.wasm").toString());
+      new URL("http://localhost:8080/sql-wasm.wasm").toString());
+
+    const sqlWasm = await (await res.blob()).arrayBuffer();
+    const config = {wasmBinary: sqlWasm};
+    const SQL = await initSqlJs(config);
+
+    const fileReader = new FileReader();
+
+    let db: Database;
+
+    fileReader.onload = () => {
+      db = new SQL.Database({ data: new Uint8Array(fileReader.result as ArrayBuffer) });
+      console.log(db);
+      const contents = db.exec("select * from topics");
+      console.log(contents);
+    }
+    fileReader.readAsArrayBuffer(dbFile);
+
+    //const dataRes = await fetch(dbFile);
+    //const database = await (await dataRes.blob()).arrayBuffer();
+
+  }
+
+  public fileChanged(e) {
+    const file = e.target.files[0]; 
+    let worker = new Worker(new URL("./log.worker", import.meta.url));
+    this.init(file);
   }
 
   /**
@@ -177,6 +224,9 @@ export class VisualizationComponent implements OnDestroy {
     if (this.sceneMgr) {
       this.sceneMgr.snapshot();
     }
+  }
+
+  public logplay(): void {
   }
 
   /**

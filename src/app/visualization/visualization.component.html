@@ -20,6 +20,10 @@
         <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'disconnected'">
           Disconnect
         </button>
+
+        <button mat-raised-button (click)="logplay()">Log</button>
+        <input type='file' (change)="fileChanged($event)">
+
       </div>
     </div>
   </div>
