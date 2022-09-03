@@ -151,12 +151,12 @@ import { WorldService } from './world/world.service';
    * Array of local components and pipes.
    */
   declarations: [
-    AppComponent,
     AccessTokenDialogComponent,
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
     APIComponent,
+    AppComponent,
     ApplicationsComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
@@ -264,9 +264,9 @@ import { WorldService } from './world/world.service';
    * Expose our Services and Providers into Angular's dependency injection.
    */
   providers: [
+    AdminElasticsearchService,
     AuthGuard,
     AuthService,
-    AdminElasticsearchService,
     AdminGuard,
     CategoryService,
     CollectionResolver,
@@ -312,8 +312,6 @@ export class AppModule {
     private domSanitizer: DomSanitizer,
   ) {
     // This was taken from https://materialdesignicons.com/getting-started
-    matIconRegistry.addSvgIconSet(
-      domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/mdi.svg'));
     matIconRegistry.addSvgIcon('gz-world',
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/icon/world.svg'));
     matIconRegistry.addSvgIcon('gz-model',

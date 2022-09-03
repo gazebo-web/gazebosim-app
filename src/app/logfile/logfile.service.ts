@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 import { Logfile } from './logfile';
 import { PaginatedLogfile } from './paginated-logfile';
 
-import { parseLinkHeader } from '@web3-storage/parse-link-header'
+import { parseLinkHeader } from '@web3-storage/parse-link-header';
 
 @Injectable()
 

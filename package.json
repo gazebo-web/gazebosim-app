@@ -31,7 +31,6 @@
     "crypto-browserify": "^3.12.0",
     "emscripten": "^0.0.2-beta",
     "file-saver": "^2.0.2",
-    "font-awesome": "^4.7.0",
     "gzweb": "^2.0.12-beta.29",
     "ngx-infinite-scroll": "^9.1.0",
     "ngx-markdown": "^14.0.1",
