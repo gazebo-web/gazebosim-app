@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
 import { FuelResource } from './fuel-resource';
 import { FuelPaginatedResource } from './fuel-paginated-resource';
 
-import { parseLinkHeader } from '@web3-storage/parse-link-header'
+import { parseLinkHeader } from '@web3-storage/parse-link-header';
 
 @Injectable()
 
