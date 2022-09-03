@@ -27,7 +27,6 @@
     "@web3-storage/parse-link-header": "^3.1.0",
     "auth0-js": "^9.14.0",
     "file-saver": "^2.0.2",
-    "font-awesome": "^4.7.0",
     "ngx-infinite-scroll": "^9.1.0",
     "ngx-markdown": "^14.0.1",
     "ngx-stripe": "^14.1.0",

@@ -34,8 +34,7 @@
               "src/sitemap.xml"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/font-awesome/css/font-awesome.css"
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
@@ -115,8 +114,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/font-awesome/css/font-awesome.css"
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/marked/marked.min.js"
