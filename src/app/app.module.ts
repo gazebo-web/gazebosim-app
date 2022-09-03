@@ -155,12 +155,12 @@ import { WorldService } from './world/world.service';
    * Array of local components and pipes.
    */
   declarations: [
-    AppComponent,
     AccessTokenDialogComponent,
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
     APIComponent,
+    AppComponent,
     ApplicationsComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
@@ -269,9 +269,9 @@ import { WorldService } from './world/world.service';
    * Expose our Services and Providers into Angular's dependency injection.
    */
   providers: [
+    AdminElasticsearchService,
     AuthGuard,
     AuthService,
-    AdminElasticsearchService,
     AdminGuard,
     CategoryService,
     CollectionResolver,
