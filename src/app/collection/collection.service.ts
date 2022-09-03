@@ -14,7 +14,7 @@ import { PaginatedWorlds } from '../world/paginated-worlds';
 import { UiError } from '../ui-error';
 import { environment } from '../../environments/environment';
 
-import { parseLinkHeader } from '@web3-storage/parse-link-header'
+import { parseLinkHeader } from '@web3-storage/parse-link-header';
 
 @Injectable()
 
