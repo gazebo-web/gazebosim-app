@@ -1,6 +1,8 @@
 import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
+import { Root, Type, parse } from 'protobufjs';
+
 
 import { SceneManager, Logplayback } from 'gzweb';
 
@@ -92,11 +94,35 @@ export class VisualizationComponent implements OnDestroy {
 
     let db: Database;
 
+
     fileReader.onload = () => {
-      db = new SQL.Database({ data: new Uint8Array(fileReader.result as ArrayBuffer) });
-      console.log(db);
-      const contents = db.exec("select * from topics");
+      db = new SQL.Database({
+        data: new Uint8Array(fileReader.result as ArrayBuffer)
+      });
+      let defs: string = "";
+      /*let defs: string = "syntax = \"proto3\";\n";
+      defs += "package ignition.msgs;\n";
+     */
+
+      // Get the message types.
+      const msgTypeSql = db.exec("select proto_descriptor from message_types");
+      msgTypeSql[0].values.forEach((value) => {
+        defs += value[0];
+      });
+      defs = defs.replace(/syntax = "proto3";/g,'');
+      defs = 'syntax = "proto3";\n' + defs;
+      console.log(defs);
+      let root: Root = parse(defs, {keepCase: true}).root;
+
+      // Get the SDF file.
+      /*const sceneSql = db.exec("select message from messages where id=1");
+      const sceneString = new TextDecoder().decode(
+        sdfSql[0].values[0][0] as Uint8Array);
+       */
+
+      /*const contents = db.exec("select * from topics");
       console.log(contents);
+     */
     }
     fileReader.readAsArrayBuffer(dbFile);
 
@@ -107,7 +133,7 @@ export class VisualizationComponent implements OnDestroy {
 
   public fileChanged(e) {
     const file = e.target.files[0]; 
-    let worker = new Worker(new URL("./log.worker", import.meta.url));
+    // let worker = new Worker(new URL("./log.worker", import.meta.url));
     this.init(file);
   }
 
