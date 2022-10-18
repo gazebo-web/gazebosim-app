@@ -7,7 +7,7 @@
   </ng-template>
 </swiper>
 
-<swiper *ngIf="images?.length > 0"
+<swiper *ngIf="images?.length > 1"
         (swiper)="thumbsSwiper = $event"
         [config]="thumbsConfig"
         [watchSlidesProgress]="true"
