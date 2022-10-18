@@ -58,7 +58,6 @@ export class GalleryComponent implements OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     if ('images' in changes) {
       this.images = changes['images'].currentValue as SafeUrl[];
-      console.log(this.images);
       this.thumbsConfig.slidesPerView = this.images ? this.images.length : 0;
     }
   }
