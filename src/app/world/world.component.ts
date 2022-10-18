@@ -17,16 +17,12 @@ import { WorldService } from './world.service';
 import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
 import * as FileSaver from 'file-saver';
 
-import SwiperCore, {FreeMode, Navigation, Thumbs, SwiperOptions} from 'swiper';
-SwiperCore.use([FreeMode, Navigation, Thumbs]);
-
 declare let Detector: any;
 
 @Component({
   selector: 'gz-world',
   templateUrl: 'world.component.html',
-  styleUrls: ['world.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['world.component.scss']
 })
 
 /**
@@ -51,11 +47,6 @@ export class WorldComponent implements OnInit, OnDestroy {
    * The images to be displayed in the gallery.
    */
   public galleryImages: SafeUrl[];
-
-  /**
-   * Thumb swiper helper
-   */
-  public thumbsSwiper: any;
 
   /**
    * Disable the like button. This helps to prevent multiple calls.
