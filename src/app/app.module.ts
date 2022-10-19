@@ -36,7 +36,6 @@ import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overl
 /**
  * Third party dependencies.
  */
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxStripeModule } from 'ngx-stripe';
 
@@ -222,7 +221,6 @@ import { WorldService } from './world/world.service';
     FormsModule,
     GalleryComponent,
     HttpClientModule,
-    InfiniteScrollModule,
     MarkdownModule.forRoot({
       markedOptions: {
         provide: MarkedOptions,
