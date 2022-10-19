@@ -1,6 +1,10 @@
 @import '~@angular/material/theming';
 @import '../../styles.scss';
-@import '../../swiper.scss';
+
+gz-gallery {
+  width: 100%;
+  height: 100%;
+}
 
 .content {
   width: 100%;

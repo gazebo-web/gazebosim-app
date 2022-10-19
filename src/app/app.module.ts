@@ -1,7 +1,7 @@
 /**
  * Angular imports.
  */
-import { NgModule, SecurityContext } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule, DomSanitizer, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -39,7 +39,6 @@ import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overl
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxStripeModule } from 'ngx-stripe';
-import { SwiperModule } from 'swiper/angular';
 
 /**
  * Local elements.
@@ -87,7 +86,7 @@ import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
 import { FuelHomeComponent } from './fuel-home';
 import { FuelResourceListComponent } from './fuel-resource';
-import { FuelResourceService } from './fuel-resource';
+import { GalleryComponent } from './gallery/gallery.component';
 import { InformationComponent } from './information';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { JsonClassFactoryService } from './factory/json-class-factory.service';
@@ -221,6 +220,7 @@ import { WorldService } from './world/world.service';
     BrowserModule,
     FlexLayoutModule,
     FormsModule,
+    GalleryComponent,
     HttpClientModule,
     InfiniteScrollModule,
     MarkdownModule.forRoot({
@@ -258,7 +258,6 @@ import { WorldService } from './world/world.service';
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,
-    SwiperModule,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.

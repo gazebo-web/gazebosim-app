@@ -1,0 +1,18 @@
+<swiper *ngIf="images?.length > 0"
+        [config]="mainConfig"
+        [thumbs]="{ swiper: thumbsSwiper }"
+        class="mainSwiper custom-colors">
+  <ng-template *ngFor="let img of images" swiperSlide>
+    <img [src]="img"/>
+  </ng-template>
+</swiper>
+
+<swiper *ngIf="images?.length > 1"
+        (swiper)="thumbsSwiper = $event"
+        [config]="thumbsConfig"
+        [watchSlidesProgress]="true"
+        class="thumbSwiper">
+  <ng-template *ngFor="let img of images" swiperSlide>
+    <img [src]="img"/>
+  </ng-template>
+</swiper>
