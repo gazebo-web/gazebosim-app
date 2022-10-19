@@ -9,7 +9,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { of } from 'rxjs';
 
 import { AuthPipe } from '../../auth/auth.pipe';
@@ -53,7 +52,6 @@ describe('WorldListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
-        InfiniteScrollModule,
         MatCardModule,
         MatInputModule,
         MatIconModule,

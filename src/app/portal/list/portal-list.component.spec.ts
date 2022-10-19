@@ -4,7 +4,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { AuthService } from '../../auth/auth.service';
@@ -25,7 +24,6 @@ describe('PortalListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        InfiniteScrollModule,
         MatCardModule,
         MatIconModule,
         RouterTestingModule,
