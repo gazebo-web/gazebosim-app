@@ -92,7 +92,6 @@ describe('ModelComponent', () => {
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
-        NgxGalleryModule,
         ReactiveFormsModule,
         RouterTestingModule,
         ],

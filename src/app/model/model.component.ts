@@ -18,17 +18,12 @@ import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 
 import * as FileSaver from 'file-saver';
 
-import { SwiperComponent } from "swiper/angular";
-import SwiperCore, {FreeMode, Navigation, Thumbs, SwiperOptions} from 'swiper';
-SwiperCore.use([FreeMode, Navigation, Thumbs]);
-
 declare let Detector: any;
 
 @Component({
   selector: 'gz-model',
   templateUrl: 'model.component.html',
-  styleUrls: ['model.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['model.component.scss']
 })
 
 /**
@@ -53,11 +48,6 @@ export class ModelComponent implements OnInit, OnDestroy {
    * The images to be displayed in the gallery.
    */
   public galleryImages: SafeUrl[];
-
-  /**
-   * Thumb swiper helper
-   */
-  public thumbsSwiper: any;
 
   /**
    * GzWeb visualizer flag.

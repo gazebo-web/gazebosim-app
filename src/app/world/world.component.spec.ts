@@ -90,7 +90,6 @@ describe('WorldComponent', () => {
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
-        NgxGalleryModule,
         ReactiveFormsModule,
         RouterTestingModule,
         ],

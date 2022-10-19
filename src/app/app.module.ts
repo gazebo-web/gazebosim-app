@@ -1,7 +1,7 @@
 /**
  * Angular imports.
  */
-import { NgModule, SecurityContext } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule, DomSanitizer, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -39,7 +39,6 @@ import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overl
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxStripeModule } from 'ngx-stripe';
-import { SwiperModule } from 'swiper/angular';
 
 /**
  * Local elements.
@@ -87,21 +86,18 @@ import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
 import { FuelHomeComponent } from './fuel-home';
 import { FuelResourceListComponent } from './fuel-resource';
-import { FuelResourceService } from './fuel-resource';
+import { GalleryComponent } from './gallery/gallery.component';
 import { InformationComponent } from './information';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { JsonClassFactoryService } from './factory/json-class-factory.service';
 import { LaunchQueueComponent } from './admin/cloudsim/launch-queue/launch-queue.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
-import { LogfileScoreDialogComponent } from './logfile';
-import { LogfileService } from './logfile';
 import { MetadataComponent } from './metadata';
 import { ModelComponent } from './model/model.component';
 import { ModelListComponent } from './model/list/model-list.component';
 import { ModelResolver } from './model/model.resolver';
 import { ModelService } from './model/model.service';
-import { NewLogfileDialogComponent } from './logfile';
 import { NewModelComponent } from './model/new/new-model.component';
 import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewOrganizationDialogComponent } from './organization';
@@ -188,12 +184,10 @@ import { WorldService } from './world/world.service';
     InformationComponent,
     ItemCardComponent,
     LaunchQueueComponent,
-    LogfileScoreDialogComponent,
     MetadataComponent,
     ModelComponent,
     ModelListComponent,
     NewOrganizationDialogComponent,
-    NewLogfileDialogComponent,
     NewModelComponent,
     NewWorldComponent,
     OrganizationComponent,
@@ -226,6 +220,7 @@ import { WorldService } from './world/world.service';
     BrowserModule,
     FlexLayoutModule,
     FormsModule,
+    GalleryComponent,
     HttpClientModule,
     InfiniteScrollModule,
     MarkdownModule.forRoot({
@@ -263,7 +258,6 @@ import { WorldService } from './world/world.service';
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,
-    SwiperModule,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.
@@ -280,7 +274,6 @@ import { WorldService } from './world/world.service';
     JsonClassFactoryService,
     LikedModelsResolver,
     LikedWorldsResolver,
-    LogfileService,
     ModelResolver,
     ModelService,
     NewModelGuard,

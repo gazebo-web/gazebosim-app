@@ -43,24 +43,9 @@
               <span class="mat-typography font-x-large">This world has no thumbnails.</span>
             </div>
 
-            <swiper *ngIf="galleryImages && galleryImages.length > 0"
-                    style="--swiper-navigation-color: #000;--swiper-pagination-color: #000"
-                    [spaceBetween]="0"
-                    [navigation]="true"
-                    [thumbs]="{ swiper: thumbsSwiper }"
-                    class="mainSwiper">
-            <ng-template *ngFor="let img of galleryImages" swiperSlide><img [src]="img"/></ng-template>
-            </swiper>
-
-            <swiper *ngIf="galleryImages && galleryImages.length > 0"
-              (swiper)="thumbsSwiper = $event"
-              [spaceBetween]="10"
-              [slidesPerView]="galleryImages !== undefined ? galleryImages.length : 0"
-              [freeMode]= "true"
-              [watchSlidesProgress]="true"
-              class="thumbSwiper">
-            <ng-template *ngFor="let img of galleryImages" swiperSlide><img [src]="img"/></ng-template>
-            </swiper>
+            <ng-container *ngIf="galleryImages?.length > 0">
+              <gz-gallery [images]="galleryImages"></gz-gallery>
+            </ng-container>
           </div>
         </div>
       </div>
