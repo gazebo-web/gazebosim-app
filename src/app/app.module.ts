@@ -94,14 +94,11 @@ import { JsonClassFactoryService } from './factory/json-class-factory.service';
 import { LaunchQueueComponent } from './admin/cloudsim/launch-queue/launch-queue.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
-import { LogfileScoreDialogComponent } from './logfile';
-import { LogfileService } from './logfile';
 import { MetadataComponent } from './metadata';
 import { ModelComponent } from './model/model.component';
 import { ModelListComponent } from './model/list/model-list.component';
 import { ModelResolver } from './model/model.resolver';
 import { ModelService } from './model/model.service';
-import { NewLogfileDialogComponent } from './logfile';
 import { NewModelComponent } from './model/new/new-model.component';
 import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewOrganizationDialogComponent } from './organization';
@@ -188,12 +185,10 @@ import { WorldService } from './world/world.service';
     InformationComponent,
     ItemCardComponent,
     LaunchQueueComponent,
-    LogfileScoreDialogComponent,
     MetadataComponent,
     ModelComponent,
     ModelListComponent,
     NewOrganizationDialogComponent,
-    NewLogfileDialogComponent,
     NewModelComponent,
     NewWorldComponent,
     OrganizationComponent,
@@ -280,7 +275,6 @@ import { WorldService } from './world/world.service';
     JsonClassFactoryService,
     LikedModelsResolver,
     LikedWorldsResolver,
-    LogfileService,
     ModelResolver,
     ModelService,
     NewModelGuard,
