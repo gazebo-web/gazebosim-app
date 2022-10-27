@@ -351,7 +351,7 @@ export class CollectionComponent implements OnInit {
     }
 
     // Get the searched models.
-    this.modelService.getList(searchFinal).subscribe(
+    this.modelService.getList({search: searchFinal}).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
@@ -365,7 +365,7 @@ export class CollectionComponent implements OnInit {
       );
 
     // Get the searched worlds.
-    this.worldService.getList(searchFinal).subscribe(
+    this.worldService.getList({search: searchFinal}).subscribe(
         (worlds) => {
           if (worlds !== undefined) {
             this.paginatedWorlds = worlds;
