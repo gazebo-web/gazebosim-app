@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -48,15 +48,29 @@ export class CollectionService {
   /**
    * Get a list of public collections.
    *
-   * @param search An optional string to perform a partial search in the list.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of collections to get.
+   *               - per_page: Number. The number of collections to get per page.
    * @returns An observable with the list of public collections.
    */
-  public getCollectionList(search?: string): Observable<PaginatedCollection> {
-    let url = this.getCollectionListUrl();
-    if (search) {
-      url += `?q=:noft:${search}`;
+  public getCollectionList(params?: object): Observable<PaginatedCollection> {
+    const url = this.getCollectionListUrl();
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', `:noft:${params['search']}`);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
     }
-    return this.http.get(url, {observe: 'response'}).pipe(
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(
