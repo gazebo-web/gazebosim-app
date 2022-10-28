@@ -1,8 +1,9 @@
 <div class="page-content-inner mat-typography" fxLayout="column">
-  <gz-fuel-resource-list [resources]="models"
-                          resourceType="models"
-                          [finished]="!paginatedModels.hasNextPage()"
-                          (onLoadMore)="loadNextPage()"
-                          fxFlex>
+  <gz-fuel-resource-list fxFlex
+                         resourceType="models"
+                         [resources]="models"
+                         [length]="paginatedModels.totalCount"
+                         [finished]="!paginatedModels.hasNextPage()"
+                         (pageChange)="getModels($event)">
   </gz-fuel-resource-list>
 </div>

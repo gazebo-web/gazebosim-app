@@ -1,8 +1,9 @@
 <div class="page-content-inner mat-typography" fxLayout="column">
-  <gz-fuel-resource-list [resources]="worlds"
-                          [finished]="!paginatedWorlds.hasNextPage()"
-                          (onLoadMore)="loadNextPage()"
-                          resourceType="worlds"
-                          fxFlex>
+  <gz-fuel-resource-list fxFlex
+                         resourceType="worlds"
+                         [resources]="worlds"
+                         [length]="paginatedWorlds.totalCount"
+                         [finished]="!paginatedWorlds.hasNextPage()"
+                         (pageChange)="getWorlds($event)">
   </gz-fuel-resource-list>
 </div>
