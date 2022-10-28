@@ -107,7 +107,7 @@ export class CollectionDialogComponent implements OnInit {
         if (typeof value !== 'string') {
           value = (value as Collection).name;
         }
-        return this.collectionService.getCollectionExtensibleList(value).pipe(
+        return this.collectionService.getCollectionExtensibleList({search: value}).pipe(
           map((paginatedCollections) => {
             return paginatedCollections.collections;
           })

@@ -86,25 +86,14 @@ export class CollectionService {
   /**
    * Get a list of collections the authenticated user can extend.
    *
-   * @param search An optional string to perform a partial search in the list.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. Used to perform a partial search of the list.
+   *               - page: Number. The page of collections to get.
+   *               - per_page: Number. The number of collections to get per page.
    * @returns An observable with the list of collections the authenticated user can extend.
    */
-  public getCollectionExtensibleList(search?: string): Observable<PaginatedCollection> {
-    let url = `${this.getCollectionListUrl()}?extend=true`;
-    if (search) {
-      url += `&q=:noft:${search}`;
-    }
-    return this.http.get(url, {observe: 'response'}).pipe(
-      map((response) => {
-        const paginatedCollection = new PaginatedCollection();
-        paginatedCollection.totalCount = +response.headers.get(
-          CollectionService.headerTotalCount);
-        paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
-        paginatedCollection.nextPage = this.parseHeader(response);
-        return paginatedCollection;
-      }),
-      catchError(this.handleError)
-    );
+  public getCollectionExtensibleList(params?: object): Observable<PaginatedCollection> {
+    return this.getCollectionList({extend: true, ...params});
   }
 
   /**
