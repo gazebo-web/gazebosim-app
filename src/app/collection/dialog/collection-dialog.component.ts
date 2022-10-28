@@ -202,8 +202,8 @@ export class CollectionDialogComponent implements OnInit {
    * @param collection The selected collection.
    * @returns The name of the selected collection.
    */
-  public getCollectionName(collection?: Collection): string {
-    return collection.name;
+  public getCollectionName(collection?: Collection): string | null {
+    return collection ? collection.name : null;
   }
 
   /**
