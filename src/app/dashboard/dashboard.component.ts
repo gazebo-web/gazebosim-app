@@ -91,10 +91,10 @@ export class DashboardComponent implements OnInit {
         console.error('Error getting public worlds:', error);
       });
 
-    this.collectionService.getCollectionList().subscribe(
+    this.collectionService.getCollectionList({per_page: this.displayCount}).subscribe(
       (collections) => {
         if (collections !== undefined) {
-          this.collections = collections.collections.slice(0, this.displayCount);
+          this.collections = collections.collections;
           this.collectionsQuantity = collections.totalCount;
         }
       },

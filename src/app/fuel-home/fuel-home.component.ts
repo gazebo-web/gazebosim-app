@@ -113,10 +113,10 @@ export class FuelHomeComponent implements OnInit, OnDestroy {
         console.error('Error getting public worlds:', error);
       });
 
-    this.collectionService.getCollectionList().subscribe(
+    this.collectionService.getCollectionList({per_page: this.displayCount}).subscribe(
       (paginatedCollection) => {
         if (paginatedCollection !== undefined) {
-          this.collections = paginatedCollection.collections.slice(0, this.displayCount);
+          this.collections = paginatedCollection.collections;
         }
       },
       (error) => {
