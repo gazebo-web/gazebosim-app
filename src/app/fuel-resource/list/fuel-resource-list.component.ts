@@ -1,10 +1,13 @@
 import { Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
 } from '@angular/core';
 
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
+
 import { FuelResource } from '../fuel-resource';
 
 @Component({
@@ -19,7 +22,22 @@ import { FuelResource } from '../fuel-resource';
  * It receives the resources to display as an input directive, and fires events related to
  * pagination.
  */
-export class FuelResourceListComponent {
+export class FuelResourceListComponent implements OnInit {
+
+  /**
+   * The page index to use in the paginator.
+   */
+  public pageIndex: number = 0;
+
+  /**
+   * The pagination size options.
+   */
+  public pageSizeOptions: number[] = [20, 50, 100];
+
+  /**
+   * The currently selected page size.
+   */
+  public pageSize: number = this.pageSizeOptions[0];
 
   /**
    * The total number of resources of the list.
@@ -86,6 +104,27 @@ export class FuelResourceListComponent {
    * The array of resources that this component represents.
    */
   private _resources: FuelResource[];
+
+  /**
+   * @param route The activated route in order to get pagination information.
+   */
+  constructor(public route: ActivatedRoute) {
+  }
+
+  /**
+   * OnInit Lifecycle hook. Used to sync the query parameters with the paginator.
+   */
+  public ngOnInit(): void {
+    const params = this.route.snapshot.queryParams;
+    if (params) {
+      if (params['page'] && params['page'] > 0) {
+        this.pageIndex = params['page'] - 1;
+      }
+      if (params['per_page']) {
+        this.pageSize = params['per_page'];
+      }
+    }
+  }
 
   /**
    * Callback of a remove event from a card. Re-emit it for the parent to handle it.
