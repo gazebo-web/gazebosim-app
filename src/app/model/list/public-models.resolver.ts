@@ -38,7 +38,7 @@ export class PublicModelsResolver implements Resolve<PaginatedModels> {
       params['search'] = route.queryParams['q'];
     }
 
-    if (route.queryParams['page']) {
+    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
       params['page'] = route.queryParams['page'];
     }
 
