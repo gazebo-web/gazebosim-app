@@ -215,11 +215,12 @@
         <mat-tab label="Collections">
           <div *ngIf="collections && collections.length > 0; else noCollections"
                class="tab-body">
-            <gz-fuel-resource-list [resources]="collections"
-                                    resourceType="collections"
-                                    [finished]="!paginatedCollections.hasNextPage()"
-                                    (onLoadMore)="loadNextCollections()"
-                                    fxFlex>
+            <gz-fuel-resource-list fxFlex
+                                   resourceType="collections"
+                                   [resources]="collections"
+                                   [length]="paginatedCollections.totalCount"
+                                   [finished]="!paginatedCollections.hasNextPage()"
+                                   (pageChange)="loadCollections($event)">
             </gz-fuel-resource-list>
           </div>
           <ng-template #noCollections>

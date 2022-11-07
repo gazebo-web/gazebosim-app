@@ -16,6 +16,7 @@ import { World } from './world';
 import { WorldService } from './world.service';
 import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
 import * as FileSaver from 'file-saver';
+import { PageEvent } from '@angular/material/paginator';
 
 declare let Detector: any;
 
@@ -483,29 +484,24 @@ export class WorldComponent implements OnInit, OnDestroy {
 
   /**
    * Load the collections that have this World.
+   *
+   * @param event Optional. The page event that contains the pagination data of collections to load.
    */
-  public loadCollections(): void {
-    this.collectionService.getAssetCollections(this.world).subscribe(
-      (response) => {
+  public loadCollections(event?: PageEvent): void {
+    const params = event ? {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize
+    } : {};
+    this.collectionService.getAssetCollections(this.world, params).subscribe({
+      next: (response) => {
+        // DEVNOTE: This change is not reflected in the Client URL.
         this.paginatedCollections = response;
         this.collections = response.collections;
       },
-      (error) => {
+      error: (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
-  }
-
-  /**
-   * Callback of the Resource List component. Requests more collections to be loaded.
-   */
-  public loadNextCollections(): void {
-    this.collectionService.getNextPage(this.paginatedCollections).subscribe(
-      (pagCollections) => {
-        this.paginatedCollections = pagCollections;
-        const newCollections = this.collections.slice();
-        pagCollections.collections.forEach((collection) => newCollections.push(collection));
-        this.collections = newCollections;
-      });
+      },
+    });
   }
 
   /**
