@@ -5,7 +5,6 @@ import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.componen
 import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
-import { APIComponent } from './api/api.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
@@ -18,7 +17,6 @@ import { EditCollectionComponent } from './collection/edit/edit-collection.compo
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
 import { FuelHomeComponent } from './fuel-home';
-import { InformationComponent } from './information/information.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { ModelComponent } from './model/model.component';
@@ -55,7 +53,7 @@ const routes: Routes = [
   },
   {
     path: 'api',
-    component: APIComponent,
+    loadComponent: () => import('./api/api.component').then(module => module.APIComponent),
     data: {
       titlebarTitle: 'Information',
       titlebarSubtitle: 'API'
@@ -63,7 +61,7 @@ const routes: Routes = [
   },
   {
     path: 'information',
-    component: InformationComponent,
+    loadComponent: () => import('./information/information.component').then(module => module.InformationComponent),
     data: {
       titlebarTitle: 'Information',
       titlebarSubtitle: ''

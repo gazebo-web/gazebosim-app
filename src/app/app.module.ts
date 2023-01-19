@@ -48,7 +48,6 @@ import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch';
 import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
-import { APIComponent } from './api';
 import { AppComponent } from './app.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -86,7 +85,6 @@ import { FileUploadComponent } from './file-upload';
 import { FuelHomeComponent } from './fuel-home';
 import { FuelResourceListComponent } from './fuel-resource';
 import { GalleryComponent } from './gallery/gallery.component';
-import { InformationComponent } from './information';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { JsonClassFactoryService } from './factory/json-class-factory.service';
 import { LaunchQueueComponent } from './admin/cloudsim/launch-queue/launch-queue.component';
@@ -154,7 +152,6 @@ import { WorldService } from './world/world.service';
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
-    APIComponent,
     AppComponent,
     ApplicationsComponent,
     AssetDisplayComponent,
@@ -180,7 +177,6 @@ import { WorldService } from './world/world.service';
     FileUploadComponent,
     FuelHomeComponent,
     FuelResourceListComponent,
-    InformationComponent,
     ItemCardComponent,
     LaunchQueueComponent,
     MetadataComponent,
