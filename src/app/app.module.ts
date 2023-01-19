@@ -198,7 +198,6 @@ import { WorldService } from './world/world.service';
     SimulationTableComponent,
     SimulationRulesComponent,
     SimVisualizerComponent,
-    TagsComponent,
     TextInputDialogComponent,
     ThumbnailGeneratorComponent,
     UserComponent,
@@ -252,6 +251,7 @@ import { WorldService } from './world/world.service';
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,
+    TagsComponent,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.
