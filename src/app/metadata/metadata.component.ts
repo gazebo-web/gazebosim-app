@@ -1,12 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 import { Metadatum } from './metadatum';
 
 @Component({
   selector: 'gz-metadata',
   templateUrl: 'metadata.component.html',
-  styleUrls: ['metadata.component.scss']
+  styleUrls: ['metadata.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatTableModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

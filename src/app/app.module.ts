@@ -153,7 +153,6 @@ import { WorldService } from './world/world.service';
     AppComponent,
     ApplicationsComponent,
     AuthCallbackComponent,
-    AuthPipe,
     CategoriesComponent,
     CollectionComponent,
     CollectionDialogComponent,
@@ -173,9 +172,7 @@ import { WorldService } from './world/world.service';
     FileUploadComponent,
     FuelHomeComponent,
     FuelResourceListComponent,
-    ItemCardComponent,
     LaunchQueueComponent,
-    MetadataComponent,
     ModelComponent,
     ModelListComponent,
     NewOrganizationDialogComponent,
@@ -202,6 +199,7 @@ import { WorldService } from './world/world.service';
    */
   imports: [
     AppRoutingModule,
+    AuthPipe,
     BrowserAnimationsModule,
     BrowserModule,
     ConfirmationDialogComponent,
@@ -209,6 +207,7 @@ import { WorldService } from './world/world.service';
     FormsModule,
     GalleryComponent,
     HttpClientModule,
+    ItemCardComponent,
     MarkdownModule.forRoot({
       markedOptions: {
         provide: MarkedOptions,
@@ -242,6 +241,7 @@ import { WorldService } from './world/world.service';
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
+    MetadataComponent,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     PageTitleComponent,
     ReactiveFormsModule,
