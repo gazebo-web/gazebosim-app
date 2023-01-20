@@ -11,6 +11,7 @@ import { FuelResource } from '../../fuel-resource';
 import { Model } from '../model';
 import { ModelService } from './../model.service';
 import { WorldService } from './../../world/world.service';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 declare let GZ3D: any;
 declare let THREE: any;
@@ -18,7 +19,11 @@ declare let THREE: any;
 @Component({
   selector: 'gz-sdfviewer',
   templateUrl: 'sdfviewer.component.html',
-  styleUrls: ['sdfviewer.component.scss']
+  styleUrls: ['sdfviewer.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+  ]
 })
 
 /**
