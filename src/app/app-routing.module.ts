@@ -6,7 +6,6 @@ import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
 import { ApplicationsComponent } from './applications/applications.component';
-import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { CollectionComponent } from './collection/collection.component';
@@ -29,7 +28,6 @@ import { NewWorldGuard } from './world/new/new-world-guard.service';
 import { OrganizationComponent } from './organization';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
 import { OwnerProfileResolver } from './user/owner-profile.resolver';
-import { PageNotFoundComponent } from './page-not-found';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
@@ -111,7 +109,9 @@ const routes: Routes = [
           {
             path: ':groupId',
             pathMatch: 'full',
-            component: AssetDisplayComponent,
+            loadComponent: () => import(
+              './asset-display/asset-display.component'
+            ).then(module => module.AssetDisplayComponent),
             resolve: {
               resolvedData: SimulationResolver
             },
@@ -196,7 +196,9 @@ const routes: Routes = [
       },
       {
         path: ':groupId',
-        component: AssetDisplayComponent,
+        loadComponent: () => import(
+          './asset-display/asset-display.component'
+        ).then(module => module.AssetDisplayComponent),
         pathMatch: 'full',
         resolve: {
           resolvedData: SimulationResolver
@@ -218,7 +220,9 @@ const routes: Routes = [
   },
   {
     path: 'fuel/models',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     pathMatch: 'full',
     data: {
       component: ModelListComponent,
@@ -260,7 +264,9 @@ const routes: Routes = [
   },
   {
     path: 'fuel/worlds',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     pathMatch: 'full',
     data: {
 
@@ -303,7 +309,9 @@ const routes: Routes = [
   },
   {
     path: 'fuel/collections',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: CollectionListComponent,
 
@@ -322,7 +330,9 @@ const routes: Routes = [
   },
   {
     path: ':owner/fuel/models',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: ModelListComponent,
 
@@ -344,7 +354,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/models/:modelname',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: ModelResolver
     },
@@ -366,7 +378,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/models/:modelname/edit',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: EditModelComponent,
 
@@ -389,7 +403,9 @@ const routes: Routes = [
   {
   path: ':owner/fuel/models/:modelname/:version',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: ModelResolver
     },
@@ -410,7 +426,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/likes/models',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: ModelListComponent,
 
@@ -431,7 +449,9 @@ const routes: Routes = [
   },
   {
     path: ':owner/fuel/worlds',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: WorldListComponent,
 
@@ -453,7 +473,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/worlds/:worldname',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: WorldResolver
     },
@@ -475,7 +497,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/worlds/:worldname/edit',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: EditWorldComponent,
 
@@ -498,7 +522,9 @@ const routes: Routes = [
   {
   path: ':owner/fuel/worlds/:worldname/:version',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: WorldResolver
     },
@@ -519,7 +545,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/likes/worlds',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: WorldListComponent,
 
@@ -540,7 +568,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/collections',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: CollectionListComponent,
 
@@ -561,7 +591,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/collections/:collection',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: CollectionComponent,
 
@@ -583,7 +615,9 @@ const routes: Routes = [
   {
     path: ':user/fuel/collections/:collection/edit',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: EditCollectionComponent,
 
@@ -605,7 +639,9 @@ const routes: Routes = [
   },
   {
     path: ':name',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       // Note: As the resolver determines which component to display, both need to be added at the
       // route configuration level in order for Angular to provide a Factory for them.
@@ -624,7 +660,9 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: PageNotFoundComponent,
+    loadComponent: () => import(
+      './page-not-found/page-not-found.component'
+    ).then(module => module.PageNotFoundComponent),
     data: {
 
       titlebarTitle: 'Page not found',

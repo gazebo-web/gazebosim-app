@@ -51,7 +51,6 @@ import { AdminGuard } from './admin/admin-guard.service';
 import { AppComponent } from './app.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AssetDisplayComponent } from './asset-display';
 import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AuthInterceptor } from './auth/auth.interceptor';
@@ -105,7 +104,6 @@ import { OrganizationComponent } from './organization/organization.component';
 import { OrganizationService } from './organization/organization.service';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
 import { OwnerProfileResolver } from './user/owner-profile.resolver';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PageTitleComponent } from './page-title/page-title.component';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
@@ -154,7 +152,6 @@ import { WorldService } from './world/world.service';
     AdminElasticsearchComponent,
     AppComponent,
     ApplicationsComponent,
-    AssetDisplayComponent,
     AuthCallbackComponent,
     AuthPipe,
     CategoriesComponent,
@@ -186,7 +183,6 @@ import { WorldService } from './world/world.service';
     NewModelComponent,
     NewWorldComponent,
     OrganizationComponent,
-    PageNotFoundComponent,
     ReportDialogComponent,
     SdfViewerComponent,
     SearchComponent,
