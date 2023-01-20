@@ -1,9 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'gz-page-title',
   templateUrl: './page-title.component.html',
-  styleUrls: ['./page-title.component.scss']
+  styleUrls: ['./page-title.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+  ],
 })
 
 /**

@@ -187,7 +187,6 @@ import { WorldService } from './world/world.service';
     NewWorldComponent,
     OrganizationComponent,
     PageNotFoundComponent,
-    PageTitleComponent,
     ReportDialogComponent,
     SdfViewerComponent,
     SearchComponent,
@@ -198,7 +197,6 @@ import { WorldService } from './world/world.service';
     SimulationTableComponent,
     SimulationRulesComponent,
     SimVisualizerComponent,
-    TextInputDialogComponent,
     ThumbnailGeneratorComponent,
     UserComponent,
     VisualizationComponent,
@@ -250,8 +248,10 @@ import { WorldService } from './world/world.service';
     MatTabsModule,
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
+    PageTitleComponent,
     ReactiveFormsModule,
     TagsComponent,
+    TextInputDialogComponent,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.
