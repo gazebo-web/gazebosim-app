@@ -122,7 +122,6 @@ import {
 import { TagsComponent } from './tags';
 import { TextInputDialogComponent } from './text-input-dialog/text-input-dialog.component';
 import { ThumbnailGeneratorComponent } from './model/edit/thumbnail-generator/thumbnail-generator.component';
-import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
@@ -170,7 +169,6 @@ import { WorldService } from './world/world.service';
     SimulationRulesComponent,
     SimVisualizerComponent,
     ThumbnailGeneratorComponent,
-    UserComponent,
     WorldComponent,
     WorldListComponent,
   ],

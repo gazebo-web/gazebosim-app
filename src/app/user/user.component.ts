@@ -1,20 +1,33 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 
+import { Collection, CollectionService, PaginatedCollection } from '../collection';
+import { FuelResourceListComponent } from '../fuel-resource';
 import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
+import { PageTitleComponent } from '../page-title';
+import { PaginatedModels } from '../model/paginated-models';
+import { PaginatedWorlds } from '../world/paginated-worlds';
 import { User } from './user';
 import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
-import { PaginatedModels } from '../model/paginated-models';
-import { PaginatedWorlds } from '../world/paginated-worlds';
-import { Collection, CollectionService, PaginatedCollection } from '../collection';
 
 @Component({
   selector: 'gz-user',
   templateUrl: 'user.component.html',
-  styleUrls: ['user.component.scss']
+  styleUrls: ['user.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+    FuelResourceListComponent,
+    MatIconModule,
+    MatTabsModule,
+    PageTitleComponent,
+  ],
 })
 
 /**
