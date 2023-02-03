@@ -1,17 +1,28 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CollectionService, Collection } from '../collection';
+import { ItemCardComponent } from '../item-card/item-card.component';
 import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
-import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
 
 @Component({
   selector: 'gz-fuel-home',
   templateUrl: 'fuel-home.component.html',
-  styleUrls: ['fuel-home.component.scss']
+  styleUrls: ['fuel-home.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    ItemCardComponent,
+    MatIconModule,
+    RouterModule,
+  ],
 })
 
 /**

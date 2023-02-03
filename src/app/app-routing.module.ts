@@ -11,11 +11,9 @@ import { AuthGuard } from './auth/auth-guard.service';
 import { CollectionComponent } from './collection/collection.component';
 import { CollectionListComponent } from './collection/list/collection-list.component';
 import { CollectionResolver } from './collection/collection.resolver';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
-import { FuelHomeComponent } from './fuel-home';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { ModelComponent } from './model/model.component';
@@ -67,7 +65,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: DashboardComponent,
+    loadComponent: () => import('./dashboard/dashboard.component').then(module => module.DashboardComponent),
     data: {
       titlebarTitle: 'Dashboard',
       titlebarSubtitle: ''
@@ -145,7 +143,7 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    component: DashboardComponent,
+    loadComponent: () => import('./dashboard/dashboard.component').then(module => module.DashboardComponent),
     data: {
       titlebarTitle: 'Dashboard',
       titlebarSubtitle: ''
@@ -153,7 +151,7 @@ const routes: Routes = [
   },
   {
     path: 'fuel',
-    component: FuelHomeComponent,
+    loadComponent: () => import('./fuel-home/fuel-home.component').then(module => module.FuelHomeComponent),
     data: {
       titlebarTitle: 'Fuel',
       titlebarSubtitle: 'Assets for robotic apps'

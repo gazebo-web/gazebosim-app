@@ -67,7 +67,6 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { CopyDialogComponent } from './fuel-resource/copy-dialog/copy-dialog.component';
 import { CreditsComponent } from './settings/credits/credits.component';
 import { CreditsService } from './settings/credits/credits.service';
-import { DashboardComponent } from './dashboard';
 import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
 import { DurationPipe } from './cloudsim/detail/duration.pipe';
@@ -81,7 +80,6 @@ import { environment } from '../environments/environment';
 import { ExtraDialogComponent } from './cloudsim/extra-dialog/extra-dialog.component';
 import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
-import { FuelHomeComponent } from './fuel-home';
 import { FuelResourceListComponent } from './fuel-resource/list/fuel-resource-list.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ItemCardComponent } from './item-card/item-card.component';
@@ -157,7 +155,6 @@ import { WorldService } from './world/world.service';
     CollectionDialogComponent,
     CollectionListComponent,
     CreditsComponent,
-    DashboardComponent,
     DndDirective,
     DurationPipe,
     EditCollectionComponent,
@@ -167,7 +164,6 @@ import { WorldService } from './world/world.service';
     ExtraDialogComponent,
     FileSizePipe,
     FileUploadComponent,
-    FuelHomeComponent,
     LaunchQueueComponent,
     ModelComponent,
     ModelListComponent,
