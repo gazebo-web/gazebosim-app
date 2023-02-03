@@ -51,7 +51,6 @@ import { AdminGuard } from './admin/admin-guard.service';
 import { AppComponent } from './app.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { AuthPipe } from './auth/auth.pipe';
@@ -150,7 +149,6 @@ import { WorldService } from './world/world.service';
     AdminElasticsearchComponent,
     AppComponent,
     ApplicationsComponent,
-    AuthCallbackComponent,
     CollectionComponent,
     CollectionDialogComponent,
     CollectionListComponent,
@@ -162,7 +160,6 @@ import { WorldService } from './world/world.service';
     EditWorldComponent,
     ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
-    FileSizePipe,
     FileUploadComponent,
     LaunchQueueComponent,
     ModelComponent,
@@ -197,6 +194,7 @@ import { WorldService } from './world/world.service';
     ConfirmationDialogComponent,
     CopyDialogComponent,
     DescriptionComponent,
+    FileSizePipe,
     FlexLayoutModule,
     FormsModule,
     FuelResourceListComponent,

@@ -6,7 +6,6 @@ import { AdminComponent } from './admin';
 import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
 import { ApplicationsComponent } from './applications/applications.component';
-import { AuthCallbackComponent } from './auth/callback.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { CollectionComponent } from './collection/collection.component';
 import { CollectionListComponent } from './collection/list/collection-list.component';
@@ -633,7 +632,7 @@ const routes: Routes = [
   },
   {
     path: 'callback',
-    component: AuthCallbackComponent,
+    loadComponent: () => import('./auth/callback.component').then(module => module.AuthCallbackComponent),
   },
   {
     path: ':name',
