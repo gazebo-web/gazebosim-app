@@ -1,17 +1,36 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material/stepper';
 import { Subscription } from 'rxjs';
+
+import { AuthService } from '../../auth/auth.service';
 import { ErrMsg } from '../../server/err-msg';
 import { Organization } from '../organization';
 import { OrganizationService } from '../organization.service';
-import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'gz-new-organization-dialog',
   templateUrl: 'new-organization-dialog.component.html',
-  styleUrls: ['new-organization-dialog.component.scss']
+  styleUrls: ['new-organization-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatStepperModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**
