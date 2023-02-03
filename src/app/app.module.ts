@@ -68,7 +68,7 @@ import { CopyDialogComponent } from './fuel-resource/copy-dialog/copy-dialog.com
 import { CreditsComponent } from './settings/credits/credits.component';
 import { CreditsService } from './settings/credits/credits.service';
 import { DashboardComponent } from './dashboard';
-import { DescriptionComponent } from './description';
+import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
 import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
@@ -157,10 +157,8 @@ import { WorldService } from './world/world.service';
     CollectionComponent,
     CollectionDialogComponent,
     CollectionListComponent,
-    CopyDialogComponent,
     CreditsComponent,
     DashboardComponent,
-    DescriptionComponent,
     DndDirective,
     DurationPipe,
     EditCollectionComponent,
@@ -203,6 +201,8 @@ import { WorldService } from './world/world.service';
     BrowserAnimationsModule,
     BrowserModule,
     ConfirmationDialogComponent,
+    CopyDialogComponent,
+    DescriptionComponent,
     FlexLayoutModule,
     FormsModule,
     GalleryComponent,
