@@ -29,7 +29,6 @@ import { PublicCollectionsResolver } from './collection/list/public-collections.
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { SearchComponent } from './search';
-import { SettingsComponent } from './settings';
 import { SimulationComponent } from './cloudsim/detail/simulation.component';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { UserComponent } from './user/user.component';
@@ -166,7 +165,7 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    component: SettingsComponent,
+    loadComponent: () => import('./settings/settings.component').then(module => module.SettingsComponent),
     data: {
       titlebarTitle: 'Settings',
       titlebarSubtitle: '',

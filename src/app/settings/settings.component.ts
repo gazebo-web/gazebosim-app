@@ -1,15 +1,18 @@
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder,
-         FormControl,
-         FormGroup,
-         FormGroupDirective,
-         Validators  } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { NewOrganizationDialogComponent, OrganizationService, Organization } from '../organization';
 import { AuthService } from '../auth/auth.service';
@@ -20,6 +23,7 @@ import {
 import { AccessToken } from './access-token';
 import { AccessTokenDialogComponent } from './access-token-dialog.component';
 import { PaginatedAccessToken } from './paginated-access-token';
+import { CreditsComponent } from './credits/credits.component';
 
 /**
  * Enum of tabs the Settings component has. This allows easier navigation via fragments.
@@ -35,7 +39,24 @@ enum Tabs {
 @Component({
   selector: 'gz-settings',
   templateUrl: 'settings.component.html',
-  styleUrls: ['settings.component.scss']
+  styleUrls: ['settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    CreditsComponent,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatListModule,
+    MatPaginatorModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatTabsModule,
+    ReactiveFormsModule,
+    RouterModule,
+  ]
 })
 
 /**

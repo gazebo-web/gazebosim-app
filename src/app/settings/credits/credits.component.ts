@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StripeService } from 'ngx-stripe';
 import { switchMap } from 'rxjs/operators';
@@ -7,7 +9,12 @@ import { CreditsService } from './credits.service';
 @Component({
   selector: 'gz-credits',
   templateUrl: 'credits.component.html',
-  styleUrls: ['credits.component.scss']
+  styleUrls: ['credits.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+  ],
 })
 
 /**

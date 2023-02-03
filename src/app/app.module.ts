@@ -108,7 +108,6 @@ import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
 import { SearchComponent } from './search/search.component';
-import { SettingsComponent } from './settings';
 import { SimulationActionsComponent } from './cloudsim';
 import { SimulationComponent } from './cloudsim/detail/simulation.component';
 import { SimulationLaunchDialogComponent } from './applications/launch/simulation-launch-dialog.component';
@@ -143,7 +142,6 @@ import { WorldService } from './world/world.service';
    * Array of local components and pipes.
    */
   declarations: [
-    AccessTokenDialogComponent,
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
@@ -152,7 +150,6 @@ import { WorldService } from './world/world.service';
     CollectionComponent,
     CollectionDialogComponent,
     CollectionListComponent,
-    CreditsComponent,
     DurationPipe,
     EditCollectionComponent,
     EditModelComponent,
@@ -167,7 +164,6 @@ import { WorldService } from './world/world.service';
     NewWorldComponent,
     OrganizationComponent,
     SearchComponent,
-    SettingsComponent,
     SimulationActionsComponent,
     SimulationComponent,
     SimulationLaunchDialogComponent,
@@ -184,6 +180,7 @@ import { WorldService } from './world/world.service';
    * Import the used modules.
    */
   imports: [
+    AccessTokenDialogComponent,
     AppRoutingModule,
     AuthPipe,
     BrowserAnimationsModule,
@@ -191,6 +188,7 @@ import { WorldService } from './world/world.service';
     CategoriesComponent,
     ConfirmationDialogComponent,
     CopyDialogComponent,
+    CreditsComponent,
     DescriptionComponent,
     FileSizePipe,
     FileUploadComponent,
