@@ -82,7 +82,7 @@ import { ExtraDialogComponent } from './cloudsim/extra-dialog/extra-dialog.compo
 import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
 import { FuelHomeComponent } from './fuel-home';
-import { FuelResourceListComponent } from './fuel-resource';
+import { FuelResourceListComponent } from './fuel-resource/list/fuel-resource-list.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { JsonClassFactoryService } from './factory/json-class-factory.service';
@@ -168,7 +168,6 @@ import { WorldService } from './world/world.service';
     FileSizePipe,
     FileUploadComponent,
     FuelHomeComponent,
-    FuelResourceListComponent,
     LaunchQueueComponent,
     ModelComponent,
     ModelListComponent,
@@ -204,6 +203,7 @@ import { WorldService } from './world/world.service';
     DescriptionComponent,
     FlexLayoutModule,
     FormsModule,
+    FuelResourceListComponent,
     GalleryComponent,
     HttpClientModule,
     ItemCardComponent,
