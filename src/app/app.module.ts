@@ -166,7 +166,6 @@ import { WorldService } from './world/world.service';
     SimulationTableComponent,
     SimulationRulesComponent,
     SimVisualizerComponent,
-    ThumbnailGeneratorComponent,
     WorldComponent,
     WorldListComponent,
   ],
@@ -235,6 +234,7 @@ import { WorldService } from './world/world.service';
     SdfViewerComponent,
     TagsComponent,
     TextInputDialogComponent,
+    ThumbnailGeneratorComponent,
   ],
   /**
    * Expose our Services and Providers into Angular's dependency injection.
