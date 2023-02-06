@@ -1,22 +1,44 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../auth/auth.service';
-import { WorldService } from '../world.service';
-
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { DescriptionComponent } from 'src/app/description';
+import { FileUploadComponent } from 'src/app/file-upload';
+import { MetadataComponent } from 'src/app/metadata';
+import { PageTitleComponent } from 'src/app/page-title';
+import { TagsComponent } from 'src/app/tags';
+import { ThumbnailGeneratorComponent } from 'src/app/model/edit/thumbnail-generator/thumbnail-generator.component';
 import { World } from '../world';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
+import { WorldService } from '../world.service';
 
 @Component({
   selector: 'gz-edit-world',
   templateUrl: 'edit-world.component.html',
-  styleUrls: ['edit-world.component.scss']
+  styleUrls: ['edit-world.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DescriptionComponent,
+    FileUploadComponent,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatRadioModule,
+    MetadataComponent,
+    PageTitleComponent,
+    ReactiveFormsModule,
+    TagsComponent,
+    ThumbnailGeneratorComponent,
+  ],
 })
 
 /**

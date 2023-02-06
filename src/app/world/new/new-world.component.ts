@@ -1,23 +1,45 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { DescriptionComponent } from 'src/app/description';
 import { ErrMsg } from '../../server/err-msg';
+import { FileUploadComponent } from 'src/app/file-upload';
+import { TagsComponent } from 'src/app/tags';
 import { World } from '../world';
 import { WorldService } from '../world.service';
 
 @Component({
   selector: 'gz-new-world',
   templateUrl: 'new-world.component.html',
-  styleUrls: ['new-world.component.scss']
+  styleUrls: ['new-world.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DescriptionComponent,
+    FileUploadComponent,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    TagsComponent,
+  ],
 })
 
 /**

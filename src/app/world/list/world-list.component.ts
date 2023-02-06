@@ -1,15 +1,22 @@
-import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { PageEvent } from '@angular/material/paginator';
 
+import { FuelResourceListComponent } from 'src/app/fuel-resource';
+import { PaginatedWorlds } from '../paginated-worlds';
 import { World } from '../world';
 import { WorldService } from '../world.service';
-import { PaginatedWorlds } from '../paginated-worlds';
 
 @Component({
   selector: 'gz-worlds',
   templateUrl: 'world-list.component.html',
-  styleUrls: ['world-list.component.scss']
+  styleUrls: ['world-list.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+    FuelResourceListComponent,
+  ],
 })
 
 /**

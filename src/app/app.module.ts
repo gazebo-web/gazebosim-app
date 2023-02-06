@@ -71,7 +71,6 @@ import { DndDirective } from './dnd/dnd.directive';
 import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
-import { EditWorldComponent } from './world/edit/edit-world.component';
 import {
   ElasticsearchConfigDialogComponent
 } from './admin/elasticsearch/config-dialog/config-dialog.component';
@@ -94,7 +93,6 @@ import { ModelService } from './model/model.service';
 import { NewModelComponent } from './model/new/new-model.component';
 import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewOrganizationDialogComponent } from './organization';
-import { NewWorldComponent } from './world/new/new-world.component';
 import { NewWorldGuard } from './world/new/new-world-guard.service';
 import { Ng2DeviceService } from './device-detector';
 import { OrganizationComponent } from './organization/organization.component';
@@ -126,8 +124,6 @@ import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
 import { WebsocketService } from './cloudsim/websocket/sim-websocket.service';
-import { WorldComponent } from './world/world.component';
-import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
 import { WorldService } from './world/world.service';
 
@@ -151,14 +147,12 @@ import { WorldService } from './world/world.service';
     DurationPipe,
     EditCollectionComponent,
     EditModelComponent,
-    EditWorldComponent,
     ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
     LaunchQueueComponent,
     ModelComponent,
     ModelListComponent,
     NewModelComponent,
-    NewWorldComponent,
     SearchComponent,
     SimulationActionsComponent,
     SimulationComponent,
@@ -166,8 +160,6 @@ import { WorldService } from './world/world.service';
     SimulationTableComponent,
     SimulationRulesComponent,
     SimVisualizerComponent,
-    WorldComponent,
-    WorldListComponent,
   ],
   /**
    * Import the used modules.
