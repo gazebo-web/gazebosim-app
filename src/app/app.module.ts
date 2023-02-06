@@ -97,7 +97,6 @@ import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SearchComponent } from './search/search.component';
 import { SimulationActionsComponent } from './cloudsim';
 import { SimulationComponent } from './cloudsim/detail/simulation.component';
 import { SimulationLaunchDialogComponent } from './applications/launch/simulation-launch-dialog.component';
@@ -137,7 +136,6 @@ import { WorldService } from './world/world.service';
     ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
     LaunchQueueComponent,
-    SearchComponent,
     SimulationActionsComponent,
     SimulationComponent,
     SimulationLaunchDialogComponent,

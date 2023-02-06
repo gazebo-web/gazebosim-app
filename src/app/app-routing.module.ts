@@ -28,7 +28,6 @@ import { OwnerProfileResolver } from './user/owner-profile.resolver';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
-import { SearchComponent } from './search';
 import { SimulationComponent } from './cloudsim/detail/simulation.component';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { UserComponent } from './user/user.component';
@@ -173,7 +172,7 @@ const routes: Routes = [
   },
   {
     path: 'search',
-    component: SearchComponent,
+    loadComponent: () => import('./search/search.component').then(module => module.SearchComponent),
     pathMatch: 'full',
     data: {
       titlebarTitle: 'Search Results',
