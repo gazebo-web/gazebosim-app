@@ -57,9 +57,6 @@ import { AuthPipe } from './auth/auth.pipe';
 import { AuthService } from './auth/auth.service';
 import { CategoriesComponent } from './fuel-resource/categories/categories.component';
 import { CategoryService } from './fuel-resource/categories/category.service';
-import { CollectionComponent } from './collection/collection.component';
-import { CollectionDialogComponent } from './collection/dialog/collection-dialog.component';
-import { CollectionListComponent } from './collection/list/collection-list.component';
 import { CollectionResolver } from './collection/collection.resolver';
 import { CollectionService } from './collection/collection.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
@@ -69,7 +66,6 @@ import { CreditsService } from './settings/credits/credits.service';
 import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
 import { DurationPipe } from './cloudsim/detail/duration.pipe';
-import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import {
   ElasticsearchConfigDialogComponent
 } from './admin/elasticsearch/config-dialog/config-dialog.component';
@@ -137,11 +133,7 @@ import { WorldService } from './world/world.service';
     AdminElasticsearchComponent,
     AppComponent,
     ApplicationsComponent,
-    CollectionComponent,
-    CollectionDialogComponent,
-    CollectionListComponent,
     DurationPipe,
-    EditCollectionComponent,
     ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
     LaunchQueueComponent,
