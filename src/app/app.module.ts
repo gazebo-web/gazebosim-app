@@ -70,7 +70,6 @@ import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
 import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
-import { EditModelComponent } from './model/edit/edit-model.component';
 import {
   ElasticsearchConfigDialogComponent
 } from './admin/elasticsearch/config-dialog/config-dialog.component';
@@ -86,11 +85,8 @@ import { LaunchQueueComponent } from './admin/cloudsim/launch-queue/launch-queue
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { MetadataComponent } from './metadata';
-import { ModelComponent } from './model/model.component';
-import { ModelListComponent } from './model/list/model-list.component';
 import { ModelResolver } from './model/model.resolver';
 import { ModelService } from './model/model.service';
-import { NewModelComponent } from './model/new/new-model.component';
 import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewOrganizationDialogComponent } from './organization';
 import { NewWorldGuard } from './world/new/new-world-guard.service';
@@ -146,13 +142,9 @@ import { WorldService } from './world/world.service';
     CollectionListComponent,
     DurationPipe,
     EditCollectionComponent,
-    EditModelComponent,
     ElasticsearchConfigDialogComponent,
     ExtraDialogComponent,
     LaunchQueueComponent,
-    ModelComponent,
-    ModelListComponent,
-    NewModelComponent,
     SearchComponent,
     SimulationActionsComponent,
     SimulationComponent,

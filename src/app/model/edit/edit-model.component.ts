@@ -1,22 +1,46 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../auth/auth.service';
-import { ModelService } from '../model.service';
-
+import { CategoriesComponent } from 'src/app/fuel-resource/categories/categories.component';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { DescriptionComponent } from 'src/app/description';
+import { FileUploadComponent } from 'src/app/file-upload';
+import { MetadataComponent } from 'src/app/metadata';
 import { Model } from '../model';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
+import { ModelService } from '../model.service';
+import { PageTitleComponent } from 'src/app/page-title';
+import { TagsComponent } from 'src/app/tags';
+import { ThumbnailGeneratorComponent } from './thumbnail-generator/thumbnail-generator.component';
 
 @Component({
   selector: 'gz-edit-model',
   templateUrl: 'edit-model.component.html',
-  styleUrls: ['edit-model.component.scss']
+  styleUrls: ['edit-model.component.scss'],
+  standalone: true,
+  imports: [
+    CategoriesComponent,
+    CommonModule,
+    DescriptionComponent,
+    FileUploadComponent,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatRadioModule,
+    MetadataComponent,
+    PageTitleComponent,
+    ReactiveFormsModule,
+    TagsComponent,
+    ThumbnailGeneratorComponent,
+  ],
 })
 
 /**
