@@ -1,10 +1,17 @@
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { MatSelectionListChange } from '@angular/material/list';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule, MatSelectionListChange } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { DurationPipe } from './duration.pipe';
 import { ImageTopic } from '../websocket/imageTopic';
+import { PageTitleComponent } from 'src/app/page-title';
 import { PointCloudTopic } from '../websocket/pointCloudTopic';
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
@@ -17,7 +24,19 @@ declare let THREE: any;
 @Component({
   selector: 'gz-simulation',
   templateUrl: 'simulation.component.html',
-  styleUrls: ['simulation.component.scss']
+  styleUrls: ['simulation.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DurationPipe,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatSelectModule,
+    PageTitleComponent,
+    RouterModule,
+  ],
 })
 
 /**

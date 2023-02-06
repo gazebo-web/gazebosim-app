@@ -1,18 +1,35 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectChange } from '@angular/material/select';
-import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
 
 import { AuthService } from '../../auth/auth.service';
-import { SimulationService } from '../simulation.service';
-import { Simulation } from '../simulation';
 import { PaginatedSimulation } from '../paginated-simulation';
+import { Simulation } from '../simulation';
+import { SimulationService } from '../simulation.service';
 
 @Component({
   selector: 'gz-simulation-table',
   templateUrl: 'simulation-table.component.html',
-  styleUrls: ['simulation-table.component.scss']
+  styleUrls: ['simulation-table.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatTableModule,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
 })
 
 /**

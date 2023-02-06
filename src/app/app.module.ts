@@ -65,12 +65,10 @@ import { CreditsComponent } from './settings/credits/credits.component';
 import { CreditsService } from './settings/credits/credits.service';
 import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
-import { DurationPipe } from './cloudsim/detail/duration.pipe';
 import {
   ElasticsearchConfigDialogComponent
 } from './admin/elasticsearch/config-dialog/config-dialog.component';
 import { environment } from '../environments/environment';
-import { ExtraDialogComponent } from './cloudsim/extra-dialog/extra-dialog.component';
 import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
 import { FuelResourceListComponent } from './fuel-resource/list/fuel-resource-list.component';
@@ -97,13 +95,11 @@ import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SimulationActionsComponent } from './cloudsim';
-import { SimulationComponent } from './cloudsim/detail/simulation.component';
 import { SimulationLaunchDialogComponent } from './applications/launch/simulation-launch-dialog.component';
-import { SimulationTableComponent } from './cloudsim';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
 import { SimulationService } from './cloudsim';
+import { SimulationTableComponent } from './cloudsim';
 
 import {
   SimVisualizerComponent
@@ -132,14 +128,9 @@ import { WorldService } from './world/world.service';
     AdminElasticsearchComponent,
     AppComponent,
     ApplicationsComponent,
-    DurationPipe,
     ElasticsearchConfigDialogComponent,
-    ExtraDialogComponent,
     LaunchQueueComponent,
-    SimulationActionsComponent,
-    SimulationComponent,
     SimulationLaunchDialogComponent,
-    SimulationTableComponent,
     SimulationRulesComponent,
     SimVisualizerComponent,
   ],
@@ -206,6 +197,7 @@ import { WorldService } from './world/world.service';
     ReactiveFormsModule,
     ReportDialogComponent,
     SdfViewerComponent,
+    SimulationTableComponent,
     TagsComponent,
     TextInputDialogComponent,
     ThumbnailGeneratorComponent,
