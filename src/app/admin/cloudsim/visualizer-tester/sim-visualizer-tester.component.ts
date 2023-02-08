@@ -1,5 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { MatSelectionListChange } from '@angular/material/list';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule, MatSelectionListChange } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
@@ -14,7 +24,22 @@ declare let THREE: any;
 @Component({
   selector: 'gz-sim-visualizer',
   templateUrl: 'sim-visualizer-tester.component.html',
-  styleUrls: ['sim-visualizer-tester.component.scss']
+  styleUrls: ['sim-visualizer-tester.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

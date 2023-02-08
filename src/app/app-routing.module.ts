@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
 
-import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
-import { AdminComponent } from './admin';
-import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
 import { ApplicationsComponent } from './applications/applications.component';
 import { AuthGuard } from './auth/auth-guard.service';
@@ -82,7 +79,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: AdminComponent,
+        loadComponent: () => import('./admin/admin.component').then(module => module.AdminComponent),
         data: {
           title: 'Administration',
           titlebarTitle: 'Admin',
@@ -94,7 +91,7 @@ const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            component: AdminCloudsimComponent,
+            loadComponent: () => import('./admin/cloudsim/admin-cloudsim.component').then(module => module.AdminCloudsimComponent),
             data: {
               titlebarTitle: 'Admin',
               titlebarSubtitle: 'Cloudsim',
@@ -127,7 +124,7 @@ const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            component: AdminElasticsearchComponent,
+            loadComponent: () => import('./admin/elasticsearch/admin-elasticsearch.component').then(module => module.AdminElasticsearchComponent),
             data: {
               titlebarTitle: 'Admin',
               titlebarSubtitle: 'Elasticsearch',

@@ -43,9 +43,6 @@ import { NgxStripeModule } from 'ngx-stripe';
  * Local elements.
  */
 import { AccessTokenDialogComponent } from './settings/access-token-dialog.component';
-import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
-import { AdminComponent } from './admin';
-import { AdminElasticsearchComponent } from './admin/elasticsearch';
 import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
 import { AppComponent } from './app.component';
@@ -65,9 +62,6 @@ import { CreditsComponent } from './settings/credits/credits.component';
 import { CreditsService } from './settings/credits/credits.service';
 import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
-import {
-  ElasticsearchConfigDialogComponent
-} from './admin/elasticsearch/config-dialog/config-dialog.component';
 import { environment } from '../environments/environment';
 import { FileSizePipe } from './file-size/file-size.pipe';
 import { FileUploadComponent } from './file-upload';
@@ -75,7 +69,6 @@ import { FuelResourceListComponent } from './fuel-resource/list/fuel-resource-li
 import { GalleryComponent } from './gallery/gallery.component';
 import { ItemCardComponent } from './item-card/item-card.component';
 import { JsonClassFactoryService } from './factory/json-class-factory.service';
-import { LaunchQueueComponent } from './admin/cloudsim/launch-queue/launch-queue.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { MetadataComponent } from './metadata';
@@ -97,13 +90,8 @@ import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dial
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
 import { SimulationLaunchDialogComponent } from './applications/launch/simulation-launch-dialog.component';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
-import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
 import { SimulationService } from './cloudsim';
 import { SimulationTableComponent } from './cloudsim';
-
-import {
-  SimVisualizerComponent
-} from './admin/cloudsim/visualizer-tester/sim-visualizer-tester.component';
 import { TagsComponent } from './tags';
 import { TextInputDialogComponent } from './text-input-dialog/text-input-dialog.component';
 import { ThumbnailGeneratorComponent } from './model/edit/thumbnail-generator/thumbnail-generator.component';
@@ -123,16 +111,9 @@ import { WorldService } from './world/world.service';
    * Array of local components and pipes.
    */
   declarations: [
-    AdminCloudsimComponent,
-    AdminComponent,
-    AdminElasticsearchComponent,
     AppComponent,
     ApplicationsComponent,
-    ElasticsearchConfigDialogComponent,
-    LaunchQueueComponent,
     SimulationLaunchDialogComponent,
-    SimulationRulesComponent,
-    SimVisualizerComponent,
   ],
   /**
    * Import the used modules.
