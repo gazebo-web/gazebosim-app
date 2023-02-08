@@ -5,7 +5,9 @@ import { catchError } from 'rxjs/operators';
 
 import { Collection, CollectionService } from '../collection';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver for the :owner/collections/:collection route.

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
 
 import { AdminGuard } from './admin/admin-guard.service';
-import { AuthGuard } from './auth/auth-guard.service';
 import { CollectionComponent } from './collection/collection.component';
 import { CollectionListComponent } from './collection/list/collection-list.component';
 import { CollectionResolver } from './collection/collection.resolver';

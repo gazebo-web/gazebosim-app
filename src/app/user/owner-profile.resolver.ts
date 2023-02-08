@@ -9,7 +9,9 @@ import { UserService } from './user.service';
 import { Organization } from '../organization/organization';
 import { OrganizationComponent } from '../organization/organization.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver for the /profile/:name route.

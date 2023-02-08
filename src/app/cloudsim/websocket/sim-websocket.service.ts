@@ -6,7 +6,9 @@ import { Topic } from './topic';
 // Note: Required for Angular 5. Newer versions don't require the declaration.
 declare const TextDecoder: any;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Websocket service is in charge of managing the websocket connection to a simulation.

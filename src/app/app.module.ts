@@ -44,21 +44,14 @@ import { NgxStripeModule } from 'ngx-stripe';
  */
 import { AccessTokenDialogComponent } from './settings/access-token-dialog.component';
 import { AdminElasticsearchService } from './admin/elasticsearch';
-import { AdminGuard } from './admin/admin-guard.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthGuard } from './auth/auth-guard.service';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { AuthPipe } from './auth/auth.pipe';
-import { AuthService } from './auth/auth.service';
 import { CategoriesComponent } from './fuel-resource/categories/categories.component';
-import { CategoryService } from './fuel-resource/categories/category.service';
-import { CollectionResolver } from './collection/collection.resolver';
-import { CollectionService } from './collection/collection.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { CopyDialogComponent } from './fuel-resource/copy-dialog/copy-dialog.component';
 import { CreditsComponent } from './settings/credits/credits.component';
-import { CreditsService } from './settings/credits/credits.service';
 import { DescriptionComponent } from './description/description.component';
 import { DndDirective } from './dnd/dnd.directive';
 import { environment } from '../environments/environment';
@@ -67,38 +60,16 @@ import { FileUploadComponent } from './file-upload';
 import { FuelResourceListComponent } from './fuel-resource/list/fuel-resource-list.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { ItemCardComponent } from './item-card/item-card.component';
-import { JsonClassFactoryService } from './factory/json-class-factory.service';
-import { LikedModelsResolver } from './model/list/liked-models.resolver';
-import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { MetadataComponent } from './metadata';
-import { ModelResolver } from './model/model.resolver';
-import { ModelService } from './model/model.service';
-import { NewModelGuard } from './model/new/new-model-guard.service';
 import { NewOrganizationDialogComponent } from './organization';
-import { NewWorldGuard } from './world/new/new-world-guard.service';
-import { Ng2DeviceService } from './device-detector';
 import { OrganizationComponent } from './organization/organization.component';
-import { OrganizationService } from './organization/organization.service';
-import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
-import { OwnerProfileResolver } from './user/owner-profile.resolver';
 import { PageTitleComponent } from './page-title/page-title.component';
-import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
-import { PublicModelsResolver } from './model/list/public-models.resolver';
-import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
-import { SimulationService } from './cloudsim';
 import { SimulationTableComponent } from './cloudsim';
 import { TagsComponent } from './tags';
 import { TextInputDialogComponent } from './text-input-dialog/text-input-dialog.component';
 import { ThumbnailGeneratorComponent } from './model/edit/thumbnail-generator/thumbnail-generator.component';
-import { UserModelsResolver } from './model/list/user-models.resolver';
-import { UserService } from './user/user.service';
-import { UserWorldsResolver } from './world/list/user-worlds.resolver';
-import { WebsocketService } from './cloudsim/websocket/sim-websocket.service';
-import { WorldResolver } from './world/world.resolver';
-import { WorldService } from './world/world.service';
 
 /**
  * Entry point.
@@ -184,36 +155,7 @@ import { WorldService } from './world/world.service';
    */
   providers: [
     AdminElasticsearchService,
-    AuthGuard,
-    AuthService,
-    AdminGuard,
-    CategoryService,
-    CollectionResolver,
-    CollectionService,
-    CreditsService,
-    JsonClassFactoryService,
-    LikedModelsResolver,
-    LikedWorldsResolver,
-    ModelResolver,
-    ModelService,
-    NewModelGuard,
-    NewWorldGuard,
-    Ng2DeviceService,
-    OrganizationService,
-    OwnerCollectionsResolver,
-    OwnerProfileResolver,
-    PublicCollectionsResolver,
-    PublicModelsResolver,
-    PublicWorldsResolver,
-    SimulationResolver,
-    SimulationService,
     Title,
-    UserModelsResolver,
-    UserService,
-    UserWorldsResolver,
-    WebsocketService,
-    WorldResolver,
-    WorldService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

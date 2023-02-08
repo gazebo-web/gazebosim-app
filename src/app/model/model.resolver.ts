@@ -6,7 +6,9 @@ import { catchError } from 'rxjs/operators';
 import { Model } from './model';
 import { ModelService } from './model.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver for the :owner/models/:modelname route.

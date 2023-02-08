@@ -16,7 +16,9 @@ import { environment } from '../../environments/environment';
 
 import { parseLinkHeader } from '@web3-storage/parse-link-header';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Collection Service is in charge of making Collection related requests to the Fuel server.
