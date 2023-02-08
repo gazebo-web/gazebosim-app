@@ -72,20 +72,29 @@ export abstract class FuelResourceService {
   /**
    * Get the first page of all the resources from the Backend.
    *
-   * @param search Optional search string.
-   * @param categories Optional list to filter by categories.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of resources to get.
+   *               - per_page: Number. The number of resources to get per page.
    * @returns An observable of the paginated resources.
    */
-   public getList(search: string = ''): Observable<FuelPaginatedResource> {
+   public getList(params?: object): Observable<FuelPaginatedResource> {
     const url = this.getListUrl();
-    let params = new HttpParams();
+    let httpParams = new HttpParams();
 
-    // Append the optional search string to the url.
-    if (search !== '') {
-      params = params.append('q', search);
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', params['search']);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
     }
 
-    return this.http.get(url, {observe: 'response', params}).pipe(
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
@@ -102,12 +111,29 @@ export abstract class FuelResourceService {
    * Get the first page of all the resources that belong to a certain entity from the Backend.
    *
    * @param owner The owner of the resources.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of resources to get.
+   *               - per_page: Number. The number of resources to get per page.
    * @returns An observable of the paginated resources.
    */
-  public getOwnerList(owner: string): Observable<FuelPaginatedResource> {
+  public getOwnerList(owner: string, params?: object): Observable<FuelPaginatedResource> {
     const url = this.getOwnerListUrl(owner);
+    let httpParams = new HttpParams();
 
-    return this.http.get(url, {observe: 'response'}).pipe(
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', params['search']);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
+    }
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
@@ -145,12 +171,31 @@ export abstract class FuelResourceService {
   /**
    * Get the next page of resources from the Backend. Used to fetch the next resources
    * when using an infinite scroll.
+   * TODO(german-e-mas): Deprecate as Infinite Scrolling is removed.
    *
    * @param paginatedResource The resource to load the next page of.
-   * @returns An observable of a paginated resource.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of resources to get.
+   *               - per_page: Number. The number of resources to get per page.
+   * @returns An observable of the paginated resources.
    */
-  public getNextPage(paginatedResource: FuelPaginatedResource): Observable<FuelPaginatedResource> {
-    return this.http.get<FuelResource[]>(paginatedResource.nextPage, { observe: 'response' }).pipe(
+  public getNextPage(paginatedResource: FuelPaginatedResource, params?: object): Observable<FuelPaginatedResource> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', params['search']);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
+    }
+
+    return this.http.get<FuelResource[]>(paginatedResource.nextPage, { observe: 'response', params: httpParams }).pipe(
       map((response) => {
         const res = new this.paginatedResourceClass();
         res.totalCount = +response.headers.get(

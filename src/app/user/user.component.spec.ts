@@ -7,7 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { of, throwError } from 'rxjs';
 
 import { AuthPipe } from '../auth/auth.pipe';
@@ -69,7 +68,6 @@ describe('UserComponent', () => {
       imports: [
         BrowserAnimationsModule,
         HttpClientTestingModule,
-        InfiniteScrollModule,
         MatCardModule,
         MatIconModule,
         MatSnackBarModule,

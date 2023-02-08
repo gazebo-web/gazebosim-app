@@ -17,18 +17,14 @@ import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dia
 import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 
 import * as FileSaver from 'file-saver';
-
-import { SwiperComponent } from "swiper/angular";
-import SwiperCore, {FreeMode, Navigation, Thumbs, SwiperOptions} from 'swiper';
-SwiperCore.use([FreeMode, Navigation, Thumbs]);
+import { PageEvent } from '@angular/material/paginator';
 
 declare let Detector: any;
 
 @Component({
   selector: 'gz-model',
   templateUrl: 'model.component.html',
-  styleUrls: ['model.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['model.component.scss']
 })
 
 /**
@@ -53,11 +49,6 @@ export class ModelComponent implements OnInit, OnDestroy {
    * The images to be displayed in the gallery.
    */
   public galleryImages: SafeUrl[];
-
-  /**
-   * Thumb swiper helper
-   */
-  public thumbsSwiper: any;
 
   /**
    * GzWeb visualizer flag.
@@ -533,30 +524,24 @@ export class ModelComponent implements OnInit, OnDestroy {
 
   /**
    * Load the collections that have this Model.
+   *
+   * @param event Optional. The page event that contains the pagination data of collections to load.
    */
-  public loadCollections(): void {
-    this.collectionService.getAssetCollections(this.model).subscribe(
-      (response) => {
+  public loadCollections(event?: PageEvent): void {
+    const params = event ? {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize
+    } : {};
+    this.collectionService.getAssetCollections(this.model, params).subscribe({
+      next: (response) => {
+        // DEVNOTE: This change is not reflected in the Client URL.
         this.paginatedCollections = response;
         this.collections = response.collections;
       },
-      (error) => {
+      error: (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
-  }
-
-  /**
-   * Callback of the Resource List component. Requests more collections to be loaded.
-   */
-  public loadNextCollections(): void {
-    this.collectionService.getNextPage(this.paginatedCollections).subscribe(
-      (pagCollections) => {
-        this.paginatedCollections = pagCollections;
-        const newCollections = this.collections.slice();
-        pagCollections.collections.forEach((collection) => newCollections.push(collection));
-        this.collections = newCollections;
-      }
-    );
+      },
+    });
   }
 
   /**

@@ -32,9 +32,21 @@ export class PublicWorldsResolver implements Resolve<PaginatedWorlds> {
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedWorlds> {
 
-    const search = route.params['q'];
+    const params = {};
 
-    return this.worldService.getList(search).pipe(
+    if (route.queryParams['q']) {
+      params['search'] = route.queryParams['q'];
+    }
+
+    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
+      params['page'] = route.queryParams['page'];
+    }
+
+    if (route.queryParams['per_page']) {
+      params['per_page'] = route.queryParams['per_page'];
+    }
+
+    return this.worldService.getList(params).pipe(
       map((worlds) => {
         return worlds;
       }),

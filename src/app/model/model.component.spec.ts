@@ -17,7 +17,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Observable, Subscription, of, throwError } from 'rxjs';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule } from 'ngx-markdown';
 import * as FileSaver from 'file-saver';
 
@@ -82,7 +81,6 @@ describe('ModelComponent', () => {
         BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
-        InfiniteScrollModule,
         MarkdownModule,
         MatButtonModule,
         MatCardModule,
@@ -94,7 +92,6 @@ describe('ModelComponent', () => {
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
-        NgxGalleryModule,
         ReactiveFormsModule,
         RouterTestingModule,
         ],

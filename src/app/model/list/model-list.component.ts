@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
 
 import { Model } from '../model';
 import { ModelService } from '../model.service';
@@ -35,10 +36,12 @@ export class ModelListComponent implements OnInit {
   /**
    * @param activatedRoute The current Activated Route to get associated the data.
    * @param modelService Service used to get the paginated Models.
+   * @param router The router used to call navigation methods.
    */
   constructor(
     private activatedRoute: ActivatedRoute,
-    private modelService: ModelService) {
+    private modelService: ModelService,
+    private router: Router) {
   }
 
   /**
@@ -57,23 +60,23 @@ export class ModelListComponent implements OnInit {
   }
 
   /**
-   * Callback to the onLoadMore event emitted by the Fuel Resource List Component.
-   * The Fuel Resource List Component is asking for more resources to be load.
+   * Get new models when a pagination even occurs.
+   *
+   * @param event The Page Event emitted by the list's paginator.
    */
-  public loadNextPage(): void {
-    if (this.paginatedModels.hasNextPage()) {
-      this.modelService.getNextPage(this.paginatedModels).subscribe(
-        (pagModels) => {
-          this.paginatedModels = pagModels;
-          // Copy and extend the existing array of models with the new ones.
-          // A copy is required in order to trigger changes.
-          const newModels = this.models.slice();
-          for (const model of pagModels.resources) {
-            newModels.push(model);
-          }
-          this.models = newModels;
-        }
-      );
-    }
+  public getModels(event: PageEvent) {
+    this.modelService.getList({
+      page: event.pageIndex + 1,
+      per_page: event.pageSize,
+    }).subscribe(
+      (models) => {
+        this.paginatedModels = models;
+        this.models = this.paginatedModels.resources;
+
+        // Navigate to the Model List page.
+        // Note that this does not recreate the component, since the navigation is to the same page.
+        this.router.navigateByUrl(`/models?page=${event.pageIndex+1}&per_page=${event.pageSize}`);
+      }
+    );
   }
 }

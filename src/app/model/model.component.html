@@ -52,25 +52,9 @@
               <span class="mat-typography font-x-large">This model has no thumbnails.</span>
             </div>
 
-            <swiper  *ngIf="galleryImages && galleryImages.length > 0"
-                    style="--swiper-navigation-color: #000;--swiper-pagination-color: #000"
-                    [spaceBetween]="0"
-                    [navigation]="true"
-                    [thumbs]="{ swiper: thumbsSwiper }"
-                    class="mainSwiper">
-            <ng-template *ngFor="let img of galleryImages" swiperSlide><img [src]="img"/></ng-template>
-            </swiper>
-
-            <swiper *ngIf="galleryImages && galleryImages.length > 0"
-              (swiper)="thumbsSwiper = $event"
-              [spaceBetween]="0"
-              [slidesPerView]="galleryImages !== undefined ? galleryImages.length : 0"
-              [freeMode]="true"
-              [watchSlidesProgress]="true"
-              class="thumbSwiper">
-            <ng-template *ngFor="let img of galleryImages" swiperSlide><img [src]="img"/></ng-template>
-            </swiper>
-
+            <ng-container *ngIf="galleryImages?.length > 0">
+              <gz-gallery [images]="galleryImages"></gz-gallery>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -248,11 +232,12 @@
         <mat-tab label="Collections">
           <div *ngIf="collections && collections.length > 0; else noCollections"
                class="tab-body">
-            <gz-fuel-resource-list [resources]="collections"
-                                    resourceType="collections"
-                                    [finished]="!paginatedCollections.hasNextPage()"
-                                    (onLoadMore)="loadNextCollections()"
-                                    fxFlex>
+            <gz-fuel-resource-list fxFlex
+                                   resourceType="collections"
+                                   [resources]="collections"
+                                   [length]="paginatedCollections.totalCount"
+                                   [finished]="!paginatedCollections.hasNextPage()"
+                                   (pageChange)="loadCollections($event)">
             </gz-fuel-resource-list>
           </div>
           <ng-template #noCollections>

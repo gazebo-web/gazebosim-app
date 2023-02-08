@@ -6,7 +6,7 @@
 
   <div class="header" fxLayout="row" fxLayoutAlign="space-between" fxFill>
     <div fxFlex="30%">
-      
+
       <gz-page-title [title]="collection.name" icon="collections"></gz-page-title>
       <h4>
         By <a class="color-link" routerLink="/{{collection?.owner}}" routerLinkActive="active">{{collection?.owner}}</a>
@@ -78,14 +78,15 @@
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="collection.models"
-                                resourceType="models"
-                                [removable]="canEdit"
-                                [disabled]="activeTab !== 'models'"
-                                [finished]="!this.paginatedModels?.hasNextPage()"
-                                (onLoadMore)="loadNextModelsPage()"
-                                (onRemoveItem)="removeItem($event)"
-                                fxFlex>
+        <gz-fuel-resource-list fxFlex
+                               resourceType="models"
+                               [resources]="collection.models"
+                               [length]="paginatedModels?.totalCount"
+                               [finished]="!paginatedModels?.hasNextPage()"
+                               [removable]="canEdit"
+                               [disabled]="activeTab !== 'models'"
+                               (pageChange)="loadModels($event)"
+                               (onRemoveItem)="removeItem($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -99,14 +100,15 @@
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="collection.worlds"
-                                resourceType="worlds"
-                                [removable]="canEdit"
-                                [disabled]="activeTab !== 'worlds'"
-                                [finished]="!this.paginatedWorlds?.hasNextPage()"
-                                (onLoadMore)="loadNextWorldsPage()"
-                                (onRemoveItem)="removeItem($event)"
-                                fxFlex>
+        <gz-fuel-resource-list fxFlex
+                               resourceType="worlds"
+                               [resources]="collection.worlds"
+                               [length]="paginatedWorlds?.totalCount"
+                               [finished]="!paginatedWorlds?.hasNextPage()"
+                               [removable]="canEdit"
+                               [disabled]="activeTab !== 'models'"
+                               (pageChange)="loadWorlds($event)"
+                               (onRemoveItem)="removeItem($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
