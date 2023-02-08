@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
 
 import { AdminGuard } from './admin/admin-guard.service';
-import { ApplicationsComponent } from './applications/applications.component';
 import { AuthGuard } from './auth/auth-guard.service';
 import { CollectionComponent } from './collection/collection.component';
 import { CollectionListComponent } from './collection/list/collection-list.component';
@@ -152,7 +151,7 @@ const routes: Routes = [
   },
   {
     path: 'applications',
-    component: ApplicationsComponent,
+    loadComponent: () => import('./applications/applications.component').then(module => module.ApplicationsComponent),
     data: {
       titlebarTitle: 'Applications',
       titlebarSubtitle: ''

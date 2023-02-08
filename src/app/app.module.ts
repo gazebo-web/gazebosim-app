@@ -46,7 +46,6 @@ import { AccessTokenDialogComponent } from './settings/access-token-dialog.compo
 import { AdminElasticsearchService } from './admin/elasticsearch';
 import { AdminGuard } from './admin/admin-guard.service';
 import { AppComponent } from './app.component';
-import { ApplicationsComponent } from './applications/applications.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AuthInterceptor } from './auth/auth.interceptor';
@@ -88,7 +87,6 @@ import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
 import { ReportDialogComponent } from './fuel-resource/report-dialog/report-dialog.component';
 import { SdfViewerComponent } from './model/sdfviewer/sdfviewer.component';
-import { SimulationLaunchDialogComponent } from './applications/launch/simulation-launch-dialog.component';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { SimulationService } from './cloudsim';
 import { SimulationTableComponent } from './cloudsim';
@@ -112,8 +110,6 @@ import { WorldService } from './world/world.service';
    */
   declarations: [
     AppComponent,
-    ApplicationsComponent,
-    SimulationLaunchDialogComponent,
   ],
   /**
    * Import the used modules.
