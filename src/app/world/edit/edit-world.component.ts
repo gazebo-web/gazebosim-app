@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -32,6 +32,7 @@ import { WorldService } from '../world.service';
     FlexLayoutModule,
     FormsModule,
     MatButtonModule,
+    MatDialogModule,
     MatRadioModule,
     MetadataComponent,
     PageTitleComponent,

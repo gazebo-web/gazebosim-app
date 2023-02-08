@@ -6,7 +6,7 @@ import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { FuelResourceListComponent } from '../fuel-resource';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -43,6 +43,7 @@ import { PageTitleComponent } from '../page-title';
     FuelResourceListComponent,
     MatButtonModule,
     MatChipsModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatIconModule,

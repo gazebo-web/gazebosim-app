@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -24,6 +24,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     FormsModule,
     MatButtonModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatMenuModule,
     MatTableModule,
     ReactiveFormsModule,

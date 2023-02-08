@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -68,7 +67,6 @@ export class LaunchQueueComponent implements OnInit {
   private paginatorLength: number = 0;
 
   constructor(
-    public dialog: MatDialog,
     public simulationService: SimulationService,
     public snackBar: MatSnackBar) {
   }

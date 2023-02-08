@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -30,6 +30,7 @@ import { SimulationLaunchDialogComponent } from './launch/simulation-launch-dial
     CreditsComponent,
     FlexLayoutModule,
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatPaginatorModule,
     MatTableModule,

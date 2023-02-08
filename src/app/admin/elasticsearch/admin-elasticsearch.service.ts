@@ -9,7 +9,9 @@ import { environment } from '../../../environments/environment';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { UiError } from '../../ui-error';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The AdminElasticsearchService is the interface to the elastic search admin

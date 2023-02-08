@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, SecurityContext, ViewEncapsulation, ViewC
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
@@ -48,6 +48,7 @@ declare let Detector: any;
     FuelResourceListComponent,
     GalleryComponent,
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatListModule,
     MatSelectModule,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../auth/auth.service';
@@ -25,6 +25,7 @@ import { MatRadioModule } from '@angular/material/radio';
     FlexLayoutModule,
     FormsModule,
     MatButtonModule,
+    MatDialogModule,
     MatInputModule,
     MatRadioModule,
     ReactiveFormsModule,
