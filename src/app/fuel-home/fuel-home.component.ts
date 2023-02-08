@@ -93,30 +93,30 @@ export class FuelHomeComponent implements OnInit, OnDestroy {
    * Get the models, worlds and collections to display.
    */
   public getResources(): void {
-    this.modelService.getList().subscribe(
+    this.modelService.getList({per_page: this.displayCount}).subscribe(
       (models) => {
         if (models !== undefined) {
-          this.models = models.resources.slice(0, this.displayCount);
+          this.models = models.resources;
         }
       },
       (error) => {
         console.error('Error getting public models:', error);
       });
 
-    this.worldService.getList().subscribe(
+    this.worldService.getList({per_page: this.displayCount}).subscribe(
       (worlds) => {
         if (worlds !== undefined) {
-          this.worlds = worlds.resources.slice(0, this.displayCount);
+          this.worlds = worlds.resources;
         }
       },
       (error) => {
         console.error('Error getting public worlds:', error);
       });
 
-    this.collectionService.getCollectionList().subscribe(
+    this.collectionService.getCollectionList({per_page: this.displayCount}).subscribe(
       (paginatedCollection) => {
         if (paginatedCollection !== undefined) {
-          this.collections = paginatedCollection.collections.slice(0, this.displayCount);
+          this.collections = paginatedCollection.collections;
         }
       },
       (error) => {

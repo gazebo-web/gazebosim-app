@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -48,15 +48,29 @@ export class CollectionService {
   /**
    * Get a list of public collections.
    *
-   * @param search An optional string to perform a partial search in the list.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of collections to get.
+   *               - per_page: Number. The number of collections to get per page.
    * @returns An observable with the list of public collections.
    */
-  public getCollectionList(search?: string): Observable<PaginatedCollection> {
-    let url = this.getCollectionListUrl();
-    if (search) {
-      url += `?q=:noft:${search}`;
+  public getCollectionList(params?: object): Observable<PaginatedCollection> {
+    const url = this.getCollectionListUrl();
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', `:noft:${params['search']}`);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
     }
-    return this.http.get(url, {observe: 'response'}).pipe(
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(
@@ -72,36 +86,43 @@ export class CollectionService {
   /**
    * Get a list of collections the authenticated user can extend.
    *
-   * @param search An optional string to perform a partial search in the list.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. Used to perform a partial search of the list.
+   *               - page: Number. The page of collections to get.
+   *               - per_page: Number. The number of collections to get per page.
    * @returns An observable with the list of collections the authenticated user can extend.
    */
-  public getCollectionExtensibleList(search?: string): Observable<PaginatedCollection> {
-    let url = `${this.getCollectionListUrl()}?extend=true`;
-    if (search) {
-      url += `&q=:noft:${search}`;
-    }
-    return this.http.get(url, {observe: 'response'}).pipe(
-      map((response) => {
-        const paginatedCollection = new PaginatedCollection();
-        paginatedCollection.totalCount = +response.headers.get(
-          CollectionService.headerTotalCount);
-        paginatedCollection.collections = this.factory.fromJson(response.body, Collection);
-        paginatedCollection.nextPage = this.parseHeader(response);
-        return paginatedCollection;
-      }),
-      catchError(this.handleError)
-    );
+  public getCollectionExtensibleList(params?: object): Observable<PaginatedCollection> {
+    return this.getCollectionList({extend: true, ...params});
   }
 
   /**
    * Get a a list of collections owned by a certain entity.
    *
    * @param owner The owner of the collections to get.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of collections to get.
+   *               - per_page: Number. The number of collections to get per page.
    * @returns An observable with the list of collections.
    */
-  public getOwnerCollectionList(owner: string): Observable<PaginatedCollection> {
+  public getOwnerCollectionList(owner: string, params?: object): Observable<PaginatedCollection> {
     const url = this.getOwnerCollectionListUrl(owner);
-    return this.http.get(url, {observe: 'response'}).pipe(
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', `:noft:${params['search']}`);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
+    }
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(
@@ -136,11 +157,29 @@ export class CollectionService {
    *
    * @param owner The owner of the collection.
    * @param name The name of the collection.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of models to get.
+   *               - per_page: Number. The number of models to get per page.
    * @returns An observable of the collection's models.
    */
-  public getCollectionModels(owner: string, name: string): Observable<PaginatedModels> {
+  public getCollectionModels(owner: string, name: string, params?: object): Observable<PaginatedModels> {
     const url = this.getCollectionModelsUrl(owner, name);
-    return this.http.get(url, {observe: 'response'}).pipe(
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', `:noft:${params['search']}`);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
+    }
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedModels = new PaginatedModels();
         paginatedModels.totalCount = +response.headers.get(
@@ -158,11 +197,29 @@ export class CollectionService {
    *
    * @param owner The owner of the collection.
    * @param name The name of the collection.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of worlds to get.
+   *               - per_page: Number. The number of worlds to get per page.
    * @returns An observable of the collection's worlds.
    */
-  public getCollectionWorlds(owner: string, name: string): Observable<PaginatedWorlds> {
+  public getCollectionWorlds(owner: string, name: string, params?: object): Observable<PaginatedWorlds> {
     const url = this.getCollectionWorldsUrl(owner, name);
-    return this.http.get(url, {observe: 'response'}).pipe(
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', `:noft:${params['search']}`);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
+    }
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedWorlds = new PaginatedWorlds();
         paginatedWorlds.totalCount = +response.headers.get(
@@ -270,11 +327,29 @@ export class CollectionService {
    * Calls the GET /resourceOwner/resourceType/resourceName/collections route.
    *
    * @param resource The resource contained by the collections.
+   * @param params An object containing possible params for the request. They are the following:
+   *               - search: String. The search parameters to be sent as a "q" query parameter.
+   *               - page: Number. The page of collections to get.
+   *               - per_page: Number. The number of collections to get per page.
    * @returns An observable of the paginated collections that have this resource.
    */
-  public getAssetCollections(resource: FuelResource): Observable<PaginatedCollection> {
+  public getAssetCollections(resource: FuelResource, params?: object): Observable<PaginatedCollection> {
     const url = `${this.baseUrl}/${resource.owner}/${resource.type}/${resource.name}/collections`;
-    return this.http.get(url, {observe: 'response'}).pipe(
+    let httpParams = new HttpParams();
+
+    if (params) {
+      if (params['search']) {
+        httpParams = httpParams.append('q', `:noft:${params['search']}`);
+      }
+      if (params['page']) {
+        httpParams = httpParams.append('page', params['page'].toString());
+      }
+      if (params['per_page']) {
+        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      }
+    }
+
+    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
       map((response) => {
         const paginatedCollection = new PaginatedCollection();
         paginatedCollection.totalCount = +response.headers.get(CollectionService.headerTotalCount);

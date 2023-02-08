@@ -15,7 +15,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { of, throwError } from 'rxjs';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AuthPipe } from '../auth/auth.pipe';
 import { AuthService } from '../auth/auth.service';
@@ -97,7 +96,6 @@ describe('OrganizationComponent', () => {
         BrowserAnimationsModule,
         FormsModule,
         HttpClientTestingModule,
-        InfiniteScrollModule,
         MatCardModule,
         MatChipsModule,
         MatDialogModule,

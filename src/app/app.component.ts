@@ -140,9 +140,6 @@ export class AppComponent implements OnInit {
             this.snackBar.dismiss();
           }
 
-          // Navigate to the top.
-          window.scrollTo(0, 0);
-
           // The title can be either a string or a function, which requires the current route as
           // its argument.
           let title = '';

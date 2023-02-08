@@ -69,10 +69,10 @@ export class DashboardComponent implements OnInit {
    * Get the resources to display.
    */
   public ngOnInit(): void {
-    this.modelService.getList().subscribe(
+    this.modelService.getList({per_page: this.displayCount}).subscribe(
       (models) => {
         if (models !== undefined) {
-          this.models = models.resources.slice(0, this.displayCount);
+          this.models = models.resources;
           this.modelsQuantity = models.totalCount;
         }
       },
@@ -80,10 +80,10 @@ export class DashboardComponent implements OnInit {
         console.error('Error getting public models:', error);
       });
 
-    this.worldService.getList().subscribe(
+    this.worldService.getList({per_page: this.displayCount}).subscribe(
       (worlds) => {
         if (worlds !== undefined) {
-          this.worlds = worlds.resources.slice(0, this.displayCount);
+          this.worlds = worlds.resources;
           this.worldsQuantity = worlds.totalCount;
         }
       },
@@ -91,10 +91,10 @@ export class DashboardComponent implements OnInit {
         console.error('Error getting public worlds:', error);
       });
 
-    this.collectionService.getCollectionList().subscribe(
+    this.collectionService.getCollectionList({per_page: this.displayCount}).subscribe(
       (collections) => {
         if (collections !== undefined) {
-          this.collections = collections.collections.slice(0, this.displayCount);
+          this.collections = collections.collections;
           this.collectionsQuantity = collections.totalCount;
         }
       },
