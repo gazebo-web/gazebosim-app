@@ -237,7 +237,7 @@ const routes: Routes = [
   },
   {
     path: 'fuel/models/upload',
-    component: NewModelComponent,
+    loadComponent: () => import('./model/new/new-model.component').then(module => module.NewModelComponent),
     canActivate: [NewModelGuard],
     pathMatch: 'full',
     data: {
@@ -282,7 +282,7 @@ const routes: Routes = [
   },
   {
     path: 'fuel/worlds/upload',
-    component: NewWorldComponent,
+    loadComponent: () => import('./world/new/new-world.component').then(module => module.NewWorldComponent),
     canActivate: [NewWorldGuard],
     pathMatch: 'full',
     data: {
