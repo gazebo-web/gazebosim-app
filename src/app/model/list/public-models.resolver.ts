@@ -32,9 +32,21 @@ export class PublicModelsResolver implements Resolve<PaginatedModels> {
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedModels> {
 
-    const search = route.params['q'];
+    const params = {};
 
-    return this.modelService.getList(search).pipe(
+    if (route.queryParams['q']) {
+      params['search'] = route.queryParams['q'];
+    }
+
+    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
+      params['page'] = route.queryParams['page'];
+    }
+
+    if (route.queryParams['per_page']) {
+      params['per_page'] = route.queryParams['per_page'];
+    }
+
+    return this.modelService.getList(params).pipe(
       map((models) => {
         return models;
       }),

@@ -15,7 +15,7 @@
 
 <ng-template #categoriesDisplay>
   <div fxLayout="row" fxLayoutGap="10px" fxFill>
-    <mat-icon class="margin-align" title="Categories" svgIcon="shape"></mat-icon>
+    <mat-icon class="margin-align" title="Categories">category</mat-icon>
 
     <div *ngIf="categories && categories.length > 0; else noCategoriesBlock" fxLayoutAlign="start center" class="category-list">
       <span>{{selectedCategories}}</span>

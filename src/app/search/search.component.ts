@@ -81,7 +81,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         search = search.replace(/&/gi, '%26');
       }
 
-      this.modelService.getList(search).subscribe(
+      this.modelService.getList({search}).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
@@ -94,7 +94,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         }
       );
 
-      this.worldService.getList(search).subscribe(
+      this.worldService.getList({search}).subscribe(
         (worlds) => {
           if (worlds !== undefined) {
             this.paginatedWorlds = worlds;

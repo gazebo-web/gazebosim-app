@@ -15,6 +15,7 @@ import {
   ConfirmationDialogComponent
 } from '../confirmation-dialog/confirmation-dialog.component';
 import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gz-collection',
@@ -224,42 +225,38 @@ export class CollectionComponent implements OnInit {
 
   /**
    * Loads the next page of models.
+   *
+   * @param event The page event that contains the pagination data of models to load.
    */
-  public loadNextModelsPage(): void {
-    if (this.paginatedModels.hasNextPage()) {
-      this.modelService.getNextPage(this.paginatedModels).subscribe(
-        (paginatedModels) => {
-          this.paginatedModels = paginatedModels;
-          // Copy and extend the existing array of models with the new ones.
-          // A copy is required in order to trigger changes.
-          const newModels = this.collection.models.slice();
-          for (const model of paginatedModels.resources) {
-            newModels.push(model);
-          }
-          this.collection.models = newModels;
-        }
-      );
-    }
+  public loadModels(event: PageEvent): void {
+    this.collectionService.getCollectionModels(this.collection.owner, this.collection.name, {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize,
+    }).subscribe(
+      (paginatedModels) => {
+        // DEVNOTE: This change is not reflected in the Client URL.
+        this.paginatedModels = paginatedModels;
+        this.collection.models = paginatedModels.resources;
+      }
+    );
   }
 
   /**
    * Loads the next page of worlds.
+   *
+   * @param event The page event that contains the pagination data of worlds to load.
    */
-  public loadNextWorldsPage(): void {
-    if (this.paginatedWorlds.hasNextPage()) {
-      this.worldService.getNextPage(this.paginatedWorlds).subscribe(
-        (paginatedWorlds) => {
-          this.paginatedWorlds = paginatedWorlds;
-          // Copy and extend the existing array of models with the new ones.
-          // A copy is required in order to trigger changes.
-          const newWorlds = this.collection.worlds.slice();
-          for (const world of paginatedWorlds.resources) {
-            newWorlds.push(world);
-          }
-          this.collection.worlds = newWorlds;
-        }
-      );
-    }
+  public loadWorlds(event: PageEvent): void {
+    this.worldService.getList({
+      page: event.pageIndex + 1,
+      per_page: event.pageSize,
+    }).subscribe(
+      (paginatedWorlds) => {
+        // DEVNOTE: This change is not reflected in the Client URL.
+        this.paginatedWorlds = paginatedWorlds;
+        this.collection.worlds = paginatedWorlds.resources;
+      }
+    );
   }
 
   /**
@@ -351,7 +348,7 @@ export class CollectionComponent implements OnInit {
     }
 
     // Get the searched models.
-    this.modelService.getList(searchFinal).subscribe(
+    this.modelService.getList({search: searchFinal}).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
@@ -365,7 +362,7 @@ export class CollectionComponent implements OnInit {
       );
 
     // Get the searched worlds.
-    this.worldService.getList(searchFinal).subscribe(
+    this.worldService.getList({search: searchFinal}).subscribe(
         (worlds) => {
           if (worlds !== undefined) {
             this.paginatedWorlds = worlds;

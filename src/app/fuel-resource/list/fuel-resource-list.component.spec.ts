@@ -3,8 +3,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-
 import { AuthPipe } from '../../auth/auth.pipe';
 import { FuelResource } from '../fuel-resource';
 import { FuelResourceListComponent } from './fuel-resource-list.component';
@@ -17,7 +15,6 @@ describe('FuelResourceListComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        InfiniteScrollModule,
         MatCardModule,
         MatIconModule,
         RouterTestingModule,
