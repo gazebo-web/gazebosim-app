@@ -31,14 +31,11 @@
 
       <a class="follow-button" *ngIf="following" mat-icon-button (click)="follow(null)" title="Stop following">Stop following</a>
 
-      <!--
-      <div class="controls" *ngIf="(ws.status$ | async) === 'Ready'">
-        <a mat-icon-button (click)="toggleLights()" title="Toggle lights"><mat-icon>highlight</mat-icon></a>
+      <div class="controls" *ngIf="sceneMgr">
         <a mat-icon-button (click)="snapshot()" title="Take a snapshot"><mat-icon>camera_alt</mat-icon></a>
         <a mat-icon-button (click)="resetView()" title="Reset view"><mat-icon>home</mat-icon></a>
         <a mat-icon-button (click)="toggleFullscreen()" title="Full screen"><mat-icon>fullscreen</mat-icon></a>
       </div>
-      -->
 
       <div class="inner" fxLayoutAlign="center center">
         <div fxLayout="row" fxLayoutAlign="center center">

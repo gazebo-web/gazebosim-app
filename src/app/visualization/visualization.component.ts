@@ -42,9 +42,9 @@ export class VisualizationComponent implements OnDestroy {
   public following: boolean = false;
 
   /**
-   * GZ acene manager.
+   * GZ scene manager.
    */
-  private sceneMgr: SceneManager;
+  public sceneMgr: SceneManager;
 
   /**
    * True if fullscreen is enabled.
@@ -87,6 +87,7 @@ export class VisualizationComponent implements OnDestroy {
    */
   public disconnect(): void {
     this.sceneMgr.disconnect();
+    this.connectionStatus = 'disconnected';
   }
 
   /**
