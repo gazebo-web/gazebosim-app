@@ -8,7 +8,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "build:prod": "ng build --configuration=production",
+    "build:staging": "ng build --configuration=development",
+    "watch": "ng build --watch --configuration=development",
     "test": "ng test"
   },
   "dependencies": {
