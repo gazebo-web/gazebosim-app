@@ -8,7 +8,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "build:prod": "ng build --configuration=production",
+    "build:staging": "ng build --configuration=development",
+    "watch": "ng build --watch --configuration=development",
     "test": "ng test"
   },
   "dependencies": {
@@ -27,6 +29,7 @@
     "@web3-storage/parse-link-header": "^3.1.0",
     "auth0-js": "^9.14.0",
     "file-saver": "^2.0.2",
+    "gzweb": "^2.0.12-beta.34",
     "ngx-markdown": "^14.0.1",
     "ngx-stripe": "^14.1.0",
     "protobufjs": "^6.10.1",

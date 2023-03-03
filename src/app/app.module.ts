@@ -124,9 +124,6 @@ import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { SimulationRulesComponent } from './admin/cloudsim/rules/simulation-rules.component';
 import { SimulationService } from './cloudsim';
 
-import {
-  SimVisualizerComponent
-} from './admin/cloudsim/visualizer-tester/sim-visualizer-tester.component';
 import { TagsComponent } from './tags';
 import { TextInputDialogComponent } from './text-input-dialog/text-input-dialog.component';
 import { ThumbnailGeneratorComponent } from './model/edit/thumbnail-generator/thumbnail-generator.component';
@@ -135,7 +132,6 @@ import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
 import { VisualizationComponent } from './visualization';
-import { WebsocketService } from './cloudsim/websocket/sim-websocket.service';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
@@ -201,7 +197,6 @@ import { WorldService } from './world/world.service';
     SimulationLaunchDialogComponent,
     SimulationTableComponent,
     SimulationRulesComponent,
-    SimVisualizerComponent,
     TagsComponent,
     TextInputDialogComponent,
     ThumbnailGeneratorComponent,
@@ -289,7 +284,6 @@ import { WorldService } from './world/world.service';
     UserModelsResolver,
     UserService,
     UserWorldsResolver,
-    WebsocketService,
     WorldResolver,
     WorldService,
     {
