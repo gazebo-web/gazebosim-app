@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
@@ -282,8 +282,15 @@ export abstract class FuelResourceService {
    * @returns An observable of the Blob to download.
    */
   public download(res: FuelResource, version?: string | number): Observable<Blob> {
+    // Use ?link=true in order to receive the signed S3 link.
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('link', 'true');
+
     const url = `${this.getZipUrl(res.owner, res.name, version)}`;
-    return this.http.get(url, { responseType: 'blob' }).pipe(
+    return this.http.get(url, { params: httpParams, responseType: 'text' }).pipe(
+      mergeMap(responseUrl => {
+        return this.http.get(responseUrl as string, { responseType: 'blob' });
+      }),
       catchError(this.handleError)
     );
   }
