@@ -24,7 +24,7 @@ export class UiError {
    */
   constructor(httpResponse: HttpErrorResponse) {
     // Check if the error comes from the Gazebo server.
-    if (httpResponse.error.errcode) {
+    if (httpResponse.error?.errcode) {
       this.code = httpResponse.error.errcode;
       this.message = `Error #${httpResponse.error.errcode}: ${httpResponse.error.msg}`;
     } else {

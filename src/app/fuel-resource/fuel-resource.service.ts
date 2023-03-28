@@ -297,6 +297,14 @@ export abstract class FuelResourceService {
             return from(response.body.text()).pipe(
               mergeMap(url => this.http.get(url, { responseType: 'blob' })),
             );
+          default:
+            let msg = 'Error getting the zip file: Invalid Content-Type';
+            if (contentType) {
+              msg += ` (${contentType})`;
+            }
+            return throwError({
+              statusText: msg,
+            });
         }
       }),
       catchError(this.handleError)
