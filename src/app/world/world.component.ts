@@ -309,8 +309,8 @@ export class WorldComponent implements OnInit, OnDestroy {
 
     request.subscribe(
       (response) => {
-        this.world.likes = response;
         this.world.isLiked = !this.world.isLiked;
+        this.world.likes += 1 * (this.world.isLiked ? 1 : -1);
         this.disableLike = false;
       },
       (error) => {
