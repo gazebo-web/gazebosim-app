@@ -309,9 +309,14 @@ export class WorldComponent implements OnInit, OnDestroy {
 
     request.subscribe(
       (response) => {
-        this.world.isLiked = !this.world.isLiked;
-        this.world.likes += 1 * (this.world.isLiked ? 1 : -1);
         this.disableLike = false;
+
+        // Refresh the World.
+        this.worldService.get(this.world.owner, this.world.name).subscribe(
+            (world) => {
+              this.world = world;
+              this.getFiles();
+            });
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');

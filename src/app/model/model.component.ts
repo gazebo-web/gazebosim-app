@@ -331,9 +331,14 @@ export class ModelComponent implements OnInit, OnDestroy {
 
     request.subscribe(
       (response) => {
-        this.model.isLiked = !this.model.isLiked;
-        this.model.likes += 1 * (this.model.isLiked ? 1 : -1);
         this.disableLike = false;
+
+        // Refresh the Model.
+        this.modelService.get(this.model.owner, this.model.name).subscribe(
+          (model) => {
+            this.model = model;
+            this.getFiles();
+          });
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
