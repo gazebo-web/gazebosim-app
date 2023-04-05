@@ -301,7 +301,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.disableLike = true;
 
     // The current like state determines if the world should be Liked or Unliked.
-    if (!this.world.isLiked) {
+    let isLiked = this.world.isLiked;
+    if (!isLiked) {
       request = this.worldService.like(this.world);
     } else {
       request = this.worldService.unlike(this.world);
@@ -315,6 +316,7 @@ export class WorldComponent implements OnInit, OnDestroy {
         this.worldService.get(this.world.owner, this.world.name).subscribe(
             (world) => {
               this.world = world;
+              this.world.isLiked = !isLiked;
               this.getFiles();
             });
       },

@@ -323,7 +323,8 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.disableLike = true;
 
     // The current like state determines if the model should be Liked or Unliked.
-    if (!this.model.isLiked) {
+    let isLiked = this.model.isLiked;
+    if (!isLiked) {
       request = this.modelService.like(this.model);
     } else {
       request = this.modelService.unlike(this.model);
@@ -337,6 +338,7 @@ export class ModelComponent implements OnInit, OnDestroy {
         this.modelService.get(this.model.owner, this.model.name).subscribe(
           (model) => {
             this.model = model;
+            this.model.isLiked = !isLiked;
             this.getFiles();
           });
       },
