@@ -1,5 +1,5 @@
 <div id="container" (window:resize)="resize()">
-  <div class="preview-msg" *ngIf="obj === undefined"
+  <div class="preview-msg" *ngIf="assetViewer === undefined || (assetViewer.resourceLoaded$ | async) === false"
        fxLayout="column"
        fxLayoutAlign="center center">
     Nothing to preview
