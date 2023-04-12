@@ -8,8 +8,6 @@ import { Component,
        } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-declare let Detector: any;
-
 @Component({
   selector: 'gz-file-upload',
   templateUrl: 'file-upload.component.html',
@@ -78,10 +76,8 @@ export class FileUploadComponent implements OnInit {
   public ngOnInit(): void {
 
     // Check if the browser supports WebGL.
-    const hasWebGL = (typeof Detector === 'function' || Detector.webgl);
-    if (!hasWebGL) {
-      Detector.addGetWebGLMessage();
-    }
+    const canvas = document.createElement('canvas');
+    const hasWebGL = !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
 
     // Enable GzWeb as an experimental feature.
     const enabledFeature = (localStorage.getItem('experimental_gzweb') === 'true');
