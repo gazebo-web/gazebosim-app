@@ -5,7 +5,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Meta } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
@@ -323,28 +323,28 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.disableLike = true;
 
     // The current like state determines if the model should be Liked or Unliked.
-    let isLiked = this.model.isLiked;
-    if (!isLiked) {
+    if (!this.model.isLiked) {
       request = this.modelService.like(this.model);
     } else {
       request = this.modelService.unlike(this.model);
     }
 
-    request.subscribe(
-      (response) => {
-        this.disableLike = false;
-
-        // Refresh the Model.
-        this.modelService.get(this.model.owner, this.model.name).subscribe(
-          (model) => {
-            this.model = model;
-            this.model.isLiked = !isLiked;
-            this.getFiles();
-          });
+    request.pipe(
+      switchMap((result) => {
+        return this.modelService.get(this.model.owner, this.model.name);
+      })
+    ).subscribe(
+      (model) => {
+        this.model = model;
+        this.getFiles();
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
+      },
+      () => {
+        this.disableLike = false;
+      }
+    );
   }
 
   /**

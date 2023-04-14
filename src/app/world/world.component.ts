@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Meta } from '@angular/platform-browser';
 import { Subscription, forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
@@ -301,28 +301,28 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.disableLike = true;
 
     // The current like state determines if the world should be Liked or Unliked.
-    let isLiked = this.world.isLiked;
-    if (!isLiked) {
+    if (!this.world.isLiked) {
       request = this.worldService.like(this.world);
     } else {
       request = this.worldService.unlike(this.world);
     }
 
-    request.subscribe(
-      (response) => {
-        this.disableLike = false;
-
-        // Refresh the World.
-        this.worldService.get(this.world.owner, this.world.name).subscribe(
-            (world) => {
-              this.world = world;
-              this.world.isLiked = !isLiked;
-              this.getFiles();
-            });
+    request.pipe(
+      switchMap((result) => {
+        return this.worldService.get(this.world.owner, this.world.name);
+      })
+    ).subscribe(
+      (world) => {
+        this.world = world;
+        this.getFiles();
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
+      },
+      () => {
+        this.disableLike = false;
+      }
+    );
   }
 
   /**
