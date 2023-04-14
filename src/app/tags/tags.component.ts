@@ -83,7 +83,7 @@ export class TagsComponent {
       const value = input.value;
       // A MatChipInputEvent is an interface that requires the input element
       // and its value.
-      this.addTagChip({input, value});
+      this.addTagChip({input, value} as MatChipInputEvent);
     }
   }
 }

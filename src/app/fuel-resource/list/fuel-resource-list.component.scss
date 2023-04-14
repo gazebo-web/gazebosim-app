@@ -1,5 +1,5 @@
 @import '~@angular/material/theming';
-@import '../../../styles/custom-theme.scss';
+@import '../../../styles.scss';
 
 .item-card {
   min-width: 12em;
@@ -18,4 +18,9 @@
 .loading-footer {
   padding: 2em;
   align-items: center;
+}
+
+.mat-paginator  {
+  background-color: transparent;
+  color: black;
 }

@@ -1,19 +1,26 @@
 <div class="mat-typography">
   <div fxLayout="column" fxLayoutAlign="start center" >
-    <div #infiniteScroll infiniteScroll fxLayout="row wrap" fxFill
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="500"
-      [infiniteScrollDisabled]="disabled"
-      (scrolled)="onScroll()">
-      <gz-item-card class="item-card"
-        fxFlex.xs="100%"
-        fxFlex.sm="50%"
-        fxFlex.md="25%"
-        [removable]=removable
-        (removeClicked)="remove($event)"
-        [resource]=res [type]="resourceType" *ngFor="let res of resources">
-      </gz-item-card>
-    </div>
+    <ng-container *ngIf="resources">
+      <div fxLayout="row wrap" fxFill>
+        <gz-item-card class="item-card"
+                      *ngFor="let res of resources"
+                      fxFlex.xs="100%"
+                      fxFlex.sm="50%"
+                      fxFlex.md="25%"
+                      [removable]=removable
+                      [resource]=res
+                      [type]="resourceType"
+                      (removeClicked)="remove($event)">
+        </gz-item-card>
+      </div>
+
+      <mat-paginator [length]="length"
+                     [pageIndex]="pageIndex"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="pageSizeOptions"
+                     (page)="pageEvent($event)">
+      </mat-paginator>
+    </ng-container>
 
     <div class="loading-footer mat-typography">
       <div id="html-spinner" *ngIf="loading || !resources"></div>

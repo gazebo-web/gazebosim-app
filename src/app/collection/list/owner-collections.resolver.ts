@@ -32,7 +32,20 @@ export class OwnerCollectionsResolver implements Resolve<PaginatedCollection> {
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedCollection> {
     const owner: string = route.paramMap.get('user');
 
-    return this.collectionService.getOwnerCollectionList(owner).pipe(
+    const params = {};
+    if (route.queryParams['q']) {
+      params['search'] = route.queryParams['q'];
+    }
+
+    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
+      params['page'] = route.queryParams['page'];
+    }
+
+    if (route.queryParams['per_page']) {
+      params['per_page'] = route.queryParams['per_page'];
+    }
+
+    return this.collectionService.getOwnerCollectionList(owner, params).pipe(
       map((collections) => {
         return collections;
       }),

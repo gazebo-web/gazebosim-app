@@ -5,7 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { AuthService } from '../../auth/auth.service';
@@ -43,7 +42,6 @@ describe('CollectionListComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        InfiniteScrollModule,
         MatIconModule,
         MatCardModule,
         RouterTestingModule,

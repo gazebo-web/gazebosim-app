@@ -1,8 +1,9 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PageEvent } from '@angular/material/paginator';
 
 import { AuthService } from '../auth/auth.service';
 import { CollectionService, Collection, PaginatedCollection } from '../collection';
@@ -99,6 +100,7 @@ export class OrganizationComponent implements OnInit {
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data.
+   * @param router The Router used to navigate.
    * @param authService Service used to get the logged in user's profile.
    * @param collectionService Service used to fetch the organization's collections.
    * @param dialog Used to open and display other dialogs.
@@ -109,6 +111,7 @@ export class OrganizationComponent implements OnInit {
    */
   constructor(
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     public authService: AuthService,
     public collectionService: CollectionService,
     public dialog: MatDialog,
@@ -127,37 +130,13 @@ export class OrganizationComponent implements OnInit {
     this.organization = this.activatedRoute.snapshot.data['resolvedData'];
 
     // Get the Organization's models.
-    this.modelService.getOwnerList(this.organization.name).subscribe(
-      (response) => {
-        this.paginatedModels = response;
-        this.models = response.resources;
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
-    );
+    this.loadModels();
 
     // Get the Organization's worlds.
-    this.worldService.getOwnerList(this.organization.name).subscribe(
-      (response) => {
-        this.paginatedWorlds = response;
-        this.worlds = response.resources;
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
-    );
+    this.loadWorlds();
 
     // Get the Organization's collections.
-    this.collectionService.getOwnerCollectionList(this.organization.name).subscribe(
-      (response) => {
-        this.paginatedCollections = response;
-        this.collections = response.collections;
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
-    );
+    this.loadCollections();
 
     // Get the Organization's users.
     this.organizationService.getOrganizationUsers(this.organization).subscribe(
@@ -171,63 +150,81 @@ export class OrganizationComponent implements OnInit {
   }
 
   /**
-   * Loads the next page of models.
+   * Load Models of this Organization.
+   *
+   * @param event Optional. The page event that contains the pagination data of models to load.
    */
-  public loadNextModelsPage(): void {
-    if (this.paginatedModels.hasNextPage()) {
-      this.modelService.getNextPage(this.paginatedModels).subscribe(
-        (pagModels) => {
-          this.paginatedModels = pagModels;
-          // Copy and extend the existing array of models with the new ones.
-          // A copy is required in order to trigger changes.
-          const newModels = this.models.slice();
-          for (const model of pagModels.resources) {
-            newModels.push(model);
-          }
-          this.models = newModels;
-        }
-      );
-    }
+  public loadModels(event?: PageEvent): void {
+    const params = event ? {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize
+    } : {};
+
+    // Get the Organization's models.
+    this.modelService.getOwnerList(this.organization.name, params).subscribe({
+      next: (response) => {
+        this.paginatedModels = response;
+        this.models = response.resources;
+        // DEVNOTE: This change is not reflected in the Client URL.
+        // Navigate in order to scroll to the top.
+        this.router.navigate([this.organization.name]);
+      },
+      error: (error) => {
+        this.snackBar.open(error.message, 'Got it');
+      }
+    });
   }
 
   /**
-   * Loads the next page of worlds.
+   * Load Worlds of this Organization.
+   *
+   * @param event Optional. The page event that contains the pagination data of worlds to load.
    */
-  public loadNextWorldsPage(): void {
-    if (this.paginatedWorlds.hasNextPage()) {
-      this.worldService.getNextPage(this.paginatedWorlds).subscribe(
-        (pagWorlds) => {
-          this.paginatedWorlds = pagWorlds;
-          // Copy and extend the existing array of worlds with the new ones.
-          // A copy is required in order to trigger changes.
-          const newWorlds = this.worlds.slice();
-          for (const world of pagWorlds.resources) {
-            newWorlds.push(world);
-          }
-          this.worlds = newWorlds;
-        }
-      );
-    }
+  public loadWorlds(event?: PageEvent): void {
+    const params = event ? {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize
+    } : {};
+
+    // Get the Organization's worlds.
+    this.worldService.getOwnerList(this.organization.name, params).subscribe({
+      next: (response) => {
+        this.paginatedWorlds = response;
+        this.worlds = response.resources;
+        // DEVNOTE: This change is not reflected in the Client URL.
+        // Navigate in order to scroll to the top.
+        this.router.navigate([this.organization.name]);
+      },
+      error: (error) => {
+        this.snackBar.open(error.message, 'Got it');
+      }
+    });
   }
 
   /**
-   * Loads the next page of collections.
+   * Load Collections of this Organization.
+   *
+   * @param event Optional. The page event that contains the pagination data of collections to load.
    */
-  public loadNextCollectionsPage(): void {
-    if (this.paginatedCollections.hasNextPage()) {
-      this.collectionService.getNextPage(this.paginatedCollections).subscribe(
-        (pagCollections) => {
-          this.paginatedCollections = pagCollections;
-          // Copy and extend the existing array of collections with the new ones.
-          // A copy is required in order to trigger changes.
-          const newCollections = this.collections.slice();
-          for (const col of pagCollections.collections) {
-            newCollections.push(col);
-          }
-          this.collections = newCollections;
-        }
-      );
-    }
+  public loadCollections(event?: PageEvent): void {
+    const params = event ? {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize
+    } : {};
+
+    // Get the Organization's collections.
+    this.collectionService.getOwnerCollectionList(this.organization.name, params).subscribe({
+      next: (response) => {
+        this.paginatedCollections = response;
+        this.collections = response.collections;
+        // DEVNOTE: This change is not reflected in the Client URL.
+        // Navigate in order to scroll to the top.
+        this.router.navigate([this.organization.name]);
+      },
+      error: (error) => {
+        this.snackBar.open(error.message, 'Got it');
+      }
+    });
   }
 
   /**

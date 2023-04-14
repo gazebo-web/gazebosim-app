@@ -10,7 +10,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AuthPipe } from '../../auth/auth.pipe';
 import { AuthService } from '../../auth/auth.service';
@@ -53,7 +52,6 @@ describe('ModelListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
-        InfiniteScrollModule,
         MatCardModule,
         MatInputModule,
         MatIconModule,

@@ -16,6 +16,7 @@ import { SearchComponent } from './search';
 import { AuthService } from './auth/auth.service';
 import { Ng2DeviceService } from './device-detector';
 
+
 @Component({
   selector: 'gz-app-root',
   templateUrl: './app.component.html',
@@ -138,9 +139,6 @@ export class AppComponent implements OnInit {
               openedSnackbar.containerInstance.snackBarConfig.duration === 0) {
             this.snackBar.dismiss();
           }
-
-          // Navigate to the top.
-          window.scrollTo(0, 0);
 
           // The title can be either a string or a function, which requires the current route as
           // its argument.
