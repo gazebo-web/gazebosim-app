@@ -79,6 +79,10 @@ export class SdfViewerComponent implements OnInit, OnDestroy {
       elementId: 'container',
     }
 
+    if (this.resource.private) {
+      config.token = localStorage.getItem('token');
+    }
+
     // Models are scaled and include special lightning.
     // Models can also use PBR Materials. On worlds, PBR materials are disabled for performance.
     if (this.resource.type === 'models') {
