@@ -111,11 +111,16 @@ The output can be found in the `dist/app` folder.
 
 ## Gitlab Pipelines
 
-The deploy process is done using Gitlab pipelines. Whenever a job runs, you can manually trigger a deploy. Jobs ran on `develop` can be deployed to Staging, and jobs ran on `master` can be deployed to Production.
+The `staging` branch in this repository is used to deploy this website to
+https://staging-app.gazebosim.org. The `production` branch in this repository is
+used to deploy this website to `https://app.gazebosim.org`.
 
-The pipeline is in charge of setting the required environment variables, syncing the built app into the corresponding S3 bucket and invalidating the Cloudfront distribution.
+Github actions will automatically deploy `staging` on push. The `production`
+branch will only deploy when an authorized user approves the deployment on
+the Github Actions UI.
 
-For in-depth details, you can check the `.gitlab-ci.yml` file.
+There is no rule about how a release should be made. A person with sufficient
+access can choose between direct commits or pull requests.
 
 ## Manual process
 

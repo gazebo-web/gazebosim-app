@@ -13,7 +13,7 @@ import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PageEvent } from '@angular/material/paginator';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import * as FileSaver from 'file-saver';
 
 import { AuthService } from '../auth/auth.service';
@@ -355,15 +355,22 @@ export class ModelComponent implements OnInit, OnDestroy {
       request = this.modelService.unlike(this.model);
     }
 
-    request.subscribe(
-      (response) => {
-        this.model.likes = response;
-        this.model.isLiked = !this.model.isLiked;
-        this.disableLike = false;
+    request.pipe(
+      switchMap((result) => {
+        return this.modelService.get(this.model.owner, this.model.name);
+      })
+    ).subscribe(
+      (model) => {
+        this.model = model;
+        this.getFiles();
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
+      },
+      () => {
+        this.disableLike = false;
+      }
+    );
   }
 
   /**

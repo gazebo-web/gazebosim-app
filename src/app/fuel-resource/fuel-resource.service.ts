@@ -1,6 +1,6 @@
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 
 import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { UiError } from '../ui-error';
@@ -324,8 +324,31 @@ export abstract class FuelResourceService {
    * @returns An observable of the Blob to download.
    */
   public download(res: FuelResource, version?: string | number): Observable<Blob> {
+    // Use ?link=true in order to receive the signed S3 link.
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('link', 'true');
+
     const url = `${this.getZipUrl(res.owner, res.name, version)}`;
-    return this.http.get(url, { responseType: 'blob' }).pipe(
+    return this.http.get(url, { params: httpParams, observe: 'response', responseType: 'blob' }).pipe(
+      mergeMap((response) => {
+        const contentType = response.headers.get('Content-Type');
+        switch (contentType) {
+          case 'application/zip':
+            return of(new Blob([response.body]));
+          case 'text/plain':
+            return from(response.body.text()).pipe(
+              mergeMap(url => this.http.get(url, { responseType: 'blob' })),
+            );
+          default:
+            let msg = 'Error getting the zip file: Invalid Content-Type';
+            if (contentType) {
+              msg += ` (${contentType})`;
+            }
+            return throwError({
+              statusText: msg,
+            });
+        }
+      }),
       catchError(this.handleError)
     );
   }

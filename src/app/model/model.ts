@@ -11,11 +11,14 @@ export class Model extends FuelResource {
    * The extensions allowed by Model files.
    */
   public static allowedExtensions: string[] = [
+    'bin',
     'bvh',
     'config',
     'dae',
     'dds',
+    'glb',
     'glsl',
+    'gltf',
     'jpg',
     'material',
     'metal',
