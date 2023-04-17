@@ -5,7 +5,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
@@ -315,15 +315,22 @@ export class ModelComponent implements OnInit, OnDestroy {
       request = this.modelService.unlike(this.model);
     }
 
-    request.subscribe(
-      (response) => {
-        this.model.likes = response;
-        this.model.isLiked = !this.model.isLiked;
-        this.disableLike = false;
+    request.pipe(
+      switchMap((result) => {
+        return this.modelService.get(this.model.owner, this.model.name);
+      })
+    ).subscribe(
+      (model) => {
+        this.model = model;
+        this.getFiles();
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
+      },
+      () => {
+        this.disableLike = false;
+      }
+    );
   }
 
   /**

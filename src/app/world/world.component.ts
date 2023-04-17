@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription, forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
@@ -292,15 +292,22 @@ export class WorldComponent implements OnInit, OnDestroy {
       request = this.worldService.unlike(this.world);
     }
 
-    request.subscribe(
-      (response) => {
-        this.world.likes = response;
-        this.world.isLiked = !this.world.isLiked;
-        this.disableLike = false;
+    request.pipe(
+      switchMap((result) => {
+        return this.worldService.get(this.world.owner, this.world.name);
+      })
+    ).subscribe(
+      (world) => {
+        this.world = world;
+        this.getFiles();
       },
       (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
+      },
+      () => {
+        this.disableLike = false;
+      }
+    );
   }
 
   /**
