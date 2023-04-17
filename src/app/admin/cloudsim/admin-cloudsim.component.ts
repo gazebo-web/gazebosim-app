@@ -15,7 +15,6 @@ import { LaunchQueueComponent } from './launch-queue/launch-queue.component';
 import { Machine, PaginatedMachine, Simulation, PaginatedSimulation, SimulationService, SimulationTableComponent } from '../../cloudsim';
 import { PaginatedSimulationRules } from './rules';
 import { SimulationRulesComponent } from './rules/simulation-rules.component';
-import { SimVisualizerComponent } from './visualizer-tester/sim-visualizer-tester.component';
 
 @Component({
   selector: 'gz-admin-cloudsim',
@@ -37,7 +36,6 @@ import { SimVisualizerComponent } from './visualizer-tester/sim-visualizer-teste
     ReactiveFormsModule,
     SimulationRulesComponent,
     SimulationTableComponent,
-    SimVisualizerComponent,
   ],
 })
 
