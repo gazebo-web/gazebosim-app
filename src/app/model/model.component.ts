@@ -19,8 +19,6 @@ import { SdfViewerComponent } from './sdfviewer/sdfviewer.component';
 import * as FileSaver from 'file-saver';
 import { PageEvent } from '@angular/material/paginator';
 
-declare let Detector: any;
-
 @Component({
   selector: 'gz-model',
   templateUrl: 'model.component.html',
@@ -151,10 +149,8 @@ export class ModelComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     // Check if the browser supports WebGL.
-    this.hasGzWeb = (typeof Detector === 'function' || Detector.webgl);
-    if (!this.hasGzWeb) {
-      Detector.addGetWebGLMessage();
-    }
+    const canvas = document.createElement('canvas');
+    this.hasGzWeb = !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
 
     if (this.activatedRoute.snapshot.data['resolvedData'] !== undefined) {
       this.model = this.activatedRoute.snapshot.data['resolvedData'];
