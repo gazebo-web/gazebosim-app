@@ -2,7 +2,7 @@
 
   <h1 mat-dialog-title>Add to collection</h1>
   <mat-accordion>
-    <mat-expansion-panel [expanded]='true' (opened)="openOption(0);">
+    <mat-expansion-panel [expanded]='true' (opened)="openOption(0)">
       <mat-expansion-panel-header>
         <mat-panel-title>Existing</mat-panel-title>
         <mat-panel-description>
@@ -20,7 +20,7 @@
                    [matAutocomplete]="auto"
                    [formControl]="collectionAddInputForm">
 
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getCollectionName">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getCollectionName()">
               <mat-option *ngFor="let collection of (collectionList | async)"
                           [value]="collection">{{collection.name}} by {{collection.owner}}
               </mat-option>
@@ -30,7 +30,7 @@
       </form>
     </mat-expansion-panel>
 
-    <mat-expansion-panel (opened)="openOption(1);">
+    <mat-expansion-panel (opened)="openOption(1)">
       <mat-expansion-panel-header>
         <mat-panel-title>New</mat-panel-title>
         <mat-panel-description>

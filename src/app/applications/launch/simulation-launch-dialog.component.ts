@@ -256,10 +256,10 @@ export class SimulationLaunchDialogComponent implements OnInit {
     }
 
     // Add the robot to a list.
-    const robot = {
+    const robot: Robot = {
       name: this.robotName.value,
       image: this.robotImageUrl.value,
-      type: this.typeDropdownForm.value,
+      type: {type: this.typeDropdownForm.value},
     };
     if (this.marsupialPartner.value.length > 0) {
       robot['partner'] = this.marsupialPartner.value;
@@ -327,7 +327,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
    * Returns true if the selected vehicle in Robot Type is a valid parent platform.
    */
   public showMarsupialPartner(): boolean {
-    const {type} = this.typeDropdownForm.value;
+    const type = this.typeDropdownForm.value;
     return validParents[type] !== undefined;
   }
 
@@ -363,7 +363,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
    * Return true if TEAMBASE type is currently selected
    */
   public teambaseSelected(): boolean {
-    return this.typeDropdownForm.value && this.typeDropdownForm.value.name === 'TEAMBASE';
+    return this.typeDropdownForm.value && this.typeDropdownForm.value === 'TEAMBASE';
   }
 
   /**

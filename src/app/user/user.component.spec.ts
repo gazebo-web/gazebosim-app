@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -7,7 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { of, throwError } from 'rxjs';
 
 import { AuthPipe } from '../auth/auth.pipe';
@@ -69,7 +68,6 @@ describe('UserComponent', () => {
       imports: [
         BrowserAnimationsModule,
         HttpClientTestingModule,
-        InfiniteScrollModule,
         MatCardModule,
         MatIconModule,
         MatSnackBarModule,

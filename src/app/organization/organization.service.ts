@@ -11,7 +11,7 @@ import { UiError } from '../ui-error';
 import { User } from '../user/user';
 import { environment } from '../../environments/environment';
 
-import * as linkParser from 'parse-link-header';
+import { parseLinkHeader } from '@web3-storage/parse-link-header';
 
 @Injectable()
 
@@ -56,7 +56,7 @@ export class OrganizationService {
     const url = this.getOrganizationListUrl();
     return this.http.get(url, {observe: 'response'}).pipe(
       map((response) => {
-        this.parseLinkHeader(response);
+        this.parseHeader(response);
         if (response.body) {
           const paginatedOrg = new PaginatedOrganizations();
           paginatedOrg.totalCount = +response.headers.get(this.headerTotalCount);
@@ -255,12 +255,12 @@ export class OrganizationService {
    *
    * @param response The response that has a Link header to parse.
    */
-  private parseLinkHeader(response: HttpResponse<any>): void {
+  private parseHeader(response: HttpResponse<any>): void {
     const link = response.headers.get('link');
     if (link &&
-        linkParser(link) &&
-        linkParser(link).next) {
-      const url = linkParser(link).next.url;
+        parseLinkHeader(link) &&
+        parseLinkHeader(link).next) {
+      const url = parseLinkHeader(link).next.url;
       this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
       this.nextUrl = null;

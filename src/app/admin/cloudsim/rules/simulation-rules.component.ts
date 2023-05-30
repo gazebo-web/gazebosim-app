@@ -151,7 +151,7 @@ export class SimulationRulesComponent implements OnChanges {
     rule.circuit = this.circuitInputForm.value;
     rule.owner = this.ownerInputForm.value;
     rule.type = SimulationRule.ruleTypes.get(this.typeInputForm.value);
-    rule.value = this.valueInputForm.value;
+    rule.value = Number(this.valueInputForm.value);
 
     this.simulationService.editOrCreateRule(rule).subscribe(
       (response) => {

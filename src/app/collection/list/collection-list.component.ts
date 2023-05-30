@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Collection, CollectionService, PaginatedCollection } from '../../collection';
 
@@ -29,6 +30,7 @@ export class CollectionListComponent implements OnInit {
    * @param collectionService Service used to get the collections.
    */
   constructor(
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private collectionService: CollectionService) {
   }
@@ -44,20 +46,25 @@ export class CollectionListComponent implements OnInit {
     this.collections = this.paginatedCollections.collections;
   }
 
-  public loadNextCollectionsPage(): void {
-    if (this.paginatedCollections.hasNextPage()) {
-      this.collectionService.getNextPage(this.paginatedCollections).subscribe(
-        (pagCollections) => {
-          this.paginatedCollections = pagCollections;
-          // Copy and extend the existing array of collections with the new ones.
-          // A copy is required in order to trigger changes.
-          const newCollections = this.collections.slice();
-          for (const col of pagCollections.collections) {
-            newCollections.push(col);
-          }
-          this.collections = newCollections;
-        });
-    }
+  /**
+   * Get new models when a pagination even occurs.
+   *
+   * @param event The Page Event emitted by the list's paginator.
+   */
+   public getCollections(event: PageEvent) {
+    this.collectionService.getCollectionList({
+      page: event.pageIndex + 1,
+      per_page: event.pageSize,
+    }).subscribe(
+      (collections) => {
+        this.paginatedCollections = collections;
+        this.collections = this.paginatedCollections.collections;
+
+        // Navigate to the Collections List page.
+        // Note that this does not recreate the component, since the navigation is to the same page.
+        this.router.navigateByUrl(`/collections?page=${event.pageIndex+1}&per_page=${event.pageSize}`);
+      }
+    );
   }
 
   /**

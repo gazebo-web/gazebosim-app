@@ -160,7 +160,7 @@ export class DndDirective {
         });
       });
     } else {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
 
         const dirReader = entry.createReader();
         dirReader.readEntries((entries) => {
