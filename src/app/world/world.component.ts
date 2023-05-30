@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, SecurityContext, ViewEncapsulation, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Meta } from '@angular/platform-browser';
+import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription, forkJoin } from 'rxjs';
 import { finalize, switchMap } from 'rxjs/operators';
 
@@ -15,13 +15,8 @@ import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dia
 import { World } from './world';
 import { WorldService } from './world.service';
 import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
-
 import * as FileSaver from 'file-saver';
-import { NgxGalleryOptions,
-         NgxGalleryImage,
-         NgxGalleryImageSize } from '@kolkov/ngx-gallery';
-
-declare let Detector: any;
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gz-world',
@@ -48,18 +43,9 @@ export class WorldComponent implements OnInit, OnDestroy {
   public canEdit: boolean = false;
 
   /**
-   * The gallery options. Determines the behavior of the gallery component.
-   *
-   * See https://github.com/lukasz-galka/ngx-gallery#ngxgalleryoptions for more details.
-   */
-  public galleryOptions: NgxGalleryOptions[];
-
-  /**
    * The images to be displayed in the gallery.
-   *
-   * See https://github.com/lukasz-galka/ngx-gallery#ngxgalleryimage for more details.
    */
-  public galleryImages: NgxGalleryImage[];
+  public galleryImages: SafeUrl[];
 
   /**
    * Disable the like button. This helps to prevent multiple calls.
@@ -151,7 +137,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     private worldService: WorldService,
     private router: Router,
     public snackBar: MatSnackBar,
-    private metaService: Meta) {
+    private metaService: Meta,
+    private sanitizer: DomSanitizer) {
   }
 
   /**
@@ -161,10 +148,8 @@ export class WorldComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     // Check if the browser supports WebGL.
-    this.hasGzWeb = (typeof Detector === 'function' || Detector.webgl);
-    if (!this.hasGzWeb) {
-      Detector.addGetWebGLMessage();
-    }
+    const canvas = document.createElement('canvas');
+    this.hasGzWeb = !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
 
     if (this.activatedRoute.snapshot.data['resolvedData'] !== undefined) {
       this.world = this.activatedRoute.snapshot.data['resolvedData'];
@@ -250,8 +235,8 @@ export class WorldComponent implements OnInit, OnDestroy {
     // Revoke the URLs of the Gallery.
     if (this.galleryImages && this.galleryImages.length !== 0) {
       this.galleryImages.forEach((galleryImage) => {
-        URL.revokeObjectURL(galleryImage.small as string);
-        URL.revokeObjectURL(galleryImage.medium as string);
+        URL.revokeObjectURL(
+          this.sanitizer.sanitize(SecurityContext.URL, galleryImage));
       });
     }
   }
@@ -502,53 +487,33 @@ export class WorldComponent implements OnInit, OnDestroy {
 
   /**
    * Load the collections that have this World.
+   *
+   * @param event Optional. The page event that contains the pagination data of collections to load.
    */
-  public loadCollections(): void {
-    this.collectionService.getAssetCollections(this.world).subscribe(
-      (response) => {
+  public loadCollections(event?: PageEvent): void {
+    const params = event ? {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize
+    } : {};
+    this.collectionService.getAssetCollections(this.world, params).subscribe({
+      next: (response) => {
+        // DEVNOTE: This change is not reflected in the Client URL.
         this.paginatedCollections = response;
         this.collections = response.collections;
       },
-      (error) => {
+      error: (error) => {
         this.snackBar.open(error.message, 'Got it');
-      });
-  }
-
-  /**
-   * Callback of the Resource List component. Requests more collections to be loaded.
-   */
-  public loadNextCollections(): void {
-    this.collectionService.getNextPage(this.paginatedCollections).subscribe(
-      (pagCollections) => {
-        this.paginatedCollections = pagCollections;
-        const newCollections = this.collections.slice();
-        pagCollections.collections.forEach((collection) => newCollections.push(collection));
-        this.collections = newCollections;
-      });
+      },
+    });
   }
 
   /**
    * Populates the image gallery with the world images and sets the options.
    */
   public setupGallery(): void {
-    // Set the Gallery Options.
-    const newGalleryOptions = {
-      imageSize: NgxGalleryImageSize.Contain,
-      thumbnailSize: NgxGalleryImageSize.Contain,
-      width: '100%',
-      height: '100%',
-      thumbnailsColumns: 3,
-      imageArrowsAutoHide: true,
-      thumbnailsArrowsAutoHide: true,
-      arrowPrevIcon: 'gallery-ic_chevron_left circle-icon',
-      arrowNextIcon: 'gallery-ic_chevron_right circle-icon',
-      preview: false,
-    };
-    this.galleryOptions = [newGalleryOptions];
-
     // Verify that the world has images.
     if (this.world.images && this.world.images.length !== 0) {
-      const newGalleryImages = [];
+      const newGalleryImages: SafeUrl[] = [];
 
       // To ensure the thumbnails are received in order.
       const requests = [];
@@ -559,25 +524,14 @@ export class WorldComponent implements OnInit, OnDestroy {
         (response) => {
           // The response contains the Blobs of all thumbnails, in the order they were requested.
           response.forEach((blob) => {
-            const imageUrl = URL.createObjectURL(blob);
-            newGalleryImages.push({
-              medium: imageUrl,
-              small: imageUrl,
-            });
+            const imageUrl: SafeUrl = this.sanitizer.bypassSecurityTrustUrl(
+              URL.createObjectURL(blob));
+            newGalleryImages.push(imageUrl);
           });
           // All the images were processed at this point.
 
           // Set the images and correct options.
           this.galleryImages = newGalleryImages;
-          if (this.galleryImages.length === 1) {
-            newGalleryOptions['imageArrowsAutoHide'] = false;
-            newGalleryOptions['imageArrows'] = false;
-            newGalleryOptions['thumbnails'] = false;
-          }
-          if (this.galleryImages.length === 2) {
-            newGalleryOptions['thumbnailsColumns'] = 2;
-          }
-          this.galleryOptions = [newGalleryOptions];
         }
       );
     } else {

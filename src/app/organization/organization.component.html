@@ -11,12 +11,13 @@
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="models"
-                                resourceType="models"
-                                [disabled]="activeTab !== 'models'"
-                                [finished]="!this.paginatedModels?.hasNextPage()"
-                                (onLoadMore)="loadNextModelsPage()"
-                                fxFlex>
+        <gz-fuel-resource-list fxFlex
+                               resourceType="models"
+                               [resources]="models"
+                               [disabled]="activeTab !== 'models'"
+                               [length]="paginatedModels?.totalCount"
+                               [finished]="!paginatedModels?.hasNextPage()"
+                               (pageChange)="loadModels($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -30,12 +31,13 @@
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="worlds"
-                                resourceType="worlds"
-                                [disabled]="activeTab !== 'worlds'"
-                                [finished]="!this.paginatedWorlds?.hasNextPage()"
-                                (onLoadMore)="loadNextWorldsPage()"
-                                fxFlex>
+        <gz-fuel-resource-list fxFlex
+                               resourceType="worlds"
+                               [resources]="worlds"
+                               [disabled]="activeTab !== 'worlds'"
+                               [length]="paginatedWorlds?.totalCount"
+                               [finished]="!paginatedWorlds?.hasNextPage()"
+                               (pageChange)="loadWorlds($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -49,12 +51,13 @@
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="collections"
-                                resourceType="collections"
-                                [disabled]="activeTab !== 'collections'"
-                                [finished]="!this.paginatedCollections?.hasNextPage()"
-                                (onLoadMore)="loadNextCollectionsPage()"
-                                fxFlex>
+        <gz-fuel-resource-list fxFlex
+                               resourceType="collections"
+                               [resources]="collections"
+                               [disabled]="activeTab !== 'collections'"
+                               [length]="paginatedCollections?.totalCount"
+                               [finished]="!paginatedCollections?.hasNextPage()"
+                               (pageChange)="loadCollections($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>

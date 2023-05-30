@@ -100,14 +100,14 @@ export class CollectionDialogComponent implements OnInit {
     // Prepare the collection list filter by input.
     this.collectionList = this.collectionAddInputForm.valueChanges.pipe(
       debounceTime(300),
-      switchMap((value) => {
+      switchMap((value, index) => {
         // Value is a string until a collection is selected.
         // Once selected, the value is a Collection instead of a string. A collection is useful
         // because we need both name and owner, but we need a string to pass to the search query.
-        if (value.name) {
-          value = value.name;
+        if (typeof value !== 'string') {
+          value = (value as Collection).name;
         }
-        return this.collectionService.getCollectionExtensibleList(value).pipe(
+        return this.collectionService.getCollectionExtensibleList({search: value}).pipe(
           map((paginatedCollections) => {
             return paginatedCollections.collections;
           })
@@ -122,12 +122,12 @@ export class CollectionDialogComponent implements OnInit {
     // Verify the input field contains a collection. If none was selected, it is only
     // a string.
     if (!this.collectionAddInputForm.value ||
-      this.collectionAddInputForm.value.name === undefined) {
+        typeof this.collectionAddInputForm.value === 'string') {
       return;
     }
 
-    const selectedName = this.collectionAddInputForm.value.name;
-    const selectedOwner = this.collectionAddInputForm.value.owner;
+    const selectedName = (this.collectionAddInputForm.value as Collection).name;
+    const selectedOwner = (this.collectionAddInputForm.value as Collection).owner;
 
     this.collectionService.addAsset(selectedOwner, selectedName, this.resource).subscribe(
       (response) => {
@@ -202,8 +202,8 @@ export class CollectionDialogComponent implements OnInit {
    * @param collection The selected collection.
    * @returns The name of the selected collection.
    */
-  public getCollectionName(collection?: Collection): string {
-    return collection.name;
+  public getCollectionName(collection?: Collection): string | null {
+    return collection ? collection.name : null;
   }
 
   /**

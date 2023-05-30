@@ -30,7 +30,21 @@ export class PublicCollectionsResolver implements Resolve<PaginatedCollection> {
    * @returns An observable of the collections or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedCollection> {
-    return this.collectionService.getCollectionList().pipe(
+
+    const params = {};
+    if (route.queryParams['q']) {
+      params['search'] = route.queryParams['q'];
+    }
+
+    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
+      params['page'] = route.queryParams['page'];
+    }
+
+    if (route.queryParams['per_page']) {
+      params['per_page'] = route.queryParams['per_page'];
+    }
+
+    return this.collectionService.getCollectionList(params).pipe(
       map((collections) => {
         return collections;
       }),

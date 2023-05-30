@@ -16,9 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MarkdownModule } from 'ngx-markdown';
-import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { Subscription, of, throwError } from 'rxjs';
 import * as FileSaver from 'file-saver';
 
@@ -81,7 +79,6 @@ describe('WorldComponent', () => {
         BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
-        InfiniteScrollModule,
         MarkdownModule,
         MatButtonModule,
         MatCardModule,
@@ -93,7 +90,6 @@ describe('WorldComponent', () => {
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
-        NgxGalleryModule,
         ReactiveFormsModule,
         RouterTestingModule,
         ],

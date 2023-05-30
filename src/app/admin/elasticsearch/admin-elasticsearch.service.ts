@@ -9,8 +9,6 @@ import { environment } from '../../../environments/environment';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { UiError } from '../../ui-error';
 
-import * as linkParser from 'parse-link-header';
-
 @Injectable()
 
 /**

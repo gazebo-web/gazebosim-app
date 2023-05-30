@@ -1,38 +1,55 @@
 import { Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
-  ElementRef,
-  ChangeDetectorRef,
-  ViewChild,
-  AfterViewChecked } from '@angular/core';
+} from '@angular/core';
+
+import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
 
 import { FuelResource } from '../fuel-resource';
 
 @Component({
-selector: 'gz-fuel-resource-list',
-templateUrl: 'fuel-resource-list.component.html',
-styleUrls: ['fuel-resource-list.component.scss']
+  selector: 'gz-fuel-resource-list',
+  templateUrl: 'fuel-resource-list.component.html',
+  styleUrls: ['fuel-resource-list.component.scss']
 })
 
 /**
  * The Fuel Resource List component is in charge of displaying a list of fuel resources.
  * It is meant to use as an element and not a page: It doesn't use a service.
- * It receives the resources to display as an input directive, and fires an event whenever
- * a scroll is detected, asking for more resources.
+ * It receives the resources to display as an input directive, and fires events related to
+ * pagination.
  */
-export class FuelResourceListComponent implements AfterViewChecked {
+export class FuelResourceListComponent implements OnInit {
 
   /**
-   * Setter of the Resources. It is after their first change that we can determine to load
-   * more resources or consider the infinite scroll to end.
-   * A new array is required to trigger a change.
+   * The page index to use in the paginator.
+   */
+  public pageIndex: number = 0;
+
+  /**
+   * The pagination size options.
+   */
+  public pageSizeOptions: number[] = [20, 50, 100];
+
+  /**
+   * The currently selected page size.
+   */
+  public pageSize: number = this.pageSizeOptions[0];
+
+  /**
+   * The total number of resources of the list.
+   */
+  @Input() public length: number;
+
+  /**
+   * Setter of the Resources.
    */
   @Input() public set resources(res: FuelResource[]) {
     this._resources = res;
     this.loading = false;
-    // Manually detect changes: This prevents ExpressionChangedAfterItHasBeenCheckedError.
-    this.ref.detectChanges();
   }
 
   /**
@@ -79,9 +96,9 @@ export class FuelResourceListComponent implements AfterViewChecked {
   @Output() public onRemoveItem = new EventEmitter<any>();
 
   /**
-   * DOM element that contains the infinite scroll list.
+   * Event emitter when a page changes. Allows components to load the corresponding resources.
    */
-  @ViewChild('infiniteScroll') public listElement: ElementRef;
+  @Output() public pageChange = new EventEmitter<PageEvent>();
 
   /**
    * The array of resources that this component represents.
@@ -89,58 +106,24 @@ export class FuelResourceListComponent implements AfterViewChecked {
   private _resources: FuelResource[];
 
   /**
-   * @param ref Change detector ref to trigger repaint and get the correct element sizes.
+   * @param route The activated route in order to get pagination information.
    */
-  constructor(public ref: ChangeDetectorRef) {
+  constructor(public route: ActivatedRoute) {
   }
 
   /**
-   * After View Checked lifecycle hook.
-   * See https://angular.io/guide/lifecycle-hooks#afterview
-   *
-   * Called after a change in a child's view.
-   * The Infinite Scroll container won't work if it has no scrollbar.
-   * To show a scrollbar, the height of the container should be larger than the window.
-   * If the container is shorter, we ask for more resources until the container is longer, or
-   * there are no more resources to show.
+   * OnInit Lifecycle hook. Used to sync the query parameters with the paginator.
    */
-  public ngAfterViewChecked(): void {
-    const elementHeight = this.listElement.nativeElement.offsetHeight;
-    const windowHeight = this.getWindowHeight();
-    if (windowHeight > elementHeight && elementHeight !== 0) {
-      this.loadMoreResources();
+  public ngOnInit(): void {
+    const params = this.route.snapshot.queryParams;
+    if (params) {
+      if (params['page'] && params['page'] > 0) {
+        this.pageIndex = params['page'] - 1;
+      }
+      if (params['per_page']) {
+        this.pageSize = params['per_page'];
+      }
     }
-  }
-
-  /**
-   * Callback for the Infinite Scroll component. Emits an event asking for more resources
-   * to be loaded (only if there are more resources to load).
-   */
-  public onScroll(): void {
-    this.loadMoreResources();
-  }
-
-  /**
-   * Handle the loading of more resources by emitting the onLoadMore event only if it's not
-   * loading already or there are no more resources to load.
-   */
-  public loadMoreResources(): void {
-    if (!this.loading && !this.finished) {
-      this.onLoadMore.emit();
-      this.loading = true;
-      // Manually detect changes: This prevents ExpressionChangedAfterItHasBeenCheckedError.
-      this.ref.detectChanges();
-    }
-  }
-
-  /**
-   * Get the current Window's inner height.
-   * This function means to make the testing easier, as the window is difficult to mock.
-   *
-   * @returns The height of the window.
-   */
-  public getWindowHeight(): number {
-    return window.innerHeight;
   }
 
   /**
@@ -150,5 +133,14 @@ export class FuelResourceListComponent implements AfterViewChecked {
    */
   public remove(event): void {
     this.onRemoveItem.emit(event);
+  }
+
+  /**
+   * Expose the pagination event to the parent component.
+   *
+   * @param event The pagination event.
+   */
+  public pageEvent(event: PageEvent): void {
+    this.pageChange.emit(event);
   }
 }

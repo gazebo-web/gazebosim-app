@@ -1,5 +1,10 @@
 @import '~@angular/material/theming';
-@import '../../styles/custom-theme.scss';
+@import '../../styles.scss';
+
+gz-gallery {
+  width: 100%;
+  height: 100%;
+}
 
 .content {
   width: 100%;
@@ -196,8 +201,4 @@ pre.bibtex {
 .bibtex:hover {
   cursor: pointer;
   color: mat-color($custom-theme-primary);
-}
-
-ngx-gallery ::ng-deep .ngx-gallery-thumbnails .ngx-gallery-thumbnail {
-  border: none !important;
 }
