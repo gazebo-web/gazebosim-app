@@ -1,26 +1,56 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Meta } from '@angular/platform-browser';
+import { PageEvent } from '@angular/material/paginator';
 
+import { AuthPipe } from '../auth/auth.pipe';
 import { AuthService } from '../auth/auth.service';
 import { Collection } from './collection';
 import { CollectionService } from './collection.service';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
+import { DescriptionComponent } from '../description';
+import { FuelResourceListComponent } from '../fuel-resource';
 import { ModelService } from '../model/model.service';
+import { PageTitleComponent } from '../page-title';
 import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 import { WorldService } from '../world/world.service';
-import {
-  ConfirmationDialogComponent
-} from '../confirmation-dialog/confirmation-dialog.component';
-import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
-import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gz-collection',
   templateUrl: 'collection.component.html',
-  styleUrls: ['collection.component.scss']
+  styleUrls: ['collection.component.scss'],
+  standalone: true,
+  imports: [
+    AuthPipe,
+    CommonModule,
+    DescriptionComponent,
+    FlexLayoutModule,
+    FormsModule,
+    FuelResourceListComponent,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatTabsModule,
+    PageTitleComponent,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
 })
 
 /**

@@ -1,5 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import {
   ConfirmationDialogComponent,
 } from '../../confirmation-dialog/confirmation-dialog.component';
@@ -7,7 +12,17 @@ import {
 @Component({
     selector: 'gz-report-dialog',
     templateUrl: 'report-dialog.component.html',
-    styleUrls: ['report-dialog.component.scss']
+    styleUrls: ['report-dialog.component.scss'],
+    standalone: true,
+    imports: [
+      CommonModule,
+      FlexLayoutModule,
+      FormsModule,
+      MatButtonModule,
+      MatDialogModule,
+      MatRadioModule,
+      ReactiveFormsModule,
+    ],
 })
 
 /**

@@ -1,22 +1,42 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectChange } from '@angular/material/select';
-import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 
-import {
-  Machine,
-  PaginatedMachine,
-  Simulation,
-  PaginatedSimulation,
-  SimulationService
-} from '../../cloudsim';
+import { LaunchQueueComponent } from './launch-queue/launch-queue.component';
+import { Machine, PaginatedMachine, Simulation, PaginatedSimulation, SimulationService, SimulationTableComponent } from '../../cloudsim';
 import { PaginatedSimulationRules } from './rules';
+import { SimulationRulesComponent } from './rules/simulation-rules.component';
 
 @Component({
   selector: 'gz-admin-cloudsim',
   templateUrl: 'admin-cloudsim.component.html',
-  styleUrls: ['admin-cloudsim.component.scss']
+  styleUrls: ['admin-cloudsim.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    LaunchQueueComponent,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatTableModule,
+    MatTabsModule,
+    ReactiveFormsModule,
+    SimulationRulesComponent,
+    SimulationTableComponent,
+  ],
 })
 
 /**

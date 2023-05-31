@@ -3,13 +3,18 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FuelResource } from '../../fuel-resource';
 import { ModelService } from './../model.service';
 import { WorldService } from './../../world/world.service';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AssetViewer, AssetViewerConfig } from 'gzweb';
 
 @Component({
   selector: 'gz-sdfviewer',
   templateUrl: 'sdfviewer.component.html',
-  styleUrls: ['sdfviewer.component.scss']
+  styleUrls: ['sdfviewer.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+  ]
 })
 
 /**

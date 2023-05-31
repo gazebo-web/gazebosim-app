@@ -7,7 +7,9 @@ import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { Model } from './model';
 import { PaginatedModels } from './paginated-models';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Model Service is in charge of making Model related requests to the Backend server.

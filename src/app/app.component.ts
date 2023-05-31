@@ -6,7 +6,6 @@ import { Router,
          ResolveEnd,
          NavigationEnd,
          NavigationCancel } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Title } from '@angular/platform-browser';
@@ -71,7 +70,6 @@ export class AppComponent implements OnInit {
   /**
    * @param authService The Authentication Service.
    * @param deviceService Service used to determine the browser's user agent.
-   * @param dialog Allows opening dialogs. Used to open the Settings dialog.
    * @param media Allows detecting width changes on the media. Used to handle the sidenav behavior.
    * @param route The current Activated Route.
    * @param router The router used. Allows subscription to events.
@@ -81,7 +79,6 @@ export class AppComponent implements OnInit {
   constructor(
     public authService: AuthService,
     public deviceService: Ng2DeviceService,
-    public dialog: MatDialog,
     public media: MediaObserver,
     private route: ActivatedRoute,
     private router: Router,

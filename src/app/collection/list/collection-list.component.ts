@@ -1,13 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { PageEvent } from '@angular/material/paginator';
 
 import { Collection, CollectionService, PaginatedCollection } from '../../collection';
+import { FuelResourceListComponent } from 'src/app/fuel-resource';
 
 @Component({
   selector: 'gz-collections',
   templateUrl: 'collection-list.component.html',
-  styleUrls: ['collection-list.component.scss']
+  styleUrls: ['collection-list.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+    FuelResourceListComponent,
+  ],
 })
 
 /**

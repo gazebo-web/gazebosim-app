@@ -1,8 +1,19 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FuelResourceListComponent } from '../fuel-resource';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { PageEvent } from '@angular/material/paginator';
 
 import { AuthService } from '../auth/auth.service';
@@ -18,11 +29,32 @@ import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
 import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
+import { PageTitleComponent } from '../page-title';
 
 @Component({
   selector: 'gz-organization',
   templateUrl: 'organization.component.html',
-  styleUrls: ['organization.component.scss']
+  styleUrls: ['organization.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    FuelResourceListComponent,
+    MatButtonModule,
+    MatChipsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatSelectModule,
+    MatTabsModule,
+    PageTitleComponent,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
 })
 
 /**

@@ -1,12 +1,26 @@
 import { Component, Inject, Output, EventEmitter } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { AdminElasticsearchService } from '../admin-elasticsearch.service';
 
 @Component({
   selector: 'gz-elasticsearch-config-dialog',
   templateUrl: 'config-dialog.component.html',
-  styleUrls: ['config-dialog.component.scss']
+  styleUrls: ['config-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

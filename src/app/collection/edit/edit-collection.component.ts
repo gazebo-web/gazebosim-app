@@ -1,20 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
 
 import { AuthService } from '../../auth/auth.service';
 import { Collection, CollectionService } from '../../collection';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatInputModule } from '@angular/material/input';
+import { DescriptionComponent } from 'src/app/description';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'gz-edit-collection',
   templateUrl: 'edit-collection.component.html',
-  styleUrls: ['edit-collection.component.scss']
+  styleUrls: ['edit-collection.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DescriptionComponent,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatRadioModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

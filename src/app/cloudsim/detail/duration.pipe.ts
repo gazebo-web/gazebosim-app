@@ -3,7 +3,10 @@ import { PipeTransform, Pipe } from '@angular/core';
 /**
  * Pipe used to display the runtime of a simulation in HH:mm:ss.
  */
-@Pipe({name: 'gzDuration'})
+@Pipe({
+  name: 'gzDuration',
+  standalone: true,
+})
 export class DurationPipe implements PipeTransform {
 
   /**

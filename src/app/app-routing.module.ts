@@ -1,24 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
 
-import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
-import { AdminComponent } from './admin';
-import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
 import { AdminGuard } from './admin/admin-guard.service';
-import { APIComponent } from './api/api.component';
-import { ApplicationsComponent } from './applications/applications.component';
-import { AssetDisplayComponent } from './asset-display';
-import { AuthCallbackComponent } from './auth/callback.component';
-import { AuthGuard } from './auth/auth-guard.service';
 import { CollectionComponent } from './collection/collection.component';
 import { CollectionListComponent } from './collection/list/collection-list.component';
 import { CollectionResolver } from './collection/collection.resolver';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditCollectionComponent } from './collection/edit/edit-collection.component';
 import { EditModelComponent } from './model/edit/edit-model.component';
 import { EditWorldComponent } from './world/edit/edit-world.component';
-import { FuelHomeComponent } from './fuel-home';
-import { InformationComponent } from './information/information.component';
 import { LikedModelsResolver } from './model/list/liked-models.resolver';
 import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
 import { ModelComponent } from './model/model.component';
@@ -31,18 +20,14 @@ import { NewWorldGuard } from './world/new/new-world-guard.service';
 import { OrganizationComponent } from './organization';
 import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
 import { OwnerProfileResolver } from './user/owner-profile.resolver';
-import { PageNotFoundComponent } from './page-not-found';
 import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
 import { PublicModelsResolver } from './model/list/public-models.resolver';
 import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
-import { SearchComponent } from './search';
-import { SettingsComponent } from './settings';
 import { SimulationComponent } from './cloudsim/detail/simulation.component';
 import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
 import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserWorldsResolver } from './world/list/user-worlds.resolver';
-import { VisualizationComponent } from './visualization';
 import { WorldComponent } from './world/world.component';
 import { WorldListComponent } from './world/list/world-list.component';
 import { WorldResolver } from './world/world.resolver';
@@ -55,7 +40,7 @@ const routes: Routes = [
   },
   {
     path: 'api',
-    component: APIComponent,
+    loadComponent: () => import('./api/api.component').then(module => module.APIComponent),
     data: {
       titlebarTitle: 'Information',
       titlebarSubtitle: 'API'
@@ -63,7 +48,7 @@ const routes: Routes = [
   },
   {
     path: 'information',
-    component: InformationComponent,
+    loadComponent: () => import('./information/information.component').then(module => module.InformationComponent),
     data: {
       titlebarTitle: 'Information',
       titlebarSubtitle: ''
@@ -71,7 +56,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: DashboardComponent,
+    loadComponent: () => import('./dashboard/dashboard.component').then(module => module.DashboardComponent),
     data: {
       titlebarTitle: 'Dashboard',
       titlebarSubtitle: ''
@@ -79,7 +64,7 @@ const routes: Routes = [
   },
   {
     path: 'visualization',
-    component: VisualizationComponent,
+    loadComponent: () => import('./visualization/visualization.component').then(module => module.VisualizationComponent),
     data: {
       titlebarTitle: 'Visualization',
       titlebarSubtitle: ''
@@ -92,7 +77,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: AdminComponent,
+        loadComponent: () => import('./admin/admin.component').then(module => module.AdminComponent),
         data: {
           title: 'Administration',
           titlebarTitle: 'Admin',
@@ -104,7 +89,7 @@ const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            component: AdminCloudsimComponent,
+            loadComponent: () => import('./admin/cloudsim/admin-cloudsim.component').then(module => module.AdminCloudsimComponent),
             data: {
               titlebarTitle: 'Admin',
               titlebarSubtitle: 'Cloudsim',
@@ -113,7 +98,9 @@ const routes: Routes = [
           {
             path: ':groupId',
             pathMatch: 'full',
-            component: AssetDisplayComponent,
+            loadComponent: () => import(
+              './asset-display/asset-display.component'
+            ).then(module => module.AssetDisplayComponent),
             resolve: {
               resolvedData: SimulationResolver
             },
@@ -135,7 +122,7 @@ const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            component: AdminElasticsearchComponent,
+            loadComponent: () => import('./admin/elasticsearch/admin-elasticsearch.component').then(module => module.AdminElasticsearchComponent),
             data: {
               titlebarTitle: 'Admin',
               titlebarSubtitle: 'Elasticsearch',
@@ -147,7 +134,7 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    component: DashboardComponent,
+    loadComponent: () => import('./dashboard/dashboard.component').then(module => module.DashboardComponent),
     data: {
       titlebarTitle: 'Dashboard',
       titlebarSubtitle: ''
@@ -155,7 +142,7 @@ const routes: Routes = [
   },
   {
     path: 'fuel',
-    component: FuelHomeComponent,
+    loadComponent: () => import('./fuel-home/fuel-home.component').then(module => module.FuelHomeComponent),
     data: {
       titlebarTitle: 'Fuel',
       titlebarSubtitle: 'Assets for robotic apps'
@@ -163,7 +150,7 @@ const routes: Routes = [
   },
   {
     path: 'applications',
-    component: ApplicationsComponent,
+    loadComponent: () => import('./applications/applications.component').then(module => module.ApplicationsComponent),
     data: {
       titlebarTitle: 'Applications',
       titlebarSubtitle: ''
@@ -171,7 +158,7 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    component: SettingsComponent,
+    loadComponent: () => import('./settings/settings.component').then(module => module.SettingsComponent),
     data: {
       titlebarTitle: 'Settings',
       titlebarSubtitle: '',
@@ -180,7 +167,7 @@ const routes: Routes = [
   },
   {
     path: 'search',
-    component: SearchComponent,
+    loadComponent: () => import('./search/search.component').then(module => module.SearchComponent),
     pathMatch: 'full',
     data: {
       titlebarTitle: 'Search Results',
@@ -198,7 +185,9 @@ const routes: Routes = [
       },
       {
         path: ':groupId',
-        component: AssetDisplayComponent,
+        loadComponent: () => import(
+          './asset-display/asset-display.component'
+        ).then(module => module.AssetDisplayComponent),
         pathMatch: 'full',
         resolve: {
           resolvedData: SimulationResolver
@@ -220,7 +209,9 @@ const routes: Routes = [
   },
   {
     path: 'fuel/models',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     pathMatch: 'full',
     data: {
       component: ModelListComponent,
@@ -246,7 +237,7 @@ const routes: Routes = [
   },
   {
     path: 'fuel/models/upload',
-    component: NewModelComponent,
+    loadComponent: () => import('./model/new/new-model.component').then(module => module.NewModelComponent),
     canActivate: [NewModelGuard],
     pathMatch: 'full',
     data: {
@@ -262,7 +253,9 @@ const routes: Routes = [
   },
   {
     path: 'fuel/worlds',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     pathMatch: 'full',
     data: {
 
@@ -289,7 +282,7 @@ const routes: Routes = [
   },
   {
     path: 'fuel/worlds/upload',
-    component: NewWorldComponent,
+    loadComponent: () => import('./world/new/new-world.component').then(module => module.NewWorldComponent),
     canActivate: [NewWorldGuard],
     pathMatch: 'full',
     data: {
@@ -305,7 +298,9 @@ const routes: Routes = [
   },
   {
     path: 'fuel/collections',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: CollectionListComponent,
 
@@ -324,7 +319,9 @@ const routes: Routes = [
   },
   {
     path: ':owner/fuel/models',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: ModelListComponent,
 
@@ -346,7 +343,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/models/:modelname',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: ModelResolver
     },
@@ -368,7 +367,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/models/:modelname/edit',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: EditModelComponent,
 
@@ -391,7 +392,9 @@ const routes: Routes = [
   {
   path: ':owner/fuel/models/:modelname/:version',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: ModelResolver
     },
@@ -412,7 +415,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/likes/models',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: ModelListComponent,
 
@@ -433,7 +438,9 @@ const routes: Routes = [
   },
   {
     path: ':owner/fuel/worlds',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: WorldListComponent,
 
@@ -455,7 +462,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/worlds/:worldname',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: WorldResolver
     },
@@ -477,7 +486,9 @@ const routes: Routes = [
   {
     path: ':owner/fuel/worlds/:worldname/edit',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: EditWorldComponent,
 
@@ -500,7 +511,9 @@ const routes: Routes = [
   {
   path: ':owner/fuel/worlds/:worldname/:version',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     resolve: {
       resolvedData: WorldResolver
     },
@@ -521,7 +534,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/likes/worlds',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: WorldListComponent,
 
@@ -542,7 +557,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/collections',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: CollectionListComponent,
 
@@ -563,7 +580,9 @@ const routes: Routes = [
   },
   {
     path: ':user/fuel/collections/:collection',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: CollectionComponent,
 
@@ -585,7 +604,9 @@ const routes: Routes = [
   {
     path: ':user/fuel/collections/:collection/edit',
     pathMatch: 'full',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       component: EditCollectionComponent,
 
@@ -603,11 +624,13 @@ const routes: Routes = [
   },
   {
     path: 'callback',
-    component: AuthCallbackComponent,
+    loadComponent: () => import('./auth/callback.component').then(module => module.AuthCallbackComponent),
   },
   {
     path: ':name',
-    component: AssetDisplayComponent,
+    loadComponent: () => import(
+      './asset-display/asset-display.component'
+    ).then(module => module.AssetDisplayComponent),
     data: {
       // Note: As the resolver determines which component to display, both need to be added at the
       // route configuration level in order for Angular to provide a Factory for them.
@@ -626,7 +649,9 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: PageNotFoundComponent,
+    loadComponent: () => import(
+      './page-not-found/page-not-found.component'
+    ).then(module => module.PageNotFoundComponent),
     data: {
 
       titlebarTitle: 'Page not found',
