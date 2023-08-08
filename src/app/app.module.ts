@@ -126,7 +126,9 @@ import { SimulationService } from './cloudsim';
 
 import { TagsComponent } from './tags';
 import { TextInputDialogComponent } from './text-input-dialog/text-input-dialog.component';
-import { ThumbnailGeneratorComponent } from './model/edit/thumbnail-generator/thumbnail-generator.component';
+
+// nkoenig: Disabling until we fix the THREE dependency
+// import { ThumbnailGeneratorComponent } from './model/edit/thumbnail-generator/thumbnail-generator.component';
 import { UserComponent } from './user/user.component';
 import { UserModelsResolver } from './model/list/user-models.resolver';
 import { UserService } from './user/user.service';
@@ -199,7 +201,10 @@ import { WorldService } from './world/world.service';
     SimulationRulesComponent,
     TagsComponent,
     TextInputDialogComponent,
-    ThumbnailGeneratorComponent,
+
+    // nkoenig: Disabling until we fix the THREE dependency
+    // ThumbnailGeneratorComponent,
+ 
     UserComponent,
     VisualizationComponent,
     WorldComponent,
