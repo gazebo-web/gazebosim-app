@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
-import { PaginatedWorlds } from '../paginated-worlds';
-import { WorldService } from '../world.service';
+import { PaginatedWorlds } from "../paginated-worlds";
+import { WorldService } from "../world.service";
 
 @Injectable()
 
@@ -13,13 +13,11 @@ import { WorldService } from '../world.service';
  *
  * This allows us to have the list of worlds before it's displayed in a Component.
  */
-export class UserWorldsResolver  {
-
+export class UserWorldsResolver {
   /**
    * @param worldService Service used to get World List information from the Server
    */
-  constructor(private worldService: WorldService) {
-  }
+  constructor(private worldService: WorldService) {}
 
   /**
    * Resolve method.
@@ -31,8 +29,7 @@ export class UserWorldsResolver  {
    * @returns An observable of the worlds or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedWorlds> {
-
-    const worldOwner: string = route.paramMap.get('owner');
+    const worldOwner: string = route.paramMap.get("owner");
 
     return this.worldService.getOwnerList(worldOwner).pipe(
       map((worlds) => {
@@ -40,7 +37,7 @@ export class UserWorldsResolver  {
       }),
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subscription, of, timer } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
+import { HttpHeaders, HttpClient } from "@angular/common/http";
+import { BehaviorSubject, Observable, Subscription, of, timer } from "rxjs";
+import { mergeMap } from "rxjs/operators";
 
-import * as auth0 from 'auth0-js';
-import { environment } from '../../environments/environment';
+import * as auth0 from "auth0-js";
+import { environment } from "../../environments/environment";
 
-import { AUTH_CONFIG } from './auth0-variables';
-import { FuelResource } from '../fuel-resource';
+import { AUTH_CONFIG } from "./auth0-variables";
+import { FuelResource } from "../fuel-resource";
 
 @Injectable()
 
@@ -63,10 +63,10 @@ export class AuthService {
   private auth0 = new auth0.WebAuth({
     clientID: AUTH_CONFIG.CLIENT_ID,
     domain: AUTH_CONFIG.CLIENT_DOMAIN,
-    responseType: 'token id_token',
+    responseType: "token id_token",
     audience: AUTH_CONFIG.AUDIENCE,
     redirectUri: AUTH_CONFIG.REDIRECT,
-    scope: AUTH_CONFIG.SCOPE
+    scope: AUTH_CONFIG.SCOPE,
   });
 
   /**
@@ -75,15 +75,15 @@ export class AuthService {
    */
   constructor(
     private http: HttpClient,
-    private router: Router) {
-
+    private router: Router,
+  ) {
     // If authenticated, update login status subject.
     if (this.isAuthenticated()) {
       this.setLoggedIn(true);
     } else {
       // The user is not authenticated.
       // Check if there is an access token in the local storage.
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
         if (this.isTokenValid) {
           // We need to fetch the username and then reschedule the token renewal process.
@@ -118,7 +118,7 @@ export class AuthService {
     // Note: nonce is automatically generated:
     // https://auth0.com/docs/libraries/auth0js/v9#using-nonces
     this.auth0.authorize({
-      prompt: 'login',
+      prompt: "login",
     });
   }
 
@@ -130,10 +130,10 @@ export class AuthService {
    */
   public logout(): void {
     // Remove session-related items from the local storage.
-    localStorage.removeItem('token');
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('profile');
-    localStorage.removeItem('expires_at');
+    localStorage.removeItem("token");
+    localStorage.removeItem("id_token");
+    localStorage.removeItem("profile");
+    localStorage.removeItem("expires_at");
 
     // Reset profile.
     this.setProfile(undefined);
@@ -158,7 +158,7 @@ export class AuthService {
     // When Auth0 hash parsed, get profile.
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
-        window.location.hash = '';
+        window.location.hash = "";
 
         // Use access token to retrieve user's profile and set session
         this.auth0.client.userInfo(authResult.accessToken, (error, profile) => {
@@ -168,12 +168,16 @@ export class AuthService {
             console.error(`Error authenticating: ${error.error}`);
           }
         });
-
       } else if (err) {
-        if (err.error === 'unauthorized' && err.errorDescription === 'Please verify your email.') {
-          this.router.navigate(['/callback'], {queryParams: {validate: true}});
+        if (
+          err.error === "unauthorized" &&
+          err.errorDescription === "Please verify your email."
+        ) {
+          this.router.navigate(["/callback"], {
+            queryParams: { validate: true },
+          });
         } else {
-          this.router.navigate(['/']);
+          this.router.navigate(["/"]);
         }
         console.error(`Error: ${err.error}: ${err.errorDescription}`);
       }
@@ -187,17 +191,17 @@ export class AuthService {
    */
   public isAuthenticated(): boolean {
     // Check if there's an unexpired access token.
-    if ((localStorage.getItem('token') == null) || (!this.isTokenValid)) {
+    if (localStorage.getItem("token") == null || !this.isTokenValid) {
       return false;
     }
 
     // Make sure the user profile has been set
     if (!this.userProfile) {
-      this.setProfile(JSON.parse(localStorage.getItem('profile')));
+      this.setProfile(JSON.parse(localStorage.getItem("profile")));
     }
 
     // Check if user has username
-    return this.userProfile && this.userProfile['username'];
+    return this.userProfile && this.userProfile["username"];
   }
 
   /**
@@ -207,7 +211,7 @@ export class AuthService {
    */
   public get isTokenValid(): boolean {
     // Check if current time is past access token's expiration.
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
     return Date.now() < expiresAt;
   }
 
@@ -224,24 +228,23 @@ export class AuthService {
     this.unscheduleRenewal();
 
     // Get the expiration time and set an expiration Observable.
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
     const expiresIn$ = of(expiresAt).pipe(
       mergeMap((expires) => {
         const now = Date.now();
         // Emit the observable at the timer's duration.
         return timer(Math.max(1, expires - now));
-      })
+      }),
     );
 
     // Subscribe to the token expiration observable. The token needs to be refreshed.
-    this.tokenRenewalSub = expiresIn$.subscribe(
-      () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          this.renewToken();
-          this.scheduleRenewal();
-        }
-      });
+    this.tokenRenewalSub = expiresIn$.subscribe(() => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.renewToken();
+        this.scheduleRenewal();
+      }
+    });
   }
 
   /**
@@ -253,7 +256,7 @@ export class AuthService {
    * @returns A boolean indicating whether the authenticated user is an owner or not.
    */
   public isOwner(org: string): boolean {
-    return this.isAuthenticated() && this.userProfile.orgRoles[org] === 'owner';
+    return this.isAuthenticated() && this.userProfile.orgRoles[org] === "owner";
   }
 
   /**
@@ -265,8 +268,11 @@ export class AuthService {
    * @returns A boolean indicating whether the authenticated user has write access or not.
    */
   public hasWriteAccess(org: string): boolean {
-    return this.isAuthenticated() &&
-      (this.userProfile.orgRoles[org] === 'owner' || this.userProfile.orgRoles[org] === 'admin');
+    return (
+      this.isAuthenticated() &&
+      (this.userProfile.orgRoles[org] === "owner" ||
+        this.userProfile.orgRoles[org] === "admin")
+    );
   }
 
   /**
@@ -283,11 +289,16 @@ export class AuthService {
    * @returns A boolean indicating whether the authenticated user has write access or not.
    */
   public canWriteResource(resource: FuelResource): boolean {
-    const belongsToOrg = this.userProfile && this.userProfile['orgs'] &&
-      this.userProfile['orgs'].includes(resource.owner);
+    const belongsToOrg =
+      this.userProfile &&
+      this.userProfile["orgs"] &&
+      this.userProfile["orgs"].includes(resource.owner);
 
-    return this.isAuthenticated() &&
-      (resource.owner === this.userProfile.username) || (belongsToOrg);
+    return (
+      (this.isAuthenticated() &&
+        resource.owner === this.userProfile.username) ||
+      belongsToOrg
+    );
   }
 
   /**
@@ -307,13 +318,13 @@ export class AuthService {
    */
   private setSession(authResult, profile): void {
     // Retrieve the expiration date of the access token from authResult.
-    const expiresAt = JSON.stringify((authResult.expiresIn * 1000) + Date.now());
+    const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + Date.now());
 
     // Save session data and update login status subject.
-    localStorage.setItem('token', authResult.accessToken);
-    localStorage.setItem('id_token', authResult.idToken);
-    localStorage.setItem('expires_at', expiresAt);
-    localStorage.setItem('profile', JSON.stringify(profile));
+    localStorage.setItem("token", authResult.accessToken);
+    localStorage.setItem("id_token", authResult.idToken);
+    localStorage.setItem("expires_at", expiresAt);
+    localStorage.setItem("profile", JSON.stringify(profile));
 
     // Set the obtained profile. Fetch the username if necessary.
     if (!profile.username) {
@@ -347,38 +358,37 @@ export class AuthService {
    * Renews the token if the session is still open.
    */
   private renewToken(): void {
-    this.auth0.checkSession({},
-      (err, authResult) => {
-        if (authResult && authResult.accessToken) {
-          // Use access token to retrieve user's profile and set session
-          this.auth0.client.userInfo(authResult.accessToken, (error, profile) => {
-            if (profile) {
-              this.setSession(authResult, profile);
-            } else if (error) {
-              this.router.navigate(['/']);
-              console.error(`Error authenticating: ${error.error}`);
-            }
-          });
-        } else {
-          // Auth0 error. Token can't be renewed, likely because the Auth0 session expired.
-          // This happens after 7 days of inactivity.
-          this.logout();
-          console.error(err);
-        }
-      });
+    this.auth0.checkSession({}, (err, authResult) => {
+      if (authResult && authResult.accessToken) {
+        // Use access token to retrieve user's profile and set session
+        this.auth0.client.userInfo(authResult.accessToken, (error, profile) => {
+          if (profile) {
+            this.setSession(authResult, profile);
+          } else if (error) {
+            this.router.navigate(["/"]);
+            console.error(`Error authenticating: ${error.error}`);
+          }
+        });
+      } else {
+        // Auth0 error. Token can't be renewed, likely because the Auth0 session expired.
+        // This happens after 7 days of inactivity.
+        this.logout();
+        console.error(err);
+      }
+    });
   }
 
   /**
    * Update the user profile. This will get user info from Auth0.
    */
   private updateProfile(): void {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       return;
     }
 
     // Use the stored profile, otherwise, get it from the Token.
-    this.userProfile = JSON.parse(localStorage.getItem('profile'));
+    this.userProfile = JSON.parse(localStorage.getItem("profile"));
     if (!this.userProfile) {
       this.auth0.client.userInfo(token, (err, profile) => {
         if (profile) {
@@ -397,22 +407,21 @@ export class AuthService {
    * username. This way, we can make sure the user is still authenticated with a renewed token.
    */
   private fetchUsername(): void {
-    this.http.get(this.loginUrl).subscribe(
-      (response) => {
-        if (response['username']) {
-          // Set the username and orgs to the profile.
-          const profile = JSON.parse(localStorage.getItem('profile'));
-          profile.username = response['username'];
-          profile.orgs = response['orgs'];
-          profile.orgRoles = response['orgRoles'];
-          if (response['sysAdmin']) {
-            profile.sysAdmin = response['sysAdmin'];
-          }
-          localStorage.setItem('profile', JSON.stringify(profile));
-
-          // Updates the Profile.
-          this.userProfile = profile;
+    this.http.get(this.loginUrl).subscribe((response) => {
+      if (response["username"]) {
+        // Set the username and orgs to the profile.
+        const profile = JSON.parse(localStorage.getItem("profile"));
+        profile.username = response["username"];
+        profile.orgs = response["orgs"];
+        profile.orgRoles = response["orgRoles"];
+        if (response["sysAdmin"]) {
+          profile.sysAdmin = response["sysAdmin"];
         }
-      });
+        localStorage.setItem("profile", JSON.stringify(profile));
+
+        // Updates the Profile.
+        this.userProfile = profile;
+      }
+    });
   }
 }

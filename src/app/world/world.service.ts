@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
-import { AuthService } from '../auth/auth.service';
-import { FuelResourceService } from '../fuel-resource';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { PaginatedWorlds } from './paginated-worlds';
-import { World } from './world';
+import { AuthService } from "../auth/auth.service";
+import { FuelResourceService } from "../fuel-resource";
+import { JsonClassFactoryService } from "../factory/json-class-factory.service";
+import { PaginatedWorlds } from "./paginated-worlds";
+import { World } from "./world";
 
 @Injectable()
 
@@ -14,7 +14,6 @@ import { World } from './world';
  * It extends the abstract FuelResourceService service, setting it's resource type to World.
  */
 export class WorldService extends FuelResourceService {
-
   /**
    * The class of the World resource required by the FuelResourceService.
    */
@@ -28,7 +27,7 @@ export class WorldService extends FuelResourceService {
   /**
    * The string of the resource type, to parse the URLs of the FuelResourceService.
    */
-  public resourceType: string = 'worlds';
+  public resourceType: string = "worlds";
 
   /**
    * @param authService Service to get authentication information.
@@ -38,7 +37,8 @@ export class WorldService extends FuelResourceService {
   constructor(
     protected authService: AuthService,
     protected factory: JsonClassFactoryService,
-    protected http: HttpClient) {
+    protected http: HttpClient,
+  ) {
     super(authService, factory, http);
   }
 }

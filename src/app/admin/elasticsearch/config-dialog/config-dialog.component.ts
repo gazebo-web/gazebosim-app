@@ -1,13 +1,13 @@
-import { Component, Inject, Output, EventEmitter } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AdminElasticsearchService } from '../admin-elasticsearch.service';
+import { Component, Inject, Output, EventEmitter } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { AdminElasticsearchService } from "../admin-elasticsearch.service";
 
 @Component({
-    selector: 'gz-elasticsearch-config-dialog',
-    templateUrl: 'config-dialog.component.html',
-    styleUrls: ['config-dialog.component.scss'],
-    standalone: false
+  selector: "gz-elasticsearch-config-dialog",
+  templateUrl: "config-dialog.component.html",
+  styleUrls: ["config-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -27,23 +27,26 @@ export class ElasticsearchConfigDialogComponent {
   /**
    * Input form for the address.
    */
-  public addressInputForm = new FormControl('',
-    {validators: [Validators.required, Validators.pattern('[^\/]*')],
-    updateOn: 'change'});
+  public addressInputForm = new FormControl("", {
+    validators: [Validators.required, Validators.pattern("[^\/]*")],
+    updateOn: "change",
+  });
 
   /**
    * Input form for the username.
    */
-  public usernameInputForm = new FormControl('',
-    {validators: [Validators.pattern('[^\/]*')],
-    updateOn: 'change'});
+  public usernameInputForm = new FormControl("", {
+    validators: [Validators.pattern("[^\/]*")],
+    updateOn: "change",
+  });
 
   /**
    * Input form for the password.
    */
-  public passwordInputForm = new FormControl('',
-    {validators: [Validators.pattern('[^\/]*')],
-    updateOn: 'change'});
+  public passwordInputForm = new FormControl("", {
+    validators: [Validators.pattern("[^\/]*")],
+    updateOn: "change",
+  });
 
   /**
    * @param dialog Reference to the opened dialog.
@@ -56,8 +59,9 @@ export class ElasticsearchConfigDialogComponent {
   constructor(
     public elasticService: AdminElasticsearchService,
     public dialog: MatDialogRef<ElasticsearchConfigDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-    if (data !== undefined && data !== null)  {
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {
+    if (data !== undefined && data !== null) {
       this.addressInputForm.setValue(data.address);
       this.usernameInputForm.setValue(data.username);
       this.passwordInputForm.setValue(data.password);
@@ -71,7 +75,7 @@ export class ElasticsearchConfigDialogComponent {
     const configData = {
       address: this.addressInputForm.value,
       username: this.usernameInputForm.value,
-      password: this.passwordInputForm.value
+      password: this.passwordInputForm.value,
     };
     this.onSubmit.emit(configData);
   }

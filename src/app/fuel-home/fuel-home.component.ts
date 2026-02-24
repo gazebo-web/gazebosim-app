@@ -1,25 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from "@angular/core";
 
-import { CollectionService, Collection } from '../collection';
-import { Model } from '../model/model';
-import { ModelService } from '../model/model.service';
-import { Router, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { World } from '../world/world';
-import { WorldService } from '../world/world.service';
+import { CollectionService, Collection } from "../collection";
+import { Model } from "../model/model";
+import { ModelService } from "../model/model.service";
+import { Router, NavigationEnd } from "@angular/router";
+import { Subscription } from "rxjs";
+import { World } from "../world/world";
+import { WorldService } from "../world/world.service";
 
 @Component({
-    selector: 'gz-fuel-home',
-    templateUrl: 'fuel-home.component.html',
-    styleUrls: ['fuel-home.component.scss'],
-    standalone: false
+  selector: "gz-fuel-home",
+  templateUrl: "fuel-home.component.html",
+  styleUrls: ["fuel-home.component.scss"],
+  standalone: false,
 })
 
 /**
  * FuelHome Component contains the landing page for the fuel component.
  */
 export class FuelHomeComponent implements OnInit, OnDestroy {
-
   /**
    * Latest models to display.
    */
@@ -55,8 +54,8 @@ export class FuelHomeComponent implements OnInit, OnDestroy {
     private collectionService: CollectionService,
     private modelService: ModelService,
     private router: Router,
-    private worldService: WorldService) {
-  }
+    private worldService: WorldService,
+  ) {}
 
   /**
    * OnInit lifecycle hook.
@@ -70,13 +69,11 @@ export class FuelHomeComponent implements OnInit, OnDestroy {
     this.getResources();
 
     // Subscribes to the Navigation End event.
-    this.navigationSubscription = this.router.events.subscribe(
-      (event) => {
-        if (event instanceof NavigationEnd) {
-          this.getResources();
-        }
+    this.navigationSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.getResources();
       }
-    );
+    });
   }
 
   /**
@@ -94,34 +91,39 @@ export class FuelHomeComponent implements OnInit, OnDestroy {
    * Get the models, worlds and collections to display.
    */
   public getResources(): void {
-    this.modelService.getList({per_page: this.displayCount}).subscribe(
+    this.modelService.getList({ per_page: this.displayCount }).subscribe(
       (models) => {
         if (models !== undefined) {
           this.models = models.resources;
         }
       },
       (error) => {
-        console.error('Error getting public models:', error);
-      });
+        console.error("Error getting public models:", error);
+      },
+    );
 
-    this.worldService.getList({per_page: this.displayCount}).subscribe(
+    this.worldService.getList({ per_page: this.displayCount }).subscribe(
       (worlds) => {
         if (worlds !== undefined) {
           this.worlds = worlds.resources;
         }
       },
       (error) => {
-        console.error('Error getting public worlds:', error);
-      });
-
-    this.collectionService.getCollectionList({per_page: this.displayCount}).subscribe(
-      (paginatedCollection) => {
-        if (paginatedCollection !== undefined) {
-          this.collections = paginatedCollection.collections;
-        }
+        console.error("Error getting public worlds:", error);
       },
-      (error) => {
-        console.error('Error getting collections:', error);
-      });
+    );
+
+    this.collectionService
+      .getCollectionList({ per_page: this.displayCount })
+      .subscribe(
+        (paginatedCollection) => {
+          if (paginatedCollection !== undefined) {
+            this.collections = paginatedCollection.collections;
+          }
+        },
+        (error) => {
+          console.error("Error getting collections:", error);
+        },
+      );
   }
 }

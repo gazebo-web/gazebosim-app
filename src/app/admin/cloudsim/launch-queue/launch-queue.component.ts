@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
-import { SelectionModel } from '@angular/cdk/collections';
+import { Component, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog } from "@angular/material/dialog";
+import { PageEvent } from "@angular/material/paginator";
+import { SelectionModel } from "@angular/cdk/collections";
 
-import { QueueElement } from './queue-element';
-import { SimulationService } from '../../../cloudsim';
-import { QueueList } from './queue-list';
+import { QueueElement } from "./queue-element";
+import { SimulationService } from "../../../cloudsim";
+import { QueueList } from "./queue-list";
 
 @Component({
-    selector: 'gz-launch-queue',
-    templateUrl: 'launch-queue.component.html',
-    styleUrls: ['launch-queue.component.scss'],
-    standalone: false
+  selector: "gz-launch-queue",
+  templateUrl: "launch-queue.component.html",
+  styleUrls: ["launch-queue.component.scss"],
+  standalone: false,
 })
 export class LaunchQueueComponent implements OnInit {
   /**
@@ -24,7 +24,7 @@ export class LaunchQueueComponent implements OnInit {
   /**
    * Defines the colums to be shown in the table
    */
-  public readonly columns = ['select', 'groupId'];
+  public readonly columns = ["select", "groupId"];
 
   /**
    * Represents the list of queue elements
@@ -54,8 +54,8 @@ export class LaunchQueueComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public simulationService: SimulationService,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * Initialize the table parameters, the data source, and the selection model.
@@ -113,7 +113,7 @@ export class LaunchQueueComponent implements OnInit {
         this.dataSource = new MatTableDataSource<QueueElement>(this.list.data);
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
+        this.snackBar.open(error.message, "Got it");
       },
     );
   }
@@ -138,14 +138,14 @@ export class LaunchQueueComponent implements OnInit {
 
     this.simulationService.queueSwap(a, b).subscribe(
       (confirmation) => {
-        this.snackBar.open('Elements have been swapped!', 'Ok', {
+        this.snackBar.open("Elements have been swapped!", "Ok", {
           duration: 3000,
         });
         this.refresh();
         return;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
+        this.snackBar.open(error.message, "Got it");
       },
     );
 
@@ -160,7 +160,10 @@ export class LaunchQueueComponent implements OnInit {
     event.stopPropagation();
 
     if (this.isAllSelected()) {
-      this.snackBar.open('Cannot move all elements to the front of the queue', 'Got it');
+      this.snackBar.open(
+        "Cannot move all elements to the front of the queue",
+        "Got it",
+      );
       return;
     }
 
@@ -171,8 +174,8 @@ export class LaunchQueueComponent implements OnInit {
           return;
         },
         (error) => {
-          this.snackBar.open(error.message, 'Got it');
-        }
+          this.snackBar.open(error.message, "Got it");
+        },
       );
     });
     this.selection.clear();
@@ -186,7 +189,10 @@ export class LaunchQueueComponent implements OnInit {
     event.stopPropagation();
 
     if (this.isAllSelected()) {
-      this.snackBar.open('Cannot move all elements to the back of the queue', 'Got it');
+      this.snackBar.open(
+        "Cannot move all elements to the back of the queue",
+        "Got it",
+      );
       return;
     }
 
@@ -196,8 +202,8 @@ export class LaunchQueueComponent implements OnInit {
           this.refresh();
         },
         (error) => {
-          this.snackBar.open(error.message, 'Got it');
-        }
+          this.snackBar.open(error.message, "Got it");
+        },
       );
     });
     this.selection.clear();
@@ -216,8 +222,8 @@ export class LaunchQueueComponent implements OnInit {
           this.refresh();
         },
         (error) => {
-          this.snackBar.open(error.message, 'Got it');
-        }
+          this.snackBar.open(error.message, "Got it");
+        },
       );
     });
 

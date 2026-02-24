@@ -1,43 +1,66 @@
 <div class="page-content-inner mat-typography">
-
   @if (!canEdit) {
     <div class="unauthorized">
       <h2>You are not authorized to edit this collection.</h2>
     </div>
   } @else {
-    <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
-      (ngSubmit)=onEdit()>
+    <form
+      fxLayout="column"
+      fxLayoutAlign="space-between start"
+      fxLayoutGap="20px"
+      class="content"
+      (ngSubmit)="onEdit()"
+    >
       <h2>Change the banner image</h2>
       <div fxLayout="row" fxLayoutAlign="space-between baseline">
-        <button mat-raised-button type="button" color="primary" class="banner-button"
+        <button
+          mat-raised-button
+          type="button"
+          color="primary"
+          class="banner-button"
           [disabled]="updating"
-          (click)="bannerInput.click()">
+          (click)="bannerInput.click()"
+        >
           Add banner
         </button>
-        <input #bannerInput type=file accept="image/jpeg, image/png" hidden
-          (change)="onFileInput($event)"/>
+        <input
+          #bannerInput
+          type="file"
+          accept="image/jpeg, image/png"
+          hidden
+          (change)="onFileInput($event)"
+        />
         @if (bannerFile) {
-          <span>
-            Selected file: {{bannerFile.name}}
-          </span>
+          <span> Selected file: {{ bannerFile.name }} </span>
         } @else {
           No file selected.
         }
       </div>
       <h2>Edit description</h2>
-      <gz-description [description]="collection.description"
+      <gz-description
+        [description]="collection.description"
         [edit]="true"
         [disabled]="updating"
         (onModify)="onModifyDescription($event)"
-        fxFill>
+        fxFill
+      >
       </gz-description>
       <div fxLayout="column" fxFill>
         <p>Select if your collection is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
-          @for (p of collectionService.getPermissionList(); track p; let i = $index) {
+          @for (
+            p of collectionService.getPermissionList();
+            track p;
+            let i = $index
+          ) {
             <mat-radio-button
               [value]="i"
-            [checked]="(p === 'Private' && collection.private) || (p === 'Public' && !collection.private)">{{p}}</mat-radio-button>
+              [checked]="
+                (p === 'Private' && collection.private) ||
+                (p === 'Public' && !collection.private)
+              "
+              >{{ p }}</mat-radio-button
+            >
           }
         </mat-radio-group>
       </div>
@@ -56,11 +79,13 @@
             </a>
           </div>
           <div>
-            <p>Be mindful when deleting a collection, other users could be counting on it.</p>
+            <p>
+              Be mindful when deleting a collection, other users could be
+              counting on it.
+            </p>
           </div>
         </div>
       </div>
     </form>
   }
-
 </div>

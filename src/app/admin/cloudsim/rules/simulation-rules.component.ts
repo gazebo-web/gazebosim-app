@@ -1,30 +1,27 @@
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
-import { Subscription } from 'rxjs';
+import { Component, OnChanges, Input, SimpleChanges } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { PageEvent } from "@angular/material/paginator";
+import { Subscription } from "rxjs";
 
-import { SimulationService } from '../../../cloudsim';
-import { SimulationRule, PaginatedSimulationRules } from '../rules';
-import { TextInputDialogComponent } from '../../../text-input-dialog';
-import {
-  ConfirmationDialogComponent
-} from '../../../confirmation-dialog/confirmation-dialog.component';
+import { SimulationService } from "../../../cloudsim";
+import { SimulationRule, PaginatedSimulationRules } from "../rules";
+import { TextInputDialogComponent } from "../../../text-input-dialog";
+import { ConfirmationDialogComponent } from "../../../confirmation-dialog/confirmation-dialog.component";
 
 @Component({
-    selector: 'gz-simulation-rules',
-    templateUrl: 'simulation-rules.component.html',
-    styleUrls: ['simulation-rules.component.scss'],
-    standalone: false
+  selector: "gz-simulation-rules",
+  templateUrl: "simulation-rules.component.html",
+  styleUrls: ["simulation-rules.component.scss"],
+  standalone: false,
 })
 
 /**
  * The Simulation Rule Component allows system admins to create and modify simulation rules.
  */
 export class SimulationRulesComponent implements OnChanges {
-
   /**
    * The paginated rules to be represented.
    */
@@ -33,13 +30,7 @@ export class SimulationRulesComponent implements OnChanges {
   /**
    * The columns of the table.
    */
-  public columns = [
-    'circuit',
-    'owner',
-    'type',
-    'value',
-    'control',
-  ];
+  public columns = ["circuit", "owner", "type", "value", "control"];
 
   /**
    * List of rule types.
@@ -56,22 +47,30 @@ export class SimulationRulesComponent implements OnChanges {
   /**
    * Circuit used to create a new Rule.
    */
-  public circuitInputForm = new FormControl('Tunnel Circuit', {validators: [Validators.required]});
+  public circuitInputForm = new FormControl("Tunnel Circuit", {
+    validators: [Validators.required],
+  });
 
   /**
    * Rule Type used to create a new Rule.
    */
-  public typeInputForm = new FormControl(this.typeList[0], {validators: [Validators.required]});
+  public typeInputForm = new FormControl(this.typeList[0], {
+    validators: [Validators.required],
+  });
 
   /**
    * Form field for the New Rule Owner input.
    */
-  public ownerInputForm = new FormControl('', {validators: [Validators.required]});
+  public ownerInputForm = new FormControl("", {
+    validators: [Validators.required],
+  });
 
   /**
    * Form field for the New Rule Value input.
    */
-  public valueInputForm = new FormControl('', {validators: [Validators.required]});
+  public valueInputForm = new FormControl("", {
+    validators: [Validators.required],
+  });
 
   /**
    * Dialog to provide a value to an existing rule.
@@ -91,8 +90,8 @@ export class SimulationRulesComponent implements OnChanges {
   constructor(
     public dialog: MatDialog,
     public simulationService: SimulationService,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * OnChange lifecycle hook.
@@ -117,14 +116,14 @@ export class SimulationRulesComponent implements OnChanges {
   public pageChange(pageEvent: PageEvent): void {
     const page = pageEvent.pageIndex + 1;
 
-    this.simulationService.getRules({page}).subscribe(
+    this.simulationService.getRules({ page }).subscribe(
       (response) => {
         this.paginatedRules = response;
         this.dataSource = new MatTableDataSource(response.rules);
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 
@@ -134,7 +133,6 @@ export class SimulationRulesComponent implements OnChanges {
    * @param event The event fired by the form's submission. Required in order to reset the form.
    */
   public create(event: Event): void {
-
     // Trim the inputs.
     this.ownerInputForm.setValue(this.ownerInputForm.value.trim());
     this.ownerInputForm.updateValueAndValidity();
@@ -142,8 +140,12 @@ export class SimulationRulesComponent implements OnChanges {
     this.valueInputForm.updateValueAndValidity();
 
     // Make sure the fields are valid to proceed.
-    if (this.circuitInputForm.invalid || this.typeInputForm.invalid ||
-        this.ownerInputForm.invalid || this.valueInputForm.invalid) {
+    if (
+      this.circuitInputForm.invalid ||
+      this.typeInputForm.invalid ||
+      this.ownerInputForm.invalid ||
+      this.valueInputForm.invalid
+    ) {
       return;
     }
 
@@ -156,17 +158,18 @@ export class SimulationRulesComponent implements OnChanges {
 
     this.simulationService.editOrCreateRule(rule).subscribe(
       (response) => {
-
         // Update the rule if it's present, otherwise add it to the list.
         const existingRuleIndex: number = this.paginatedRules.rules.findIndex(
           (rl: SimulationRule) => {
             return rl.isEqual(response);
-          }
+          },
         );
 
         if (existingRuleIndex > -1) {
           this.paginatedRules.rules[existingRuleIndex] = response;
-          this.snackBar.open('The rule was updated', 'Got it', { duration: 2750 });
+          this.snackBar.open("The rule was updated", "Got it", {
+            duration: 2750,
+          });
         } else {
           this.paginatedRules.rules.push(response);
           this.paginatedRules.totalCount++;
@@ -183,8 +186,8 @@ export class SimulationRulesComponent implements OnChanges {
         formElement.reset();
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 
@@ -194,7 +197,6 @@ export class SimulationRulesComponent implements OnChanges {
    * @param rule The rule to modify.
    */
   public edit(rule: SimulationRule): void {
-
     // Open a dialog for text input.
     const dialogOptions = {
       data: {
@@ -202,15 +204,18 @@ export class SimulationRulesComponent implements OnChanges {
         message: `<p>Provide a new value for the <strong>${rule.typeName}</strong> rule in the \
           <strong>${rule.circuit}</strong>, for the owner <strong>${rule.owner}</strong></p>\
           <p>Previous value: <strong>${rule.value}</strong></p>`,
-        buttonText: 'Edit',
-        inputPlaceholder: 'Value',
-      }
+        buttonText: "Edit",
+        inputPlaceholder: "Value",
+      },
     };
-    this.inputDialog = this.dialog.open(TextInputDialogComponent, dialogOptions);
+    this.inputDialog = this.dialog.open(
+      TextInputDialogComponent,
+      dialogOptions,
+    );
 
     // Subscribe to the registration event coming from the Dialog.
-    const sub: Subscription = this.inputDialog.componentInstance.onSubmit.subscribe(
-      (val: string) => {
+    const sub: Subscription =
+      this.inputDialog.componentInstance.onSubmit.subscribe((val: string) => {
         // Update the rule.
         const index = this.paginatedRules.rules.indexOf(rule);
         rule.value = +val;
@@ -219,11 +224,10 @@ export class SimulationRulesComponent implements OnChanges {
             this.paginatedRules.rules[index] = response;
           },
           (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          }
+            this.snackBar.open(error.message, "Got it");
+          },
         );
-      }
-    );
+      });
 
     // Unsubscribe from the dialog event.
     this.inputDialog.afterClosed().subscribe(() => sub.unsubscribe());
@@ -235,7 +239,6 @@ export class SimulationRulesComponent implements OnChanges {
    * @param rule The rule to delete.
    */
   public delete(rule: SimulationRule): void {
-
     // Fire the confirmation dialog.
     const dialogOps = {
       data: {
@@ -245,33 +248,35 @@ export class SimulationRulesComponent implements OnChanges {
           <li>Type: ${rule.typeName}</li>\
           <li>Owner: ${rule.owner}</li>\
           <li>Value: ${rule.value}</li></ul>`,
-        buttonText: 'Delete',
-      }
+        buttonText: "Delete",
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        // Filters any result that is not the main action.
-        if (result !== true) {
-          return;
-        }
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      // Filters any result that is not the main action.
+      if (result !== true) {
+        return;
+      }
 
-        // Remove the Rule.
-        this.simulationService.deleteRule(rule).subscribe(
-          (response) => {
-            this.paginatedRules.rules = this.paginatedRules.rules.filter((rl) => {
-              return !rl.isEqual(response);
-            });
-            this.paginatedRules.totalCount--;
-            this.dataSource = new MatTableDataSource(this.paginatedRules.rules);
-          },
-          (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          }
-        );
-      });
+      // Remove the Rule.
+      this.simulationService.deleteRule(rule).subscribe(
+        (response) => {
+          this.paginatedRules.rules = this.paginatedRules.rules.filter((rl) => {
+            return !rl.isEqual(response);
+          });
+          this.paginatedRules.totalCount--;
+          this.dataSource = new MatTableDataSource(this.paginatedRules.rules);
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+    });
   }
 }

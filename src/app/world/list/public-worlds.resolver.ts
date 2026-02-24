@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
-import { PaginatedWorlds } from '../paginated-worlds';
-import { WorldService } from '../world.service';
+import { PaginatedWorlds } from "../paginated-worlds";
+import { WorldService } from "../world.service";
 
 @Injectable()
 
@@ -13,13 +13,11 @@ import { WorldService } from '../world.service';
  *
  * This allows us to have the list of worlds before it's displayed in a Component.
  */
-export class PublicWorldsResolver  {
-
+export class PublicWorldsResolver {
   /**
    * @param worldService Service used to get World List information from the Server.
    */
-  constructor(private worldService: WorldService) {
-  }
+  constructor(private worldService: WorldService) {}
 
   /**
    * Resolve method.
@@ -31,19 +29,18 @@ export class PublicWorldsResolver  {
    * @returns An observable of the worlds or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedWorlds> {
-
     const params = {};
 
-    if (route.queryParams['q']) {
-      params['search'] = route.queryParams['q'];
+    if (route.queryParams["q"]) {
+      params["search"] = route.queryParams["q"];
     }
 
-    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
-      params['page'] = route.queryParams['page'];
+    if (route.queryParams["page"] && route.queryParams["page"] > 0) {
+      params["page"] = route.queryParams["page"];
     }
 
-    if (route.queryParams['per_page']) {
-      params['per_page'] = route.queryParams['per_page'];
+    if (route.queryParams["per_page"]) {
+      params["per_page"] = route.queryParams["per_page"];
     }
 
     return this.worldService.getList(params).pipe(
@@ -52,7 +49,7 @@ export class PublicWorldsResolver  {
       }),
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

@@ -1,15 +1,20 @@
-import { Directive, HostListener, HostBinding, EventEmitter, Output, Input } from '@angular/core';
+import {
+  Directive,
+  HostListener,
+  HostBinding,
+  EventEmitter,
+  Output,
+  Input,
+} from "@angular/core";
 
 /**
  * Directive to handle drag-and-drop
  */
 @Directive({
-  selector: '[gzDnd]',
-  standalone: false
+  selector: "[gzDnd]",
+  standalone: false,
 })
-
 export class DndDirective {
-
   /**
    * Array of files pending to be loaded
    */
@@ -28,25 +33,26 @@ export class DndDirective {
   /**
    * Emits an event when new valid files were dropped.
    */
-  @Output() private newValidFilesEmitter: EventEmitter<File[]> = new EventEmitter();
+  @Output() private newValidFilesEmitter: EventEmitter<File[]> =
+    new EventEmitter();
 
   /**
    * Emits an event when new invalid files were dropped.
    */
-  @Output() private newInvalidFilesEmitter: EventEmitter<File[]> = new EventEmitter();
+  @Output() private newInvalidFilesEmitter: EventEmitter<File[]> =
+    new EventEmitter();
 
   /**
    * Local variable bound to the background style of the host.
    */
-  @HostBinding('style.background') public background = 'transparent';
+  @HostBinding("style.background") public background = "transparent";
 
   /**
    * Listen to dragover events on the host.
    *
    * @param event Dragover event
    */
-  @HostListener('dragover', ['$event']) public onDragOver(event): void {
-
+  @HostListener("dragover", ["$event"]) public onDragOver(event): void {
     if (this.disabled) {
       return;
     }
@@ -55,7 +61,7 @@ export class DndDirective {
     event.stopPropagation();
 
     // Highlight background
-    this.background = '#999';
+    this.background = "#999";
   }
 
   /**
@@ -63,8 +69,7 @@ export class DndDirective {
    *
    * @param event Dragleave event
    */
-  @HostListener('dragleave', ['$event']) public onDragLeave(event): void {
-
+  @HostListener("dragleave", ["$event"]) public onDragLeave(event): void {
     if (this.disabled) {
       return;
     }
@@ -73,7 +78,7 @@ export class DndDirective {
     event.stopPropagation();
 
     // Restore background
-    this.background = 'transparent';
+    this.background = "transparent";
   }
 
   /**
@@ -81,8 +86,7 @@ export class DndDirective {
    *
    * @param event Drop event
    */
-  @HostListener('drop', ['$event']) public onDrop(event): void {
-
+  @HostListener("drop", ["$event"]) public onDrop(event): void {
     if (this.disabled) {
       return;
     }
@@ -91,7 +95,7 @@ export class DndDirective {
     event.stopPropagation();
 
     // Restore background
-    this.background = 'transparent';
+    this.background = "transparent";
 
     // Traverse entry
     this.pendingFiles = [];
@@ -104,12 +108,10 @@ export class DndDirective {
     const that = this;
     this.waitForFiles()
       .then((results) => {
-
         // Concatenate results into valid and invalid
         let validFiles = [];
         let invalidFiles = [];
         for (const result of results) {
-
           if (!result || result.length !== 2) {
             continue;
           }
@@ -136,23 +138,19 @@ export class DndDirective {
    * @param entry A filesystem entry
    */
   private traverseEntry(entry: any): Promise<any> {
-
     if (entry.isFile) {
-
       // Copy fullPath
       let fullPath = entry.fullPath;
-      if (fullPath.substring(0, 1) === '/') {
+      if (fullPath.substring(0, 1) === "/") {
         fullPath = fullPath.substring(1);
       }
 
       return new Promise((resolve, reject) => {
-
         entry.file((file) => {
-
           // Chrome loses path information, so we need to propagate it ourselves
           file.fullPath = fullPath;
 
-          const ext = file.name.toLowerCase().split('.').slice(1).join('.');
+          const ext = file.name.toLowerCase().split(".").slice(1).join(".");
           if (this.allowedExtensions.lastIndexOf(ext) !== -1) {
             resolve([[file], []]);
           } else {
@@ -162,7 +160,6 @@ export class DndDirective {
       });
     } else {
       return new Promise<void>((resolve, reject) => {
-
         const dirReader = entry.createReader();
         dirReader.readEntries((entries) => {
           for (const e of entries) {
@@ -180,13 +177,11 @@ export class DndDirective {
    * @param resolvedPromises Promises already resolved
    */
   private waitForFiles(resolvedPromises: any = []): Promise<any> {
-
-    const allPromises = Promise.all((resolvedPromises || []).concat(this.pendingFiles))
-      .then((results) => {
-        return this.pendingFiles.length
-          ? this.waitForFiles(results)
-          : results;
-      });
+    const allPromises = Promise.all(
+      (resolvedPromises || []).concat(this.pendingFiles),
+    ).then((results) => {
+      return this.pendingFiles.length ? this.waitForFiles(results) : results;
+    });
 
     this.pendingFiles = [];
 

@@ -1,648 +1,648 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes, ActivatedRoute } from "@angular/router";
 
-import { AdminCloudsimComponent } from './admin/cloudsim/admin-cloudsim.component';
-import { AdminComponent } from './admin';
-import { AdminElasticsearchComponent } from './admin/elasticsearch/admin-elasticsearch.component';
-import { AdminGuard } from './admin/admin-guard.service';
-import { APIComponent } from './api/api.component';
-import { ApplicationsComponent } from './applications/applications.component';
-import { AssetDisplayComponent } from './asset-display';
-import { AuthCallbackComponent } from './auth/callback.component';
-import { AuthGuard } from './auth/auth-guard.service';
-import { CollectionComponent } from './collection/collection.component';
-import { CollectionListComponent } from './collection/list/collection-list.component';
-import { CollectionResolver } from './collection/collection.resolver';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { EditCollectionComponent } from './collection/edit/edit-collection.component';
-import { EditModelComponent } from './model/edit/edit-model.component';
-import { EditWorldComponent } from './world/edit/edit-world.component';
-import { FuelHomeComponent } from './fuel-home';
-import { InformationComponent } from './information/information.component';
-import { LikedModelsResolver } from './model/list/liked-models.resolver';
-import { LikedWorldsResolver } from './world/list/liked-worlds.resolver';
-import { ModelComponent } from './model/model.component';
-import { ModelListComponent } from './model/list/model-list.component';
-import { ModelResolver } from './model/model.resolver';
-import { NewModelComponent } from './model/new/new-model.component';
-import { NewModelGuard } from './model/new/new-model-guard.service';
-import { NewWorldComponent } from './world/new/new-world.component';
-import { NewWorldGuard } from './world/new/new-world-guard.service';
-import { OrganizationComponent } from './organization';
-import { OwnerCollectionsResolver } from './collection/list/owner-collections.resolver';
-import { OwnerProfileResolver } from './user/owner-profile.resolver';
-import { PageNotFoundComponent } from './page-not-found';
-import { PublicCollectionsResolver } from './collection/list/public-collections.resolver';
-import { PublicModelsResolver } from './model/list/public-models.resolver';
-import { PublicWorldsResolver } from './world/list/public-worlds.resolver';
-import { SearchComponent } from './search';
-import { SettingsComponent } from './settings';
-import { SimulationComponent } from './cloudsim/detail/simulation.component';
-import { SimulationResolver } from './cloudsim/detail/simulation.resolver';
-import { UserComponent } from './user/user.component';
-import { UserModelsResolver } from './model/list/user-models.resolver';
-import { UserWorldsResolver } from './world/list/user-worlds.resolver';
-import { VisualizationComponent } from './visualization';
-import { WorldComponent } from './world/world.component';
-import { WorldListComponent } from './world/list/world-list.component';
-import { WorldResolver } from './world/world.resolver';
+import { AdminCloudsimComponent } from "./admin/cloudsim/admin-cloudsim.component";
+import { AdminComponent } from "./admin";
+import { AdminElasticsearchComponent } from "./admin/elasticsearch/admin-elasticsearch.component";
+import { AdminGuard } from "./admin/admin-guard.service";
+import { APIComponent } from "./api/api.component";
+import { ApplicationsComponent } from "./applications/applications.component";
+import { AssetDisplayComponent } from "./asset-display";
+import { AuthCallbackComponent } from "./auth/callback.component";
+import { AuthGuard } from "./auth/auth-guard.service";
+import { CollectionComponent } from "./collection/collection.component";
+import { CollectionListComponent } from "./collection/list/collection-list.component";
+import { CollectionResolver } from "./collection/collection.resolver";
+import { DashboardComponent } from "./dashboard/dashboard.component";
+import { EditCollectionComponent } from "./collection/edit/edit-collection.component";
+import { EditModelComponent } from "./model/edit/edit-model.component";
+import { EditWorldComponent } from "./world/edit/edit-world.component";
+import { FuelHomeComponent } from "./fuel-home";
+import { InformationComponent } from "./information/information.component";
+import { LikedModelsResolver } from "./model/list/liked-models.resolver";
+import { LikedWorldsResolver } from "./world/list/liked-worlds.resolver";
+import { ModelComponent } from "./model/model.component";
+import { ModelListComponent } from "./model/list/model-list.component";
+import { ModelResolver } from "./model/model.resolver";
+import { NewModelComponent } from "./model/new/new-model.component";
+import { NewModelGuard } from "./model/new/new-model-guard.service";
+import { NewWorldComponent } from "./world/new/new-world.component";
+import { NewWorldGuard } from "./world/new/new-world-guard.service";
+import { OrganizationComponent } from "./organization";
+import { OwnerCollectionsResolver } from "./collection/list/owner-collections.resolver";
+import { OwnerProfileResolver } from "./user/owner-profile.resolver";
+import { PageNotFoundComponent } from "./page-not-found";
+import { PublicCollectionsResolver } from "./collection/list/public-collections.resolver";
+import { PublicModelsResolver } from "./model/list/public-models.resolver";
+import { PublicWorldsResolver } from "./world/list/public-worlds.resolver";
+import { SearchComponent } from "./search";
+import { SettingsComponent } from "./settings";
+import { SimulationComponent } from "./cloudsim/detail/simulation.component";
+import { SimulationResolver } from "./cloudsim/detail/simulation.resolver";
+import { UserComponent } from "./user/user.component";
+import { UserModelsResolver } from "./model/list/user-models.resolver";
+import { UserWorldsResolver } from "./world/list/user-worlds.resolver";
+import { VisualizationComponent } from "./visualization";
+import { WorldComponent } from "./world/world.component";
+import { WorldListComponent } from "./world/list/world-list.component";
+import { WorldResolver } from "./world/world.resolver";
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: '/dashboard',
-    pathMatch: 'full'
+    path: "",
+    redirectTo: "/dashboard",
+    pathMatch: "full",
   },
   {
-    path: 'api',
+    path: "api",
     component: APIComponent,
     data: {
-      titlebarTitle: 'Information',
-      titlebarSubtitle: 'API'
-    }
+      titlebarTitle: "Information",
+      titlebarSubtitle: "API",
+    },
   },
   {
-    path: 'information',
+    path: "information",
     component: InformationComponent,
     data: {
-      titlebarTitle: 'Information',
-      titlebarSubtitle: ''
-    }
+      titlebarTitle: "Information",
+      titlebarSubtitle: "",
+    },
   },
   {
-    path: 'home',
+    path: "home",
     component: DashboardComponent,
     data: {
-      titlebarTitle: 'Dashboard',
-      titlebarSubtitle: ''
-    }
+      titlebarTitle: "Dashboard",
+      titlebarSubtitle: "",
+    },
   },
   {
-    path: 'visualization',
+    path: "visualization",
     component: VisualizationComponent,
     data: {
-      titlebarTitle: 'Visualization',
-      titlebarSubtitle: ''
-    }
+      titlebarTitle: "Visualization",
+      titlebarSubtitle: "",
+    },
   },
   {
-    path: 'admin',
+    path: "admin",
     canActivate: [AdminGuard],
     children: [
       {
-        path: '',
-        pathMatch: 'full',
+        path: "",
+        pathMatch: "full",
         component: AdminComponent,
         data: {
-          title: 'Administration',
-          titlebarTitle: 'Admin',
+          title: "Administration",
+          titlebarTitle: "Admin",
         },
       },
       {
-        path: 'cloudsim',
+        path: "cloudsim",
         children: [
           {
-            path: '',
-            pathMatch: 'full',
+            path: "",
+            pathMatch: "full",
             component: AdminCloudsimComponent,
             data: {
-              titlebarTitle: 'Admin',
-              titlebarSubtitle: 'Cloudsim',
+              titlebarTitle: "Admin",
+              titlebarSubtitle: "Cloudsim",
             },
           },
           {
-            path: ':groupId',
-            pathMatch: 'full',
+            path: ":groupId",
+            pathMatch: "full",
             component: AssetDisplayComponent,
             resolve: {
-              resolvedData: SimulationResolver
+              resolvedData: SimulationResolver,
             },
             data: {
               component: SimulationComponent,
 
-              titlebarTitle: 'Cloudsim',
-              titlebarSubtitle: 'Simulation Details',
+              titlebarTitle: "Cloudsim",
+              titlebarSubtitle: "Simulation Details",
               title: (route: ActivatedRoute) => {
-                return route.snapshot.params['groupId'];
-              }
-            },
-          }
-        ],
-      },
-      {
-        path: 'elasticsearch',
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            component: AdminElasticsearchComponent,
-            data: {
-              titlebarTitle: 'Admin',
-              titlebarSubtitle: 'Elasticsearch',
+                return route.snapshot.params["groupId"];
+              },
             },
           },
         ],
       },
-    ]
+      {
+        path: "elasticsearch",
+        children: [
+          {
+            path: "",
+            pathMatch: "full",
+            component: AdminElasticsearchComponent,
+            data: {
+              titlebarTitle: "Admin",
+              titlebarSubtitle: "Elasticsearch",
+            },
+          },
+        ],
+      },
+    ],
   },
   {
-    path: 'dashboard',
+    path: "dashboard",
     component: DashboardComponent,
     data: {
-      titlebarTitle: 'Dashboard',
-      titlebarSubtitle: ''
-    }
-  },
-  {
-    path: 'fuel',
-    component: FuelHomeComponent,
-    data: {
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Assets for robotic apps'
-    }
-  },
-  {
-    path: 'applications',
-    component: ApplicationsComponent,
-    data: {
-      titlebarTitle: 'Applications',
-      titlebarSubtitle: ''
-    }
-  },
-  {
-    path: 'settings',
-    component: SettingsComponent,
-    data: {
-      titlebarTitle: 'Settings',
-      titlebarSubtitle: '',
-      title: 'Settings'
-    }
-  },
-  {
-    path: 'search',
-    component: SearchComponent,
-    pathMatch: 'full',
-    data: {
-      titlebarTitle: 'Search Results',
-      titlebarSubtitle: '',
-      title: 'Search Results'
+      titlebarTitle: "Dashboard",
+      titlebarSubtitle: "",
     },
   },
   {
-    path: 'simulations',
+    path: "fuel",
+    component: FuelHomeComponent,
+    data: {
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Assets for robotic apps",
+    },
+  },
+  {
+    path: "applications",
+    component: ApplicationsComponent,
+    data: {
+      titlebarTitle: "Applications",
+      titlebarSubtitle: "",
+    },
+  },
+  {
+    path: "settings",
+    component: SettingsComponent,
+    data: {
+      titlebarTitle: "Settings",
+      titlebarSubtitle: "",
+      title: "Settings",
+    },
+  },
+  {
+    path: "search",
+    component: SearchComponent,
+    pathMatch: "full",
+    data: {
+      titlebarTitle: "Search Results",
+      titlebarSubtitle: "",
+      title: "Search Results",
+    },
+  },
+  {
+    path: "simulations",
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/home'
+        path: "",
+        pathMatch: "full",
+        redirectTo: "/home",
       },
       {
-        path: ':groupId',
+        path: ":groupId",
         component: AssetDisplayComponent,
-        pathMatch: 'full',
+        pathMatch: "full",
         resolve: {
-          resolvedData: SimulationResolver
+          resolvedData: SimulationResolver,
         },
         data: {
           component: SimulationComponent,
-          titlebarTitle: 'Cloudsim',
-          titlebarSubtitle: 'Simulation Details',
+          titlebarTitle: "Cloudsim",
+          titlebarSubtitle: "Simulation Details",
           title: (route: ActivatedRoute) => {
-            return route.snapshot.params['groupId'];
-          }
+            return route.snapshot.params["groupId"];
+          },
         },
       },
     ],
   },
   {
-    path: 'models',
-    redirectTo: 'fuel/models'
+    path: "models",
+    redirectTo: "fuel/models",
   },
   {
-    path: 'fuel/models',
+    path: "fuel/models",
     component: AssetDisplayComponent,
-    pathMatch: 'full',
+    pathMatch: "full",
     data: {
       component: ModelListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Latest Models',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Latest Models",
 
       title: (route: ActivatedRoute) => {
-        const search = route.snapshot.params['q'];
-        if (search !== undefined && search !== '') {
+        const search = route.snapshot.params["q"];
+        if (search !== undefined && search !== "") {
           return `Search results for \"${search}\"`;
         }
-        return 'Latest models';
-      }
+        return "Latest models";
+      },
     },
     resolve: {
-      resolvedData: PublicModelsResolver
-    }
+      resolvedData: PublicModelsResolver,
+    },
   },
   {
-    path: 'models/upload',
-    redirectTo: 'fuel/models/upload'
+    path: "models/upload",
+    redirectTo: "fuel/models/upload",
   },
   {
-    path: 'fuel/models/upload',
+    path: "fuel/models/upload",
     component: NewModelComponent,
     canActivate: [NewModelGuard],
-    pathMatch: 'full',
+    pathMatch: "full",
     data: {
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Model Upload',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Model Upload",
 
-      title: 'Upload a new model'
-    }
+      title: "Upload a new model",
+    },
   },
   {
-    path: 'worlds',
-    redirectTo: 'fuel/worlds'
+    path: "worlds",
+    redirectTo: "fuel/worlds",
   },
   {
-    path: 'fuel/worlds',
+    path: "fuel/worlds",
     component: AssetDisplayComponent,
-    pathMatch: 'full',
+    pathMatch: "full",
     data: {
-
       component: WorldListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Latest Worlds',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Latest Worlds",
 
       title: (route: ActivatedRoute) => {
-        const search = route.snapshot.params['q'];
-        if (search !== undefined && search !== '') {
+        const search = route.snapshot.params["q"];
+        if (search !== undefined && search !== "") {
           return `Search results for \"${search}\"`;
         }
-        return 'Latest worlds';
-      }
+        return "Latest worlds";
+      },
     },
     resolve: {
-      resolvedData: PublicWorldsResolver
-    }
+      resolvedData: PublicWorldsResolver,
+    },
   },
   {
-    path: 'worlds/upload',
-    redirectTo: 'fuel/worlds/upload'
+    path: "worlds/upload",
+    redirectTo: "fuel/worlds/upload",
   },
   {
-    path: 'fuel/worlds/upload',
+    path: "fuel/worlds/upload",
     component: NewWorldComponent,
     canActivate: [NewWorldGuard],
-    pathMatch: 'full',
+    pathMatch: "full",
     data: {
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'World Upload',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "World Upload",
 
-      title: 'Upload a new world'
-    }
+      title: "Upload a new world",
+    },
   },
   {
-    path: 'collections',
-    redirectTo: 'fuel/collections'
+    path: "collections",
+    redirectTo: "fuel/collections",
   },
   {
-    path: 'fuel/collections',
+    path: "fuel/collections",
     component: AssetDisplayComponent,
     data: {
       component: CollectionListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Latest Collections',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Latest Collections",
 
-      title: 'Latest collections'
+      title: "Latest collections",
     },
     resolve: {
-      resolvedData: PublicCollectionsResolver
+      resolvedData: PublicCollectionsResolver,
     },
   },
   {
-    path: ':owner/models',
-    redirectTo: ':owner/fuel/models'
+    path: ":owner/models",
+    redirectTo: ":owner/fuel/models",
   },
   {
-    path: ':owner/fuel/models',
+    path: ":owner/fuel/models",
     component: AssetDisplayComponent,
     data: {
       component: ModelListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'User Models',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "User Models",
 
       title: (route: ActivatedRoute) => {
-        return `${route.snapshot.params['owner']}'s models`;
-      }
+        return `${route.snapshot.params["owner"]}'s models`;
+      },
     },
     resolve: {
-      resolvedData: UserModelsResolver
-    }
+      resolvedData: UserModelsResolver,
+    },
   },
   {
-    path: ':owner/models/:modelname',
-    redirectTo: ':owner/fuel/models/:modelname'
+    path: ":owner/models/:modelname",
+    redirectTo: ":owner/fuel/models/:modelname",
   },
   {
-    path: ':owner/fuel/models/:modelname',
-    pathMatch: 'full',
+    path: ":owner/fuel/models/:modelname",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     resolve: {
-      resolvedData: ModelResolver
+      resolvedData: ModelResolver,
     },
     data: {
       component: ModelComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Model Info',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Model Info",
 
       title: (route: ActivatedRoute) => {
-        return route.snapshot.params['modelname'];
-      }
-    }
+        return route.snapshot.params["modelname"];
+      },
+    },
   },
   {
-    path: ':owner/models/:modelname/edit',
-    redirectTo: ':owner/fuel/models/:modelname/edit'
+    path: ":owner/models/:modelname/edit",
+    redirectTo: ":owner/fuel/models/:modelname/edit",
   },
   {
-    path: ':owner/fuel/models/:modelname/edit',
-    pathMatch: 'full',
+    path: ":owner/fuel/models/:modelname/edit",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     data: {
       component: EditModelComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Model Edit',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Model Edit",
 
       title: (route: ActivatedRoute) => {
-        const model = route.snapshot.data['resolvedData'];
+        const model = route.snapshot.data["resolvedData"];
         return `Editing ${model.owner}'s ${model.name} model`;
-      }
+      },
     },
     resolve: {
-      resolvedData: ModelResolver
-    }
+      resolvedData: ModelResolver,
+    },
   },
   {
-    path: ':owner/models/:modelname/:version',
-    redirectTo: ':owner/fuel/models/:modelname/:version'
+    path: ":owner/models/:modelname/:version",
+    redirectTo: ":owner/fuel/models/:modelname/:version",
   },
   {
-  path: ':owner/fuel/models/:modelname/:version',
-    pathMatch: 'full',
+    path: ":owner/fuel/models/:modelname/:version",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     resolve: {
-      resolvedData: ModelResolver
+      resolvedData: ModelResolver,
     },
     data: {
       component: ModelComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Model Info',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Model Info",
 
       title: (route: ActivatedRoute) => {
-        return route.snapshot.params['modelname'];
-      }
-    }
+        return route.snapshot.params["modelname"];
+      },
+    },
   },
   {
-    path: ':user/likes/models',
-    redirectTo: ':user/fuel/likes/models'
+    path: ":user/likes/models",
+    redirectTo: ":user/fuel/likes/models",
   },
   {
-    path: ':user/fuel/likes/models',
+    path: ":user/fuel/likes/models",
     component: AssetDisplayComponent,
     data: {
       component: ModelListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Liked Models',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Liked Models",
 
       title: (route: ActivatedRoute) => {
-        return `Models liked by ${route.snapshot.params['user']}`;
-      }
+        return `Models liked by ${route.snapshot.params["user"]}`;
+      },
     },
     resolve: {
-      resolvedData: LikedModelsResolver
-    }
+      resolvedData: LikedModelsResolver,
+    },
   },
   {
-    path: ':owner/worlds',
-    redirectTo: ':owner/fuel/worlds'
+    path: ":owner/worlds",
+    redirectTo: ":owner/fuel/worlds",
   },
   {
-    path: ':owner/fuel/worlds',
+    path: ":owner/fuel/worlds",
     component: AssetDisplayComponent,
     data: {
       component: WorldListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'User Worlds',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "User Worlds",
 
       title: (route: ActivatedRoute) => {
-        return `${route.snapshot.params['owner']}'s worlds`;
-      }
+        return `${route.snapshot.params["owner"]}'s worlds`;
+      },
     },
     resolve: {
-      resolvedData: UserWorldsResolver
-    }
+      resolvedData: UserWorldsResolver,
+    },
   },
   {
-    path: ':owner/worlds/:worldname',
-    redirectTo: ':owner/fuel/worlds/:worldname'
+    path: ":owner/worlds/:worldname",
+    redirectTo: ":owner/fuel/worlds/:worldname",
   },
   {
-    path: ':owner/fuel/worlds/:worldname',
-    pathMatch: 'full',
+    path: ":owner/fuel/worlds/:worldname",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     resolve: {
-      resolvedData: WorldResolver
+      resolvedData: WorldResolver,
     },
     data: {
       component: WorldComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'World Info',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "World Info",
 
       title: (route: ActivatedRoute) => {
-        return route.snapshot.params['worldname'];
-      }
-    }
+        return route.snapshot.params["worldname"];
+      },
+    },
   },
   {
-    path: ':owner/worlds/:worldname/edit',
-    redirectTo: ':owner/fuel/worlds/:worldname/edit'
+    path: ":owner/worlds/:worldname/edit",
+    redirectTo: ":owner/fuel/worlds/:worldname/edit",
   },
   {
-    path: ':owner/fuel/worlds/:worldname/edit',
-    pathMatch: 'full',
+    path: ":owner/fuel/worlds/:worldname/edit",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     data: {
       component: EditWorldComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'World Edit',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "World Edit",
 
       title: (route: ActivatedRoute) => {
-        const world = route.snapshot.data['resolvedData'];
+        const world = route.snapshot.data["resolvedData"];
         return `Editing ${world.owner}'s ${world.name} world`;
-      }
+      },
     },
     resolve: {
-      resolvedData: WorldResolver
-    }
+      resolvedData: WorldResolver,
+    },
   },
   {
-    path: ':owner/worlds/:worldname/:version',
-    redirectTo: ':owner/fuel/worlds/:worldname/:version'
+    path: ":owner/worlds/:worldname/:version",
+    redirectTo: ":owner/fuel/worlds/:worldname/:version",
   },
   {
-  path: ':owner/fuel/worlds/:worldname/:version',
-    pathMatch: 'full',
+    path: ":owner/fuel/worlds/:worldname/:version",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     resolve: {
-      resolvedData: WorldResolver
+      resolvedData: WorldResolver,
     },
     data: {
       component: WorldComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'World Info',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "World Info",
 
       title: (route: ActivatedRoute) => {
-        return route.snapshot.params['worldname'];
-      }
-    }
+        return route.snapshot.params["worldname"];
+      },
+    },
   },
   {
-    path: ':user/likes/worlds',
-    redirectTo: ':user/fuel/likes/worlds'
+    path: ":user/likes/worlds",
+    redirectTo: ":user/fuel/likes/worlds",
   },
   {
-    path: ':user/fuel/likes/worlds',
+    path: ":user/fuel/likes/worlds",
     component: AssetDisplayComponent,
     data: {
       component: WorldListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Liked Worlds',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Liked Worlds",
 
       title: (route: ActivatedRoute) => {
-        return `Worlds liked by ${route.snapshot.params['user']}`;
-      }
+        return `Worlds liked by ${route.snapshot.params["user"]}`;
+      },
     },
     resolve: {
-      resolvedData: LikedWorldsResolver
-    }
+      resolvedData: LikedWorldsResolver,
+    },
   },
   {
-    path: ':user/collections',
-    redirectTo: ':user/fuel/collections'
+    path: ":user/collections",
+    redirectTo: ":user/fuel/collections",
   },
   {
-    path: ':user/fuel/collections',
+    path: ":user/fuel/collections",
     component: AssetDisplayComponent,
     data: {
       component: CollectionListComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'User Collections',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "User Collections",
 
       title: (route: ActivatedRoute) => {
-        return `${route.snapshot.params['user']}'s collections`;
-      }
+        return `${route.snapshot.params["user"]}'s collections`;
+      },
     },
     resolve: {
-      resolvedData: OwnerCollectionsResolver
+      resolvedData: OwnerCollectionsResolver,
     },
   },
   {
-    path: ':user/collections/:collection',
-    redirectTo: ':user/fuel/collections/:collection'
+    path: ":user/collections/:collection",
+    redirectTo: ":user/fuel/collections/:collection",
   },
   {
-    path: ':user/fuel/collections/:collection',
+    path: ":user/fuel/collections/:collection",
     component: AssetDisplayComponent,
     data: {
       component: CollectionComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Collection Info',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Collection Info",
 
       title: (route: ActivatedRoute) => {
-        return route.snapshot.params['collection'];
-      }
+        return route.snapshot.params["collection"];
+      },
     },
     resolve: {
-      resolvedData: CollectionResolver
+      resolvedData: CollectionResolver,
     },
   },
   {
-    path: ':user/collections/:collection/edit',
-    redirectTo: ':user/fuel/collections/:collection/edit'
+    path: ":user/collections/:collection/edit",
+    redirectTo: ":user/fuel/collections/:collection/edit",
   },
   {
-    path: ':user/fuel/collections/:collection/edit',
-    pathMatch: 'full',
+    path: ":user/fuel/collections/:collection/edit",
+    pathMatch: "full",
     component: AssetDisplayComponent,
     data: {
       component: EditCollectionComponent,
 
-      titlebarTitle: 'Fuel',
-      titlebarSubtitle: 'Collection Edit',
+      titlebarTitle: "Fuel",
+      titlebarSubtitle: "Collection Edit",
 
       title: (route: ActivatedRoute) => {
-        const collection = route.snapshot.data['resolvedData'];
+        const collection = route.snapshot.data["resolvedData"];
         return `Editing ${collection.owner}'s ${collection.name} collection`;
-      }
+      },
     },
     resolve: {
-      resolvedData: CollectionResolver
-    }
+      resolvedData: CollectionResolver,
+    },
   },
   {
-    path: 'callback',
+    path: "callback",
     component: AuthCallbackComponent,
   },
   {
-    path: ':name',
+    path: ":name",
     component: AssetDisplayComponent,
     data: {
       // Note: As the resolver determines which component to display, both need to be added at the
       // route configuration level in order for Angular to provide a Factory for them.
       component: [OrganizationComponent, UserComponent],
 
-      titlebarTitle: 'Profile',
-      titlebarSubtitle: '',
+      titlebarTitle: "Profile",
+      titlebarSubtitle: "",
 
       title: (route: ActivatedRoute) => {
-        return route.snapshot.params['name'];
-      }
+        return route.snapshot.params["name"];
+      },
     },
     resolve: {
       resolvedData: OwnerProfileResolver,
     },
   },
   {
-    path: '**',
+    path: "**",
     component: PageNotFoundComponent,
     data: {
+      titlebarTitle: "Page not found",
+      titlebarSubtitle: "",
 
-      titlebarTitle: 'Page not found',
-      titlebarSubtitle: '',
-
-      title: 'Page not found'
-    }
-  }
+      title: "Page not found",
+    },
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    anchorScrolling: 'enabled',
-    onSameUrlNavigation: 'reload',
-    scrollPositionRestoration: 'enabled',
-  })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      anchorScrolling: "enabled",
+      onSameUrlNavigation: "reload",
+      scrollPositionRestoration: "enabled",
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

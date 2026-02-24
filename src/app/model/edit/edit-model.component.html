@@ -1,65 +1,96 @@
 <div class="page-content-inner mat-typography">
-
   @if (!canEdit) {
     <div>
       <p>You are not authorized to edit this model.</p>
     </div>
   } @else {
-    <gz-page-title title="Editing {{model.owner}}'s {{model.name}} model" svgIcon="gz-model"></gz-page-title>
-    <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
-      (ngSubmit)=onEdit()>
+    <gz-page-title
+      title="Editing {{ model.owner }}'s {{ model.name }} model"
+      svgIcon="gz-model"
+    ></gz-page-title>
+    <form
+      fxLayout="column"
+      fxLayoutAlign="space-between start"
+      fxLayoutGap="20px"
+      class="content"
+      (ngSubmit)="onEdit()"
+    >
       <h2>Edit Model details</h2>
-      <gz-description [description]="model.description"
+      <gz-description
+        [description]="model.description"
         [edit]="true"
         [disabled]="updating"
         (onModify)="onModifyDescription($event)"
-        fxFill>
+        fxFill
+      >
       </gz-description>
-      <gz-categories [categories]="model.categories"
+      <gz-categories
+        [categories]="model.categories"
         [edit]="true"
         [disabled]="updating"
         (onModify)="onModifyCategories($event)"
-        fxFill>
+        fxFill
+      >
       </gz-categories>
-      <gz-tags [tags]="model.tags"
+      <gz-tags
+        [tags]="model.tags"
         [edit]="true"
         [disabled]="updating"
         (onModify)="onModifyTags()"
-        fxFill>
+        fxFill
+      >
       </gz-tags>
       <div fxLayout="column" fxFill>
         <p>Select if your model is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
-          @for (p of modelService.getPermissionList(); track p; let i = $index) {
+          @for (
+            p of modelService.getPermissionList();
+            track p;
+            let i = $index
+          ) {
             <mat-radio-button
               [value]="i"
-            [checked]="(p === 'Private' && model.private) || (p === 'Public' && !model.private)">{{p}}</mat-radio-button>
+              [checked]="
+                (p === 'Private' && model.private) ||
+                (p === 'Public' && !model.private)
+              "
+              >{{ p }}</mat-radio-button
+            >
           }
         </mat-radio-group>
       </div>
       <h2>Metadata</h2>
-      <gz-metadata [metadata]="model.metadata"
+      <gz-metadata
+        [metadata]="model.metadata"
         [edit]="true"
         [disabled]="updating"
         (onModify)="onModifyMetadata()"
-        fxFill>
+        fxFill
+      >
       </gz-metadata>
       <!-- nkoenig: Disabling until we fix the THREE dependency
       <h2>Thumbnails</h2>
       <gz-thumbnail-generator [resource]="model"></gz-thumbnail-generator>
       -->
       <h2>Replace files</h2>
-      <gz-file-upload (files)="onReceiveFiles($event)"
+      <gz-file-upload
+        (files)="onReceiveFiles($event)"
         [allowedExtensions]="allowedExtensions"
         [uploading]="updating"
         [resourceType]="'model'"
-                       [message]="'<h3>Select or drag and drop new files to upload.</h3><br/>
+        [message]="'<h3>Select or drag and drop new files to upload.</h3><br/>
                                    Leave empty to keep the current files.<br/>
                                    If any files are uploaded, a new model version will be created with those files.<br/>'"
-                       fxFill>
+        fxFill
+      >
       </gz-file-upload>
 
-      <div class="save-buttons" fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+      <div
+        class="save-buttons"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxFill
+      >
         <button mat-raised-button type="button" (click)="back()">Cancel</button>
 
         <button mat-raised-button color="accent" type="submit">
@@ -77,17 +108,13 @@
           </div>
 
           <div>
-            <p>Be mindful when deleting a model, other users could be counting on it. Once deleted, the model can't be restored.</p>
+            <p>
+              Be mindful when deleting a model, other users could be counting on
+              it. Once deleted, the model can't be restored.
+            </p>
           </div>
-
         </div>
       </div>
-
     </form>
-
-  
-}
-
-  
-
+  }
 </div>

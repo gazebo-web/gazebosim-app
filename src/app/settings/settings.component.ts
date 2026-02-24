@@ -1,25 +1,29 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder,
-         FormControl,
-         FormGroup,
-         FormGroupDirective,
-         Validators  } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-
-import { NewOrganizationDialogComponent, OrganizationService, Organization } from '../organization';
-import { AuthService } from '../auth/auth.service';
-import { UserService } from '../user/user.service';
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
-  ConfirmationDialogComponent
-} from '../confirmation-dialog/confirmation-dialog.component';
-import { AccessToken } from './access-token';
-import { AccessTokenDialogComponent } from './access-token-dialog.component';
-import { PaginatedAccessToken } from './paginated-access-token';
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  Validators,
+} from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+
+import {
+  NewOrganizationDialogComponent,
+  OrganizationService,
+  Organization,
+} from "../organization";
+import { AuthService } from "../auth/auth.service";
+import { UserService } from "../user/user.service";
+import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
+import { AccessToken } from "./access-token";
+import { AccessTokenDialogComponent } from "./access-token-dialog.component";
+import { PaginatedAccessToken } from "./paginated-access-token";
 
 /**
  * Enum of tabs the Settings component has. This allows easier navigation via fragments.
@@ -33,10 +37,10 @@ enum Tabs {
 }
 
 @Component({
-    selector: 'gz-settings',
-    templateUrl: 'settings.component.html',
-    styleUrls: ['settings.component.scss'],
-    standalone: false
+  selector: "gz-settings",
+  templateUrl: "settings.component.html",
+  styleUrls: ["settings.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -47,7 +51,6 @@ enum Tabs {
  * - The Labs tab includes experimental features and let users enable them.
  */
 export class SettingsComponent implements OnInit {
-
   /**
    * Experimental Feature: GzWeb.
    */
@@ -66,11 +69,15 @@ export class SettingsComponent implements OnInit {
   /**
    * Create access token form
    */
-  public createAccessTokenForm =  new FormGroup({
-    tokenNameInputForm: new FormControl('',
-      {validators: [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$'),
-                    Validators.minLength(3)],
-      updateOn: 'change'}),
+  public createAccessTokenForm = new FormGroup({
+    tokenNameInputForm: new FormControl("", {
+      validators: [
+        Validators.required,
+        Validators.pattern("^[a-zA-Z0-9 ]*$"),
+        Validators.minLength(3),
+      ],
+      updateOn: "change",
+    }),
   });
 
   /**
@@ -96,7 +103,8 @@ export class SettingsComponent implements OnInit {
   /**
    * The access token form group.
    */
-  @ViewChild(FormGroupDirective) public createAccessTokenFormDirective: FormGroupDirective;
+  @ViewChild(FormGroupDirective)
+  public createAccessTokenFormDirective: FormGroupDirective;
 
   /**
    * Confirmation dialog reference.
@@ -116,9 +124,8 @@ export class SettingsComponent implements OnInit {
     public organizationService: OrganizationService,
     public userService: UserService,
     public snackBar: MatSnackBar,
-    private route: ActivatedRoute) {
-
-  }
+    private route: ActivatedRoute,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -128,7 +135,8 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.experimentalGzWeb = (localStorage.getItem('experimental_gzweb') === 'true');
+    this.experimentalGzWeb =
+      localStorage.getItem("experimental_gzweb") === "true";
     if (this.authService.userProfile.orgs) {
       this.organizationList = this.authService.userProfile.orgs.sort();
     }
@@ -138,9 +146,15 @@ export class SettingsComponent implements OnInit {
       this.selected.setValue(Tabs[fragment]);
     });
     if (window.screen.width <= 600) {
-      this.activeAccessTokensColumns = ['name', 'revoke'];
+      this.activeAccessTokensColumns = ["name", "revoke"];
     } else {
-      this.activeAccessTokensColumns = ['name', 'created', 'lastUsed', 'prefix', 'revoke'];
+      this.activeAccessTokensColumns = [
+        "name",
+        "created",
+        "lastUsed",
+        "prefix",
+        "revoke",
+      ];
     }
     this.getAccessTokens();
   }
@@ -149,15 +163,17 @@ export class SettingsComponent implements OnInit {
    * Callback for changes on the GzWeb experimental feature slider.
    */
   public onToggleGzWebFeature(event: MatSlideToggleChange): void {
-    localStorage.setItem('experimental_gzweb', event.checked.toString());
+    localStorage.setItem("experimental_gzweb", event.checked.toString());
   }
 
   /**
    * Open the New Organization Dialog.
    */
   public newOrganizationDialog(): void {
-    this.dialog.open(NewOrganizationDialogComponent, {id: 'new-organization-dialog',
-      panelClass: 'gz-modal-panel'});
+    this.dialog.open(NewOrganizationDialogComponent, {
+      id: "new-organization-dialog",
+      panelClass: "gz-modal-panel",
+    });
   }
 
   /**
@@ -166,200 +182,222 @@ export class SettingsComponent implements OnInit {
    * @param orgName The name of the organization.
    */
   public promptOrgLeave(orgName: string): void {
-
     const dialogOps = {
       data: {
-        title: 'Leaving an Organization',
+        title: "Leaving an Organization",
         message: `You are about to leave the ${orgName} organization. Are you sure?`,
-        buttonText: 'Leave'
-      }
+        buttonText: "Leave",
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Check for the result of the dialog. Leave the organization when the user accepts.
-    this.confirmationDialog.afterClosed()
-      .subscribe(
-        (result) => {
-          if (result === true) {
-            const org = new Organization({name: orgName});
-            const username = this.authService.userProfile.username;
-            this.organizationService.removeUserFromOrganization(org, username).subscribe(
-              (response) => {
-                // Update the user profile.
-                // TODO(german-mas): Consider moving this update into an AuthenticatedUser class.
-                // See https://app.asana.com/0/719578238881157/756403371264694/f
-                const index = this.authService.userProfile.orgs.indexOf(orgName);
-                this.authService.userProfile.orgs.splice(index, 1);
-                delete this.authService.userProfile.orgRoles[orgName];
-                localStorage.setItem('profile', JSON.stringify(this.authService.userProfile));
-              },
-              (error) => {
-                this.snackBar.open(`${error.message}`, 'Got it');
-              }
-            );
-          }
-      });
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result === true) {
+        const org = new Organization({ name: orgName });
+        const username = this.authService.userProfile.username;
+        this.organizationService
+          .removeUserFromOrganization(org, username)
+          .subscribe(
+            (response) => {
+              // Update the user profile.
+              // TODO(german-mas): Consider moving this update into an AuthenticatedUser class.
+              // See https://app.asana.com/0/719578238881157/756403371264694/f
+              const index = this.authService.userProfile.orgs.indexOf(orgName);
+              this.authService.userProfile.orgs.splice(index, 1);
+              delete this.authService.userProfile.orgRoles[orgName];
+              localStorage.setItem(
+                "profile",
+                JSON.stringify(this.authService.userProfile),
+              );
+            },
+            (error) => {
+              this.snackBar.open(`${error.message}`, "Got it");
+            },
+          );
+      }
+    });
   }
 
   /**
    * Open the modal dialog to alert the user about deleting an organization.
    */
   public confirmationDeleteOrg(orgName: string): void {
-
     // Options of the Confirmation Dialog.
     const dialogOps = {
       data: {
         title: `Delete ${orgName}`,
         message: `Are you sure you want to delete the ${orgName} organization? <b>This can't be undone.</b>`,
-        buttonText: 'Delete',
+        buttonText: "Delete",
         hasInput: true,
-        inputMessage: 'To confirm, please enter the organization name.',
-        inputPlaceholder: 'Organization name',
-        inputTarget: orgName
-      }
+        inputMessage: "To confirm, please enter the organization name.",
+        inputPlaceholder: "Organization name",
+        inputTarget: orgName,
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Check for the result of the dialog. Delete the account if the user accepts.
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        if (result === true) {
-          const org = new Organization({name: orgName});
-          this.organizationService.deleteOrganization(org).subscribe(
-            (response) => {
-              this.authService.userProfile.orgs =
-                this.authService.userProfile.orgs.filter(
-                item => item !== orgName);
-              this.organizationList = this.authService.userProfile.orgs.sort();
-              this.snackBar.open('Organization deleted', 'Got it',
-                { duration: 2750 });
-            },
-            (error) => {
-              this.snackBar.open(error.message, 'Got it', { duration: 2750 });
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result === true) {
+        const org = new Organization({ name: orgName });
+        this.organizationService.deleteOrganization(org).subscribe(
+          (response) => {
+            this.authService.userProfile.orgs =
+              this.authService.userProfile.orgs.filter(
+                (item) => item !== orgName,
+              );
+            this.organizationList = this.authService.userProfile.orgs.sort();
+            this.snackBar.open("Organization deleted", "Got it", {
+              duration: 2750,
             });
-        }
-      });
+          },
+          (error) => {
+            this.snackBar.open(error.message, "Got it", { duration: 2750 });
+          },
+        );
+      }
+    });
   }
 
   /**
    * Open the modal dialog to alert the user about deleting their account.
    */
   public confirmationDeleteAccount(): void {
-
     // Options of the Confirmation Dialog.
     const dialogOps = {
       data: {
-        title: 'Delete account',
+        title: "Delete account",
         message: `Are you sure you want to delete your account? <b>This can't be undone.</b>`,
-        buttonText: 'Delete',
+        buttonText: "Delete",
         hasInput: true,
-        inputMessage: 'To confirm, please enter your username.',
-        inputPlaceholder: 'User name',
-        inputTarget: this.authService.userProfile.username
-      }
+        inputMessage: "To confirm, please enter your username.",
+        inputPlaceholder: "User name",
+        inputTarget: this.authService.userProfile.username,
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Check for the result of the dialog. Delete the account if the user accepts.
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        if (result === true) {
-          this.userService.deleteUser(this.authService.userProfile.username).subscribe(
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.userService
+          .deleteUser(this.authService.userProfile.username)
+          .subscribe(
             (response) => {
               this.authService.logout();
-              this.snackBar.open('Account deleted', 'Got it', { duration: 2750 });
+              this.snackBar.open("Account deleted", "Got it", {
+                duration: 2750,
+              });
             },
             (error) => {
-              this.snackBar.open(error.message, 'Got it', { duration: 2750 });
-            });
-        }
-      });
+              this.snackBar.open(error.message, "Got it", { duration: 2750 });
+            },
+          );
+      }
+    });
   }
 
   /**
    * Get all the access tokens.
    */
   public getAccessTokens(page?: number): void {
-    this.userService.getAccessTokens(this.authService.userProfile.username, page).subscribe(
-      (response) => {
-        this.paginatedAccessTokens = response;
-        this.activeAccessTokens = new MatTableDataSource(response.accessTokens);
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Go it');
-      }
-    );
+    this.userService
+      .getAccessTokens(this.authService.userProfile.username, page)
+      .subscribe(
+        (response) => {
+          this.paginatedAccessTokens = response;
+          this.activeAccessTokens = new MatTableDataSource(
+            response.accessTokens,
+          );
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Go it");
+        },
+      );
   }
 
   /**
    * Remove an access token.
    */
   public revokeAccessToken(token: AccessToken): void {
-
     const dialogOps = {
       data: {
-        title: 'Are you sure you want to delete this token?',
-        message: 'Any applications or scripts using this token will no longer be able to access ' +
-        'the Gazebo API. You cannot undo this action.',
-        buttonText: 'Delete',
+        title: "Are you sure you want to delete this token?",
+        message:
+          "Any applications or scripts using this token will no longer be able to access " +
+          "the Gazebo API. You cannot undo this action.",
+        buttonText: "Delete",
         hasInput: false,
-      }
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed()
-      .subscribe(
-        (result) => {
-          if (result !== true) {
-            return;
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result !== true) {
+        return;
+      }
+      this.userService
+        .revokeAccessToken(this.authService.userProfile.username, token)
+        .subscribe(() => {
+          // Go to the previous page when removing the last token on the current page.
+          if (this.paginatedAccessTokens.accessTokens.length <= 1) {
+            this.accessTokenPaginator.previousPage();
           }
-          this.userService.revokeAccessToken(this.authService.userProfile.username, token)
-          .subscribe(
-            () => {
-              // Go to the previous page when removing the last token on the current page.
-              if (this.paginatedAccessTokens.accessTokens.length <= 1) {
-                this.accessTokenPaginator.previousPage();
-              }
 
-              // Get the remaining access tokens.
-              this.getAccessTokens(this.accessTokenPaginator.pageIndex + 1);
-            });
-          }
-      );
+          // Get the remaining access tokens.
+          this.getAccessTokens(this.accessTokenPaginator.pageIndex + 1);
+        });
+    });
   }
 
   /**
    * Create a new access token.
    */
   public createAccessToken(): void {
-    const name = this.createAccessTokenForm.get('tokenNameInputForm').value.trim();
+    const name = this.createAccessTokenForm
+      .get("tokenNameInputForm")
+      .value.trim();
 
     // Clear the form.
     this.createAccessTokenFormDirective.resetForm();
 
     // Call the service to create a new access token.
-    this.userService.createAccessToken(this.authService.userProfile.username, name).subscribe(
-      (result) => {
-        const dialogOps = {
-          data: {
-            key: `${result.prefix}.${result.key}`
-          }
-        };
+    this.userService
+      .createAccessToken(this.authService.userProfile.username, name)
+      .subscribe(
+        (result) => {
+          const dialogOps = {
+            data: {
+              key: `${result.prefix}.${result.key}`,
+            },
+          };
 
-        // Show the new token.
-        this.dialog.open(AccessTokenDialogComponent, dialogOps);
-        this.getAccessTokens();
-
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Go it');
-      }
-    );
+          // Show the new token.
+          this.dialog.open(AccessTokenDialogComponent, dialogOps);
+          this.getAccessTokens();
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Go it");
+        },
+      );
   }
 
   /**

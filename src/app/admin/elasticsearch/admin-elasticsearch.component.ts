@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectChange } from '@angular/material/select';
-import { PageEvent } from '@angular/material/paginator';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatButton } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatSelectChange } from "@angular/material/select";
+import { PageEvent } from "@angular/material/paginator";
+import { MatCheckbox } from "@angular/material/checkbox";
+import { MatButton } from "@angular/material/button";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
-import { AdminElasticsearchService } from './admin-elasticsearch.service';
-import { ElasticsearchConfig } from './elasticsearch-config';
-import { ElasticsearchConfigDialogComponent } from './config-dialog/config-dialog.component';
+import { AdminElasticsearchService } from "./admin-elasticsearch.service";
+import { ElasticsearchConfig } from "./elasticsearch-config";
+import { ElasticsearchConfigDialogComponent } from "./config-dialog/config-dialog.component";
 
 @Component({
-    selector: 'gz-admin-elasticsearch',
-    templateUrl: 'admin-elasticsearch.component.html',
-    styleUrls: ['admin-elasticsearch.component.scss'],
-    standalone: false
+  selector: "gz-admin-elasticsearch",
+  templateUrl: "admin-elasticsearch.component.html",
+  styleUrls: ["admin-elasticsearch.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -23,17 +23,16 @@ import { ElasticsearchConfigDialogComponent } from './config-dialog/config-dialo
  * information to system admins.
  */
 export class AdminElasticsearchComponent implements OnInit {
-
   /**
    * The columns of the table.
    */
   public columns = [
-    'id',
-    'address',
-    'username',
-    'password',
-    'primary',
-    'controlButtons',
+    "id",
+    "address",
+    "username",
+    "password",
+    "primary",
+    "controlButtons",
   ];
 
   /**
@@ -61,11 +60,11 @@ export class AdminElasticsearchComponent implements OnInit {
    * @param dialog Dialog that support adding and modify a configuration.
    * @param elasticService The ElasticSearch service.
    */
-   constructor(
-     public snackBar: MatSnackBar,
-     public dialog: MatDialog,
-     private elasticService: AdminElasticsearchService) {
-  }
+  constructor(
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    private elasticService: AdminElasticsearchService,
+  ) {}
 
   /**
    * OnInit lifecycle hook.
@@ -82,11 +81,12 @@ export class AdminElasticsearchComponent implements OnInit {
   public reconnect(): void {
     this.elasticService.reconnect().subscribe(
       (response) => {
-        this.snackBar.open(response.status, 'Got it');
+        this.snackBar.open(response.status, "Got it");
       },
       (error) => {
-        this.snackBar.open(`${error.message}`, 'Got it');
-      });
+        this.snackBar.open(`${error.message}`, "Got it");
+      },
+    );
   }
 
   /**
@@ -95,11 +95,12 @@ export class AdminElasticsearchComponent implements OnInit {
   public rebuild(): void {
     this.elasticService.rebuild().subscribe(
       (response) => {
-        this.snackBar.open(response.status, 'Got it');
+        this.snackBar.open(response.status, "Got it");
       },
       (error) => {
-        this.snackBar.open(`${error.message}`, 'Got it');
-      });
+        this.snackBar.open(`${error.message}`, "Got it");
+      },
+    );
   }
 
   /**
@@ -108,11 +109,12 @@ export class AdminElasticsearchComponent implements OnInit {
   public update(): void {
     this.elasticService.update().subscribe(
       (response) => {
-        this.snackBar.open(response.status, 'Got it');
+        this.snackBar.open(response.status, "Got it");
       },
       (error) => {
-        this.snackBar.open(`${error.message}`, 'Got it');
-      });
+        this.snackBar.open(`${error.message}`, "Got it");
+      },
+    );
   }
 
   /**
@@ -127,11 +129,12 @@ export class AdminElasticsearchComponent implements OnInit {
           }
         }
         this.dataSource = new MatTableDataSource(this.configs);
-        this.snackBar.open(`Removed ${configId}`, 'Got it');
+        this.snackBar.open(`Removed ${configId}`, "Got it");
       },
       (error) => {
-        this.snackBar.open(`${error.message}`, 'Got it');
-      });
+        this.snackBar.open(`${error.message}`, "Got it");
+      },
+    );
   }
 
   /**
@@ -140,13 +143,14 @@ export class AdminElasticsearchComponent implements OnInit {
   public setPrimary(configId: number): void {
     for (const cfg of this.configs) {
       if (cfg.id === configId) {
-        this.elasticService.modify(configId, {
-          address: cfg.address,
-          username: cfg.username,
-          password: cfg.password,
-          primary: true
-        }).subscribe(
-          (response) => {
+        this.elasticService
+          .modify(configId, {
+            address: cfg.address,
+            username: cfg.username,
+            password: cfg.password,
+            primary: true,
+          })
+          .subscribe((response) => {
             this.getConfigs();
           });
         break;
@@ -158,20 +162,19 @@ export class AdminElasticsearchComponent implements OnInit {
    * Add a new config.
    */
   public addConfig(): void {
-    this.configDialog = this.dialog.open(ElasticsearchConfigDialogComponent,
-      null);
+    this.configDialog = this.dialog.open(
+      ElasticsearchConfigDialogComponent,
+      null,
+    );
 
     // Subscribes to the close event of the dialog.
-    this.configDialog.componentInstance.onSubmit.subscribe(
-      (result) => {
-        this.elasticService.create(result).subscribe(
-          (response) => {
-            this.configs.push(response);
-            this.dataSource = new MatTableDataSource(this.configs);
-          });
-        this.configDialog.close();
-      }
-    );
+    this.configDialog.componentInstance.onSubmit.subscribe((result) => {
+      this.elasticService.create(result).subscribe((response) => {
+        this.configs.push(response);
+        this.dataSource = new MatTableDataSource(this.configs);
+      });
+      this.configDialog.close();
+    });
   }
 
   /**
@@ -183,38 +186,36 @@ export class AdminElasticsearchComponent implements OnInit {
         address: config.address,
         username: config.username,
         password: config.password,
-      }
+      },
     };
 
-    this.configDialog = this.dialog.open(ElasticsearchConfigDialogComponent,
-      dialogOps);
+    this.configDialog = this.dialog.open(
+      ElasticsearchConfigDialogComponent,
+      dialogOps,
+    );
 
     // Subscribes to the close event of the dialog.
-    this.configDialog.componentInstance.onSubmit.subscribe(
-      (result) => {
-        this.elasticService.modify(config.id, result).subscribe(
-          (response) => {
-            for (let i = 0; i < this.configs.length; ++i) {
-              if (this.configs[i].id === response.id) {
-                this.configs[i] = response;
-                break;
-              }
-            }
-            this.dataSource = new MatTableDataSource(this.configs);
-          });
-        this.configDialog.close();
-      }
-    );
+    this.configDialog.componentInstance.onSubmit.subscribe((result) => {
+      this.elasticService.modify(config.id, result).subscribe((response) => {
+        for (let i = 0; i < this.configs.length; ++i) {
+          if (this.configs[i].id === response.id) {
+            this.configs[i] = response;
+            break;
+          }
+        }
+        this.dataSource = new MatTableDataSource(this.configs);
+      });
+      this.configDialog.close();
+    });
   }
 
   /**
    * Get the configurations
    */
   private getConfigs(): void {
-    this.elasticService.getList().subscribe(
-      (configurations) => {
-        this.configs = configurations;
-        this.dataSource = new MatTableDataSource(configurations);
-      });
+    this.elasticService.getList().subscribe((configurations) => {
+      this.configs = configurations;
+      this.dataSource = new MatTableDataSource(configurations);
+    });
   }
 }

@@ -1,6 +1,12 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewEncapsulation,
+} from "@angular/core";
 
-import { SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from "@angular/platform-browser";
 
 /**
  * The Gallery Component displays a simple image gallery with thumbnail navigation.
@@ -8,11 +14,11 @@ import { SafeUrl } from '@angular/platform-browser';
  * Receives the gallery images as an input.
  */
 @Component({
-  selector: 'gz-gallery',
-  templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss'],
+  selector: "gz-gallery",
+  templateUrl: "./gallery.component.html",
+  styleUrls: ["./gallery.component.scss"],
   encapsulation: ViewEncapsulation.None,
-  standalone: false
+  standalone: false,
 })
 export class GalleryComponent implements OnChanges {
   /**
@@ -32,8 +38,8 @@ export class GalleryComponent implements OnChanges {
    * @param changes Input changes of the component.
    */
   public ngOnChanges(changes: SimpleChanges): void {
-    if ('images' in changes) {
-      this.images = changes['images'].currentValue as SafeUrl[];
+    if ("images" in changes) {
+      this.images = changes["images"].currentValue as SafeUrl[];
       this.currentIndex = 0;
     }
   }
@@ -43,7 +49,8 @@ export class GalleryComponent implements OnChanges {
    */
   public prev(): void {
     if (this.images && this.images.length > 0) {
-      this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+      this.currentIndex =
+        (this.currentIndex - 1 + this.images.length) % this.images.length;
     }
   }
 

@@ -1,1 +1,1 @@
-export * from './fuel-home.component';
+export * from "./fuel-home.component";

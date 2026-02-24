@@ -1,9 +1,9 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { UiError } from '../../ui-error';
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, of, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
+import { environment } from "../../../environments/environment";
+import { UiError } from "../../ui-error";
 
 @Injectable()
 
@@ -12,7 +12,6 @@ import { UiError } from '../../ui-error';
  * credit-related operations.
  */
 export class CreditsService {
-
   /**
    * The credits endpoint.
    */
@@ -26,9 +25,7 @@ export class CreditsService {
   /**
    * @param http Performs HTTP requests.
    */
-  constructor(
-    public http: HttpClient,
-  ) { }
+  constructor(public http: HttpClient) {}
 
   /**
    * Get the balance of credits.
@@ -37,7 +34,7 @@ export class CreditsService {
     const url = `${this.creditsEndpoint}/billing/credits`;
     return this.http.get(url).pipe(
       map((response) => {
-        return response['credits'];
+        return response["credits"];
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 500 && error.error.errcode === 150000) {
@@ -73,7 +70,7 @@ export class CreditsService {
    * message to display.
    */
   private handleError(response: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred', response);
+    console.error("An error occurred", response);
     return throwError(new UiError(response));
   }
 }

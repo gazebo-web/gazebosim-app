@@ -1,21 +1,26 @@
 <div fxLayout="column">
-
-  <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+  <mat-tab-group
+    dynamicHeight
+    fxFill
+    (selectedIndexChange)="setActiveTab($event)"
+  >
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
           <mat-icon svgIcon="gz-model"></mat-icon>
-          <span>Models ({{paginatedModels?.totalCount}})</span>
+          <span>Models ({{ paginatedModels?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="models"
-                                resourceType="models"
-                                [disabled]="activeTab !== 'models'"
-                                [finished]="!paginatedModels?.hasNextPage()"
-                                (onLoadMore)="loadNextModelsPage()"
-                                fxFlex>
+        <gz-fuel-resource-list
+          [resources]="models"
+          resourceType="models"
+          [disabled]="activeTab !== 'models'"
+          [finished]="!paginatedModels?.hasNextPage()"
+          (onLoadMore)="loadNextModelsPage()"
+          fxFlex
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -24,17 +29,19 @@
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
           <mat-icon svgIcon="gz-world"></mat-icon>
-          <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
+          <span>Worlds ({{ paginatedWorlds?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list [resources]="worlds"
-                                resourceType="worlds"
-                                [disabled]="activeTab !== 'worlds'"
-                                [finished]="!paginatedWorlds?.hasNextPage()"
-                                (onLoadMore)="loadNextWorldsPage()"
-                                fxFlex>
+        <gz-fuel-resource-list
+          [resources]="worlds"
+          resourceType="worlds"
+          [disabled]="activeTab !== 'worlds'"
+          [finished]="!paginatedWorlds?.hasNextPage()"
+          (onLoadMore)="loadNextWorldsPage()"
+          fxFlex
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>

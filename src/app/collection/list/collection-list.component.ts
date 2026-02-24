@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { PageEvent } from "@angular/material/paginator";
+import { ActivatedRoute, Router } from "@angular/router";
 
-import { Collection, CollectionService, PaginatedCollection } from '../../collection';
+import {
+  Collection,
+  CollectionService,
+  PaginatedCollection,
+} from "../../collection";
 
 @Component({
-    selector: 'gz-collections',
-    templateUrl: 'collection-list.component.html',
-    styleUrls: ['collection-list.component.scss'],
-    standalone: false
+  selector: "gz-collections",
+  templateUrl: "collection-list.component.html",
+  styleUrls: ["collection-list.component.scss"],
+  standalone: false,
 })
 
 /**
  * Collection List Component is a page that displays a list of collections.
  */
 export class CollectionListComponent implements OnInit {
-
   /**
    * The paginated Collection returned from the Server.
    */
@@ -33,8 +36,8 @@ export class CollectionListComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private collectionService: CollectionService) {
-  }
+    private collectionService: CollectionService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -43,7 +46,8 @@ export class CollectionListComponent implements OnInit {
    */
   public ngOnInit(): void {
     // Take the resources from the resolved data.
-    this.paginatedCollections = this.activatedRoute.snapshot.data['resolvedData'];
+    this.paginatedCollections =
+      this.activatedRoute.snapshot.data["resolvedData"];
     this.collections = this.paginatedCollections.collections;
   }
 
@@ -52,20 +56,22 @@ export class CollectionListComponent implements OnInit {
    *
    * @param event The Page Event emitted by the list's paginator.
    */
-   public getCollections(event: PageEvent) {
-    this.collectionService.getCollectionList({
-      page: event.pageIndex + 1,
-      per_page: event.pageSize,
-    }).subscribe(
-      (collections) => {
+  public getCollections(event: PageEvent) {
+    this.collectionService
+      .getCollectionList({
+        page: event.pageIndex + 1,
+        per_page: event.pageSize,
+      })
+      .subscribe((collections) => {
         this.paginatedCollections = collections;
         this.collections = this.paginatedCollections.collections;
 
         // Navigate to the Collections List page.
         // Note that this does not recreate the component, since the navigation is to the same page.
-        this.router.navigateByUrl(`/collections?page=${event.pageIndex+1}&per_page=${event.pageSize}`);
-      }
-    );
+        this.router.navigateByUrl(
+          `/collections?page=${event.pageIndex + 1}&per_page=${event.pageSize}`,
+        );
+      });
   }
 
   /**
@@ -74,10 +80,10 @@ export class CollectionListComponent implements OnInit {
    * @returns The title to use.
    */
   public getTitle(): string {
-    const owner: string = this.activatedRoute.snapshot.paramMap.get('user');
+    const owner: string = this.activatedRoute.snapshot.paramMap.get("user");
     if (owner) {
       return `${owner}'s collections`;
     }
-    return 'Latest collections';
+    return "Latest collections";
   }
 }

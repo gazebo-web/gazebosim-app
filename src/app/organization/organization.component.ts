@@ -1,36 +1,37 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { PageEvent } from "@angular/material/paginator";
 
-import { AuthService } from '../auth/auth.service';
-import { CollectionService, Collection, PaginatedCollection } from '../collection';
+import { AuthService } from "../auth/auth.service";
 import {
-  ConfirmationDialogComponent
-} from '../confirmation-dialog/confirmation-dialog.component';
-import { Organization } from './organization';
-import { OrganizationService } from './organization.service';
-import { Model } from '../model/model';
-import { ModelService } from '../model/model.service';
-import { World } from '../world/world';
-import { WorldService } from '../world/world.service';
-import { PaginatedModels } from '../model/paginated-models';
-import { PaginatedWorlds } from '../world/paginated-worlds';
+  CollectionService,
+  Collection,
+  PaginatedCollection,
+} from "../collection";
+import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
+import { Organization } from "./organization";
+import { OrganizationService } from "./organization.service";
+import { Model } from "../model/model";
+import { ModelService } from "../model/model.service";
+import { World } from "../world/world";
+import { WorldService } from "../world/world.service";
+import { PaginatedModels } from "../model/paginated-models";
+import { PaginatedWorlds } from "../world/paginated-worlds";
 
 @Component({
-    selector: 'gz-organization',
-    templateUrl: 'organization.component.html',
-    styleUrls: ['organization.component.scss'],
-    standalone: false
+  selector: "gz-organization",
+  templateUrl: "organization.component.html",
+  styleUrls: ["organization.component.scss"],
+  standalone: false,
 })
 
 /**
  * Organization Component displays the information regarding an organization.
  */
 export class OrganizationComponent implements OnInit {
-
   /**
    * The organization being displayed by the component. Comes from the Organization Resolver.
    */
@@ -80,19 +81,23 @@ export class OrganizationComponent implements OnInit {
   /**
    * Active tab in the tab group.
    */
-  public activeTab: 'models' | 'worlds' | 'users' | 'collections' = 'models';
+  public activeTab: "models" | "worlds" | "users" | "collections" = "models";
 
   /**
    * Form field for the Username input.
    */
-  public usernameInputForm = new FormControl('', {validators: [Validators.required],
-    updateOn: 'change'});
+  public usernameInputForm = new FormControl("", {
+    validators: [Validators.required],
+    updateOn: "change",
+  });
 
   /**
    * Form field for the role select dropdown.
    */
-  public roleDropdownForm = new FormControl('', {validators: [Validators.required],
-    updateOn: 'change'});
+  public roleDropdownForm = new FormControl("", {
+    validators: [Validators.required],
+    updateOn: "change",
+  });
 
   /**
    * Confirmation dialog reference.
@@ -119,16 +124,15 @@ export class OrganizationComponent implements OnInit {
     public modelService: ModelService,
     public organizationService: OrganizationService,
     public snackBar: MatSnackBar,
-    public worldService: WorldService) {
-  }
+    public worldService: WorldService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-
     // Get the Organization from the resolved data.
-    this.organization = this.activatedRoute.snapshot.data['resolvedData'];
+    this.organization = this.activatedRoute.snapshot.data["resolvedData"];
 
     // Get the Organization's models.
     this.loadModels();
@@ -145,8 +149,8 @@ export class OrganizationComponent implements OnInit {
         this.users = response;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 
@@ -156,10 +160,12 @@ export class OrganizationComponent implements OnInit {
    * @param event Optional. The page event that contains the pagination data of models to load.
    */
   public loadModels(event?: PageEvent): void {
-    const params = event ? {
-      page: event.pageIndex + 1,
-      per_page: event.pageSize
-    } : {};
+    const params = event
+      ? {
+          page: event.pageIndex + 1,
+          per_page: event.pageSize,
+        }
+      : {};
 
     // Get the Organization's models.
     this.modelService.getOwnerList(this.organization.name, params).subscribe({
@@ -171,8 +177,8 @@ export class OrganizationComponent implements OnInit {
         this.router.navigate([this.organization.name]);
       },
       error: (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     });
   }
 
@@ -182,10 +188,12 @@ export class OrganizationComponent implements OnInit {
    * @param event Optional. The page event that contains the pagination data of worlds to load.
    */
   public loadWorlds(event?: PageEvent): void {
-    const params = event ? {
-      page: event.pageIndex + 1,
-      per_page: event.pageSize
-    } : {};
+    const params = event
+      ? {
+          page: event.pageIndex + 1,
+          per_page: event.pageSize,
+        }
+      : {};
 
     // Get the Organization's worlds.
     this.worldService.getOwnerList(this.organization.name, params).subscribe({
@@ -197,8 +205,8 @@ export class OrganizationComponent implements OnInit {
         this.router.navigate([this.organization.name]);
       },
       error: (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     });
   }
 
@@ -208,24 +216,28 @@ export class OrganizationComponent implements OnInit {
    * @param event Optional. The page event that contains the pagination data of collections to load.
    */
   public loadCollections(event?: PageEvent): void {
-    const params = event ? {
-      page: event.pageIndex + 1,
-      per_page: event.pageSize
-    } : {};
+    const params = event
+      ? {
+          page: event.pageIndex + 1,
+          per_page: event.pageSize,
+        }
+      : {};
 
     // Get the Organization's collections.
-    this.collectionService.getOwnerCollectionList(this.organization.name, params).subscribe({
-      next: (response) => {
-        this.paginatedCollections = response;
-        this.collections = response.collections;
-        // DEVNOTE: This change is not reflected in the Client URL.
-        // Navigate in order to scroll to the top.
-        this.router.navigate([this.organization.name]);
-      },
-      error: (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
-    });
+    this.collectionService
+      .getOwnerCollectionList(this.organization.name, params)
+      .subscribe({
+        next: (response) => {
+          this.paginatedCollections = response;
+          this.collections = response.collections;
+          // DEVNOTE: This change is not reflected in the Client URL.
+          // Navigate in order to scroll to the top.
+          this.router.navigate([this.organization.name]);
+        },
+        error: (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      });
   }
 
   /**
@@ -236,42 +248,47 @@ export class OrganizationComponent implements OnInit {
     // Note: The 'required' validator doesn't trim the value.
     this.usernameInputForm.setValue(this.usernameInputForm.value.trim());
     this.usernameInputForm.updateValueAndValidity();
-    if (this.usernameInputForm.value === undefined || this.usernameInputForm.value === '') {
-      this.snackBar.open('Please provide a Fuel username.', 'Got it');
+    if (
+      this.usernameInputForm.value === undefined ||
+      this.usernameInputForm.value === ""
+    ) {
+      this.snackBar.open("Please provide a Fuel username.", "Got it");
       return;
     }
 
     // Verify the role.
     this.roleDropdownForm.updateValueAndValidity();
     if (!this.roleDropdownForm.valid) {
-      this.snackBar.open('Please select a role for the user.', 'Got it');
+      this.snackBar.open("Please select a role for the user.", "Got it");
       return;
     }
 
     // Everything OK: Add the user.
     const name = this.usernameInputForm.value;
     const role = this.roleDropdownForm.value.toLowerCase();
-    this.organizationService.addUserToOrganization(this.organization, name, role).subscribe(
-      (response) => {
-        response.orgRoles = {[this.organization.name]: role};
-        this.users.push(response);
-        // Sort by username.
-        this.users.sort((userA, userB) => {
-          const usernameA = userA.username.toUpperCase();
-          const usernameB = userB.username.toUpperCase();
-          if (usernameA < usernameB) {
-            return -1;
-          }
-          if (usernameA > usernameB) {
-            return 1;
-          }
-          return 0;
-        });
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
-    );
+    this.organizationService
+      .addUserToOrganization(this.organization, name, role)
+      .subscribe(
+        (response) => {
+          response.orgRoles = { [this.organization.name]: role };
+          this.users.push(response);
+          // Sort by username.
+          this.users.sort((userA, userB) => {
+            const usernameA = userA.username.toUpperCase();
+            const usernameB = userB.username.toUpperCase();
+            if (usernameA < usernameB) {
+              return -1;
+            }
+            if (usernameA > usernameB) {
+              return 1;
+            }
+            return 0;
+          });
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
   }
 
   /**
@@ -280,55 +297,65 @@ export class OrganizationComponent implements OnInit {
    * @param user The user to remove from the organization.
    */
   public removeUser(user: any): void {
-
     const dialogOps = {
       data: {
         title: `Remove from Organization`,
-        message: '',
-        buttonText: ''
-      }
+        message: "",
+        buttonText: "",
+      },
     };
 
     // Check if the user to remove is the one logged in.
     if (user.username === this.authService.userProfile.username) {
-      dialogOps.data.message = `You are about to leave the ${this.organization.name} ` +
+      dialogOps.data.message =
+        `You are about to leave the ${this.organization.name} ` +
         `organization. Are you sure?`;
       dialogOps.data.buttonText = `Leave`;
     } else {
-      dialogOps.data.message = `You are about to remove the user ${user.username} from the ` +
+      dialogOps.data.message =
+        `You are about to remove the user ${user.username} from the ` +
         `${this.organization.name} organization. Are you sure?`;
       dialogOps.data.buttonText = `Remove`;
     }
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Check for the result of the dialog. Remove the username when the user accepts.
-    this.confirmationDialog.afterClosed()
-      .subscribe(
-        (result) => {
-          if (result === true) {
-            this.organizationService.removeUserFromOrganization(this.organization, user.username)
-            .subscribe(
-              (response) => {
-                // Remove the User from the list.
-                this.users = this.users.filter((us) => {
-                  return us.username !== response.username;
-                });
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.organizationService
+          .removeUserFromOrganization(this.organization, user.username)
+          .subscribe(
+            (response) => {
+              // Remove the User from the list.
+              this.users = this.users.filter((us) => {
+                return us.username !== response.username;
+              });
 
-                // If the removed user is the logged one, update their profile.
-                if (response.username === this.authService.userProfile.username) {
-                  const index = this.authService.userProfile.orgs.indexOf(this.organization.name);
-                  this.authService.userProfile.orgs.splice(index, 1);
-                  delete this.authService.userProfile.orgRoles[this.organization.name];
-                  localStorage.setItem('profile', JSON.stringify(this.authService.userProfile));
-                }
-              },
-              (error) => {
-                this.snackBar.open(error.message, 'Got it');
+              // If the removed user is the logged one, update their profile.
+              if (response.username === this.authService.userProfile.username) {
+                const index = this.authService.userProfile.orgs.indexOf(
+                  this.organization.name,
+                );
+                this.authService.userProfile.orgs.splice(index, 1);
+                delete this.authService.userProfile.orgRoles[
+                  this.organization.name
+                ];
+                localStorage.setItem(
+                  "profile",
+                  JSON.stringify(this.authService.userProfile),
+                );
               }
-            );
-          }
-        });
+            },
+            (error) => {
+              this.snackBar.open(error.message, "Got it");
+            },
+          );
+      }
+    });
   }
 
   /**
@@ -343,8 +370,10 @@ export class OrganizationComponent implements OnInit {
    */
   public canDisplayRemoveButton(user: any): boolean {
     if (this.authService.userProfile) {
-      return this.authService.userProfile.username === user.username ||
-      this.authService.hasWriteAccess(this.organization.name);
+      return (
+        this.authService.userProfile.username === user.username ||
+        this.authService.hasWriteAccess(this.organization.name)
+      );
     }
     return false;
   }
@@ -358,7 +387,7 @@ export class OrganizationComponent implements OnInit {
    * @returns Whether the remove button should be disabled or not.
    */
   public disableRemoveButton(user: any): boolean {
-    return user.orgRoles && user.orgRoles[this.organization.name] === 'owner';
+    return user.orgRoles && user.orgRoles[this.organization.name] === "owner";
   }
 
   /**
@@ -370,7 +399,7 @@ export class OrganizationComponent implements OnInit {
    * @returns The tooltip to be displayed.
    */
   public getRemoveButtonTooltip(user: any): string {
-    let tooltip = '';
+    let tooltip = "";
     // Enabled buttons have no tooltip.
     if (this.disableRemoveButton(user)) {
       if (this.authService.userProfile.username === user.username) {
@@ -390,7 +419,7 @@ export class OrganizationComponent implements OnInit {
    * @returns The label to use in the button.
    */
   public getRemoveButtonLabel(user: any): string {
-    let label = '';
+    let label = "";
     if (this.authService.userProfile.username === user.username) {
       label = `Leave`;
     } else {
@@ -405,19 +434,19 @@ export class OrganizationComponent implements OnInit {
   public setActiveTab(event: number): void {
     switch (event) {
       case 0: {
-        this.activeTab = 'models';
+        this.activeTab = "models";
         break;
       }
       case 1: {
-        this.activeTab = 'worlds';
+        this.activeTab = "worlds";
         break;
       }
       case 2: {
-        this.activeTab = 'users';
+        this.activeTab = "users";
         break;
       }
       case 3: {
-        this.activeTab = 'collections';
+        this.activeTab = "collections";
         break;
       }
     }

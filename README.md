@@ -5,15 +5,16 @@
   <p>Gazebo Web Application</p>
 </div>
 
-* Framework: Angular 21
-* CI: GitLab pipelines
-* CD: GitLab pipelines + AWS S3 + CloudFront
+- Framework: Angular 21
+- CI: GitLab pipelines
+- CD: GitLab pipelines + AWS S3 + CloudFront
 
 ---
 
 # Prequisites
 
 This project requires:
+
 - node 24.x
 - npm 11.x
 
@@ -47,12 +48,12 @@ If you don't want to use NVM, you can install node the following way.
 
 # Setup
 
-1. Clone this repo and change directory into it:
+1.  Clone this repo and change directory into it:
 
         git clone https://github.com/gazebo-web/gazebosim-frontend.git
         cd app
 
-1. Install dependencies
+1.  Install dependencies
 
         npm install
 
@@ -95,13 +96,13 @@ The output can be found in the `dist/app` folder.
 
 ## Other useful scripts
 
-* Run tests
+- Run tests
 
         npm run test
 
-    The generated coverage can be found in `./coverage/html/index.html`.
+  The generated coverage can be found in `./coverage/html/index.html`.
 
-* Run the linter
+- Run the linter
 
         npm run lint
 
@@ -135,25 +136,24 @@ First, you need the AWS CLI installed and configured. You can do it the followin
         # Configure
         aws configure
 
-1. Provide the environment variables and build the app for the desired environment, as mentioned in the previous section.
+1.  Provide the environment variables and build the app for the desired environment, as mentioned in the previous section.
 
-1. Enable preview stage (for Cloudfront support).
+1.  Enable preview stage (for Cloudfront support).
 
         aws configure set preview.cloudfront true
 
-1. Sync the build output to the corresponding S3 bucket.
+1.  Sync the build output to the corresponding S3 bucket.
 
     Where `APPLICATION_ENVIRONMENT` can be
-
     - Integration: `integration-app.gazebosim.org`
 
     - Staging: `staging-app.gazebosim.org`
 
     - Production: `app.gazebosim.org`
 
-        aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
+      aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
 
-1. Trigger an invalidation in Cloudfront.
+1.  Trigger an invalidation in Cloudfront.
 
         aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 

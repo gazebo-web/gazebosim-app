@@ -1,5 +1,5 @@
 <h1 mat-dialog-title class="mat-typography">
-  {{data.title}}
+  {{ data.title }}
 </h1>
 
 <div mat-dialog-content class="mat-typography" fxLayout="column">
@@ -7,22 +7,25 @@
 
   <form>
     <mat-form-field fxFill>
-      <input matInput
-        placeholder="{{data.inputPlaceholder}}"
+      <input
+        matInput
+        placeholder="{{ data.inputPlaceholder }}"
         [(ngModel)]="input"
-        [ngModelOptions]="{standalone: true}">
+        [ngModelOptions]="{ standalone: true }"
+      />
     </mat-form-field>
   </form>
 </div>
 
 <div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>
-    Cancel
-  </button>
+  <button mat-button mat-dialog-close>Cancel</button>
 
-  <button mat-raised-button color="warn"
+  <button
+    mat-raised-button
+    color="warn"
     [mat-dialog-close]="true"
-    (click)="submit()">
-    {{data.buttonText}}
+    (click)="submit()"
+  >
+    {{ data.buttonText }}
   </button>
 </div>

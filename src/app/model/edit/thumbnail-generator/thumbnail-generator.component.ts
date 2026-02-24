@@ -1,17 +1,17 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { FuelResource, FuelResourceService } from '../../../fuel-resource';
-import { ModelService } from '../../model.service';
-import { WorldService } from '../../../world/world.service';
+import { FuelResource, FuelResourceService } from "../../../fuel-resource";
+import { ModelService } from "../../model.service";
+import { WorldService } from "../../../world/world.service";
 
 declare let GZ3D: any;
 declare let THREE: any;
 
 @Component({
-  selector: 'gz-thumbnail-generator',
-  templateUrl: 'thumbnail-generator.component.html',
-  styleUrls: ['thumbnail-generator.component.scss']
+  selector: "gz-thumbnail-generator",
+  templateUrl: "thumbnail-generator.component.html",
+  styleUrls: ["thumbnail-generator.component.scss"],
 })
 
 /**
@@ -19,7 +19,6 @@ declare let THREE: any;
  * the thumbnails.
  */
 export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
-
   /**
    * Fuel resource to generate thumbnails.
    */
@@ -34,7 +33,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   /**
    * State of the thumbnail generation. Used to reflect changes on the UI.
    */
-  public state: 'ready' | 'generating' = 'ready';
+  public state: "ready" | "generating" = "ready";
 
   /**
    * The THREE Object that represents the Fuel resource.
@@ -54,7 +53,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   /**
    * SDF file URL
    */
-  private sdfUrl: string = '';
+  private sdfUrl: string = "";
 
   /**
    * ID of the Request Animation Frame method. Required to cancel the animation.
@@ -69,8 +68,8 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   constructor(
     public modelService: ModelService,
     public snackBar: MatSnackBar,
-    public worldService: WorldService) {
-  }
+    public worldService: WorldService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -98,7 +97,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     }
 
     if (this.scene) {
-      this.scene.emitter.removeAllListeners('load_finished');
+      this.scene.emitter.removeAllListeners("load_finished");
       this.scene.cleanup();
     }
   }
@@ -107,19 +106,24 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    * Start the thumbnail generation process.
    */
   public beginRender(): void {
-    this.state = 'generating';
+    this.state = "generating";
 
     // Initialize GZ3D objects.
     const shaders = new GZ3D.Shaders();
-    this.scene = new GZ3D.Scene(shaders, undefined, undefined, new THREE.Color(0xffffff));
+    this.scene = new GZ3D.Scene(
+      shaders,
+      undefined,
+      undefined,
+      new THREE.Color(0xffffff),
+    );
     const sdfParser = new GZ3D.SdfParser(this.scene);
     const ogre2json = new GZ3D.Ogre2Json();
     sdfParser.enablePBR = false;
 
     // Thumbnails should be created once all the assets load.
-    this.scene.emitter.on('load_finished', () => {
+    this.scene.emitter.on("load_finished", () => {
       if (this.resourceObj) {
-        this.state = 'ready';
+        this.state = "ready";
 
         // Post-processing: Scale and get the center of the resource.
         this.scale(this.resourceObj);
@@ -131,7 +135,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     });
 
     // The domElement the renderer will be appended to.
-    this.sceneElement = window.document.getElementById('container');
+    this.sceneElement = window.document.getElementById("container");
     this.sceneElement.appendChild(this.scene.renderer.domElement);
     this.scene.setSize(this.size.x, this.size.y);
 
@@ -143,13 +147,13 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     this.scene.camera.updateProjectionMatrix();
 
     // Hide sun visual
-    const sunHelper = this.scene.scene.getObjectByName('sun_lightHelper');
+    const sunHelper = this.scene.scene.getObjectByName("sun_lightHelper");
     if (sunHelper) {
       sunHelper.visible = false;
     }
 
     // Delete ground plane
-    const ground = this.scene.scene.getObjectByName('ground_plane');
+    const ground = this.scene.scene.getObjectByName("ground_plane");
     if (ground) {
       this.scene.remove(ground);
     }
@@ -164,11 +168,11 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
 
     // If the resource is private, pass the Authorization header to gz3d.
     if (this.resource.private) {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
 
-      this.scene.setRequestHeader('Authorization', `Bearer ${token}`);
-      sdfParser.setRequestHeader('Authorization', `Bearer ${token}`);
-      ogre2json.setRequestHeader('Authorization', `Bearer ${token}`);
+      this.scene.setRequestHeader("Authorization", `Bearer ${token}`);
+      sdfParser.setRequestHeader("Authorization", `Bearer ${token}`);
+      ogre2json.setRequestHeader("Authorization", `Bearer ${token}`);
     }
 
     // Set usingFilesUrls to true to indicate that we will be supplying files URLs.
@@ -179,26 +183,30 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     for (const file of this.resource.files) {
       let fileUrl;
       switch (this.resource.type) {
-        case 'models':
-          fileUrl = this.modelService.getIndividualFileUrl(
-            this.resource, file);
+        case "models":
+          fileUrl = this.modelService.getIndividualFileUrl(this.resource, file);
           break;
-        case 'worlds':
-          fileUrl = this.worldService.getIndividualFileUrl(
-            this.resource, file);
+        case "worlds":
+          fileUrl = this.worldService.getIndividualFileUrl(this.resource, file);
           break;
       }
 
-      if (file.path.indexOf('/thumbnails/') >= 0) {
+      if (file.path.indexOf("/thumbnails/") >= 0) {
         // Skip thumbnails
         continue;
-      } else if (file.path.indexOf('.material') > 0) {
+      } else if (file.path.indexOf(".material") > 0) {
         // Convert material file to json
         pendingMaterials.push(ogre2json.LoadFromUrl(fileUrl));
-      } else if (this.resource.type === 'models' && file.path.indexOf('model.sdf') >= 0) {
+      } else if (
+        this.resource.type === "models" &&
+        file.path.indexOf("model.sdf") >= 0
+      ) {
         // Set SDF file
         this.sdfUrl = fileUrl;
-      } else if (this.resource.type === 'worlds' && file.path.indexOf('.sdf') >= 0) {
+      } else if (
+        this.resource.type === "worlds" &&
+        file.path.indexOf(".sdf") >= 0
+      ) {
         this.sdfUrl = fileUrl;
       } else {
         // Add URLs to the rest of resources
@@ -221,7 +229,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
         sdfParser.loadSDF(this.sdfUrl, (obj) => {
           if (!obj) {
             this.snackBar.open(`Failed load SDF.`, `Got it`, {
-              duration: 2750
+              duration: 2750,
             });
             return;
           }
@@ -292,31 +300,32 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
   private getFiles(): void {
     let service: FuelResourceService;
     switch (this.resource.type) {
-      case 'models':
+      case "models":
         service = this.modelService;
         break;
-      case 'worlds':
+      case "worlds":
         service = this.worldService;
         break;
     }
 
-    service.getFileTree(this.resource)
-      .subscribe(
-        (response) => {
-          const files = response['file_tree'];
-          this.resource.files = [];
-          for (const file of files) {
-            this.extractFile(file);
-          }
-          // Once we have the files, populate the thumbnails.
-          const resourceUrl = service.getBaseVersionUrl(
-            this.resource.owner, this.resource.name);
-          this.resource.populateThumbnails(resourceUrl);
-        },
-        (error) => {
-          this.snackBar.open(error.message, 'Got it');
+    service.getFileTree(this.resource).subscribe(
+      (response) => {
+        const files = response["file_tree"];
+        this.resource.files = [];
+        for (const file of files) {
+          this.extractFile(file);
         }
-      );
+        // Once we have the files, populate the thumbnails.
+        const resourceUrl = service.getBaseVersionUrl(
+          this.resource.owner,
+          this.resource.name,
+        );
+        this.resource.populateThumbnails(resourceUrl);
+      },
+      (error) => {
+        this.snackBar.open(error.message, "Got it");
+      },
+    );
   }
 
   /**
@@ -328,8 +337,8 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     // End condition. If it has no children, it's a file.
     if (!file.children) {
       // The path to display has the following format: "ModelName > Folder"
-      const displayPath = `${this.resource['name']}${file.path.replace(`/${file.name}`, '')}`;
-      file.displayPath = displayPath.replace(/\//g, ' > ');
+      const displayPath = `${this.resource["name"]}${file.path.replace(`/${file.name}`, "")}`;
+      file.displayPath = displayPath.replace(/\//g, " > ");
       this.resource.files.push(file);
     } else {
       // If it contains children, it's a folder.
@@ -344,7 +353,6 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
    * @param error Optional error string.
    */
   private onMaterialLoadFail(error?: string): void {
-
     let msg = `Failed to parse material script.`;
 
     if (error) {
@@ -352,7 +360,7 @@ export class ThumbnailGeneratorComponent implements OnInit, OnDestroy {
     }
 
     this.snackBar.open(msg, `Got it`, {
-      duration: 2750
+      duration: 2750,
     });
   }
 }

@@ -1,24 +1,28 @@
 <div class="mat-typography">
-  <div fxLayout="column" fxLayoutAlign="start center" >
+  <div fxLayout="column" fxLayoutAlign="start center">
     @if (resources) {
       <div fxLayout="row wrap" fxFill>
         @for (res of resources; track res) {
-          <gz-item-card class="item-card"
+          <gz-item-card
+            class="item-card"
             fxFlex.xs="100%"
             fxFlex.sm="50%"
             fxFlex.md="25%"
-            [removable]=removable
-            [resource]=res
+            [removable]="removable"
+            [resource]="res"
             [type]="resourceType"
-            (removeClicked)="remove($event)">
+            (removeClicked)="remove($event)"
+          >
           </gz-item-card>
         }
       </div>
-      <mat-paginator [length]="length"
+      <mat-paginator
+        [length]="length"
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [pageSizeOptions]="pageSizeOptions"
-        (page)="pageEvent($event)">
+        (page)="pageEvent($event)"
+      >
       </mat-paginator>
     }
 
@@ -28,15 +32,11 @@
       }
 
       @if (finished && resources && resources.length !== 0) {
-        <h3>
-          No more {{resourceType}} to load.
-        </h3>
+        <h3>No more {{ resourceType }} to load.</h3>
       }
 
       @if (resources && resources.length === 0) {
-        <h3>
-          No {{resourceType}} found.
-        </h3>
+        <h3>No {{ resourceType }} found.</h3>
       }
     </div>
   </div>

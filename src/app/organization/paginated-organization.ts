@@ -1,10 +1,9 @@
-import { Organization } from './organization';
+import { Organization } from "./organization";
 
 /**
  * A class that represents a paginated list of organizations.
  */
 export class PaginatedOrganizations {
-
   /**
    * The total number of organizations.
    */

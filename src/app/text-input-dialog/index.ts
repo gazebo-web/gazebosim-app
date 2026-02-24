@@ -1,1 +1,1 @@
-export * from './text-input-dialog.component';
+export * from "./text-input-dialog.component";

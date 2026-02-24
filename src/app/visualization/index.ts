@@ -1,1 +1,1 @@
-export * from './visualization.component';
+export * from "./visualization.component";

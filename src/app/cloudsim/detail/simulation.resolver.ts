@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError } from "rxjs/operators";
 
-import { Simulation } from '../simulation';
-import { SimulationService } from '../simulation.service';
+import { Simulation } from "../simulation";
+import { SimulationService } from "../simulation.service";
 
 @Injectable()
 
@@ -13,13 +13,11 @@ import { SimulationService } from '../simulation.service';
  *
  * Fetches the simulation to display before the SimulationComponent is created.
  */
-export class SimulationResolver  {
-
+export class SimulationResolver {
   /**
    * @param simulationService Service used to get Simulation information from the Cloudsim Server.
    */
-  constructor(private simulationService: SimulationService) {
-  }
+  constructor(private simulationService: SimulationService) {}
 
   /**
    * Resolve method.
@@ -31,12 +29,12 @@ export class SimulationResolver  {
    * @returns An observable of the simulation or an observable of null if it couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<Simulation> {
-    const groupId: string = route.paramMap.get('groupId');
+    const groupId: string = route.paramMap.get("groupId");
 
     return this.simulationService.getSimulation(groupId).pipe(
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

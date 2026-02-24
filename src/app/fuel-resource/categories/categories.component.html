@@ -1,15 +1,21 @@
 @if (edit) {
   <div>
     <mat-form-field hintLabel="Select up to two categories." fxFill>
-      <mat-select placeholder="Categories"
+      <mat-select
+        placeholder="Categories"
         [formControl]="categorySelectionForm"
         multiple
-        (selectionChange)="selectionChange($event)">
+        (selectionChange)="selectionChange($event)"
+      >
         @for (category of availableCategories; track category) {
           <mat-option
             [value]="category"
-            [disabled]="categorySelectionForm.value.indexOf(category) === -1 && categorySelectionForm.value.length >= 2">
-            {{category}}
+            [disabled]="
+              categorySelectionForm.value.indexOf(category) === -1 &&
+              categorySelectionForm.value.length >= 2
+            "
+          >
+            {{ category }}
           </mat-option>
         }
       </mat-select>
@@ -20,13 +26,17 @@
     <mat-icon class="margin-align" title="Categories">category</mat-icon>
     @if (categories && categories.length > 0) {
       <div fxLayoutAlign="start center" class="category-list">
-        <span>{{selectedCategories}}</span>
+        <span>{{ selectedCategories }}</span>
       </div>
     } @else {
-      <div class="margin-align" fxLayout="row" fxLayoutAlign="start center" class="category-list">
+      <div
+        class="margin-align"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        class="category-list"
+      >
         <span>No categories.</span>
       </div>
     }
   </div>
 }
-

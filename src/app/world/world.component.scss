@@ -1,5 +1,3 @@
-
-
 gz-gallery {
   width: 100%;
   height: 100%;
@@ -143,9 +141,9 @@ gz-gallery {
 }
 
 .sdfviewer {
-  position : absolute;
-  left : 0;
-  top : 0;
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   z-index: 1001;
@@ -174,7 +172,6 @@ gz-gallery {
   z-index: 1002;
   color: #dd2c00;
 }
-
 
 /* Media query to increase the size of the gallery in mobile views.
    Otherwise, the gallery images are too small. */

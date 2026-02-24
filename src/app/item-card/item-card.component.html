@@ -10,13 +10,15 @@
     </ng-template>-->
 
     <div class="title-container">
-      <a routerLink="/{{resource.owner}}/{{type}}/{{resource.name}}">
-        <mat-card-title class="title" title="{{resource.name}}">{{resource.name}}</mat-card-title>
+      <a routerLink="/{{ resource.owner }}/{{ type }}/{{ resource.name }}">
+        <mat-card-title class="title" title="{{ resource.name }}">{{
+          resource.name
+        }}</mat-card-title>
       </a>
 
       <mat-card-subtitle>
-        <a routerLink="/{{resource.owner}}">
-          {{resource.owner}}
+        <a routerLink="/{{ resource.owner }}">
+          {{ resource.owner }}
         </a>
       </mat-card-subtitle>
     </div>
@@ -24,12 +26,14 @@
 
   <mat-card-content class="content">
     <div class="image-container">
-      <a routerLink="/{{resource.owner}}/{{type}}/{{resource.name}}">
+      <a routerLink="/{{ resource.owner }}/{{ type }}/{{ resource.name }}">
         @if (resource.hasThumbnail()) {
           <div>
-            @if ((resource.getThumbnail().url | gzAuthHeader | async); as result) {
-              <img
-                [src]="result" [alt]="resource.name" class="thumbnail">
+            @if (
+              resource.getThumbnail().url | gzAuthHeader | async;
+              as result
+            ) {
+              <img [src]="result" [alt]="resource.name" class="thumbnail" />
             }
           </div>
         } @else {
@@ -37,7 +41,6 @@
             <h3>No thumbnail available</h3>
           </div>
         }
-
 
         <button class="floating" mat-mini-fab>
           <mat-icon>favorite</mat-icon>

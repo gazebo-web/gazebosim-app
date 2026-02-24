@@ -1,24 +1,29 @@
-import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { MatSelectionListChange } from '@angular/material/list';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  HostListener,
+} from "@angular/core";
+import { MatSelectionListChange } from "@angular/material/list";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
 
-import { SceneManager } from 'gzweb';
-import { Simulation } from '../simulation';
-import { SimulationService } from '../simulation.service';
+import { SceneManager } from "gzweb";
+import { Simulation } from "../simulation";
+import { SimulationService } from "../simulation.service";
 
 @Component({
-  selector: 'gz-simulation',
-  templateUrl: 'simulation.component.html',
-  styleUrls: ['simulation.component.scss'],
-  standalone: false
+  selector: "gz-simulation",
+  templateUrl: "simulation.component.html",
+  styleUrls: ["simulation.component.scss"],
+  standalone: false,
 })
 
 /**
  * Simulation Component contains the details of a simulation and its visualization.
  */
 export class SimulationComponent implements OnInit, OnDestroy {
-
   /**
    * The simulation this component represents.
    */
@@ -72,7 +77,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Reference to the <div> that can be toggled fullscreen.
    */
-  @ViewChild('fullScreen') private divRef;
+  @ViewChild("fullScreen") private divRef;
 
   /**
    * @param activatedRoute The current Activated Route to get the associated data.
@@ -82,22 +87,20 @@ export class SimulationComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     public snackBar: MatSnackBar,
-    private simulationService: SimulationService) {
-  }
+    private simulationService: SimulationService,
+  ) {}
 
   /**
    * OnInit lifecycle hook.
    */
-  public ngOnInit(): void {
-  }
+  public ngOnInit(): void {}
 
   /**
    * OnDestroy lifecycle hook.
    *
    * Makes sure the websocket connection is close and unsubscribe to the observables used.
    */
-  public ngOnDestroy(): void {
-  }
+  public ngOnDestroy(): void {}
 
   /**
    * Connect to the Websocket of the Simulation.
@@ -177,14 +180,14 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * Select the given model
    */
   public select(model): void {
-    this.sceneMgr.select(model['gz3dName']);
+    this.sceneMgr.select(model["gz3dName"]);
   }
 
   /**
    * Instruct the camera to move to the given model.
    */
   public moveTo(model): void {
-    this.sceneMgr.moveTo(model['gz3dName']);
+    this.sceneMgr.moveTo(model["gz3dName"]);
   }
 
   /**
@@ -193,7 +196,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
   public follow(model): void {
     if (model !== undefined && model !== null) {
       this.following = true;
-      this.sceneMgr.follow(model['gz3dName']);
+      this.sceneMgr.follow(model["gz3dName"]);
     } else {
       this.following = false;
       this.sceneMgr.follow(null);
@@ -203,29 +206,26 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Toggle lights
    */
-  public toggleLights(): void {
-  }
+  public toggleLights(): void {}
 
   /**
    * Take a snapshot of the scene.
    */
-  public snapshot(): void {
-  }
+  public snapshot(): void {}
 
   /**
    * Subscribe/Unsubscribe to a Sensor topic.
    *
    * @param event The event coming from a change on the selection list.
    */
-  public handleSensorSubscription(event: MatSelectionListChange): void {
-  }
+  public handleSensorSubscription(event: MatSelectionListChange): void {}
 
   /**
    * Listen to the Escape key to stop following.
    */
-  @HostListener('window:keydown', ['$event'])
+  @HostListener("window:keydown", ["$event"])
   public keyEscape(event: KeyboardEvent): void {
-    if (event.key === 'Escape' || event.code === 'Escape') {
+    if (event.key === "Escape" || event.code === "Escape") {
       this.sceneMgr.follow(null);
     }
   }
@@ -233,6 +233,5 @@ export class SimulationComponent implements OnInit, OnDestroy {
   /**
    * Unsubscribe from observables.
    */
-  private unsubscribe(): void {
-  }
+  private unsubscribe(): void {}
 }

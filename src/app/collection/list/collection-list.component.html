@@ -1,9 +1,11 @@
 <div class="page-content-inner mat-typography" fxLayout="row">
-  <gz-fuel-resource-list fxFlex
-                         resourceType="collections"
-                         [resources]="collections"
-                         [length]="paginatedCollections.totalCount"
-                         [finished]="!paginatedCollections?.hasNextPage()"
-                         (pageChange)="getCollections($event)">
+  <gz-fuel-resource-list
+    fxFlex
+    resourceType="collections"
+    [resources]="collections"
+    [length]="paginatedCollections.totalCount"
+    [finished]="!paginatedCollections?.hasNextPage()"
+    (pageChange)="getCollections($event)"
+  >
   </gz-fuel-resource-list>
 </div>

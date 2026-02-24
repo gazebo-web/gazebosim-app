@@ -1,17 +1,21 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import {
+  HttpClient,
+  HttpResponse,
+  HttpErrorResponse,
+} from "@angular/common/http";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
-import { AuthService } from '../auth/auth.service';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { Organization } from './organization';
-import { PaginatedOrganizations } from './paginated-organization';
-import { UiError } from '../ui-error';
-import { User } from '../user/user';
-import { environment } from '../../environments/environment';
+import { AuthService } from "../auth/auth.service";
+import { JsonClassFactoryService } from "../factory/json-class-factory.service";
+import { Organization } from "./organization";
+import { PaginatedOrganizations } from "./paginated-organization";
+import { UiError } from "../ui-error";
+import { User } from "../user/user";
+import { environment } from "../../environments/environment";
 
-import { parseLinkHeader } from '@web3-storage/parse-link-header';
+import { parseLinkHeader } from "@web3-storage/parse-link-header";
 
 @Injectable()
 
@@ -20,7 +24,6 @@ import { parseLinkHeader } from '@web3-storage/parse-link-header';
  * Backend server.
  */
 export class OrganizationService {
-
   /**
    * Base server URL, including version.
    */
@@ -34,7 +37,7 @@ export class OrganizationService {
   /**
    * Private field used as a constant to represent X-Total-Count header name.
    */
-  private headerTotalCount: string = 'X-Total-Count';
+  private headerTotalCount: string = "X-Total-Count";
 
   /**
    * @param authService Service to get authentication information.
@@ -44,8 +47,8 @@ export class OrganizationService {
   constructor(
     private authService: AuthService,
     private factory: JsonClassFactoryService,
-    private http: HttpClient) {
-  }
+    private http: HttpClient,
+  ) {}
 
   /**
    * Get the list of Organizations
@@ -54,18 +57,23 @@ export class OrganizationService {
    */
   public getPublicOrganizations(): Observable<PaginatedOrganizations> {
     const url = this.getOrganizationListUrl();
-    return this.http.get(url, {observe: 'response'}).pipe(
+    return this.http.get(url, { observe: "response" }).pipe(
       map((response) => {
         this.parseHeader(response);
         if (response.body) {
           const paginatedOrg = new PaginatedOrganizations();
-          paginatedOrg.totalCount = +response.headers.get(this.headerTotalCount);
-          paginatedOrg.organizations = this.factory.fromJson(response.body, Organization);
+          paginatedOrg.totalCount = +response.headers.get(
+            this.headerTotalCount,
+          );
+          paginatedOrg.organizations = this.factory.fromJson(
+            response.body,
+            Organization,
+          );
           return paginatedOrg;
         }
         return undefined;
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -81,7 +89,7 @@ export class OrganizationService {
       map((response) => {
         return this.factory.fromJson(response, Organization);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -98,7 +106,7 @@ export class OrganizationService {
       map((response) => {
         return this.factory.fromJson(response, Organization);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -110,13 +118,16 @@ export class OrganizationService {
    * @param form The form data that contains the parameters to edit.
    * @returns An observable of the edited organization.
    */
-  public editOrganization(organization: Organization, form: any): Observable<Organization> {
+  public editOrganization(
+    organization: Organization,
+    form: any,
+  ): Observable<Organization> {
     const url = this.getOrganizationUrl(organization.name);
     return this.http.patch<Organization>(url, form).pipe(
       map((response) => {
         return this.factory.fromJson(response, Organization);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -129,9 +140,7 @@ export class OrganizationService {
    */
   public deleteOrganization(organization: Organization): Observable<any> {
     const url = this.getOrganizationUrl(organization.name);
-    return this.http.delete(url).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete(url).pipe(catchError(this.handleError));
   }
 
   /**
@@ -147,7 +156,7 @@ export class OrganizationService {
       map((response) => {
         return this.factory.fromJson(response, User);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -160,7 +169,11 @@ export class OrganizationService {
    * @param orgRole The role the user will have.
    * @returns An observable of null.
    */
-  public addUserToOrganization(org: Organization, user: string, orgRole: string): Observable<any> {
+  public addUserToOrganization(
+    org: Organization,
+    user: string,
+    orgRole: string,
+  ): Observable<any> {
     const url = this.getOrganizationUserListUrl(org.name);
     const body = {
       username: user,
@@ -170,7 +183,7 @@ export class OrganizationService {
       map((response) => {
         return this.factory.fromJson(response, User);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -182,13 +195,16 @@ export class OrganizationService {
    * @param user The user to delete.
    * @returns An observable of null.
    */
-  public removeUserFromOrganization(organization: Organization, user: string): Observable<any> {
+  public removeUserFromOrganization(
+    organization: Organization,
+    user: string,
+  ): Observable<any> {
     const url = this.getOrganizationUserUrl(organization.name, user);
     return this.http.delete(url).pipe(
       map((response) => {
         return this.factory.fromJson(response, User);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -232,7 +248,7 @@ export class OrganizationService {
    * @param name The name of the organization.
    * @returns The URL of the server route of a particular organization's user list.
    */
-   private getOrganizationUserListUrl(name: string): string {
+  private getOrganizationUserListUrl(name: string): string {
     return `${this.getOrganizationListUrl()}/${name}/users`;
   }
 
@@ -256,10 +272,8 @@ export class OrganizationService {
    * @param response The response that has a Link header to parse.
    */
   private parseHeader(response: HttpResponse<any>): void {
-    const link = response.headers.get('link');
-    if (link &&
-        parseLinkHeader(link) &&
-        parseLinkHeader(link).next) {
+    const link = response.headers.get("link");
+    if (link && parseLinkHeader(link) && parseLinkHeader(link).next) {
       const url = parseLinkHeader(link).next.url;
       this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
@@ -278,7 +292,7 @@ export class OrganizationService {
    * message to display.
    */
   private handleError(response: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred', response);
+    console.error("An error occurred", response);
     return throwError(new UiError(response));
   }
 }

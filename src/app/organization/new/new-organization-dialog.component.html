@@ -5,15 +5,23 @@
       <mat-step label="Account information" [stepControl]="newOrganizationForm">
         <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.lt-sm="2.5em">
           <mat-form-field class="form-field">
-            <input matInput required placeholder="Organization name" [formControl]="organizationName">
-            @if (organizationName.value.trim() === '') {
+            <input
+              matInput
+              required
+              placeholder="Organization name"
+              [formControl]="organizationName"
+            />
+            @if (organizationName.value.trim() === "") {
               <mat-hint>
                 This will be the organization name on Gazebo Fuel
               </mat-hint>
             } @else {
-              <mat-hint>The organization will be accesible on https://app.gazebosim.org/{{organizationName.value}}</mat-hint>
+              <mat-hint
+                >The organization will be accesible on
+                https://app.gazebosim.org/{{ organizationName.value }}</mat-hint
+              >
             }
-            <mat-error>{{getNameError()}}</mat-error>
+            <mat-error>{{ getNameError() }}</mat-error>
           </mat-form-field>
 
           <!-- Billing email to be added soon.
@@ -25,17 +33,9 @@
           -->
 
           <div fxLayoutAlign="space-between" class="stepper-buttons">
-            <button
-              mat-button
-              mat-dialog-close
-              type="button">
-              Cancel
-            </button>
+            <button mat-button mat-dialog-close type="button">Cancel</button>
 
-            <button
-              mat-raised-button
-              color="accent"
-              type="submit">
+            <button mat-raised-button color="accent" type="submit">
               Create
             </button>
             <!-- Disabled until we add more features. See other comment blocks.

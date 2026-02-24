@@ -1,4 +1,4 @@
-import { FuelResource } from './fuel-resource';
+import { FuelResource } from "./fuel-resource";
 
 /**
  * Represents a paginated fuel resource.
@@ -8,7 +8,6 @@ import { FuelResource } from './fuel-resource';
  * the next page in order to load more.
  */
 export abstract class FuelPaginatedResource {
-
   /**
    * The total number of resources.
    */

@@ -1,1 +1,1 @@
-export * from './asset-display.component';
+export * from "./asset-display.component";

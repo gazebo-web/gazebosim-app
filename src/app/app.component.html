@@ -14,16 +14,16 @@
       <div fxLayout="column" fxLayoutAlign="start left" fxFill>
         <div class="mat-typography title">
           <a routerLink="/dashboard" (click)="closeSidenav()">
-            <img src="assets/images/gazebo_icon_white.svg">
+            <img src="assets/images/gazebo_icon_white.svg" />
           </a>
         </div>
 
         <mat-nav-list class="sidenav-list">
           <a mat-list-item routerLink="/models" (click)="closeSidenav()">
-            <mat-icon svgIcon='gz-model'></mat-icon> Models
+            <mat-icon svgIcon="gz-model"></mat-icon> Models
           </a>
           <a mat-list-item routerLink="/worlds" (click)="closeSidenav()">
-            <mat-icon svgIcon='gz-world'></mat-icon> Worlds
+            <mat-icon svgIcon="gz-world"></mat-icon> Worlds
           </a>
           <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
             <mat-icon>collections</mat-icon> Collections
@@ -45,99 +45,159 @@
             </a>
           }
         </mat-nav-list>
-        <div class="copyright">&copy; {{currentYear}} Open Robotics</div>
+        <div class="copyright">&copy; {{ currentYear }} Open Robotics</div>
       </div>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <mat-toolbar class="mat-elevation-z1" fxLayout="row" fxLayoutAlign="space-between center">
+      <mat-toolbar
+        class="mat-elevation-z1"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+      >
         <!-- Hamburger menu button -->
-        <button fxHide fxShow.xs="true" mat-icon-button (click)="sidenav.open('mouse')">
-          <mat-icon>
-            menu
-          </mat-icon>
+        <button
+          fxHide
+          fxShow.xs="true"
+          mat-icon-button
+          (click)="sidenav.open('mouse')"
+        >
+          <mat-icon> menu </mat-icon>
         </button>
 
-        <div class="title">{{titlebarTitle}} <small>{{titlebarSubtitle}}</small></div>
+        <div class="title">
+          {{ titlebarTitle }} <small>{{ titlebarSubtitle }}</small>
+        </div>
 
         <div class="toolbar-space"></div>
 
         <mat-form-field [floatLabel]="'never'" fxFlex="2 0 100px">
           <mat-label>Search</mat-label>
-          <input #search matInput type="search" (keyup.enter)="onSearch(search.value)">
+          <input
+            #search
+            matInput
+            type="search"
+            (keyup.enter)="onSearch(search.value)"
+          />
           <mat-icon matPrefix id="search-icon">search</mat-icon>
         </mat-form-field>
 
         <div class="toolbar-space"></div>
 
-
         <!-- Add resource button -->
         @if (deviceService.isDesktop()) {
-          <button class="add-button"
-            mat-icon-button [matMenuTriggerFor]="addAssetMenu" title="Add Resource">
+          <button
+            class="add-button"
+            mat-icon-button
+            [matMenuTriggerFor]="addAssetMenu"
+            title="Add Resource"
+          >
             <mat-icon>add_circle</mat-icon>
           </button>
         }
 
-        <mat-menu #addAssetMenu="matMenu" xPosition="before"
-          yPosition="below" overlapTrigger="false">
-          <button mat-menu-item routerLink="/models/upload"
-          routerLinkActive="active">Model</button>
+        <mat-menu
+          #addAssetMenu="matMenu"
+          xPosition="before"
+          yPosition="below"
+          overlapTrigger="false"
+        >
+          <button
+            mat-menu-item
+            routerLink="/models/upload"
+            routerLinkActive="active"
+          >
+            Model
+          </button>
 
-          <button mat-menu-item routerLink="/worlds/upload"
-          routerLinkActive="active">World</button>
+          <button
+            mat-menu-item
+            routerLink="/worlds/upload"
+            routerLinkActive="active"
+          >
+            World
+          </button>
         </mat-menu>
 
         <!-- Login/logout and other user options -->
         <button mat-icon-button [matMenuTriggerFor]="userMenu">
           @if (!authService.isAuthenticated()) {
-            <mat-icon id="profile-icon">
-              account_circle
-            </mat-icon>
+            <mat-icon id="profile-icon"> account_circle </mat-icon>
           } @else {
-            <img class="profile-img" [src]="authService.userProfile?.picture">
+            <img class="profile-img" [src]="authService.userProfile?.picture" />
           }
         </button>
 
-        <mat-menu #userMenu="matMenu" xPosition="before"
-          yPosition="below" overlapTrigger="false">
+        <mat-menu
+          #userMenu="matMenu"
+          xPosition="before"
+          yPosition="below"
+          overlapTrigger="false"
+        >
           @if (!authService.isAuthenticated()) {
-            <button mat-menu-item
-            (click)="authService.login()">Log in</button>
+            <button mat-menu-item (click)="authService.login()">Log in</button>
           }
 
-          @if (authService.isAuthenticated() && authService.userProfile?.orgs.length > 0) {
-            <button mat-menu-item [matMenuTriggerFor]="orgMenu"
-              >
+          @if (
+            authService.isAuthenticated() &&
+            authService.userProfile?.orgs.length > 0
+          ) {
+            <button mat-menu-item [matMenuTriggerFor]="orgMenu">
               Organizations
             </button>
           }
 
           @if (authService.isAuthenticated()) {
-            <button mat-menu-item
-            routerLink="/{{authService.userProfile.username}}" routerLinkActive="active">Profile</button>
+            <button
+              mat-menu-item
+              routerLink="/{{ authService.userProfile.username }}"
+              routerLinkActive="active"
+            >
+              Profile
+            </button>
           }
 
           @if (authService.isAuthenticated()) {
-            <button mat-menu-item
-            routerLink="/settings" routerLinkActive="active">Settings</button>
+            <button
+              mat-menu-item
+              routerLink="/settings"
+              routerLinkActive="active"
+            >
+              Settings
+            </button>
           }
 
           @if (authService.isAuthenticated()) {
-            <button mat-menu-item
-            (click)="authService.logout()">Log out</button>
+            <button mat-menu-item (click)="authService.logout()">
+              Log out
+            </button>
           }
         </mat-menu>
 
-        <mat-menu #orgMenu="matMenu" xPosition="before"
-          yPosition="below" overlapTrigger="false">
+        <mat-menu
+          #orgMenu="matMenu"
+          xPosition="before"
+          yPosition="below"
+          overlapTrigger="false"
+        >
           @for (org of authService.userProfile?.orgs; track org) {
-            <button mat-menu-item
-            routerLink="/{{org}}" routerLinkActive="active">{{org}}</button>
+            <button
+              mat-menu-item
+              routerLink="/{{ org }}"
+              routerLinkActive="active"
+            >
+              {{ org }}
+            </button>
           }
           <mat-divider></mat-divider>
-          <button mat-menu-item
-          routerLink="/settings" fragment="organizations" routerLinkActive="active">Manage Organizations</button>
+          <button
+            mat-menu-item
+            routerLink="/settings"
+            fragment="organizations"
+            routerLinkActive="active"
+          >
+            Manage Organizations
+          </button>
         </mat-menu>
       </mat-toolbar>
 
@@ -145,6 +205,5 @@
         <router-outlet (deactivate)="onDeactivate($event)"></router-outlet>
       </div>
     </mat-sidenav-content>
-
   </mat-sidenav-container>
 </div>

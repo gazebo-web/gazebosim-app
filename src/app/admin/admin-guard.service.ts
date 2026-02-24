@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
-import { AuthService } from '../auth/auth.service';
-import { UserService } from '../user';
+import { AuthService } from "../auth/auth.service";
+import { UserService } from "../user";
 
 @Injectable()
 
@@ -14,8 +14,7 @@ import { UserService } from '../user';
  *
  * Prevents navigation based on sysAdmin status.
  */
-export class AdminGuard  {
-
+export class AdminGuard {
   /**
    * Constructor of the Admin Guard service.
    *
@@ -23,10 +22,11 @@ export class AdminGuard  {
    * @param deviceService Service used to determine the device type.
    * @param userService Service used to get the user data from the Server.
    */
-   constructor(private authService: AuthService,
-               private router: Router,
-               private userService: UserService) {
-  }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private userService: UserService,
+  ) {}
 
   /**
    * Prevents navigation to the /admin route if the user is not a sysAdmin.
@@ -36,9 +36,11 @@ export class AdminGuard  {
    */
   public canActivate(): Observable<boolean> | boolean {
     // Navigate home if the user does not have permission
-    if (!this.authService.isAuthenticated() ||
-        !this.authService.userProfile.sysAdmin) {
-      this.router.navigate(['']);
+    if (
+      !this.authService.isAuthenticated() ||
+      !this.authService.userProfile.sysAdmin
+    ) {
+      this.router.navigate([""]);
       return false;
     }
 
@@ -48,9 +50,9 @@ export class AdminGuard  {
         if (user.sysAdmin) {
           return true;
         }
-        this.router.navigate(['']);
+        this.router.navigate([""]);
         return false;
-      })
+      }),
     );
   }
 }

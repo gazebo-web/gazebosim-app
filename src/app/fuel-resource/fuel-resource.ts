@@ -1,13 +1,12 @@
-import { Image } from '../model/image';
-import { License } from '../model/license';
-import { Metadatum } from '../metadata';
-import { environment } from '../../environments/environment';
+import { Image } from "../model/image";
+import { License } from "../model/license";
+import { Metadatum } from "../metadata";
+import { environment } from "../../environments/environment";
 
 /**
  * A class that represents a Fuel resource, such as a world or a model.
  */
 export abstract class FuelResource {
-
   /**
    * The file extensions allowed by the resource.
    */
@@ -112,34 +111,34 @@ export abstract class FuelResource {
    * @param json A JSON that contains the required fields of the resource.
    */
   constructor(json: any) {
-    this.name = json['name'];
-    this.description = json['description'];
-    this.owner = json['owner'];
-    this.permission = json['permission'];
-    this.private = json['private'];
-    this.filesize = json['filesize'];
-    this.likes = json['likes'];
-    this.isLiked = json['is_liked'];
-    this.downloads = json['downloads'];
-    this.uploadDate = json['upload_date'];
-    if (!json['modify_date']) {
+    this.name = json["name"];
+    this.description = json["description"];
+    this.owner = json["owner"];
+    this.permission = json["permission"];
+    this.private = json["private"];
+    this.filesize = json["filesize"];
+    this.likes = json["likes"];
+    this.isLiked = json["is_liked"];
+    this.downloads = json["downloads"];
+    this.uploadDate = json["upload_date"];
+    if (!json["modify_date"]) {
       this.modifyDate = this.uploadDate;
     } else {
-      this.modifyDate = json['modify_date'];
+      this.modifyDate = json["modify_date"];
     }
-    if (json['tags']) {
-      this.tags = json['tags'];
+    if (json["tags"]) {
+      this.tags = json["tags"];
     }
-    if (json['categories']) {
-      this.categories = json['categories'];
+    if (json["categories"]) {
+      this.categories = json["categories"];
     }
-    if (json['version']) {
-      for (let v = 1; v <= json['version']; v++) {
+    if (json["version"]) {
+      for (let v = 1; v <= json["version"]; v++) {
         this.versions.push(v);
       }
     }
-    if (json['metadata']) {
-      this.metadata = json['metadata'];
+    if (json["metadata"]) {
+      this.metadata = json["metadata"];
     }
 
     this.images = [];
@@ -147,9 +146,9 @@ export abstract class FuelResource {
     this.license = new License(json);
 
     // Append the given Thumbnail URL to the images.
-    if (json['thumbnail_url']) {
+    if (json["thumbnail_url"]) {
       const image = new Image();
-      image.url = `${environment.API_HOST}/${environment.API_VERSION}${json['thumbnail_url']}`;
+      image.url = `${environment.API_HOST}/${environment.API_VERSION}${json["thumbnail_url"]}`;
       this.images.push(image);
     }
   }
@@ -165,10 +164,12 @@ export abstract class FuelResource {
   public populateThumbnails(baseUrl: string): void {
     this.images = [];
     for (const file of this.files) {
-      if ((file['path'].substring(0, 11) === '/thumbnails') &&
-          ((/\.(jpg|png)$/i).test(file['name']))) {
+      if (
+        file["path"].substring(0, 11) === "/thumbnails" &&
+        /\.(jpg|png)$/i.test(file["name"])
+      ) {
         const image = new Image();
-        image.url = `${baseUrl}/files${file['path']}`;
+        image.url = `${baseUrl}/files${file["path"]}`;
         this.images.push(image);
       }
     }

@@ -1,10 +1,10 @@
-import { Component, Inject, EventEmitter, Output } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, EventEmitter, Output } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-    selector: 'gz-text-input-dialog',
-    templateUrl: 'text-input-dialog.component.html',
-    standalone: false
+  selector: "gz-text-input-dialog",
+  templateUrl: "text-input-dialog.component.html",
+  standalone: false,
 })
 
 /**
@@ -15,7 +15,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
  * string.
  */
 export class TextInputDialogComponent {
-
   /**
    * Used to emit an event when the registration form is complete. The registration
    * should be handled by the component that opened this dialog.
@@ -25,7 +24,7 @@ export class TextInputDialogComponent {
   /**
    * The user input.
    */
-  public input: string = '';
+  public input: string = "";
 
   /**
    * @param dialog Reference to the opened dialog.
@@ -37,8 +36,8 @@ export class TextInputDialogComponent {
    */
   constructor(
     public dialog: MatDialogRef<TextInputDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 
   /**
    * Emit the event that includes the input string.

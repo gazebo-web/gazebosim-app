@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { Ng2DeviceService } from '../../device-detector';
+import { Ng2DeviceService } from "../../device-detector";
 
 @Injectable()
 
@@ -10,17 +10,17 @@ import { Ng2DeviceService } from '../../device-detector';
  *
  * Prevents navigation on mobile devices.
  */
-export class NewWorldGuard  {
-
+export class NewWorldGuard {
   /**
    * Constructor of the New World Guard service.
    *
    * @param router Router service to allow navigation.
    * @param deviceService Service used to determine the device type.
    */
-  constructor(private router: Router,
-              private deviceService: Ng2DeviceService) {
-  }
+  constructor(
+    private router: Router,
+    private deviceService: Ng2DeviceService,
+  ) {}
 
   /**
    * Prevents the navigation to the Upload route if the device is a mobile.
@@ -29,7 +29,7 @@ export class NewWorldGuard  {
    */
   public canActivate(): boolean {
     if (!this.deviceService.isDesktop()) {
-      this.router.navigate(['']);
+      this.router.navigate([""]);
       return false;
     }
     return true;

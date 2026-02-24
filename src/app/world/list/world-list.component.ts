@@ -1,23 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PageEvent } from "@angular/material/paginator";
 
-import { World } from '../world';
-import { WorldService } from '../world.service';
-import { PaginatedWorlds } from '../paginated-worlds';
+import { World } from "../world";
+import { WorldService } from "../world.service";
+import { PaginatedWorlds } from "../paginated-worlds";
 
 @Component({
-    selector: 'gz-worlds',
-    templateUrl: 'world-list.component.html',
-    styleUrls: ['world-list.component.scss'],
-    standalone: false
+  selector: "gz-worlds",
+  templateUrl: "world-list.component.html",
+  styleUrls: ["world-list.component.scss"],
+  standalone: false,
 })
 
 /**
  * World List Component is a page that displays a list of worlds.
  */
 export class WorldListComponent implements OnInit {
-
   /**
    * The array of Worlds this component represents.
    */
@@ -42,8 +41,8 @@ export class WorldListComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private worldService: WorldService) {
-  }
+    private worldService: WorldService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -51,13 +50,14 @@ export class WorldListComponent implements OnInit {
    * It retrieves the list of worlds obtained from the Route Resolver.
    */
   public ngOnInit(): void {
-
     // Take the resources from the resolved data.
-    this.paginatedWorlds = this.activatedRoute.snapshot.data['resolvedData'];
+    this.paginatedWorlds = this.activatedRoute.snapshot.data["resolvedData"];
     this.worlds = this.paginatedWorlds.resources;
 
     // Evaluates the route's title.
-    this.title = this.activatedRoute.snapshot.data['title'](this.activatedRoute);
+    this.title = this.activatedRoute.snapshot.data["title"](
+      this.activatedRoute,
+    );
   }
 
   /**
@@ -65,20 +65,21 @@ export class WorldListComponent implements OnInit {
    *
    * @param event The Page Event emitted by the list's paginator.
    */
-   public getWorlds(event: PageEvent) {
-    this.worldService.getList({
-      page: event.pageIndex + 1,
-      per_page: event.pageSize,
-    }).subscribe(
-      (worlds) => {
+  public getWorlds(event: PageEvent) {
+    this.worldService
+      .getList({
+        page: event.pageIndex + 1,
+        per_page: event.pageSize,
+      })
+      .subscribe((worlds) => {
         this.paginatedWorlds = worlds;
         this.worlds = this.paginatedWorlds.resources;
 
         // Navigate to the Worlds List page.
         // Note that this does not recreate the component, since the navigation is to the same page.
-        this.router.navigateByUrl(`/worlds?page=${event.pageIndex+1}&per_page=${event.pageSize}`);
-      }
-    );
+        this.router.navigateByUrl(
+          `/worlds?page=${event.pageIndex + 1}&per_page=${event.pageSize}`,
+        );
+      });
   }
-
 }

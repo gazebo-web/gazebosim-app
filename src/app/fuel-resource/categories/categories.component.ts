@@ -1,20 +1,19 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
+import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { MatSelectChange } from "@angular/material/select";
 
-import { CategoryService } from '../../fuel-resource/categories/category.service';
+import { CategoryService } from "../../fuel-resource/categories/category.service";
 
 @Component({
-    selector: 'gz-categories',
-    templateUrl: 'categories.component.html',
-    standalone: false
+  selector: "gz-categories",
+  templateUrl: "categories.component.html",
+  standalone: false,
 })
 
 /**
  * The Categories Component is used to display or edit a resource's categories.
  */
 export class CategoriesComponent implements OnInit {
-
   /**
    * The categories this component represents.
    */
@@ -64,24 +63,20 @@ export class CategoriesComponent implements OnInit {
   /**
    * @param categoryService Service to request available categories
    */
-  constructor(
-    public categoryService: CategoryService) {
-  }
+  constructor(public categoryService: CategoryService) {}
 
   /**
    * OnInit lifecycle hook.
    */
   public ngOnInit(): void {
-    this.selectedCategories = this.categories.join(', ');
+    this.selectedCategories = this.categories.join(", ");
 
     // Get the list of available categories from the backend. This is only required while
     // editing categories.
     if (this.edit) {
-      this.categoryService.getAll().subscribe(
-        (categories) => {
-          this.availableCategories = categories.map((category) => category.name);
-        }
-      );
+      this.categoryService.getAll().subscribe((categories) => {
+        this.availableCategories = categories.map((category) => category.name);
+      });
     }
 
     // If editing, then select the categories in the form.

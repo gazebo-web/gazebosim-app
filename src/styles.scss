@@ -1,47 +1,48 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 // choose from https://material.io/guidelines/style/color.html#color-color-palette
 $custom-theme-primary: mat.m2-define-palette(mat.$m2-light-blue-palette, 500);
-$custom-theme-accent: mat.m2-define-palette(mat.$m2-deep-orange-palette, 500, 300, 800);
+$custom-theme-accent: mat.m2-define-palette(
+  mat.$m2-deep-orange-palette,
+  500,
+  300,
+  800
+);
 $custom-theme-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$custom-theme: mat.m2-define-light-theme((color: (primary: $custom-theme-primary,
-        accent: $custom-theme-accent,
-        warn: $custom-theme-warn,
-      ),
-      typography: mat.m2-define-typography-config($font-family: unquote('Roboto, sans-serif'),
-
+$custom-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $custom-theme-primary,
+      accent: $custom-theme-accent,
+      warn: $custom-theme-warn,
+    ),
+    typography: mat.m2-define-typography-config(
+        $font-family: unquote("Roboto, sans-serif"),
         // Large, one-off headers, usually at the top of the page (e.g. a hero)
         $headline-1: mat.m2-define-typography-level(112px, 112px, 300),
         $headline-2: mat.m2-define-typography-level(56px, 56px, 400),
         $headline-3: mat.m2-define-typography-level(45px, 48px, 400),
         $headline-4: mat.m2-define-typography-level(34px, 40px, 400),
-
         // corresponds to <h1>
         $headline-5: mat.m2-define-typography-level(24px, 32px, 400),
-
         // corresponds to <h2>
         $headline-6: mat.m2-define-typography-level(20px, 32px, 500),
-
         // corresponds to <h3>
         $subtitle-1: mat.m2-define-typography-level(16px, 28px, 400),
-
         // corresponds to <h4>
         $subtitle-2: mat.m2-define-typography-level(15px, 24px, 400),
-
         // Bolder body text
         $body-1: mat.m2-define-typography-level(14px, 24px, 500),
-
         // Base body text
         $body-2: mat.m2-define-typography-level(14px, 20px, 400),
-
         // Small body and hint text
         $caption: mat.m2-define-typography-level(12px, 20px, 400),
-
         // Buttons and anchors
         $button: mat.m2-define-typography-level(14px, 14px, 500),
       ),
-    ));
+  )
+);
 
 @include mat.all-component-themes($custom-theme);
 
@@ -51,7 +52,7 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -63,12 +64,12 @@ a {
   color: inherit;
   outline: 0;
 
-  -o-transition: .5s;
-  -ms-transition: .5s;
-  -moz-transition: .5s;
-  -webkit-transition: .5s;
+  -o-transition: 0.5s;
+  -ms-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -webkit-transition: 0.5s;
   /* ...and now for the proper property */
-  transition: .5s;
+  transition: 0.5s;
 }
 
 a:hover {
@@ -84,7 +85,7 @@ button.mat-menu-item {
   line-height: 24px !important;
 }
 
-a.mat-menu-item>mat-icon {
+a.mat-menu-item > mat-icon {
   margin-bottom: 14px;
 }
 
@@ -99,7 +100,6 @@ a.mat-menu-item>mat-icon {
 // This must be global (not component-scoped) to override Angular Material's
 // MDC internal styles which have high specificity.
 mat-sidenav {
-
   a,
   .mdc-list-item__primary-text,
   .mat-mdc-list-item-unscoped-content,

@@ -1,13 +1,12 @@
-import { Model } from '../model/model';
-import { World } from '../world/world';
-import { Image } from '../model/image';
-import { environment } from '../../environments/environment';
+import { Model } from "../model/model";
+import { World } from "../world/world";
+import { Image } from "../model/image";
+import { environment } from "../../environments/environment";
 
 /**
  * A class that represents a Collection.
  */
 export class Collection {
-
   /**
    * The name of the collection.
    */
@@ -52,14 +51,14 @@ export class Collection {
    * @param json A JSON that contains the required fields of the collection.
    */
   constructor(json: any) {
-    this.name = json['name'];
-    this.owner = json['owner'];
-    this.description = json['description'];
-    this.private = json['private'];
+    this.name = json["name"];
+    this.owner = json["owner"];
+    this.description = json["description"];
+    this.private = json["private"];
 
     // Append the given thumbnails.
-    if (json['thumbnails']) {
-      const thumbnails: string[] = json['thumbnails'];
+    if (json["thumbnails"]) {
+      const thumbnails: string[] = json["thumbnails"];
       thumbnails.forEach((url) => {
         const image = new Image();
         image.url = `${environment.API_HOST}/${environment.API_VERSION}${url}`;
@@ -67,7 +66,7 @@ export class Collection {
       });
     }
 
-    this.modifyDate = json['UpdatedAt'];
+    this.modifyDate = json["UpdatedAt"];
   }
 
   /**

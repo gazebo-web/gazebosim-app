@@ -1,24 +1,23 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject } from "@angular/core";
 import {
   MatDialog,
   MatDialogConfig,
   MatDialogRef,
-  MAT_DIALOG_DATA
-} from '@angular/material/dialog';
-import { AuthService } from '../auth/auth.service';
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { AuthService } from "../auth/auth.service";
 
 @Component({
-    selector: 'gz-access-token-dialog',
-    templateUrl: 'access-token-dialog.component.html',
-    styleUrls: ['access-token-dialog.component.scss'],
-    standalone: false
+  selector: "gz-access-token-dialog",
+  templateUrl: "access-token-dialog.component.html",
+  styleUrls: ["access-token-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
  * Access token confirmation dialog
  */
 export class AccessTokenDialogComponent {
-
   /**
    * @param dialog Reference to the opened dialog.
    * @param data Data for the dialog. Fields:
@@ -26,8 +25,8 @@ export class AccessTokenDialogComponent {
    */
   constructor(
     public dialog: MatDialogRef<AccessTokenDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 
   /**
    * Copy the input element to the clipboard.
@@ -35,7 +34,7 @@ export class AccessTokenDialogComponent {
    */
   public copy(inputElement): void {
     inputElement.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     inputElement.setSelectionRange(0, 0);
   }
 }

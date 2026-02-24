@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
-import { PaginatedModels } from '../paginated-models';
-import { ModelService } from '../model.service';
+import { PaginatedModels } from "../paginated-models";
+import { ModelService } from "../model.service";
 
 @Injectable()
 
@@ -13,13 +13,11 @@ import { ModelService } from '../model.service';
  *
  * This allows us to have the list of models before it's displayed in a Component.
  */
-export class UserModelsResolver  {
-
+export class UserModelsResolver {
   /**
    * @param modelService Service used to get Model List information from the Server
    */
-  constructor(private modelService: ModelService) {
-  }
+  constructor(private modelService: ModelService) {}
 
   /**
    * Resolve method.
@@ -31,8 +29,7 @@ export class UserModelsResolver  {
    * @returns An observable of the models or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedModels> {
-
-    const modelOwner: string = route.paramMap.get('owner');
+    const modelOwner: string = route.paramMap.get("owner");
 
     return this.modelService.getOwnerList(modelOwner).pipe(
       map((models) => {
@@ -40,7 +37,7 @@ export class UserModelsResolver  {
       }),
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

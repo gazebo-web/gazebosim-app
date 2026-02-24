@@ -1,8 +1,8 @@
 <div id="container" (window:resize)="resize()">
-  @if (assetViewer === undefined || (assetViewer.resourceLoaded$ | async) === false) {
-    <div class="preview-msg"
-      fxLayout="column"
-      fxLayoutAlign="center center">
+  @if (
+    assetViewer === undefined || (assetViewer.resourceLoaded$ | async) === false
+  ) {
+    <div class="preview-msg" fxLayout="column" fxLayoutAlign="center center">
       Nothing to preview
     </div>
   }

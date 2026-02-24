@@ -1,38 +1,44 @@
-<div class='page-content-inner'>
-
-  <div fxLayout="row" fxLayoutGap="10px"
-    fxLayoutAlign='space-around' fxFill class="section">
-
+<div class="page-content-inner">
+  <div
+    fxLayout="row"
+    fxLayoutGap="10px"
+    fxLayoutAlign="space-around"
+    fxFill
+    class="section"
+  >
     <a routerLink="/models">
-      <div class='stats-box' fxLayout='column'
-        fxLayoutAlign='center center'>
+      <div class="stats-box" fxLayout="column" fxLayoutAlign="center center">
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon='gz-model'></mat-icon>
-          <h2 style='text-align: left; margin: 10px 10px'>Models</h2>
+          <mat-icon svgIcon="gz-model"></mat-icon>
+          <h2 style="text-align: left; margin: 10px 10px">Models</h2>
         </div>
-        <div><h2>{{modelsQuantity}}</h2></div>
+        <div>
+          <h2>{{ modelsQuantity }}</h2>
+        </div>
       </div>
     </a>
 
     <a routerLink="/worlds">
-      <div class='stats-box' fxLayout='column'
-        fxLayoutAlign='center center'>
+      <div class="stats-box" fxLayout="column" fxLayoutAlign="center center">
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon='gz-world'></mat-icon>
-          <h2 style='text-align: left; margin: 10px 10px'>Worlds</h2>
+          <mat-icon svgIcon="gz-world"></mat-icon>
+          <h2 style="text-align: left; margin: 10px 10px">Worlds</h2>
         </div>
-        <div><h2>{{worldsQuantity}}</h2></div>
+        <div>
+          <h2>{{ worldsQuantity }}</h2>
+        </div>
       </div>
     </a>
 
     <a routerLink="/collections">
-      <div class='stats-box' fxLayout='column'
-        fxLayoutAlign='center center'>
-        <div fxLayout="row" fxLayoutAlign='start center'>
+      <div class="stats-box" fxLayout="column" fxLayoutAlign="center center">
+        <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon>collections</mat-icon>
-          <h2 style='text-align: left; margin: 10px 10px'>Collections</h2>
+          <h2 style="text-align: left; margin: 10px 10px">Collections</h2>
         </div>
-        <div><h2>{{collectionsQuantity}}</h2></div>
+        <div>
+          <h2>{{ collectionsQuantity }}</h2>
+        </div>
       </div>
     </a>
   </div>
@@ -98,36 +104,47 @@
     <div fxFlex="1 1 5%"></div>
 
     <div fxLayout="column" fxFlex="1 1 90%">
-
       <div class="section-title mat-typography">
-        <a href='#' routerLink='/models'
-          fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <a
+          href="#"
+          routerLink="/models"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="10px"
+        >
           <mat-icon svgIcon="gz-model"></mat-icon>
           <h2>Latest models</h2>
         </a>
       </div>
 
       @if (!models || models.length === 0) {
-        <div class='mat-typography'>
+        <div class="mat-typography">
           <h3>There are no models yet.</h3>
         </div>
       }
 
       <div fxLayout="row wrap" fxLayoutAlign="center center">
         @for (model of models; track model) {
-          <gz-item-card class="card"
+          <gz-item-card
+            class="card"
             fxFlex.xs="100%"
             fxFlex.gt-xs="50%"
             fxFlex.gt-md="25%"
-            [resource]="model" type="models">
+            [resource]="model"
+            type="models"
+          >
           </gz-item-card>
         }
       </div>
 
       <div fxLayout="row" fxLayoutAlign="center center">
         @if (models && models.length > 0) {
-          <a mat-raised-button color="primary" routerLink='/models'
-            class="more-button">
+          <a
+            mat-raised-button
+            color="primary"
+            routerLink="/models"
+            class="more-button"
+          >
             Discover more
           </a>
         }
@@ -136,39 +153,50 @@
   </div>
 
   <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"> </div>
+    <div fxFlex="1 1 5%"></div>
 
     <div fxLayout="column" fxFlex="1 1 90%">
-
       <div class="section-title mat-typography">
-        <a href='#' routerLink='/worlds'
-          fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <a
+          href="#"
+          routerLink="/worlds"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="10px"
+        >
           <mat-icon svgIcon="gz-world"></mat-icon>
           <h2>Latest worlds</h2>
         </a>
       </div>
 
       @if (!worlds || worlds.length === 0) {
-        <div class='mat-typography'>
+        <div class="mat-typography">
           <h3>There are no worlds yet.</h3>
         </div>
       }
 
       <div fxLayout="row wrap" fxLayoutAlign="center center">
         @for (world of worlds; track world) {
-          <gz-item-card class="card"
+          <gz-item-card
+            class="card"
             fxFlex.xs="100%"
             fxFlex.gt-xs="50%"
             fxFlex.gt-md="25%"
-            [resource]="world" type="worlds">
+            [resource]="world"
+            type="worlds"
+          >
           </gz-item-card>
         }
       </div>
 
       <div fxLayout="row" fxLayoutAlign="center center">
         @if (worlds && worlds.length > 0) {
-          <a mat-raised-button color="primary" routerLink='/worlds'
-            class="more-button">
+          <a
+            mat-raised-button
+            color="primary"
+            routerLink="/worlds"
+            class="more-button"
+          >
             Discover more
           </a>
         }
@@ -177,39 +205,50 @@
   </div>
 
   <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"> </div>
+    <div fxFlex="1 1 5%"></div>
 
     <div fxLayout="column" fxFlex="1 1 90%">
-
       <div class="section-title mat-typography">
-        <a href='#' routerLink='/collections'
-          fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <a
+          href="#"
+          routerLink="/collections"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="10px"
+        >
           <mat-icon>collections</mat-icon>
           <h2>Latest collections</h2>
         </a>
       </div>
 
       @if (!collections || collections.length === 0) {
-        <div class='mat-typography'>
+        <div class="mat-typography">
           <h3>There are no collections yet.</h3>
         </div>
       }
 
       <div fxLayout="row wrap" fxLayoutAlign="center center">
         @for (collection of collections; track collection) {
-          <gz-item-card class="card"
+          <gz-item-card
+            class="card"
             fxFlex.xs="100%"
             fxFlex.gt-xs="50%"
             fxFlex.gt-md="25%"
-            [resource]="collection" type="collections">
+            [resource]="collection"
+            type="collections"
+          >
           </gz-item-card>
         }
       </div>
 
       <div fxLayout="row" fxLayoutAlign="center center">
         @if (collections && collections.length > 0) {
-          <a mat-raised-button color="primary" routerLink='/collections'
-            class="more-button">
+          <a
+            mat-raised-button
+            color="primary"
+            routerLink="/collections"
+            class="more-button"
+          >
             Discover more
           </a>
         }

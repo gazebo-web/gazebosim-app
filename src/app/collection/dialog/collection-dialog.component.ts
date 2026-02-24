@@ -1,28 +1,27 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { map, switchMap, debounceTime } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Component, Inject, OnInit } from "@angular/core";
+import { FormControl, Validators } from "@angular/forms";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { map, switchMap, debounceTime } from "rxjs/operators";
+import { Observable } from "rxjs";
 
-import { Collection } from '../collection';
-import { CollectionService } from '../collection.service';
-import { ErrMsg } from '../../server/err-msg';
-import { FuelResource } from '../../fuel-resource';
+import { Collection } from "../collection";
+import { CollectionService } from "../collection.service";
+import { ErrMsg } from "../../server/err-msg";
+import { FuelResource } from "../../fuel-resource";
 
 @Component({
-    selector: 'gz-collection-dialog',
-    templateUrl: 'collection-dialog.component.html',
-    styleUrls: ['collection-dialog.component.scss'],
-    standalone: false
+  selector: "gz-collection-dialog",
+  templateUrl: "collection-dialog.component.html",
+  styleUrls: ["collection-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
  * Dialog used to add a resource into an existing Collection, or create one.
  */
 export class CollectionDialogComponent implements OnInit {
-
   /**
    * The Fuel resource to add into a collection.
    */
@@ -36,9 +35,10 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * Input form for the new Collection Name.
    */
-  public collectionNameInputForm = new FormControl('',
-    {validators: [Validators.required, Validators.pattern('[^\/]*')],
-    updateOn: 'change'});
+  public collectionNameInputForm = new FormControl("", {
+    validators: [Validators.required, Validators.pattern("[^\/]*")],
+    updateOn: "change",
+  });
 
   /**
    * List of potential owners of the collection.
@@ -53,8 +53,7 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * Input form that handles the collection Name, to add a resource into it.
    */
-  public collectionAddInputForm = new FormControl('',
-    {updateOn: 'change'});
+  public collectionAddInputForm = new FormControl("", { updateOn: "change" });
 
   /**
    * List of potential Collections to add a resource into. It is an Observable,
@@ -75,7 +74,7 @@ export class CollectionDialogComponent implements OnInit {
   /**
    * The set of available options.
    */
-  public options = ['Add', 'Create'];
+  public options = ["Add", "Create"];
 
   /**
    * @param collectionService Service used to handle collection-related requests to the Server.
@@ -89,9 +88,10 @@ export class CollectionDialogComponent implements OnInit {
     public collectionService: CollectionService,
     public dialog: MatDialogRef<CollectionDialogComponent>,
     public snackBar: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.collectionOwnerList = data.ownerList;
-      this.resource = data.resource;
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {
+    this.collectionOwnerList = data.ownerList;
+    this.resource = data.resource;
   }
 
   /**
@@ -105,15 +105,18 @@ export class CollectionDialogComponent implements OnInit {
         // Value is a string until a collection is selected.
         // Once selected, the value is a Collection instead of a string. A collection is useful
         // because we need both name and owner, but we need a string to pass to the search query.
-        if (typeof value !== 'string') {
+        if (typeof value !== "string") {
           value = (value as Collection).name;
         }
-        return this.collectionService.getCollectionExtensibleList({search: value}).pipe(
-          map((paginatedCollections) => {
-            return paginatedCollections.collections;
-          })
-        );
-      }));
+        return this.collectionService
+          .getCollectionExtensibleList({ search: value })
+          .pipe(
+            map((paginatedCollections) => {
+              return paginatedCollections.collections;
+            }),
+          );
+      }),
+    );
   }
 
   /**
@@ -122,31 +125,40 @@ export class CollectionDialogComponent implements OnInit {
   public add(): void {
     // Verify the input field contains a collection. If none was selected, it is only
     // a string.
-    if (!this.collectionAddInputForm.value ||
-        typeof this.collectionAddInputForm.value === 'string') {
+    if (
+      !this.collectionAddInputForm.value ||
+      typeof this.collectionAddInputForm.value === "string"
+    ) {
       return;
     }
 
     const selectedName = (this.collectionAddInputForm.value as Collection).name;
-    const selectedOwner = (this.collectionAddInputForm.value as Collection).owner;
+    const selectedOwner = (this.collectionAddInputForm.value as Collection)
+      .owner;
 
-    this.collectionService.addAsset(selectedOwner, selectedName, this.resource).subscribe(
-      (response) => {
-        this.dialog.close(true);
-        this.snackBar.open(
-          `${this.resource.name} added to ${selectedName}`,
-          'Got it',
-          { duration: 2750 });
-      },
-      (error) => {
-        if (error.code === ErrMsg.ErrorResourceExists) {
-          this.snackBar.open(`${this.resource.name} is already part of ${selectedName}`,
-          'Got it', {duration: 2750});
-        } else {
-          this.snackBar.open(error.message, 'Got it');
-        }
-      }
-    );
+    this.collectionService
+      .addAsset(selectedOwner, selectedName, this.resource)
+      .subscribe(
+        (response) => {
+          this.dialog.close(true);
+          this.snackBar.open(
+            `${this.resource.name} added to ${selectedName}`,
+            "Got it",
+            { duration: 2750 },
+          );
+        },
+        (error) => {
+          if (error.code === ErrMsg.ErrorResourceExists) {
+            this.snackBar.open(
+              `${this.resource.name} is already part of ${selectedName}`,
+              "Got it",
+              { duration: 2750 },
+            );
+          } else {
+            this.snackBar.open(error.message, "Got it");
+          }
+        },
+      );
   }
 
   /**
@@ -155,12 +167,16 @@ export class CollectionDialogComponent implements OnInit {
   public create(): void {
     // Validate the input fields.
     // Note: The required validator doesn't trim the value of the input.
-    this.collectionNameInputForm.setValue(this.collectionNameInputForm.value.trim());
+    this.collectionNameInputForm.setValue(
+      this.collectionNameInputForm.value.trim(),
+    );
     this.collectionNameInputForm.updateValueAndValidity();
 
     // Shouldn't create a collection without a name.
-    if (this.collectionNameInputForm.value === undefined ||
-      this.collectionNameInputForm.value === '') {
+    if (
+      this.collectionNameInputForm.value === undefined ||
+      this.collectionNameInputForm.value === ""
+    ) {
       return;
     }
 
@@ -168,32 +184,36 @@ export class CollectionDialogComponent implements OnInit {
       name: this.collectionNameInputForm.value,
       owner: this.collectionOwnerList[this.owner],
       description: this.collectionDescription,
-      private: !!this.privacyInputForm.value
+      private: !!this.privacyInputForm.value,
     };
 
     // Create the Collection.
     this.collectionService.createCollection(data).subscribe(
       (collection) => {
         // Add the resource into the new collection.
-        this.collectionService.addAsset(collection.owner, collection.name, this.resource).subscribe(
-          (response) => {
-            this.dialog.close(true);
-            this.snackBar.open(
-              `${this.resource.name} added to ${collection.name}`,
-              'Got it',
-              { duration: 2750 });
-          },
-          (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          });
+        this.collectionService
+          .addAsset(collection.owner, collection.name, this.resource)
+          .subscribe(
+            (response) => {
+              this.dialog.close(true);
+              this.snackBar.open(
+                `${this.resource.name} added to ${collection.name}`,
+                "Got it",
+                { duration: 2750 },
+              );
+            },
+            (error) => {
+              this.snackBar.open(error.message, "Got it");
+            },
+          );
       },
       (error) => {
         if (error.code === ErrMsg.ErrorResourceExists) {
           this.collectionNameInputForm.setErrors({
-            duplicated: true
+            duplicated: true,
           });
         }
-      }
+      },
     );
   }
 
@@ -214,17 +234,17 @@ export class CollectionDialogComponent implements OnInit {
    */
   public getCollectionNameError(): string {
     // Empty collection name.
-    if (this.collectionNameInputForm.hasError('required')) {
-      return 'This field is required';
+    if (this.collectionNameInputForm.hasError("required")) {
+      return "This field is required";
     }
 
     // Duplicated collection name.
-    if (this.collectionNameInputForm.hasError('duplicated')) {
-      return 'This collection already exists. Please use a different name.';
+    if (this.collectionNameInputForm.hasError("duplicated")) {
+      return "This collection already exists. Please use a different name.";
     }
 
     // No error.
-    return '';
+    return "";
   }
 
   /**

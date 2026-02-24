@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError } from "rxjs/operators";
 
-import { Model } from './model';
-import { ModelService } from './model.service';
+import { Model } from "./model";
+import { ModelService } from "./model.service";
 
 @Injectable()
 
@@ -13,13 +13,11 @@ import { ModelService } from './model.service';
  *
  * Fetches the model to display before the ModelComponent is created.
  */
-export class ModelResolver  {
-
+export class ModelResolver {
   /**
    * @param modelService Service used to get Model information from the Server.
    */
-  constructor(private modelService: ModelService) {
-  }
+  constructor(private modelService: ModelService) {}
 
   /**
    * Resolve method.
@@ -31,13 +29,13 @@ export class ModelResolver  {
    * @returns An observable of the model or an observable of null if it couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<Model> {
-    const modelOwner: string = route.paramMap.get('owner');
-    const modelName: string = route.paramMap.get('modelname');
+    const modelOwner: string = route.paramMap.get("owner");
+    const modelName: string = route.paramMap.get("modelname");
 
     return this.modelService.get(modelOwner, modelName).pipe(
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

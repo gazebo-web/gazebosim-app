@@ -1,34 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectChange } from '@angular/material/select';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatSelectChange } from "@angular/material/select";
+import { PageEvent } from "@angular/material/paginator";
 
 import {
   Machine,
   PaginatedMachine,
   Simulation,
   PaginatedSimulation,
-  SimulationService
-} from '../../cloudsim';
-import { PaginatedSimulationRules } from './rules';
+  SimulationService,
+} from "../../cloudsim";
+import { PaginatedSimulationRules } from "./rules";
 
 @Component({
-    selector: 'gz-admin-cloudsim',
-    templateUrl: 'admin-cloudsim.component.html',
-    styleUrls: ['admin-cloudsim.component.scss'],
-    standalone: false
+  selector: "gz-admin-cloudsim",
+  templateUrl: "admin-cloudsim.component.html",
+  styleUrls: ["admin-cloudsim.component.scss"],
+  standalone: false,
 })
 
 /**
  * Admin Cloudsim Component is the page that displays Cloudsim related information to system admins.
  */
 export class AdminCloudsimComponent implements OnInit {
-
   /**
    * Machine instance table columns to display
    */
-  public machineDisplayedColumns = ['groupId', 'status', 'startedAt'];
+  public machineDisplayedColumns = ["groupId", "status", "startedAt"];
 
   /**
    * The Machine Status List for filtering purposes.
@@ -74,10 +73,10 @@ export class AdminCloudsimComponent implements OnInit {
    * @param simulationService Service used to communicate with the Simulation Server.
    * @param snackbar Snackbar used to show notifications.
    */
-   constructor(
-     private simulationService: SimulationService,
-     public snackBar: MatSnackBar) {
-  }
+  constructor(
+    private simulationService: SimulationService,
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * OnInit lifecycle hook.
@@ -94,15 +93,16 @@ export class AdminCloudsimComponent implements OnInit {
    * Get the simulations to display.
    */
   public getSimulations(): void {
-    this.simulationService.getSimulations({children: true}).subscribe(
+    this.simulationService.getSimulations({ children: true }).subscribe(
       (paginatedSim) => {
         if (paginatedSim !== undefined) {
           this.paginatedSimulations = paginatedSim;
         }
       },
       (error) => {
-        console.error('Error getting simulations:', error);
-      });
+        console.error("Error getting simulations:", error);
+      },
+    );
   }
 
   /**
@@ -116,8 +116,9 @@ export class AdminCloudsimComponent implements OnInit {
         }
       },
       (error) => {
-        console.error('Error getting simulation rules:', error);
-      });
+        console.error("Error getting simulation rules:", error);
+      },
+    );
   }
 
   /**
@@ -159,16 +160,19 @@ export class AdminCloudsimComponent implements OnInit {
    * @param status The status of the simulations to filter.
    * @param page Optional. The page number to get.
    */
-  public getMachines(status: string = '', groupId: string = '',
-                     page?: number): void {
-    this.simulationService.getMachines({status, groupId, page}).subscribe(
+  public getMachines(
+    status: string = "",
+    groupId: string = "",
+    page?: number,
+  ): void {
+    this.simulationService.getMachines({ status, groupId, page }).subscribe(
       (response) => {
         this.paginatedMachines = response;
         this.machineDataSource = new MatTableDataSource(response.machines);
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 }

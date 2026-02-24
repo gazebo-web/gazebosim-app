@@ -1,27 +1,36 @@
-
-<div class="page-content-inner" fxFlex fxLayoutAlign='center'>
+<div class="page-content-inner" fxFlex fxLayoutAlign="center">
   <div class="content mat-typography">
     <div fxLayoutAlign="space-between">
       <div fxLayout="row" fxAlign="start">
         <div fxLayout="column">
-          <gz-page-title [title]="simulation.name || simulation.groupId" icon="computer"></gz-page-title>
+          <gz-page-title
+            [title]="simulation.name || simulation.groupId"
+            icon="computer"
+          ></gz-page-title>
           <h4>
-            By <a routerLink="/{{simulation?.owner}}">{{simulation?.owner}}</a>
+            By
+            <a routerLink="/{{ simulation?.owner }}">{{ simulation?.owner }}</a>
           </h4>
         </div>
       </div>
     </div>
 
     <div fxLayout="row">
-      <div class="status" fxLayout="row" fxLayoutAlign="left center" fxLayoutGap="20px" fxFill>
-        <div class="statusTitle">{{simulation.status}}</div>
+      <div
+        class="status"
+        fxLayout="row"
+        fxLayoutAlign="left center"
+        fxLayoutGap="20px"
+        fxFill
+      >
+        <div class="statusTitle">{{ simulation.status }}</div>
 
         <div>
           @if (simulation.errorStatus) {
             <span class="statusTitle">Error</span>
           }
           @if (simulation.errorStatus) {
-            <span class="statusTitle">{{simulation.errorStatus}}</span>
+            <span class="statusTitle">{{ simulation.errorStatus }}</span>
           }
 
           @if (!simulation.errorStatus) {
@@ -32,38 +41,56 @@
           }
         </div>
 
-        @if (simulation.status == 'Running') {
+        @if (simulation.status == "Running") {
           <div fxLayout="row" fxLayoutGap="20px">
-            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between">
+            <div
+              fxLayout="row"
+              fxLayoutGap="10px"
+              fxLayoutAlign="space-between"
+            >
               <div class="statusTitle">Real Time</div>
               @if (realTime) {
-                <div class="statusData">{{realTime | gzDuration}}</div>
+                <div class="statusData">{{ realTime | gzDuration }}</div>
               }
             </div>
-            <div fxLayout="row"  fxLayoutGap="10px" fxLayoutAlign="space-between">
+            <div
+              fxLayout="row"
+              fxLayoutGap="10px"
+              fxLayoutAlign="space-between"
+            >
               <div class="statusTitle">Simulation Time</div>
               @if (simTime) {
-                <div class="statusData">{{simTime | gzDuration}}</div>
+                <div class="statusData">{{ simTime | gzDuration }}</div>
               }
             </div>
-            <div fxLayout="row" fxLayoutGap="10px"  fxLayoutAlign="space-between">
+            <div
+              fxLayout="row"
+              fxLayoutGap="10px"
+              fxLayoutAlign="space-between"
+            >
               <div class="statusTitle">Real Time Factor</div>
               @if (realTimeFactor) {
-                <div class="statusData">{{realTimeFactor*100 | number: '1.2-2'}}%</div>
+                <div class="statusData">
+                  {{ realTimeFactor * 100 | number: "1.2-2" }}%
+                </div>
               }
             </div>
           </div>
         }
-
       </div>
     </div>
 
     <div fxLayout="row">
       <div class="visualizer" fxFill>
         <div class="outer" #fullScreen>
-
           @if (following) {
-            <a class="follow-button" mat-icon-button (click)="follow(null)" title="Stop following">Stop following</a>
+            <a
+              class="follow-button"
+              mat-icon-button
+              (click)="follow(null)"
+              title="Stop following"
+              >Stop following</a
+            >
           }
 
           <!--
@@ -78,8 +105,7 @@
           <div class="inner" fxLayoutAlign="center center">
             <div fxLayout="row" fxLayoutAlign="center center">
               @if (!simulation.isRunning()) {
-                <span
-                  class="mat-typography font-x-large">
+                <span class="mat-typography font-x-large">
                   Visualization only available while the simulation is running.
                 </span>
               }
@@ -93,21 +119,32 @@
                   <mat-list class="entity-list">
                     <div mat-subheader>Models</div>
                     @for (model of models; track model) {
-                      <mat-list-item [matMenuTriggerFor]="menu">{{model['name']}}
+                      <mat-list-item [matMenuTriggerFor]="menu"
+                        >{{ model["name"] }}
                         <mat-menu #menu="matMenu">
-                          <button mat-menu-item (click)="select(model)">Select</button>
-                          <button mat-menu-item (click)="moveTo(model)">Move to</button>
-                          <button mat-menu-item (click)="follow(model)">Follow</button>
+                          <button mat-menu-item (click)="select(model)">
+                            Select
+                          </button>
+                          <button mat-menu-item (click)="moveTo(model)">
+                            Move to
+                          </button>
+                          <button mat-menu-item (click)="follow(model)">
+                            Follow
+                          </button>
                         </mat-menu>
                       </mat-list-item>
                     }
                     <div mat-subheader>Sensors</div>
-                    <mat-selection-list [multiple]="true" (selectionChange)="handleSensorSubscription($event)">
+                    <mat-selection-list
+                      [multiple]="true"
+                      (selectionChange)="handleSensorSubscription($event)"
+                    >
                       @for (sensor of sensorList; track sensor) {
                         <mat-list-option
                           [checkboxPosition]="'before'"
                           [value]="sensor"
-                          [title]="sensor">
+                          [title]="sensor"
+                        >
                           <span class="sensor-topic">&lrm;{{ sensor }}</span>
                         </mat-list-option>
                       }
@@ -121,8 +158,7 @@
       </div>
     </div>
 
-    <div id="image-streams" class="image-container">
-    </div>
+    <div id="image-streams" class="image-container"></div>
 
     <!-- <gz-simulation-actions [simulation]=simulation></gz-simulation-actions> -->
   </div>

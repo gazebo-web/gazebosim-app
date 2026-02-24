@@ -1,5 +1,3 @@
-
-
 .content {
   width: 100%;
 }
@@ -21,7 +19,8 @@
     overflow: hidden;
   }
 
-  .inner, #gz-scene {
+  .inner,
+  #gz-scene {
     position: absolute;
     top: 0;
     left: 0;
@@ -76,7 +75,7 @@
     padding: 10px;
   }
 
-  .entity-list  {
+  .entity-list {
     overflow-y: scroll;
   }
 

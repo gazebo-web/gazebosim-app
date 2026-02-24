@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { map, catchError } from "rxjs/operators";
 
-import { User } from './user';
-import { UserComponent } from './user.component';
-import { UserService } from './user.service';
-import { Organization } from '../organization/organization';
-import { OrganizationComponent } from '../organization/organization.component';
+import { User } from "./user";
+import { UserComponent } from "./user.component";
+import { UserService } from "./user.service";
+import { Organization } from "../organization/organization";
+import { OrganizationComponent } from "../organization/organization.component";
 
 @Injectable()
 
@@ -17,13 +17,11 @@ import { OrganizationComponent } from '../organization/organization.component';
  * Fetches the corresponding User or Organization, along with it's type to disambiguate them.
  * As they require different components to display, the Component information is also returned.
  */
-export class OwnerProfileResolver  {
-
+export class OwnerProfileResolver {
   /**
    * @param userService Service used to get the Owner profile information from the Server.
    */
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService) {}
 
   /**
    * Resolve method.
@@ -35,26 +33,26 @@ export class OwnerProfileResolver  {
    * @returns An observable of the result or an observable of null if it couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    const user: string = route.paramMap.get('name');
+    const user: string = route.paramMap.get("name");
 
     return this.userService.getProfile(user).pipe(
       map((response) => {
         // Check if the result is a User or an Organization.
-        if (response['OwnerType'] === 'users') {
+        if (response["OwnerType"] === "users") {
           return {
-            data: new User(response['User']),
-            component: UserComponent
+            data: new User(response["User"]),
+            component: UserComponent,
           };
-        } else if (response['OwnerType'] === 'organizations') {
+        } else if (response["OwnerType"] === "organizations") {
           return {
-            data: new Organization(response['Org']),
-            component: OrganizationComponent
+            data: new Organization(response["Org"]),
+            component: OrganizationComponent,
           };
         }
       }),
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

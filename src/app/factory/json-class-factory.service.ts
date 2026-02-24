@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable()
 
@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
  * This will allow us to return one or many instances of different classes.
  */
 export class JsonClassFactoryService {
-
   /**
    * Given a JSON, returns a new instance or an array of instances of the given class.
    *

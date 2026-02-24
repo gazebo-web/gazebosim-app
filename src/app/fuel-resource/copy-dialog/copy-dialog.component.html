@@ -1,5 +1,5 @@
 <h1 mat-dialog-title class="mat-typography">
-  {{data.title}}
+  {{ data.title }}
 </h1>
 
 @if (!busy) {
@@ -8,27 +8,28 @@
       <div [innerHtml]="data.message"></div>
       <form fxLayout="column">
         <mat-form-field>
-          <input matInput
-            placeholder="{{data.namePlaceholder}}"
+          <input
+            matInput
+            placeholder="{{ data.namePlaceholder }}"
             [(ngModel)]="data.name"
-            [ngModelOptions]="{standalone: true}">
+            [ngModelOptions]="{ standalone: true }"
+          />
         </mat-form-field>
         <mat-form-field>
-          <mat-select [(ngModel)]="data.owner"
+          <mat-select
+            [(ngModel)]="data.owner"
             name="ownerList"
-            placeholder="Owner">
+            placeholder="Owner"
+          >
             @for (owner of data.ownerList; track owner) {
-              <mat-option
-              [value]="owner">{{owner}}</mat-option>
+              <mat-option [value]="owner">{{ owner }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
       </form>
     </div>
     <div mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close color="primary">
-        Cancel
-      </button>
+      <button mat-button mat-dialog-close color="primary">Cancel</button>
       <button mat-raised-button color="primary" (click)="submit()">
         Submit
       </button>
@@ -38,12 +39,9 @@
   <div fxLayout="column" fxLayoutAlign="center center">
     <div id="html-spinner"></div>
     @if (!data.busyMessage) {
-      <p class="mat-typography">
-        Please wait...
-      </p>
+      <p class="mat-typography">Please wait...</p>
     } @else {
       <div class="mat-typography" [innerHtml]="data.busyMessage"></div>
     }
   </div>
 }
-

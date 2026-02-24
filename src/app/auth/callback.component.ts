@@ -1,17 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+  Validators,
+} from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Router, ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
 
-import { AuthService } from './auth.service';
-import { ErrMsg } from '../server/err-msg';
-import { UserService } from '../user/user.service';
+import { AuthService } from "./auth.service";
+import { ErrMsg } from "../server/err-msg";
+import { UserService } from "../user/user.service";
 
 @Component({
-    templateUrl: 'callback.component.html',
-    styleUrls: ['callback.component.scss'],
-    standalone: false
+  templateUrl: "callback.component.html",
+  styleUrls: ["callback.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -20,12 +25,17 @@ import { UserService } from '../user/user.service';
  * Allows the user to log in or create their account in case they don't have one.
  */
 export class AuthCallbackComponent implements OnInit, OnDestroy {
-
   /**
    * Input field for the username.
    */
-  public username = new FormControl('', { validators: [Validators.required,
-    Validators.minLength(3), Validators.pattern('[a-zA-Z0-9]+')], updateOn: 'change'});
+  public username = new FormControl("", {
+    validators: [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.pattern("[a-zA-Z0-9]+"),
+    ],
+    updateOn: "change",
+  });
 
   /**
    * Check whether the user is logged in or not.
@@ -64,8 +74,8 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     public snackBar: MatSnackBar,
-    private userService: UserService) {
-  }
+    private userService: UserService,
+  ) {}
 
   /**
    * OnInit lifecycle hook.
@@ -73,7 +83,6 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
    * Subscribes to the loggedIn$ behavior subject, which triggers whenever a user logs in or out.
    */
   public ngOnInit(): void {
-
     // Determine from the route if the user needs to validate their email.
     this.needValidation = this.activatedRoute.snapshot.queryParams.validate;
 
@@ -83,43 +92,43 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
     // Subscribe to the AuthService's loggedIn behavior subject.
     // A subscription is required, because the Authentication process is asynchronous.
     // See also auth.service.ts::setLoggedIn()
-    this.loggedInSubscriber = this.authService.loggedIn$.subscribe((logged: boolean) => {
+    this.loggedInSubscriber = this.authService.loggedIn$.subscribe(
+      (logged: boolean) => {
+        this.loggedIn = logged;
 
-      this.loggedIn = logged;
-
-      // Once it's logged in, check if the user is registered.
-      if (logged) {
-
-        // Try to get the username associated with the current token.
-        this.userService.getLogin().subscribe(
-          // On Success
-          (res) => {
-            // Append username and orgs to the stored Profile.
-            // TODO(german-mas): Consider moving this update into an AuthenticatedUser class.
-            // See https://app.asana.com/0/719578238881157/756403371264694/f
-            const profile = JSON.parse(localStorage.getItem('profile'));
-            profile.username = res.username;
-            profile.orgs = res.organizations;
-            profile.orgRoles = res.orgRoles;
-            if (res.sysAdmin) {
-              profile.sysAdmin = res.sysAdmin;
-            }
-            localStorage.setItem('profile', JSON.stringify(profile));
-            this.authService.userProfile = profile;
-            this.router.navigate(['/home']);
-          },
-          // On Error
-          (error) => {
-            // No user in server with the claimed identity.
-            if (error.code === ErrMsg.ErrorAuthNoUser) {
-              this.needAccount = true;
-            } else {
-              this.snackBar.open(error.message, 'Got it');
-            }
-          }
-        );
-      }
-    });
+        // Once it's logged in, check if the user is registered.
+        if (logged) {
+          // Try to get the username associated with the current token.
+          this.userService.getLogin().subscribe(
+            // On Success
+            (res) => {
+              // Append username and orgs to the stored Profile.
+              // TODO(german-mas): Consider moving this update into an AuthenticatedUser class.
+              // See https://app.asana.com/0/719578238881157/756403371264694/f
+              const profile = JSON.parse(localStorage.getItem("profile"));
+              profile.username = res.username;
+              profile.orgs = res.organizations;
+              profile.orgRoles = res.orgRoles;
+              if (res.sysAdmin) {
+                profile.sysAdmin = res.sysAdmin;
+              }
+              localStorage.setItem("profile", JSON.stringify(profile));
+              this.authService.userProfile = profile;
+              this.router.navigate(["/home"]);
+            },
+            // On Error
+            (error) => {
+              // No user in server with the claimed identity.
+              if (error.code === ErrMsg.ErrorAuthNoUser) {
+                this.needAccount = true;
+              } else {
+                this.snackBar.open(error.message, "Got it");
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   /**
@@ -137,13 +146,12 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
    * Create an Account.
    */
   public createAccount(): void {
-
     // The required validator doesn't trim the value of the input.
     this.username.setValue(this.username.value.trim());
     this.username.updateValueAndValidity();
 
     // Check that a username has been specified.
-    if (this.username.value === undefined || this.username.value === '') {
+    if (this.username.value === undefined || this.username.value === "") {
       return;
     }
 
@@ -166,7 +174,7 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
         // AuthenticatedUser class.
         // See https://app.asana.com/0/719578238881157/756403371264694/f
         // Update Local Storage Profile.
-        const profile = JSON.parse(localStorage.getItem('profile'));
+        const profile = JSON.parse(localStorage.getItem("profile"));
         profile.username = res.username;
         profile.orgs = res.organizations;
         profile.orgRoles = res.orgRoles;
@@ -174,8 +182,8 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
           profile.sysAdmin = res.sysAdmin;
         }
         this.authService.userProfile = profile;
-        localStorage.setItem('profile', JSON.stringify(profile));
-        this.router.navigate(['/home']);
+        localStorage.setItem("profile", JSON.stringify(profile));
+        this.router.navigate(["/home"]);
       },
 
       // On error
@@ -184,12 +192,13 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
         if (error.code === ErrMsg.ErrorResourceExists) {
           // Set the error in the Input Form.
           this.username.setErrors({
-            usernameTaken: true
+            usernameTaken: true,
           });
         } else {
-          this.snackBar.open(error.message, 'Got it');
+          this.snackBar.open(error.message, "Got it");
         }
-      });
+      },
+    );
   }
 
   /**
@@ -200,26 +209,26 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
    */
   public getErrorMessage(): string {
     // Empty username.
-    if (this.username.hasError('required')) {
-      return 'You must enter a value';
+    if (this.username.hasError("required")) {
+      return "You must enter a value";
     }
 
     // Username too short.
-    if (this.username.hasError('minlength')) {
-      return 'Username must have more than 3 characters.';
+    if (this.username.hasError("minlength")) {
+      return "Username must have more than 3 characters.";
     }
 
     // Username has invalid characters.
-    if (this.username.hasError('pattern')) {
-      return 'Use only alphanumeric characters.';
+    if (this.username.hasError("pattern")) {
+      return "Use only alphanumeric characters.";
     }
 
     // Username already taken.
-    if (this.username.hasError('usernameTaken')) {
-      return 'Username already taken.';
+    if (this.username.hasError("usernameTaken")) {
+      return "Username already taken.";
     }
 
     // No error.
-    return '';
+    return "";
   }
 }

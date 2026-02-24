@@ -1,34 +1,44 @@
 <div class="content">
-  <h1 mat-dialog-title class="mat-typography">
-    Elasticsearch Configuration
-  </h1>
+  <h1 mat-dialog-title class="mat-typography">Elasticsearch Configuration</h1>
 
   <form>
     <div fxLayout="column" mat-dialog-content class="mat-typography">
       <mat-form-field>
-        <input matInput
+        <input
+          matInput
           placeholder="Address"
-          [formControl]="addressInputForm" required/>
+          [formControl]="addressInputForm"
+          required
+        />
         <!--
         <mat-error>{{getCollectionNameError()}}</mat-error>
         -->
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput
+        <input
+          matInput
           placeholder="Username"
-          [formControl]="usernameInputForm"/>
+          [formControl]="usernameInputForm"
+        />
         <!--
         <mat-error>{{getCollectionNameError()}}</mat-error>
         -->
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput
+        <input
+          matInput
           [type]="hide ? 'password' : 'text'"
           placeholder="Password"
-          [formControl]="passwordInputForm"/>
-        <mat-icon matSuffix (click)="hide = !hide" style="vertical-align:bottom">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          [formControl]="passwordInputForm"
+        />
+        <mat-icon
+          matSuffix
+          (click)="hide = !hide"
+          style="vertical-align: bottom"
+          >{{ hide ? "visibility_off" : "visibility" }}</mat-icon
+        >
         <!--
         <mat-error>{{getCollectionNameError()}}</mat-error>
         -->
@@ -37,12 +47,8 @@
   </form>
 
   <div mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close color="primary">
-      Cancel
-    </button>
+    <button mat-button mat-dialog-close color="primary">Cancel</button>
 
-    <button mat-raised-button (click)="submit()" color="primary">
-      Submit
-    </button>
+    <button mat-raised-button (click)="submit()" color="primary">Submit</button>
   </div>
 </div>

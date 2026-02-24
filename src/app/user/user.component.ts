@@ -1,28 +1,31 @@
-import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { Model } from '../model/model';
-import { ModelService } from '../model/model.service';
-import { User } from './user';
-import { World } from '../world/world';
-import { WorldService } from '../world/world.service';
-import { PaginatedModels } from '../model/paginated-models';
-import { PaginatedWorlds } from '../world/paginated-worlds';
-import { Collection, CollectionService, PaginatedCollection } from '../collection';
+import { Model } from "../model/model";
+import { ModelService } from "../model/model.service";
+import { User } from "./user";
+import { World } from "../world/world";
+import { WorldService } from "../world/world.service";
+import { PaginatedModels } from "../model/paginated-models";
+import { PaginatedWorlds } from "../world/paginated-worlds";
+import {
+  Collection,
+  CollectionService,
+  PaginatedCollection,
+} from "../collection";
 
 @Component({
-    selector: 'gz-user',
-    templateUrl: 'user.component.html',
-    styleUrls: ['user.component.scss'],
-    standalone: false
+  selector: "gz-user",
+  templateUrl: "user.component.html",
+  styleUrls: ["user.component.scss"],
+  standalone: false,
 })
 
 /**
  * User Component displays the resources related to a User.
  */
 export class UserComponent implements OnInit {
-
   /**
    * The user being displayed by the component. It comes from a route resolver.
    */
@@ -86,7 +89,12 @@ export class UserComponent implements OnInit {
   /**
    * Active tab in the tab group.
    */
-  public activeTab: 'models' | 'modelsLiked' | 'worlds' | 'worldsLiked' | 'collections' = 'models';
+  public activeTab:
+    | "models"
+    | "modelsLiked"
+    | "worlds"
+    | "worldsLiked"
+    | "collections" = "models";
 
   /**
    * @param activatedRoute The current Activated Route to get associated the data.
@@ -100,16 +108,15 @@ export class UserComponent implements OnInit {
     public collectionService: CollectionService,
     public modelService: ModelService,
     public snackBar: MatSnackBar,
-    public worldService: WorldService) {
-  }
+    public worldService: WorldService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-
     // Get the User from the resolved data.
-    this.user = this.activatedRoute.snapshot.data['resolvedData'];
+    this.user = this.activatedRoute.snapshot.data["resolvedData"];
 
     // Get the User's models.
     this.modelService.getOwnerList(this.user.username).subscribe(
@@ -118,8 +125,8 @@ export class UserComponent implements OnInit {
         this.models = response.resources;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
 
     // Get the User's worlds.
@@ -129,8 +136,8 @@ export class UserComponent implements OnInit {
         this.worlds = response.resources;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
 
     // Get the User's liked models.
@@ -140,8 +147,8 @@ export class UserComponent implements OnInit {
         this.modelsLiked = response.resources;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
 
     // Get the User's liked worlds.
@@ -151,8 +158,8 @@ export class UserComponent implements OnInit {
         this.worldsLiked = response.resources;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
 
     // Get the User's collections.
@@ -162,8 +169,8 @@ export class UserComponent implements OnInit {
         this.collections = response.collections;
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 
@@ -172,8 +179,9 @@ export class UserComponent implements OnInit {
    */
   public loadNextModelsPage(): void {
     if (this.paginatedModels.hasNextPage()) {
-      this.modelService.getNextPage(this.paginatedModels).subscribe(
-        (pagModels) => {
+      this.modelService
+        .getNextPage(this.paginatedModels)
+        .subscribe((pagModels) => {
           this.paginatedModels = pagModels;
           // Copy and extend the existing array of models with the new ones.
           // A copy is required in order to trigger changes.
@@ -182,8 +190,7 @@ export class UserComponent implements OnInit {
             newModels.push(model);
           }
           this.models = newModels;
-        }
-      );
+        });
     }
   }
 
@@ -192,8 +199,9 @@ export class UserComponent implements OnInit {
    */
   public loadNextWorldsPage(): void {
     if (this.paginatedWorlds.hasNextPage()) {
-      this.worldService.getNextPage(this.paginatedWorlds).subscribe(
-        (pagWorlds) => {
+      this.worldService
+        .getNextPage(this.paginatedWorlds)
+        .subscribe((pagWorlds) => {
           this.paginatedWorlds = pagWorlds;
           // Copy and extend the existing array of models with the new ones.
           // A copy is required in order to trigger changes.
@@ -202,8 +210,7 @@ export class UserComponent implements OnInit {
             newWorlds.push(world);
           }
           this.worlds = newWorlds;
-        }
-      );
+        });
     }
   }
 
@@ -212,8 +219,9 @@ export class UserComponent implements OnInit {
    */
   public loadNextLikedModelsPage(): void {
     if (this.paginatedLikedModels.hasNextPage()) {
-      this.modelService.getNextPage(this.paginatedLikedModels).subscribe(
-        (pagModels) => {
+      this.modelService
+        .getNextPage(this.paginatedLikedModels)
+        .subscribe((pagModels) => {
           this.paginatedLikedModels = pagModels;
           // Copy and extend the existing array of models with the new ones.
           // A copy is required in order to trigger changes.
@@ -222,8 +230,7 @@ export class UserComponent implements OnInit {
             newModels.push(model);
           }
           this.modelsLiked = newModels;
-        }
-      );
+        });
     }
   }
 
@@ -232,8 +239,9 @@ export class UserComponent implements OnInit {
    */
   public loadNextLikedWorldsPage(): void {
     if (this.paginatedLikedWorlds.hasNextPage()) {
-      this.worldService.getNextPage(this.paginatedLikedWorlds).subscribe(
-        (pagWorlds) => {
+      this.worldService
+        .getNextPage(this.paginatedLikedWorlds)
+        .subscribe((pagWorlds) => {
           this.paginatedLikedWorlds = pagWorlds;
           // Copy and extend the existing array of worlds with the new ones.
           // A copy is required in order to trigger changes.
@@ -242,8 +250,7 @@ export class UserComponent implements OnInit {
             newWorlds.push(model);
           }
           this.worldsLiked = newWorlds;
-        }
-      );
+        });
     }
   }
 
@@ -252,8 +259,9 @@ export class UserComponent implements OnInit {
    */
   public loadNextCollectionsPage(): void {
     if (this.paginatedCollections.hasNextPage()) {
-      this.collectionService.getNextPage(this.paginatedCollections).subscribe(
-        (pagCollections) => {
+      this.collectionService
+        .getNextPage(this.paginatedCollections)
+        .subscribe((pagCollections) => {
           this.paginatedCollections = pagCollections;
           // Copy and extend the existing array of collections with the new ones.
           // A copy is required in order to trigger changes.
@@ -262,8 +270,7 @@ export class UserComponent implements OnInit {
             newCollections.push(col);
           }
           this.collections = newCollections;
-        }
-      );
+        });
     }
   }
 
@@ -273,23 +280,23 @@ export class UserComponent implements OnInit {
   public setActiveTab(event: number): void {
     switch (event) {
       case 0: {
-        this.activeTab = 'models';
+        this.activeTab = "models";
         break;
       }
       case 1: {
-        this.activeTab = 'modelsLiked';
+        this.activeTab = "modelsLiked";
         break;
       }
       case 2: {
-        this.activeTab = 'worlds';
+        this.activeTab = "worlds";
         break;
       }
       case 3: {
-        this.activeTab = 'worldsLiked';
+        this.activeTab = "worldsLiked";
         break;
       }
       case 4: {
-        this.activeTab = 'collections';
+        this.activeTab = "collections";
         break;
       }
     }

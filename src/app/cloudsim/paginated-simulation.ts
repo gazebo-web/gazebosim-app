@@ -1,10 +1,9 @@
-import { Simulation } from './simulation';
+import { Simulation } from "./simulation";
 
 /**
  * A class that represents a Paginated List of Simulations.
  */
 export class PaginatedSimulation {
-
   /**
    * The total number of simulations.
    */

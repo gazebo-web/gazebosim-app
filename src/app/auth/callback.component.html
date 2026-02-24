@@ -4,31 +4,41 @@
     <div>
       <h1>Email validation required</h1>
       <p>Please check your inbox and validate your email.</p>
-      <p>If you have problems validating your account, please contact us on
-        <a href="https://openrobotics.freshdesk.com">Gazebo Fuel Help</a>.</p>
-      </div>
-    }
+      <p>
+        If you have problems validating your account, please contact us on
+        <a href="https://openrobotics.freshdesk.com">Gazebo Fuel Help</a>.
+      </p>
+    </div>
+  }
 
-    @if (!needValidation && validationSuccess) {
-      <div>
-        <h1>Your email was validated</h1>
-        <p>Please <a [routerLink]="" [skipLocationChange]="false"
-        (click)="authService.login()">log in</a> again to complete the process.</p>
-      </div>
-    }
+  @if (!needValidation && validationSuccess) {
+    <div>
+      <h1>Your email was validated</h1>
+      <p>
+        Please
+        <a
+          [routerLink]=""
+          [skipLocationChange]="false"
+          (click)="authService.login()"
+          >log in</a
+        >
+        again to complete the process.
+      </p>
+    </div>
+  }
 
-    @if (loggedIn && needAccount) {
-      <div>
-        <!-- Username not found, therefore create a new account. -->
-        <h2>Welcome to Gazebo Fuel</h2>
-        <p>Please pick a username.</p>
-        <form (ngSubmit)="createAccount()">
-          <mat-form-field>
-            <input matInput placeholder="username" [formControl]="username"/>
-            <mat-error>{{getErrorMessage()}}</mat-error>
-          </mat-form-field>
-          <button mat-raised-button type="submit">Create account</button>
-        </form>
-      </div>
-    }
-  </div>
+  @if (loggedIn && needAccount) {
+    <div>
+      <!-- Username not found, therefore create a new account. -->
+      <h2>Welcome to Gazebo Fuel</h2>
+      <p>Please pick a username.</p>
+      <form (ngSubmit)="createAccount()">
+        <mat-form-field>
+          <input matInput placeholder="username" [formControl]="username" />
+          <mat-error>{{ getErrorMessage() }}</mat-error>
+        </mat-form-field>
+        <button mat-raised-button type="submit">Create account</button>
+      </form>
+    </div>
+  }
+</div>

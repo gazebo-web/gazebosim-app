@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
-import { AuthService } from '../auth/auth.service';
-import { FuelResourceService } from '../fuel-resource';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { Model } from './model';
-import { PaginatedModels } from './paginated-models';
+import { AuthService } from "../auth/auth.service";
+import { FuelResourceService } from "../fuel-resource";
+import { JsonClassFactoryService } from "../factory/json-class-factory.service";
+import { Model } from "./model";
+import { PaginatedModels } from "./paginated-models";
 
 @Injectable()
 
@@ -14,7 +14,6 @@ import { PaginatedModels } from './paginated-models';
  * It extends the abstract FuelResourceService service, setting it's resource type to Model.
  */
 export class ModelService extends FuelResourceService {
-
   /**
    * The class of the Model resource required by the FuelResourceService.
    */
@@ -28,7 +27,7 @@ export class ModelService extends FuelResourceService {
   /**
    * The string of the resource type, to parse the URLs of the FuelResourceService.
    */
-  public resourceType: string = 'models';
+  public resourceType: string = "models";
 
   /**
    * @param authService Service to get authentication information.
@@ -38,7 +37,8 @@ export class ModelService extends FuelResourceService {
   constructor(
     protected authService: AuthService,
     protected factory: JsonClassFactoryService,
-    protected http: HttpClient) {
+    protected http: HttpClient,
+  ) {
     super(authService, factory, http);
   }
 }

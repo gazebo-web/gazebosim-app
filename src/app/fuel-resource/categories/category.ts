@@ -2,7 +2,6 @@
  * A class that represents a Category.
  */
 export class Category {
-
   /**
    * The ID of the category.
    */
@@ -27,9 +26,9 @@ export class Category {
    * @param json A JSON that contains the required fields of the category.
    */
   constructor(json: any) {
-    this.id = json['id'];
-    this.parentId = json['parent_id'];
-    this.name = json['name'];
-    this.slug = json['slug'];
+    this.id = json["id"];
+    this.parentId = json["parent_id"];
+    this.name = json["name"];
+    this.slug = json["slug"];
   }
 }

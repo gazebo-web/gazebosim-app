@@ -1,19 +1,21 @@
-import { Component,
-         OnInit,
-         OnDestroy,
-         ViewChild,
-         ViewContainerRef,
-         ComponentFactoryResolver,
-         Type } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+  Type,
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
 
-import { PageNotFoundComponent } from '../page-not-found';
+import { PageNotFoundComponent } from "../page-not-found";
 
 @Component({
-    selector: 'gz-asset-display',
-    templateUrl: 'asset-display.component.html',
-    standalone: false
+  selector: "gz-asset-display",
+  templateUrl: "asset-display.component.html",
+  standalone: false,
 })
 
 /**
@@ -23,12 +25,11 @@ import { PageNotFoundComponent } from '../page-not-found';
  * resolver guard failed to be fetched.
  */
 export class AssetDisplayComponent implements OnInit, OnDestroy {
-
   /**
    * The view container of the element that will receive the dynamically generated component.
    */
-  @ViewChild('dynamicComponentView', {read: ViewContainerRef, static: true})
-    public componentViewContainer: ViewContainerRef;
+  @ViewChild("dynamicComponentView", { read: ViewContainerRef, static: true })
+  public componentViewContainer: ViewContainerRef;
 
   /**
    * The target component that will be rendered. This comes form the route configuration data or
@@ -53,8 +54,8 @@ export class AssetDisplayComponent implements OnInit, OnDestroy {
    */
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -62,35 +63,34 @@ export class AssetDisplayComponent implements OnInit, OnDestroy {
    * Retrieves the data from the current activated route and decides which component to display.
    */
   public ngOnInit(): void {
-    this.dataSubscription = this.route.data.subscribe(
-      (data) => {
-        // Store the corresponding resolved data.
-        if (data.resolvedData && data.resolvedData['data']) {
-          this.resolvedData = data.resolvedData['data'];
+    this.dataSubscription = this.route.data.subscribe((data) => {
+      // Store the corresponding resolved data.
+      if (data.resolvedData && data.resolvedData["data"]) {
+        this.resolvedData = data.resolvedData["data"];
+      } else {
+        this.resolvedData = data.resolvedData;
+      }
+
+      // Set the new component to render.
+      if (data.resolvedData !== null) {
+        if (data.resolvedData["component"]) {
+          this.newComponent = data.resolvedData["component"];
         } else {
-          this.resolvedData = data.resolvedData;
+          this.newComponent = data.component;
         }
+      }
 
-        // Set the new component to render.
-        if (data.resolvedData !== null) {
-          if (data.resolvedData['component']) {
-            this.newComponent = data.resolvedData['component'];
-          } else {
-            this.newComponent = data.component;
-          }
-        }
+      // Note: Components only read the resolvedData so we need to overwrite it.
+      data.resolvedData = this.resolvedData;
 
-        // Note: Components only read the resolvedData so we need to overwrite it.
-        data.resolvedData = this.resolvedData;
+      // If the new component hasn't been set, it means the PageNotFoundComponent must be
+      // rendered.
+      if (this.newComponent === undefined) {
+        this.newComponent = PageNotFoundComponent;
+      }
 
-        // If the new component hasn't been set, it means the PageNotFoundComponent must be
-        // rendered.
-        if (this.newComponent === undefined) {
-          this.newComponent = PageNotFoundComponent;
-        }
-
-        this.loadComponent();
-      });
+      this.loadComponent();
+    });
   }
 
   /**
@@ -109,7 +109,9 @@ export class AssetDisplayComponent implements OnInit, OnDestroy {
    */
   public loadComponent(): void {
     this.componentViewContainer.clear();
-    const factory = this.componentFactoryResolver.resolveComponentFactory(this.newComponent);
+    const factory = this.componentFactoryResolver.resolveComponentFactory(
+      this.newComponent,
+    );
     this.componentViewContainer.createComponent(factory);
   }
 }

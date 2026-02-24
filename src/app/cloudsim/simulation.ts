@@ -1,4 +1,4 @@
-import { environment } from '../../environments/environment';
+import { environment } from "../../environments/environment";
 
 /**
  * Enum of available simulation status.
@@ -19,14 +19,13 @@ enum Status {
   TerminatingInstances = 80,
   Terminated = 90,
   Rejected = 100,
-  Superseded = 110
+  Superseded = 110,
 }
 
 /**
  * A class that represents a Simulation instance.
  */
 export class Simulation {
-
   /**
    * Use the Status enum as a static property of the Simulation class.
    * Done this way because Typescript doesn't allow declaring enums inside classes.
@@ -36,22 +35,18 @@ export class Simulation {
   /**
    * URL of the S3 Bucket that contains all the simulation logs.
    */
-  public static readonly bucketUrl: string =
-    `https://s3.console.aws.amazon.com/s3/buckets/${environment.AWS_GZ_LOGS_BUCKET}/gz-logs/`;
+  public static readonly bucketUrl: string = `https://s3.console.aws.amazon.com/s3/buckets/${environment.AWS_GZ_LOGS_BUCKET}/gz-logs/`;
 
   /**
    * Static array that contains each Status in the enumeration as a string.
    */
   public static readonly StatusList = Object.keys(Status)
-    .map(
-      (key) => {
-        return Status[key as string];
-      })
-    .filter(
-      (key) => {
-        return !Number.isInteger(key);
-      }
-    );
+    .map((key) => {
+      return Status[key as string];
+    })
+    .filter((key) => {
+      return !Number.isInteger(key);
+    });
 
   /**
    * The name given to the simulation.
@@ -117,33 +112,36 @@ export class Simulation {
    * @param json A JSON that contains the required fields of the resource.
    */
   constructor(json: any) {
-    this.name = json['name'];
-    this.owner = json['owner'];
-    this.creator = json['creator'];
-    this.groupId = json['group_id'];
-    this.startedAt = json['created_at'];
-    this.runTime = json['run_time'];
-    this.application = json['application'];
-    this.status = Simulation.Status[json['status']];
-    this.image = json['image'];
-    this.errorStatus = json['error_status'];
-    this.multiSim = json['MultiSim'];
-    this.extra = JSON.parse(json['extra']);
+    this.name = json["name"];
+    this.owner = json["owner"];
+    this.creator = json["creator"];
+    this.groupId = json["group_id"];
+    this.startedAt = json["created_at"];
+    this.runTime = json["run_time"];
+    this.application = json["application"];
+    this.status = Simulation.Status[json["status"]];
+    this.image = json["image"];
+    this.errorStatus = json["error_status"];
+    this.multiSim = json["MultiSim"];
+    this.extra = JSON.parse(json["extra"]);
   }
 
   /**
    * Return whether a simulation is considered to be in process of launching or not.
    */
   public isLaunching(): boolean {
-    return Simulation.Status[this.status] <= Simulation.Status['Launching'];
+    return Simulation.Status[this.status] <= Simulation.Status["Launching"];
   }
 
   /**
    * Return whether a simulation is considered to be running.
    */
   public isRunning(): boolean {
-    return Simulation.Status[this.status] >= Simulation.Status['RunningWithErrors'] &&
-           Simulation.Status[this.status] <= Simulation.Status['TerminateRequested'];
+    return (
+      Simulation.Status[this.status] >=
+        Simulation.Status["RunningWithErrors"] &&
+      Simulation.Status[this.status] <= Simulation.Status["TerminateRequested"]
+    );
   }
 
   /**
@@ -153,8 +151,13 @@ export class Simulation {
    * can be restarted.
    */
   public canBeRestarted(): boolean {
-    const notRunning = Simulation.Status[this.status] >= Simulation.Status['TerminateRequested'];
+    const notRunning =
+      Simulation.Status[this.status] >= Simulation.Status["TerminateRequested"];
 
-    return notRunning && (this.multiSim === 0 || this.multiSim === 2) && this.errorStatus !== '';
+    return (
+      notRunning &&
+      (this.multiSim === 0 || this.multiSim === 2) &&
+      this.errorStatus !== ""
+    );
   }
 }

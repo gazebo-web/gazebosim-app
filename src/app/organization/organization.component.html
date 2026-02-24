@@ -1,23 +1,29 @@
-<div fxLayout="column" class='page-content-inner'>
-  <gz-page-title title="Organization: {{organization.name}}"></gz-page-title>
+<div fxLayout="column" class="page-content-inner">
+  <gz-page-title title="Organization: {{ organization.name }}"></gz-page-title>
 
-  <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+  <mat-tab-group
+    dynamicHeight
+    fxFill
+    (selectedIndexChange)="setActiveTab($event)"
+  >
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon="gz-model"></mat-icon>
-          <span>Models ({{paginatedModels?.totalCount}})</span>
+          <span>Models ({{ paginatedModels?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list fxFlex
+        <gz-fuel-resource-list
+          fxFlex
           resourceType="models"
           [resources]="models"
           [disabled]="activeTab !== 'models'"
           [length]="paginatedModels?.totalCount"
           [finished]="!paginatedModels?.hasNextPage()"
-          (pageChange)="loadModels($event)">
+          (pageChange)="loadModels($event)"
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -26,18 +32,20 @@
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon svgIcon="gz-world"></mat-icon>
-          <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
+          <span>Worlds ({{ paginatedWorlds?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list fxFlex
+        <gz-fuel-resource-list
+          fxFlex
           resourceType="worlds"
           [resources]="worlds"
           [disabled]="activeTab !== 'worlds'"
           [length]="paginatedWorlds?.totalCount"
           [finished]="!paginatedWorlds?.hasNextPage()"
-          (pageChange)="loadWorlds($event)">
+          (pageChange)="loadWorlds($event)"
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -46,18 +54,20 @@
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon>collections</mat-icon>
-          <span>Collections ({{paginatedCollections?.totalCount}})</span>
+          <span>Collections ({{ paginatedCollections?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list fxFlex
+        <gz-fuel-resource-list
+          fxFlex
           resourceType="collections"
           [resources]="collections"
           [disabled]="activeTab !== 'collections'"
           [length]="paginatedCollections?.totalCount"
           [finished]="!paginatedCollections?.hasNextPage()"
-          (pageChange)="loadCollections($event)">
+          (pageChange)="loadCollections($event)"
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -66,16 +76,15 @@
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center">
           <mat-icon>group</mat-icon>
-          <span>Users ({{users?.length}})</span>
+          <span>Users ({{ users?.length }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
         @if (authService.hasWriteAccess(organization.name)) {
-          <form fxLayoutAlign="center"
-            (ngSubmit)=addUser()
-            >
-            <div fxFill
+          <form fxLayoutAlign="center" (ngSubmit)="addUser()">
+            <div
+              fxFill
               fxFlex.gt-xs="60%"
               fxFlex.lt-sm="80%"
               fxLayout="row"
@@ -83,38 +92,41 @@
               fxLayoutGap="1em"
               fxLayout.lt-md="row wrap"
               fxLayoutAlign.lt-md="space-between"
-              fxLayoutGap.lt-md="0">
+              fxLayoutGap.lt-md="0"
+            >
               <mat-form-field fxFill fxFlex="grow">
-                <input matInput
+                <input
+                  matInput
                   placeholder="Add username"
                   [formControl]="usernameInputForm"
-                  required/>
-                @if (usernameInputForm.hasError('required')) {
-                  <mat-error>
-                    Please enter a username
-                  </mat-error>
+                  required
+                />
+                @if (usernameInputForm.hasError("required")) {
+                  <mat-error> Please enter a username </mat-error>
                 }
               </mat-form-field>
               <mat-form-field>
-                <mat-select placeholder="Role"
+                <mat-select
+                  placeholder="Role"
                   [formControl]="roleDropdownForm"
-                  required>
+                  required
+                >
                   @for (role of roles; track role) {
                     <mat-option [value]="role">
-                      {{role}}
+                      {{ role }}
                     </mat-option>
                   }
                 </mat-select>
-                @if (roleDropdownForm.hasError('required')) {
-                  <mat-error>
-                    Please select a role
-                  </mat-error>
+                @if (roleDropdownForm.hasError("required")) {
+                  <mat-error> Please select a role </mat-error>
                 }
               </mat-form-field>
-              <button fxFlexAlign="start"
+              <button
+                fxFlexAlign="start"
                 mat-raised-button
                 color="primary"
-                type="submit">
+                type="submit"
+              >
                 Add User
               </button>
             </div>
@@ -125,22 +137,30 @@
           <mat-list fxFlex.gt-xs="60%" fxFlex.lt-sm="80%">
             @for (user of users; track user) {
               <mat-list-item class="list-divider">
-                <div fxLayout="row" fxLayoutAlign="start baseline" fxLayoutGap="10px" matLine>
-                  <a routerLink='/{{user.username}}'>{{user.username}}</a>
+                <div
+                  fxLayout="row"
+                  fxLayoutAlign="start baseline"
+                  fxLayoutGap="10px"
+                  matLine
+                >
+                  <a routerLink="/{{ user.username }}">{{ user.username }}</a>
                   <mat-chip-list>
                     @if (user.orgRoles) {
-                      <mat-chip color='primary' selected>{{user.orgRoles[organization.name]}}</mat-chip>
+                      <mat-chip color="primary" selected>{{
+                        user.orgRoles[organization.name]
+                      }}</mat-chip>
                     }
                   </mat-chip-list>
                 </div>
                 @if (canDisplayRemoveButton(user)) {
-                  <button mat-button
+                  <button
+                    mat-button
                     color="primary"
                     (click)="removeUser(user)"
                     [disabled]="disableRemoveButton(user)"
                     [title]="getRemoveButtonTooltip(user)"
-                    >
-                    {{getRemoveButtonLabel(user)}}
+                  >
+                    {{ getRemoveButtonLabel(user) }}
                   </button>
                 }
               </mat-list-item>

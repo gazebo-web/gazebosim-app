@@ -1,24 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatChipInputEvent, MatChipsModule } from "@angular/material/chips";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
 
-import { TagsComponent } from './tags.component';
+import { TagsComponent } from "./tags.component";
 
-describe('TagsComponent', () => {
+describe("TagsComponent", () => {
   let fixture: ComponentFixture<TagsComponent>;
   let component: TagsComponent;
 
   // Mock HTML element.
   const htmlElement = {
-    value: 'new-tag'
+    value: "new-tag",
   } as HTMLInputElement;
 
   // Mock Input Event.
   const inputEvent = {
     input: htmlElement,
-    value: htmlElement.value
+    value: htmlElement.value,
   } as MatChipInputEvent;
 
   // Mock Focus event.
@@ -33,25 +33,23 @@ describe('TagsComponent', () => {
         MatChipsModule,
         MatIconModule,
         MatInputModule,
-        ReactiveFormsModule
-        ],
-      declarations: [
-        TagsComponent
-        ]
+        ReactiveFormsModule,
+      ],
+      declarations: [TagsComponent],
     });
 
     fixture = TestBed.createComponent(TagsComponent);
     component = fixture.debugElement.componentInstance;
-    spyOn(component.onModify, 'emit');
+    spyOn(component.onModify, "emit");
 
     // Restore the values of the mock data.
-    htmlElement.value = 'new-tag';
+    htmlElement.value = "new-tag";
     inputEvent.input = htmlElement;
     inputEvent.value = htmlElement.value;
     focusEvent.target = htmlElement;
   });
 
-  it('should NOT add a tag to the list if not on edit mode', () => {
+  it("should NOT add a tag to the list if not on edit mode", () => {
     // Disable edit mode and try to add Tag.
     component.edit = false;
     component.addTagChip(inputEvent);
@@ -64,24 +62,24 @@ describe('TagsComponent', () => {
     expect(component.onModify.emit).not.toHaveBeenCalled();
   });
 
-  it('should add a tag to the list on edit mode', () => {
+  it("should add a tag to the list on edit mode", () => {
     // Edit mode: Add chip.
     component.edit = true;
     component.addTagChip(inputEvent);
 
     // Check if chip was added and the input cleared afterwards.
-    expect(component.tags[0]).toBe('new-tag');
+    expect(component.tags[0]).toBe("new-tag");
     expect(component.tags.length).toEqual(1);
-    expect(htmlElement.value).toBe('');
+    expect(htmlElement.value).toBe("");
 
     // Check modification event.
     expect(component.onModify.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should NOT add a chip to the list if input is empty', () => {
+  it("should NOT add a chip to the list if input is empty", () => {
     // Edit mode: Add chip.
     component.edit = true;
-    inputEvent.value = '';
+    inputEvent.value = "";
     component.addTagChip(inputEvent);
 
     // Check there are no chips
@@ -92,7 +90,7 @@ describe('TagsComponent', () => {
     expect(component.onModify.emit).not.toHaveBeenCalled();
   });
 
-  it('should NOT close a chip on a blur event if not on edit mode', () => {
+  it("should NOT close a chip on a blur event if not on edit mode", () => {
     // Disable edit mode and trigger blur.
     component.edit = false;
     component.closeTagOnBlur(focusEvent);
@@ -105,24 +103,24 @@ describe('TagsComponent', () => {
     expect(component.onModify.emit).not.toHaveBeenCalled();
   });
 
-  it('should close a chip on a blur event on edit mode', () => {
+  it("should close a chip on a blur event on edit mode", () => {
     // Edit mode and trigger blur.
     component.edit = true;
     component.closeTagOnBlur(focusEvent);
 
     // Check chip was added and element cleared afterwards.
-    expect(component.tags[0]).toBe('new-tag');
+    expect(component.tags[0]).toBe("new-tag");
     expect(component.tags.length).toEqual(1);
-    expect(htmlElement.value).toBe('');
+    expect(htmlElement.value).toBe("");
 
     // Check modification event.
     expect(component.onModify.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should remove a tag on edit mode', () => {
+  it("should remove a tag on edit mode", () => {
     // Manually add tags.
     component.edit = true;
-    component.tags = ['tag_1', 'tag_2', 'tag_3'];
+    component.tags = ["tag_1", "tag_2", "tag_3"];
     expect(component.tags.length).toBe(3);
 
     // Nothing breaks when removing inexistent tags.
@@ -137,18 +135,18 @@ describe('TagsComponent', () => {
 
     // Check remaining tags.
     expect(component.tags.length).toBe(2);
-    expect(component.tags[0]).toBe('tag_1');
-    expect(component.tags[1]).toBe('tag_3');
-    expect(component.tags).not.toContain('tag_2');
+    expect(component.tags[0]).toBe("tag_1");
+    expect(component.tags[1]).toBe("tag_3");
+    expect(component.tags).not.toContain("tag_2");
 
     // Check modification event.
     expect(component.onModify.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should NOT remove a tag if not on edit mode', () => {
+  it("should NOT remove a tag if not on edit mode", () => {
     // Disable edit mode and manually add tags.
     component.edit = false;
-    component.tags = ['tag_1', 'tag_2', 'tag_3'];
+    component.tags = ["tag_1", "tag_2", "tag_3"];
     expect(component.tags.length).toBe(3);
 
     // Try to remove tag and verify it wasn't removed.
@@ -165,9 +163,9 @@ describe('TagsComponent', () => {
     expect(component.tags.length).toBe(3);
 
     // Check all tags.
-    expect(component.tags[0]).toBe('tag_1');
-    expect(component.tags[1]).toBe('tag_2');
-    expect(component.tags[2]).toBe('tag_3');
+    expect(component.tags[0]).toBe("tag_1");
+    expect(component.tags[1]).toBe("tag_2");
+    expect(component.tags[2]).toBe("tag_3");
 
     // Check modification event.
     expect(component.onModify.emit).not.toHaveBeenCalled();

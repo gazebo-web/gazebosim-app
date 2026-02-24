@@ -1,42 +1,42 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FileUploadComponent } from './file-upload.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FileUploadComponent } from "./file-upload.component";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-import { DndDirective } from '../dnd/dnd.directive';
-import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
+import { DndDirective } from "../dnd/dnd.directive";
+import { SdfViewerComponent } from "../model/sdfviewer/sdfviewer.component";
 
-describe('FileUploadComponent', () => {
+describe("FileUploadComponent", () => {
   let fixture: ComponentFixture<FileUploadComponent>;
   let component: FileUploadComponent;
 
   // Mock file values.
   const testFile1: any = {
-    name: 'file1.ok',
-    fullPath: 'file1.ok',
-    webkitRelativePath: 'path/to/file1.ok'
+    name: "file1.ok",
+    fullPath: "file1.ok",
+    webkitRelativePath: "path/to/file1.ok",
   };
 
   const testFile2: any = {
-    name: 'file2.ok.other',
-    fullPath: 'file2.ok.other',
-    webkitRelativePath: 'path/to/file2.ok.other'
+    name: "file2.ok.other",
+    fullPath: "file2.ok.other",
+    webkitRelativePath: "path/to/file2.ok.other",
   };
 
   const testFile3: any = {
-    name: 'file3.valid',
-    fullPath: 'file3.valid',
-    webkitRelativePath: 'path/to/file3.valid'
+    name: "file3.valid",
+    fullPath: "file3.valid",
+    webkitRelativePath: "path/to/file3.valid",
   };
 
   const testInvalidFile: any = {
-    name: 'file.invalid',
-    fullPath: 'file.invalid',
-    webkitRelativePath: 'path/to/file.invalid'
+    name: "file.invalid",
+    fullPath: "file.invalid",
+    webkitRelativePath: "path/to/file.invalid",
   };
 
   // Mock event.
@@ -51,22 +51,18 @@ describe('FileUploadComponent', () => {
         MatIconModule,
         MatInputModule,
         MatSnackBarModule,
-        ],
-      declarations: [
-        DndDirective,
-        FileUploadComponent,
-        SdfViewerComponent
-        ]
+      ],
+      declarations: [DndDirective, FileUploadComponent, SdfViewerComponent],
     });
 
     fixture = TestBed.createComponent(FileUploadComponent);
     component = fixture.debugElement.componentInstance;
 
     // Set the allowed extensions.
-    component.allowedExtensions = ['ok', 'ok.other', 'valid'];
+    component.allowedExtensions = ["ok", "ok.other", "valid"];
   });
 
-  it('should determine if a file is valid or invalid', () => {
+  it("should determine if a file is valid or invalid", () => {
     let result = component.isValidFile(testFile1);
     expect(result).toBe(true);
 
@@ -74,29 +70,26 @@ describe('FileUploadComponent', () => {
     expect(result).toBe(false);
   });
 
-  it('should receive valid files from an event', () => {
+  it("should receive valid files from an event", () => {
     // Mock event with valid files.
-    target['files'] = [ testFile1, testFile2 ];
+    target["files"] = [testFile1, testFile2];
 
-    spyOn(component, 'onValidFiles');
+    spyOn(component, "onValidFiles");
     component.onFileInput(event);
 
     // The array that should be passed to the onValidFiles method.
-    const fileArray = [
-      testFile1 as File,
-      testFile2 as File
-    ];
+    const fileArray = [testFile1 as File, testFile2 as File];
 
     expect(component.onValidFiles).toHaveBeenCalledWith(fileArray);
   });
 
-  it('should NOT emit an event when no valid files are uploaded', () => {
+  it("should NOT emit an event when no valid files are uploaded", () => {
     // Mock event without valid files.
-    target['files'] = [ testInvalidFile ];
+    target["files"] = [testInvalidFile];
 
-    spyOn(component, 'onValidFiles');
-    spyOn(component, 'onInvalidFiles');
-    spyOn(component.files, 'emit');
+    spyOn(component, "onValidFiles");
+    spyOn(component, "onInvalidFiles");
+    spyOn(component.files, "emit");
     component.onFileInput(event);
 
     expect(component.onInvalidFiles).toHaveBeenCalled();
@@ -104,56 +97,54 @@ describe('FileUploadComponent', () => {
     expect(component.files.emit).not.toHaveBeenCalled();
   });
 
-  it('should filter invalid files from the file input event', () => {
+  it("should filter invalid files from the file input event", () => {
     // Mock event with files.
-    target['files'] = [ testFile1, testFile2, testInvalidFile ];
+    target["files"] = [testFile1, testFile2, testInvalidFile];
 
-    spyOn(component, 'onValidFiles');
-    spyOn(component, 'onInvalidFiles');
+    spyOn(component, "onValidFiles");
+    spyOn(component, "onInvalidFiles");
     component.onFileInput(event);
 
     // The array that should be passed to the onInvalidFiles method.
-    const fileArray = [
-      testInvalidFile as File
-    ];
+    const fileArray = [testInvalidFile as File];
 
     expect(component.onInvalidFiles).toHaveBeenCalledWith(fileArray);
   });
 
-  it('should append the valid files received and emit an event with the file list', () => {
+  it("should append the valid files received and emit an event with the file list", () => {
     const fileList: File[] = [testFile1, testFile2];
     component.fileList.push(testFile3);
 
-    spyOn(component.files, 'emit');
+    spyOn(component.files, "emit");
 
     component.onValidFiles(fileList);
 
     expect(component.fileList.length).toBe(3);
-    expect(component.fileList[0].name).toBe('file3.valid');
-    expect(component.fileList[1].name).toBe('file1.ok');
-    expect(component.fileList[2].name).toBe('file2.ok.other');
+    expect(component.fileList[0].name).toBe("file3.valid");
+    expect(component.fileList[1].name).toBe("file1.ok");
+    expect(component.fileList[2].name).toBe("file2.ok.other");
     expect(component.files.emit).toHaveBeenCalledWith(component.fileList);
   });
 
-  it('should notify the user when invalid files are upload', () => {
+  it("should notify the user when invalid files are upload", () => {
     const snackBar = component.snackBar;
 
     // Mock event with a valid file.
-    target['files'] = [ testFile1 ];
+    target["files"] = [testFile1];
 
     component.onFileInput(event);
     expect(snackBar._openedSnackBarRef).toBeNull();
 
     // Mock event with an invalid file.
-    target['files'] = [ testInvalidFile ];
+    target["files"] = [testInvalidFile];
 
     component.onFileInput(event);
     expect(snackBar._openedSnackBarRef).toBeTruthy();
   });
 
-  it('should remove a file from the files array', () => {
+  it("should remove a file from the files array", () => {
     component.fileList = [testFile1, testFile2];
-    spyOn(component.files, 'emit');
+    spyOn(component.files, "emit");
 
     // Remove an nonexistent file.
     component.removeFile(testFile3);
