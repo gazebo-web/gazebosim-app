@@ -11,7 +11,12 @@
     "build:prod": "ng build --configuration=production",
     "build:staging": "ng build --configuration=development",
     "watch": "ng build --watch --configuration=development",
-    "test": "ng test"
+    "test": "ng test",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
     "@angular/animations": "^21.1.4",
@@ -45,12 +50,15 @@
     "@angular/cli": "~21.1.4",
     "@angular/compiler-cli": "^21.1.4",
     "@types/jasmine": "~4.0.0",
+    "husky": "^9.1.7",
     "jasmine-core": "~4.1.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "webpack": "^5.105.2"
   }
