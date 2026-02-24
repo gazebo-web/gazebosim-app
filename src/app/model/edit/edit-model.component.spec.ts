@@ -62,7 +62,7 @@ describe('EditModelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         CategoriesComponent,
         ConfirmationDialogComponent,
         DescriptionComponent,
@@ -73,8 +73,8 @@ describe('EditModelComponent', () => {
         PageTitleComponent,
         SdfViewerComponent,
         TagsComponent
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         FormsModule,
         MarkdownModule,
         MatButtonModule,
@@ -89,28 +89,23 @@ describe('EditModelComponent', () => {
         MatTableModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         AuthService,
         JsonClassFactoryService,
         ModelService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        resolvedData: testModel
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                resolvedData: testModel
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [ ConfirmationDialogComponent ],
-      },
+      ]
     });
 
     // Reset the fixture and component.

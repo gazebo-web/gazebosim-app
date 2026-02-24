@@ -23,22 +23,22 @@ describe('FuelResourceService', () => {
   const name = 'test-name';
   const formData = new FormData();
   formData.append('name', 'test-name');
-  const testResource: FuelResource = {owner: user, name} as FuelResource;
+  const testResource: FuelResource = { owner: user, name } as FuelResource;
 
   // Executed before each spec. Set up the testing Module.
   // Done this way by Angular design. The module is internally reset after
   // each spec.
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    providers: [
+      imports: [RouterTestingModule],
+      providers: [
         AuthService,
         JsonClassFactoryService,
         FuelResourceService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ]
+    });
 
     authService = TestBed.inject(AuthService);
     factoryService = TestBed.inject(JsonClassFactoryService);
@@ -71,7 +71,7 @@ describe('FuelResourceService', () => {
     // With search params.
     const search = 'test';
     url += `?q=${search}`;
-    service.getList(search).subscribe(
+    service.getList({ search: search }).subscribe(
       (response) => {
         expect(response.resources[0].name).toBe(testResource.name);
       }
@@ -110,7 +110,7 @@ describe('FuelResourceService', () => {
 
   it(`should get the next page of a paginated resource`, () => {
     const url = `nextPageUrl`;
-    service.getNextPage({nextPage: 'nextPageUrl'} as FuelPaginatedResource).subscribe(
+    service.getNextPage({ nextPage: 'nextPageUrl' } as FuelPaginatedResource).subscribe(
       (response) => {
         expect(response.resources[0].name).toBe(testResource.name);
       }
@@ -164,7 +164,7 @@ describe('FuelResourceService', () => {
 
   it(`should delete a resource`, () => {
     const url = `${service.baseUrl}/${user}/${service.resourceType}/${name}`;
-    service.delete({owner: user, name} as FuelResource).subscribe(
+    service.delete({ owner: user, name } as FuelResource).subscribe(
       (response) => {
         expect(response.name).toBe(testResource.name);
       }
@@ -220,7 +220,7 @@ describe('FuelResourceService', () => {
 
   it(`should download a resource as a Zip file`, () => {
     // No version.
-    let url = `${service.baseUrl}/${user}/${service.resourceType}/${name}/tip/${name}.zip`;
+    let url = `${service.baseUrl}/${user}/${service.resourceType}/${name}/tip/${name}.zip?link=true`;
     service.download(testResource).subscribe(
       (response) => {
         expect(response).toEqual(new Blob([]));
@@ -230,11 +230,11 @@ describe('FuelResourceService', () => {
     let req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     expect(req.request.responseType).toBe('blob');
-    req.flush(new Blob([]));
+    req.flush(new Blob([]), { headers: { 'Content-Type': 'application/zip' } });
 
     // A specific version.
     const version = 1;
-    url = `${service.baseUrl}/${user}/${service.resourceType}/${name}/${version}/${name}.zip`;
+    url = `${service.baseUrl}/${user}/${service.resourceType}/${name}/${version}/${name}.zip?link=true`;
     service.download(testResource, version).subscribe(
       (response) => {
         expect(response).toEqual(new Blob([]));
@@ -244,7 +244,7 @@ describe('FuelResourceService', () => {
     req = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
     expect(req.request.responseType).toBe('blob');
-    req.flush(new Blob([]));
+    req.flush(new Blob([]), { headers: { 'Content-Type': 'application/zip' } });
   });
 
   it(`should get a file as a blob`, () => {
@@ -298,7 +298,7 @@ describe('FuelResourceService', () => {
   });
 
   it(`should handle the link header`, () => {
-    const header: HttpHeaders = new HttpHeaders({link: '</test-next?page=1>; rel="next"'});
+    const header: HttpHeaders = new HttpHeaders({ link: '</test-next?page=1>; rel="next"' });
     const url: string = `${service.baseUrl}/${service.resourceType}`;
     service.getList().subscribe(
       (response) => {
@@ -309,7 +309,7 @@ describe('FuelResourceService', () => {
 
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
-    req.flush([testResource], {headers: header});
+    req.flush([testResource], { headers: header });
   });
 
   it(`should throw a UiError`, () => {
@@ -330,6 +330,6 @@ describe('FuelResourceService', () => {
 
     const req: TestRequest = httpMock.expectOne(url);
     expect(req.request.method).toBe('GET');
-    req.flush({error: 'test-error'}, {status: 400, statusText: 'test-error'});
+    req.flush({ error: 'test-error' }, { status: 400, statusText: 'test-error' });
   });
 });

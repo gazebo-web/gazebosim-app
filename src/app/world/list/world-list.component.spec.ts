@@ -30,13 +30,13 @@ describe('WorldListComponent', () => {
   let component: WorldListComponent;
 
   const testWorlds: World[] = [
-    new World({name: 'testWorld0'}),
-    new World({name: 'testWorld1'})
+    new World({ name: 'testWorld0' }),
+    new World({ name: 'testWorld1' })
   ];
 
   const nextWorlds: World[] = [
-    new World({name: 'testWorld2'}),
-    new World({name: 'testWorld3'})
+    new World({ name: 'testWorld2' }),
+    new World({ name: 'testWorld3' })
   ];
 
   const paginatedWorlds: PaginatedWorlds = new PaginatedWorlds();
@@ -51,14 +51,14 @@ describe('WorldListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         AuthPipe,
         FuelResourceListComponent,
         ItemCardComponent,
         PageTitleComponent,
         WorldListComponent,
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         MatCardModule,
         MatInputModule,
         MatIconModule,
@@ -66,29 +66,29 @@ describe('WorldListComponent', () => {
         MatSelectModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         AuthService,
         CategoryService,
         WorldService,
         Ng2DeviceService,
         JsonClassFactoryService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        resolvedData: paginatedWorlds,
-                        title: () => {
-                            return 'testTitle';
-                        }
-                    }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                resolvedData: paginatedWorlds,
+                title: () => {
+                  return 'testTitle';
                 }
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ]
+    });
 
     fixture = TestBed.createComponent(WorldListComponent);
     component = fixture.debugElement.componentInstance;
@@ -101,24 +101,17 @@ describe('WorldListComponent', () => {
     expect(component.title).toEqual('testTitle');
   });
 
-  it('should load the next page', () => {
+  it('should load worlds on pagination', () => {
     const worldService = TestBed.inject(WorldService);
-    const spy = spyOn(worldService, 'getNextPage').and.returnValue(
+    const spy = spyOn(worldService, 'getList').and.returnValue(
       of(nextPaginatedWorlds));
-    component.worlds = [];
+    component.worlds = testWorlds;
     component.paginatedWorlds = paginatedWorlds;
 
-    // Consider the paginated worlds have a next page.
-    paginatedWorlds.nextPage = 'hasNextPage';
-    component.loadNextPage();
-    expect(spy).toHaveBeenCalledWith(paginatedWorlds);
+    const mockEvent = { pageIndex: 1, pageSize: 20, length: 0 };
+    component.getWorlds(mockEvent);
+    expect(spy).toHaveBeenCalled();
     expect(component.paginatedWorlds).toEqual(nextPaginatedWorlds);
     expect(component.worlds).toEqual(nextWorlds);
-    expect(component.paginatedWorlds.hasNextPage()).toBe(false);
-
-    // There is no next page.
-    spy.calls.reset();
-    component.loadNextPage();
-    expect(spy).not.toHaveBeenCalled();
   });
 });

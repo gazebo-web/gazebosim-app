@@ -58,7 +58,7 @@ describe('EditWorldComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         ConfirmationDialogComponent,
         DescriptionComponent,
         DndDirective,
@@ -67,8 +67,8 @@ describe('EditWorldComponent', () => {
         PageTitleComponent,
         SdfViewerComponent,
         TagsComponent
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         FormsModule,
         MarkdownModule,
         MatButtonModule,
@@ -80,28 +80,23 @@ describe('EditWorldComponent', () => {
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         AuthService,
         JsonClassFactoryService,
         WorldService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        resolvedData: testWorld
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                resolvedData: testWorld
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [ ConfirmationDialogComponent ],
-      },
+      ]
     });
 
     // Reset the fixture and component.

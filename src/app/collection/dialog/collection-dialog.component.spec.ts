@@ -36,10 +36,10 @@ describe('CollectionDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         CollectionDialogComponent
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         FormsModule,
         MatAutocompleteModule,
         MatDialogModule,
@@ -51,14 +51,14 @@ describe('CollectionDialogComponent', () => {
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         CollectionService,
         JsonClassFactoryService,
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: { close: Function } },
         provideHttpClient(withInterceptorsFromDi())
-    ]
-});
+      ]
+    });
 
     fixture = TestBed.createComponent(CollectionDialogComponent);
     component = fixture.debugElement.componentInstance;
@@ -77,7 +77,7 @@ describe('CollectionDialogComponent', () => {
     expect(component.dialog.close).not.toHaveBeenCalled();
 
     // With a collection.
-    component.collectionAddInputForm.setValue(mockCollection);
+    component.collectionAddInputForm.setValue(mockCollection as any);
     component.add();
 
     expect(service.addAsset).toHaveBeenCalledWith(mockCollection.owner, mockCollection.name,

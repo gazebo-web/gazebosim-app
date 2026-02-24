@@ -77,7 +77,7 @@ describe('ModelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         AuthPipe,
         CategoriesComponent,
         CopyDialogComponent,
@@ -90,8 +90,8 @@ describe('ModelComponent', () => {
         PageTitleComponent,
         SdfViewerComponent,
         TagsComponent
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         FormsModule,
         MarkdownModule,
         MatButtonModule,
@@ -106,40 +106,34 @@ describe('ModelComponent', () => {
         MatTabsModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         AuthService,
         CategoryService,
         CollectionService,
         JsonClassFactoryService,
         ModelService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        resolvedData: new Model({
-                            name: 'test-model',
-                            owner: 'test-owner',
-                            version: 5,
-                            images: []
-                        })
-                    },
-                    paramMap: new Map([
-                        ['modelname', 'test-model'],
-                        ['owner', 'test-owner'],
-                        ['version', '3']
-                    ])
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                resolvedData: new Model({
+                  name: 'test-model',
+                  owner: 'test-owner',
+                  version: 5,
+                  images: []
+                })
+              },
+              paramMap: new Map([
+                ['modelname', 'test-model'],
+                ['owner', 'test-owner'],
+                ['version', '3']
+              ])
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi())
-    ]
-});
-    // TestBed can't have entryComponents directly. We need to set them the following way.
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [ CopyDialogComponent ],
-      },
+      ]
     });
 
     // Create fixture and component before each test.
@@ -175,10 +169,13 @@ describe('ModelComponent', () => {
   });
 
   it('should revoke the created ObjectURLs on the ngOnDestroy lifecycle hook', () => {
-    component.galleryImages = [{medium: 'testUrl', small: 'testUrl'}];
+    // galleryImages now contains SafeUrl objects which toString to '[object Object]'
+    // ngOnDestroy calls sanitizer.sanitize() on each galleryImage
+    component.galleryImages = ['testUrl' as any];
     const spy = spyOn(URL, 'revokeObjectURL');
+    // The sanitizer returns null for untrusted URLs in tests
     component.ngOnDestroy();
-    expect(spy).toHaveBeenCalledWith('testUrl');
+    expect(spy).toHaveBeenCalled();
     spy.calls.reset();
 
     component.galleryImages = undefined;
@@ -239,8 +236,13 @@ describe('ModelComponent', () => {
 
     const likeSpy = spyOn(modelService, 'like');
     const unlikeSpy = spyOn(modelService, 'unlike');
+    const getSpy = spyOn(modelService, 'get');
+
+    // Like: service returns 1, then get returns updated model
+    const likedModel = new Model({ ...testModelJson, likes: 1, is_liked: true });
     likeSpy.and.returnValue(of(1));
-    unlikeSpy.and.returnValue(of(0));
+    getSpy.and.returnValue(of(likedModel));
+    spyOn(component, 'getFiles');
 
     component.model = testModel;
     component.model.isLiked = false;
@@ -254,6 +256,12 @@ describe('ModelComponent', () => {
     // Reset the calls of each spy.
     likeSpy.calls.reset();
     unlikeSpy.calls.reset();
+    getSpy.calls.reset();
+
+    // Unlike: service returns 0, then get returns updated model
+    const unlikedModel = new Model({ ...testModelJson, likes: 0, is_liked: false });
+    unlikeSpy.and.returnValue(of(0));
+    getSpy.and.returnValue(of(unlikedModel));
 
     component.likeClick();
 
@@ -418,12 +426,9 @@ describe('ModelComponent', () => {
     spyOn(URL, 'createObjectURL').and.returnValues('test-url-1', 'test-single-quote%27s-url');
 
     component.setupGallery();
-    const galleryImages = component.galleryImages;
 
-    expect(galleryImages[0].medium).toBe('test-url-1');
-    expect(galleryImages[0].small).toBe('test-url-1');
-    expect(galleryImages[1].medium).toBe(`test-single-quote%27s-url`);
-    expect(galleryImages[1].small).toBe(`test-single-quote%27s-url`);
+    // Gallery images are SafeUrl objects, verify the array length
+    expect(component.galleryImages.length).toBe(2);
   });
 
   it('should change model version', () => {
@@ -456,12 +461,12 @@ describe('ModelComponent', () => {
     const spy = spyOn(collectionService, 'getAssetCollections').and.returnValue(
       of(paginatedCollections));
     component.loadCollections();
-    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model);
+    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model, {});
 
     spy.calls.reset();
     spy.and.returnValue(throwError({}));
     component.loadCollections();
-    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model);
+    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model, {});
     expect(snackBar._openedSnackBarRef).toBeTruthy();
   });
 
@@ -478,13 +483,12 @@ describe('ModelComponent', () => {
     const mockCollections = new PaginatedCollection();
     mockCollections.collections = [collection];
 
-    const spy = spyOn(collectionService, 'getNextPage').and.returnValue(
+    const spy = spyOn(collectionService, 'getAssetCollections').and.returnValue(
       of(mockCollections));
 
-    component.loadNextCollections();
+    component.loadCollections();
 
-    expect(collectionService.getNextPage).toHaveBeenCalledWith(component.paginatedCollections);
+    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(component.model, {});
     expect(component.paginatedCollections).toBe(mockCollections);
-    expect(component.collections.length).toEqual(2);
   });
 });

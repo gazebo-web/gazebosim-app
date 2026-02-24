@@ -48,7 +48,7 @@ describe('NewModelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         CategoriesComponent,
         ConfirmationDialogComponent,
         DescriptionComponent,
@@ -58,8 +58,8 @@ describe('NewModelComponent', () => {
         PageTitleComponent,
         SdfViewerComponent,
         TagsComponent,
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         FormsModule,
         MarkdownModule,
         MatButtonModule,
@@ -72,20 +72,13 @@ describe('NewModelComponent', () => {
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         AuthService,
         ModelService,
         JsonClassFactoryService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
-
-    // TestBed can't have entryComponents directly. We need to set them the following way.
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [ ConfirmationDialogComponent ],
-      },
+      ]
     });
 
     fixture = TestBed.createComponent(NewModelComponent);
@@ -205,7 +198,7 @@ describe('NewModelComponent', () => {
     const service = component.modelService;
     const authService = component.authService;
     const router = component.router;
-    spyOn(service, 'upload').and.returnValue(of({status: 200}));
+    spyOn(service, 'upload').and.returnValue(of({ status: 200 }));
     spyOn(router, 'navigate');
 
     // Mock authenticated user.
@@ -251,7 +244,7 @@ describe('NewModelComponent', () => {
   it('should cancel the upload on an incorrect response status', () => {
     const snackBar = component.snackBar;
     const service = component.modelService;
-    spyOn(service, 'upload').and.returnValue(of({status: 500}));
+    spyOn(service, 'upload').and.returnValue(of({ status: 500 }));
     spyOn(component, 'cancelUpload');
 
     component.modelName = 'testModel';

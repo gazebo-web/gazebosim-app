@@ -51,14 +51,14 @@ describe('CollectionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    providers: [
+      imports: [RouterTestingModule],
+      providers: [
         JsonClassFactoryService,
         CollectionService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ]
+    });
     testBed = getTestBed();
     service = testBed.inject(CollectionService);
     factory = testBed.inject(JsonClassFactoryService);
@@ -86,7 +86,7 @@ describe('CollectionService', () => {
   it('should get the list of collections with partial search', () => {
     const testUrl: string = `${service.baseUrl}/collections?q=:noft:test`;
 
-    service.getCollectionList('test').subscribe(
+    service.getCollectionList({ search: 'test' }).subscribe(
       (paginatedCollection) => {
         expect(paginatedCollection.collections).toEqual(testCollectionList);
       });
@@ -97,7 +97,7 @@ describe('CollectionService', () => {
   });
 
   it('should get the list of collections that can be extended by an user', () => {
-    const testUrl: string = `${service.baseUrl}/collections?extend=true`;
+    const testUrl: string = `${service.baseUrl}/collections`;
 
     service.getCollectionExtensibleList().subscribe(
       (paginatedCollection) => {
@@ -110,9 +110,9 @@ describe('CollectionService', () => {
   });
 
   it('should get the list of extensible collections along with a partial search', () => {
-    const testUrl: string = `${service.baseUrl}/collections?extend=true&q=:noft:partial`;
+    const testUrl: string = `${service.baseUrl}/collections?q=:noft:partial`;
 
-    service.getCollectionExtensibleList('partial').subscribe(
+    service.getCollectionExtensibleList({ search: 'partial' }).subscribe(
       (paginatedCollection) => {
         expect(paginatedCollection.collections).toEqual(testCollectionList);
       });
@@ -290,7 +290,7 @@ describe('CollectionService', () => {
 
   it(`should parse the next pagination url if it's present in the headers`, () => {
     // Fake Link Header.
-    const header: HttpHeaders = new HttpHeaders({link: '</collections?page=2>; rel="next"'});
+    const header: HttpHeaders = new HttpHeaders({ link: '</collections?page=2>; rel="next"' });
     const testUrl: string = `${service.baseUrl}/collections`;
 
     service.getCollectionList().subscribe(
@@ -301,7 +301,7 @@ describe('CollectionService', () => {
 
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
-    req.flush(testCollectionListJson, {headers: header});
+    req.flush(testCollectionListJson, { headers: header });
   });
 
   it(`should NOT parse the next pagination url if it's NOT present in the headers`, () => {
@@ -317,12 +317,12 @@ describe('CollectionService', () => {
 
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
-    req.flush(testCollectionListJson, {headers: header});
+    req.flush(testCollectionListJson, { headers: header });
   });
 
   it(`should NOT parse the next pagination url if the link is empty`, () => {
     // Fake Header with an empty Link.
-    const header: HttpHeaders = new HttpHeaders({link: ''});
+    const header: HttpHeaders = new HttpHeaders({ link: '' });
     const testUrl: string = `${service.baseUrl}/collections`;
 
     service.getCollectionList().subscribe(
@@ -333,6 +333,6 @@ describe('CollectionService', () => {
 
     const req: TestRequest = httpMock.expectOne(testUrl);
     expect(req.request.method).toBe('GET');
-    req.flush(testCollectionListJson, {headers: header});
+    req.flush(testCollectionListJson, { headers: header });
   });
 });

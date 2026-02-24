@@ -21,13 +21,13 @@ describe('CollectionListComponent', () => {
   let component: CollectionListComponent;
 
   const testCollections: Collection[] = [
-    new Collection({name: 'testCol1', owner: 'testOwner1', description: 'testDesc1'}),
-    new Collection({name: 'testCol2', owner: 'testOwner2', description: 'testDesc2'}),
+    new Collection({ name: 'testCol1', owner: 'testOwner1', description: 'testDesc1' }),
+    new Collection({ name: 'testCol2', owner: 'testOwner2', description: 'testDesc2' }),
   ];
 
   const nextCollections: Collection[] = [
-    new Collection({name: 'testCol3', owner: 'testOwner3', description: 'testDesc3'}),
-    new Collection({name: 'testCol4', owner: 'testOwner4', description: 'testDesc4'}),
+    new Collection({ name: 'testCol3', owner: 'testOwner3', description: 'testDesc3' }),
+    new Collection({ name: 'testCol4', owner: 'testOwner4', description: 'testDesc4' }),
   ];
 
   const paginatedCollections: PaginatedCollection = new PaginatedCollection();
@@ -42,37 +42,37 @@ describe('CollectionListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         AuthPipe,
         CollectionListComponent,
         FuelResourceListComponent,
         ItemCardComponent,
         PageTitleComponent,
-    ],
-    imports: [MatIconModule,
+      ],
+      imports: [MatIconModule,
         MatCardModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         CollectionService,
         AuthService,
         JsonClassFactoryService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        resolvedData: paginatedCollections
-                    },
-                    paramMap: convertToParamMap({
-                        user: '',
-                    })
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                resolvedData: paginatedCollections
+              },
+              paramMap: convertToParamMap({
+                user: '',
+              })
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ]
+    });
 
     fixture = TestBed.createComponent(CollectionListComponent);
     component = fixture.debugElement.componentInstance;
@@ -84,25 +84,18 @@ describe('CollectionListComponent', () => {
     expect(component.collections).toEqual(testCollections);
   });
 
-  it('should load the next page', () => {
+  it('should load collections on pagination', () => {
     const collectionService = TestBed.inject(CollectionService);
-    const spy = spyOn(collectionService, 'getNextPage').and.returnValue(
+    const spy = spyOn(collectionService, 'getCollectionList').and.returnValue(
       of(nextPaginatedCollections));
-    component.collections = [];
+    component.collections = testCollections;
     component.paginatedCollections = paginatedCollections;
 
-    // Consider the paginated models have a next page.
-    paginatedCollections.nextPage = 'hasNextPage';
-    component.loadNextCollectionsPage();
-    expect(spy).toHaveBeenCalledWith(paginatedCollections);
+    const mockEvent = { pageIndex: 1, pageSize: 20, length: 0 };
+    component.getCollections(mockEvent);
+    expect(spy).toHaveBeenCalled();
     expect(component.paginatedCollections).toEqual(nextPaginatedCollections);
     expect(component.collections).toEqual(nextCollections);
-    expect(component.paginatedCollections.hasNextPage()).toBe(false);
-
-    // There is no next page.
-    spy.calls.reset();
-    component.loadNextCollectionsPage();
-    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should set the correct title in the page', () => {

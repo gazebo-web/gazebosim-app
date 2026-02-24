@@ -30,13 +30,13 @@ describe('ModelListComponent', () => {
   let component: ModelListComponent;
 
   const testModels: Model[] = [
-    new Model({name: 'testModel0'}),
-    new Model({name: 'testModel1'})
+    new Model({ name: 'testModel0' }),
+    new Model({ name: 'testModel1' })
   ];
 
   const nextModels: Model[] = [
-    new Model({name: 'testModel2'}),
-    new Model({name: 'testModel3'})
+    new Model({ name: 'testModel2' }),
+    new Model({ name: 'testModel3' })
   ];
 
   const paginatedModels: PaginatedModels = new PaginatedModels();
@@ -51,14 +51,14 @@ describe('ModelListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         AuthPipe,
         FuelResourceListComponent,
         ItemCardComponent,
         ModelListComponent,
         PageTitleComponent,
-    ],
-    imports: [BrowserAnimationsModule,
+      ],
+      imports: [BrowserAnimationsModule,
         MatCardModule,
         MatInputModule,
         MatIconModule,
@@ -66,29 +66,29 @@ describe('ModelListComponent', () => {
         MatSelectModule,
         ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         AuthService,
         CategoryService,
         ModelService,
         Ng2DeviceService,
         JsonClassFactoryService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        resolvedData: paginatedModels,
-                        title: () => {
-                            return 'testTitle';
-                        }
-                    }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                resolvedData: paginatedModels,
+                title: () => {
+                  return 'testTitle';
                 }
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ]
+    });
 
     fixture = TestBed.createComponent(ModelListComponent);
     component = fixture.componentInstance;
@@ -101,24 +101,17 @@ describe('ModelListComponent', () => {
     expect(component.title).toEqual('testTitle');
   });
 
-  it('should load the next page', () => {
+  it('should load models on pagination', () => {
     const modelService = TestBed.inject(ModelService);
-    const spy = spyOn(modelService, 'getNextPage').and.returnValue(
+    const spy = spyOn(modelService, 'getList').and.returnValue(
       of(nextPaginatedModels));
-    component.models = [];
+    component.models = testModels;
     component.paginatedModels = paginatedModels;
 
-    // Consider the paginated models have a next page.
-    paginatedModels.nextPage = 'hasNextPage';
-    component.loadNextPage();
-    expect(spy).toHaveBeenCalledWith(paginatedModels);
+    const mockEvent = { pageIndex: 1, pageSize: 20, length: 0 };
+    component.getModels(mockEvent);
+    expect(spy).toHaveBeenCalled();
     expect(component.paginatedModels).toEqual(nextPaginatedModels);
     expect(component.models).toEqual(nextModels);
-    expect(component.paginatedModels.hasNextPage()).toBe(false);
-
-    // There is no next page.
-    spy.calls.reset();
-    component.loadNextPage();
-    expect(spy).not.toHaveBeenCalled();
   });
 });
