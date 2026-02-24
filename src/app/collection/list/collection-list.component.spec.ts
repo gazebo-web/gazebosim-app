@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,6 +14,7 @@ import { FuelResourceListComponent } from '../../fuel-resource';
 import { ItemCardComponent } from '../../item-card/item-card.component';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
 import { PageTitleComponent } from '../../page-title';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CollectionListComponent', () => {
   let fixture: ComponentFixture<CollectionListComponent>;
@@ -41,38 +42,37 @@ describe('CollectionListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatIconModule,
-        MatCardModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        ],
-      declarations: [
+    declarations: [
         AuthPipe,
         CollectionListComponent,
         FuelResourceListComponent,
         ItemCardComponent,
         PageTitleComponent,
-        ],
-      providers: [
+    ],
+    imports: [MatIconModule,
+        MatCardModule,
+        RouterTestingModule],
+    providers: [
         CollectionService,
         AuthService,
         JsonClassFactoryService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: paginatedCollections
-              },
-              paramMap: convertToParamMap({
-                user: '',
-              })
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: paginatedCollections
+                    },
+                    paramMap: convertToParamMap({
+                        user: '',
+                    })
+                }
             }
-          }
         },
-        ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     fixture = TestBed.createComponent(CollectionListComponent);
     component = fixture.debugElement.componentInstance;

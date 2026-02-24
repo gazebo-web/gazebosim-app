@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -23,6 +23,7 @@ import { ModelService } from '../model.service';
 import { Ng2DeviceService } from '../../device-detector';
 import { PageTitleComponent } from '../../page-title';
 import { PaginatedModels } from '../paginated-models';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ModelListComponent', () => {
   let fixture: ComponentFixture<ModelListComponent>;
@@ -50,45 +51,44 @@ describe('ModelListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        AuthPipe,
+        FuelResourceListComponent,
+        ItemCardComponent,
+        ModelListComponent,
+        PageTitleComponent,
+    ],
+    imports: [BrowserAnimationsModule,
         MatCardModule,
         MatInputModule,
         MatIconModule,
         MatFormFieldModule,
         MatSelectModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        ],
-      declarations: [
-        AuthPipe,
-        FuelResourceListComponent,
-        ItemCardComponent,
-        ModelListComponent,
-        PageTitleComponent,
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         CategoryService,
         ModelService,
         Ng2DeviceService,
         JsonClassFactoryService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: paginatedModels,
-                title: () => {
-                  return 'testTitle';
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: paginatedModels,
+                        title: () => {
+                            return 'testTitle';
+                        }
+                    }
                 }
-              }
             }
-          }
         },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     fixture = TestBed.createComponent(ModelListComponent);
     component = fixture.componentInstance;

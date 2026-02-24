@@ -1,10 +1,6 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
-import { HttpHeaders } from '@angular/common/http';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-  TestRequest
-} from '@angular/common/http/testing';
+import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthService } from '../auth/auth.service';
@@ -51,16 +47,15 @@ describe('OrganizationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
-      providers: [
+    imports: [RouterTestingModule],
+    providers: [
         AuthService,
         JsonClassFactoryService,
         OrganizationService,
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     auth = TestBed.inject(AuthService);
     service = TestBed.inject(OrganizationService);

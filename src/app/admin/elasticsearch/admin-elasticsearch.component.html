@@ -44,9 +44,15 @@
           </button>
 
           <mat-menu #controlMenu="matMenu">
-            <button mat-menu-item (click)="reconnect()" *ngIf="element.primary">Reconnect</button>
-            <button mat-menu-item (click)="rebuild()" *ngIf="element.primary">Rebuild</button>
-            <button mat-menu-item (click)="update()" *ngIf="element.primary">Update</button>
+            @if (element.primary) {
+              <button mat-menu-item (click)="reconnect()">Reconnect</button>
+            }
+            @if (element.primary) {
+              <button mat-menu-item (click)="rebuild()">Rebuild</button>
+            }
+            @if (element.primary) {
+              <button mat-menu-item (click)="update()">Update</button>
+            }
             <button mat-menu-item (click)="modify(element)">Modify</button>
             <button mat-menu-item (click)="delete(element.id)">Delete</button>
           </mat-menu>

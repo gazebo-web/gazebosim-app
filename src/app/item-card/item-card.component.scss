@@ -1,5 +1,4 @@
-@import '~@angular/material/theming';
-@import '../../styles.scss';
+
 
 mat-card {
   margin: 10px;
@@ -27,7 +26,7 @@ mat-card {
     right: 2em;
     bottom: -1.5em;
     /* Setting the primary color here prevents the flicker from the accent color. */
-    background-color: mat-color($custom-theme-primary) !important;
+    background-color: #03a9f4 !important;
   }
 
   .image-container {

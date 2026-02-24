@@ -8,9 +8,10 @@ import {
 import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: 'gz-confirmation-dialog',
-  templateUrl: 'confirmation-dialog.component.html',
-  styleUrls: ['confirmation-dialog.component.scss']
+    selector: 'gz-confirmation-dialog',
+    templateUrl: 'confirmation-dialog.component.html',
+    styleUrls: ['confirmation-dialog.component.scss'],
+    standalone: false
 })
 
 /**

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -13,7 +13,7 @@ import { WorldService } from '../world.service';
  *
  * This allows us to have the list of worlds before it's displayed in a Component.
  */
-export class PublicWorldsResolver implements Resolve<PaginatedWorlds> {
+export class PublicWorldsResolver  {
 
   /**
    * @param worldService Service used to get World List information from the Server.

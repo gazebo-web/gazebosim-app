@@ -1,4 +1,8 @@
-<h1 *ngIf="credits !== undefined">You have {{credits}} credits</h1>
-<h1 *ngIf="credits === undefined">Fetching credits...</h1>
+@if (credits !== undefined) {
+  <h1>You have {{credits}} credits</h1>
+}
+@if (credits === undefined) {
+  <h1>Fetching credits...</h1>
+}
 
 <button mat-raised-button color="primary" (click)="buy()">Buy credits</button>

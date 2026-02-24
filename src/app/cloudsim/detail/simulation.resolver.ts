@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -13,7 +13,7 @@ import { SimulationService } from '../simulation.service';
  *
  * Fetches the simulation to display before the SimulationComponent is created.
  */
-export class SimulationResolver implements Resolve<Simulation> {
+export class SimulationResolver  {
 
   /**
    * @param simulationService Service used to get Simulation information from the Cloudsim Server.

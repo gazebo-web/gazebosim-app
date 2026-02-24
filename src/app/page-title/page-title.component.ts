@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'gz-page-title',
-  templateUrl: './page-title.component.html',
-  styleUrls: ['./page-title.component.scss']
+    selector: 'gz-page-title',
+    templateUrl: './page-title.component.html',
+    styleUrls: ['./page-title.component.scss'],
+    standalone: false
 })
 
 /**

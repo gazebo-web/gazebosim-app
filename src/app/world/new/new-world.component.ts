@@ -15,9 +15,10 @@ import { World } from '../world';
 import { WorldService } from '../world.service';
 
 @Component({
-  selector: 'gz-new-world',
-  templateUrl: 'new-world.component.html',
-  styleUrls: ['new-world.component.scss']
+    selector: 'gz-new-world',
+    templateUrl: 'new-world.component.html',
+    styleUrls: ['new-world.component.scss'],
+    standalone: false
 })
 
 /**
@@ -103,7 +104,7 @@ export class NewWorldComponent implements OnInit {
    */
   public worldNameInputForm = new FormControl('',
     {validators: [Validators.required, Validators.pattern('[^\/%]*'), Validators.minLength(3)],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * Form Input for the World Privacy. By default it is Public (0).

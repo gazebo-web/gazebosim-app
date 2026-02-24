@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CanActivate } from '@angular/router';
+
 import { Ng2DeviceService } from '../../device-detector';
 
 @Injectable()
@@ -10,7 +10,7 @@ import { Ng2DeviceService } from '../../device-detector';
  *
  * Prevents navigation on mobile devices.
  */
-export class NewWorldGuard implements CanActivate {
+export class NewWorldGuard  {
 
   /**
    * Constructor of the New World Guard service.

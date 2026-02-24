@@ -12,9 +12,10 @@ import { ErrMsg } from '../../server/err-msg';
 import { FuelResource } from '../../fuel-resource';
 
 @Component({
-  selector: 'gz-collection-dialog',
-  templateUrl: 'collection-dialog.component.html',
-  styleUrls: ['collection-dialog.component.scss']
+    selector: 'gz-collection-dialog',
+    templateUrl: 'collection-dialog.component.html',
+    styleUrls: ['collection-dialog.component.scss'],
+    standalone: false
 })
 
 /**
@@ -37,7 +38,7 @@ export class CollectionDialogComponent implements OnInit {
    */
   public collectionNameInputForm = new FormControl('',
     {validators: [Validators.required, Validators.pattern('[^\/]*')],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * List of potential owners of the collection.
@@ -53,7 +54,7 @@ export class CollectionDialogComponent implements OnInit {
    * Input form that handles the collection Name, to add a resource into it.
    */
   public collectionAddInputForm = new FormControl('',
-    {updateOn: 'change' || 'submit'});
+    {updateOn: 'change'});
 
   /**
    * List of potential Collections to add a resource into. It is an Observable,

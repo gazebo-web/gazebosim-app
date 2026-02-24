@@ -9,9 +9,10 @@ import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
 
 @Component({
-  selector: 'gz-fuel-home',
-  templateUrl: 'fuel-home.component.html',
-  styleUrls: ['fuel-home.component.scss']
+    selector: 'gz-fuel-home',
+    templateUrl: 'fuel-home.component.html',
+    styleUrls: ['fuel-home.component.scss'],
+    standalone: false
 })
 
 /**

@@ -9,9 +9,10 @@ import { OrganizationService } from '../organization.service';
 import { AuthService } from '../../auth/auth.service';
 
 @Component({
-  selector: 'gz-new-organization-dialog',
-  templateUrl: 'new-organization-dialog.component.html',
-  styleUrls: ['new-organization-dialog.component.scss']
+    selector: 'gz-new-organization-dialog',
+    templateUrl: 'new-organization-dialog.component.html',
+    styleUrls: ['new-organization-dialog.component.scss'],
+    standalone: false
 })
 
 /**

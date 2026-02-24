@@ -10,9 +10,10 @@ import { SimulationService } from '../../../cloudsim';
 import { QueueList } from './queue-list';
 
 @Component({
-  selector: 'gz-launch-queue',
-  templateUrl: 'launch-queue.component.html',
-  styleUrls: ['launch-queue.component.scss']
+    selector: 'gz-launch-queue',
+    templateUrl: 'launch-queue.component.html',
+    styleUrls: ['launch-queue.component.scss'],
+    standalone: false
 })
 export class LaunchQueueComponent implements OnInit {
   /**

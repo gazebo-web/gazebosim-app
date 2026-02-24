@@ -1,8 +1,8 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestBed } from '@angular/core/testing';
-import { MediaObserver } from '@angular/flex-layout';
+import { MediaObserver } from '@ngbracket/ngx-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,13 +18,16 @@ import { AppComponent } from './app.component';
 import { AuthService } from './auth/auth.service';
 import { Ng2DeviceService } from './device-detector';
 import { PageTitleComponent } from './page-title';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        MatButtonModule,
+    declarations: [
+        AppComponent,
+        PageTitleComponent,
+    ],
+    imports: [MatButtonModule,
         MatDialogModule,
         MatIconModule,
         MatInputModule,
@@ -35,18 +38,15 @@ describe('AppComponent', () => {
         MatSnackBarModule,
         MatToolbarModule,
         NoopAnimationsModule,
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent,
-        PageTitleComponent,
-      ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         Ng2DeviceService,
         MediaObserver,
-      ]
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
   });
 
   it('should create the app', () => {

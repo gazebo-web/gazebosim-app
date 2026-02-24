@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthService } from '../auth/auth.service';
@@ -7,6 +7,7 @@ import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { Model } from './model';
 import { ModelService } from './model.service';
 import { PaginatedModels } from './paginated-models';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ModelService', () => {
   let auth: AuthService;
@@ -15,16 +16,15 @@ describe('ModelService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
-      providers: [
+    imports: [RouterTestingModule],
+    providers: [
         AuthService,
         JsonClassFactoryService,
         ModelService,
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     auth = TestBed.inject(AuthService);
     service = TestBed.inject(ModelService);

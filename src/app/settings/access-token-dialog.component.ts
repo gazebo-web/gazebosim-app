@@ -8,9 +8,10 @@ import {
 import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: 'gz-access-token-dialog',
-  templateUrl: 'access-token-dialog.component.html',
-  styleUrls: ['access-token-dialog.component.scss']
+    selector: 'gz-access-token-dialog',
+    templateUrl: 'access-token-dialog.component.html',
+    styleUrls: ['access-token-dialog.component.scss'],
+    standalone: false
 })
 
 /**

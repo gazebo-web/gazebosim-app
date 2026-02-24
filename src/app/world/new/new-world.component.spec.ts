@@ -3,7 +3,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -26,6 +26,7 @@ import { PageTitleComponent } from '../../page-title';
 import { SdfViewerComponent } from '../../model/sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../../tags/tags.component';
 import { WorldService } from '../world.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('NewWorldComponent', () => {
   let fixture: ComponentFixture<NewWorldComponent>;
@@ -46,10 +47,18 @@ describe('NewWorldComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        ConfirmationDialogComponent,
+        DescriptionComponent,
+        DndDirective,
+        FileUploadComponent,
+        NewWorldComponent,
+        PageTitleComponent,
+        SdfViewerComponent,
+        TagsComponent,
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientTestingModule,
         MarkdownModule,
         MatButtonModule,
         MatChipsModule,
@@ -60,24 +69,15 @@ describe('NewWorldComponent', () => {
         MatSelectModule,
         MatSnackBarModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        ConfirmationDialogComponent,
-        DescriptionComponent,
-        DndDirective,
-        FileUploadComponent,
-        NewWorldComponent,
-        PageTitleComponent,
-        SdfViewerComponent,
-        TagsComponent,
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         WorldService,
-        JsonClassFactoryService
-        ],
-    });
+        JsonClassFactoryService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     // TestBed can't have entryComponents directly. We need to set them the following way.
     TestBed.overrideModule(BrowserDynamicTestingModule, {

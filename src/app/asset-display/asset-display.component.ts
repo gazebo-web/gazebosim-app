@@ -11,8 +11,9 @@ import { Subscription } from 'rxjs';
 import { PageNotFoundComponent } from '../page-not-found';
 
 @Component({
-  selector: 'gz-asset-display',
-  templateUrl: 'asset-display.component.html'
+    selector: 'gz-asset-display',
+    templateUrl: 'asset-display.component.html',
+    standalone: false
 })
 
 /**

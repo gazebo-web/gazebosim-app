@@ -16,9 +16,10 @@ import { PaginatedSimulation, Simulation, SimulationService } from '../cloudsim'
 import { SimulationLaunchDialogComponent } from './launch/simulation-launch-dialog.component';
 
 @Component({
-  selector: 'gz-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+    selector: 'gz-applications',
+    templateUrl: './applications.component.html',
+    styleUrls: ['./applications.component.scss'],
+    standalone: false
 })
 export class ApplicationsComponent implements OnInit, AfterViewInit {
 

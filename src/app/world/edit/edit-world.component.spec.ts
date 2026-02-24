@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,6 +29,7 @@ import { SdfViewerComponent } from '../../model/sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../../tags/tags.component';
 import { World } from '../world';
 import { WorldService } from '../world.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('EditWorldComponent', () => {
 
@@ -57,10 +58,18 @@ describe('EditWorldComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        ConfirmationDialogComponent,
+        DescriptionComponent,
+        DndDirective,
+        EditWorldComponent,
+        FileUploadComponent,
+        PageTitleComponent,
+        SdfViewerComponent,
+        TagsComponent
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientTestingModule,
         MarkdownModule,
         MatButtonModule,
         MatChipsModule,
@@ -70,34 +79,25 @@ describe('EditWorldComponent', () => {
         MatRadioModule,
         MatSnackBarModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        ConfirmationDialogComponent,
-        DescriptionComponent,
-        DndDirective,
-        EditWorldComponent,
-        FileUploadComponent,
-        PageTitleComponent,
-        SdfViewerComponent,
-        TagsComponent
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         JsonClassFactoryService,
         WorldService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: testWorld
-              }
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: testWorld
+                    }
+                }
             }
-          }
         },
-        ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [ ConfirmationDialogComponent ],

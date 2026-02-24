@@ -1,10 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-  TestRequest
-} from '@angular/common/http/testing';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthService } from '../auth/auth.service';
@@ -34,16 +30,15 @@ describe('FuelResourceService', () => {
   // each spec.
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
-      providers: [
+    imports: [RouterTestingModule],
+    providers: [
         AuthService,
         JsonClassFactoryService,
         FuelResourceService,
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     authService = TestBed.inject(AuthService);
     factoryService = TestBed.inject(JsonClassFactoryService);

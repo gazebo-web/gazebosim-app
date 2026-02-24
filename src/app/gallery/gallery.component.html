@@ -1,18 +1,23 @@
-<swiper *ngIf="images?.length > 0"
-        [config]="mainConfig"
-        [thumbs]="{ swiper: thumbsSwiper }"
-        class="mainSwiper custom-colors">
-  <ng-template *ngFor="let img of images" swiperSlide>
-    <img [src]="img"/>
-  </ng-template>
-</swiper>
+@if (images?.length > 0) {
+  <div class="gallery-container">
+    <div class="main-image">
+      @if (images.length > 1) {
+        <button class="nav-button prev" (click)="prev()">&#10094;</button>
+      }
+      <img [src]="images[currentIndex]"/>
+      @if (images.length > 1) {
+        <button class="nav-button next" (click)="next()">&#10095;</button>
+      }
+    </div>
+  </div>
+}
 
-<swiper *ngIf="images?.length > 1"
-        (swiper)="thumbsSwiper = $event"
-        [config]="thumbsConfig"
-        [watchSlidesProgress]="true"
-        class="thumbSwiper">
-  <ng-template *ngFor="let img of images" swiperSlide>
-    <img [src]="img"/>
-  </ng-template>
-</swiper>
+@if (images?.length > 1) {
+  <div class="thumbs-container">
+    @for (img of images; track img; let i = $index) {
+      <div class="thumb" [class.active]="i === currentIndex" (click)="selectImage(i)">
+        <img [src]="img"/>
+      </div>
+    }
+  </div>
+}

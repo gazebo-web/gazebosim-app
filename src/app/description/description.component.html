@@ -1,41 +1,44 @@
-<div *ngIf="edit; else descriptionDisplay">
-  <mat-form-field fxFill
-    hintLabel="This field uses Markdown. Click the preview button to see the result.">
-    <div fxLayoutAlign="space-between start">
-      <textarea matInput
-                placeholder="Description"
-                matTextareaAutosize
-                matAutosizeMinRows = "2"
-                [disabled]="disabled"
-                [ngModel]="description"
-                (ngModelChange)="setDescription($event)"
-                [ngClass]="{'hide-element': markdownPreview}">
-      </textarea>
-
-      <div markdown id="description-field" *ngIf="markdownPreview" [data]="description"></div>
-
-      <button mat-icon-button *ngIf="!markdownPreview" type="button" title="Preview"
-        [disabled]="disabled"
-        (click)="toggleMarkdownPreview()">
-        <mat-icon>visibility</mat-icon>
-      </button>
-
-      <button *ngIf="markdownPreview" mat-icon-button type="button" title="Edit"
-        [disabled]="disabled"
-        (click)="toggleMarkdownPreview()">
-        <mat-icon>edit</mat-icon>
-      </button>
-    </div>
-  </mat-form-field>
-</div>
-
-<ng-template #descriptionDisplay>
-  <div id="description-field"
-       *ngIf="description; else noDescriptionBlock"
-       markdown [data]="description">
+@if (edit) {
+  <div>
+    <mat-form-field fxFill
+      hintLabel="This field uses Markdown. Click the preview button to see the result.">
+      <div fxLayoutAlign="space-between start">
+        <textarea matInput
+          placeholder="Description"
+          matTextareaAutosize
+          matAutosizeMinRows = "2"
+          [disabled]="disabled"
+          [ngModel]="description"
+          (ngModelChange)="setDescription($event)"
+          [ngClass]="{'hide-element': markdownPreview}">
+        </textarea>
+        @if (markdownPreview) {
+          <div markdown id="description-field" [data]="description"></div>
+        }
+        @if (!markdownPreview) {
+          <button mat-icon-button type="button" title="Preview"
+            [disabled]="disabled"
+            (click)="toggleMarkdownPreview()">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        }
+        @if (markdownPreview) {
+          <button mat-icon-button type="button" title="Edit"
+            [disabled]="disabled"
+            (click)="toggleMarkdownPreview()">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+      </div>
+    </mat-form-field>
   </div>
-
-  <ng-template #noDescriptionBlock>
+} @else {
+  @if (description) {
+    <div id="description-field"
+      markdown [data]="description">
+    </div>
+  } @else {
     <p>No description provided.</p>
-  </ng-template>
-</ng-template>
+  }
+}
+

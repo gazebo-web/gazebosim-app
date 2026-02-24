@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CanActivate } from '@angular/router';
+
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
  * AuthGuard is a CanActivate guard used to prevent navigation to a route, if the user
  * is not authenticated.
  */
-export class AuthGuard implements CanActivate {
+export class AuthGuard  {
 
   /**
    * @param auth Service used to get authentication information.

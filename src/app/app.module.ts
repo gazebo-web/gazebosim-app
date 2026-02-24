@@ -4,10 +4,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, DomSanitizer, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from '@ngbracket/ngx-layout';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -36,7 +36,7 @@ import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overl
 /**
  * Third party dependencies.
  */
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions, MARKED_OPTIONS } from 'ngx-markdown';
 import { NgxStripeModule } from 'ngx-stripe';
 
 /**
@@ -143,7 +143,7 @@ import { WorldService } from './world/world.service';
  * Entry point.
  */
 @NgModule({
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
   /**
    * Array of local components and pipes.
    */
@@ -178,6 +178,7 @@ import { WorldService } from './world/world.service';
     FileUploadComponent,
     FuelHomeComponent,
     FuelResourceListComponent,
+    GalleryComponent,
     InformationComponent,
     ItemCardComponent,
     LaunchQueueComponent,
@@ -201,29 +202,20 @@ import { WorldService } from './world/world.service';
     SimulationRulesComponent,
     TagsComponent,
     TextInputDialogComponent,
-
     // nkoenig: Disabling until we fix the THREE dependency
     // ThumbnailGeneratorComponent,
- 
     UserComponent,
     VisualizationComponent,
     WorldComponent,
     WorldListComponent,
-  ],
-  /**
-   * Import the used modules.
-   */
-  imports: [
-    AppRoutingModule,
+  ], imports: [AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     FlexLayoutModule,
     FormsModule,
-    GalleryComponent,
-    HttpClientModule,
     MarkdownModule.forRoot({
       markedOptions: {
-        provide: MarkedOptions,
+        provide: MARKED_OPTIONS,
         useValue: {
           // Note: Sanitize is enabled by default.
           gfm: true,
@@ -255,52 +247,48 @@ import { WorldService } from './world/world.service';
     MatTabsModule,
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
-    ReactiveFormsModule,
-  ],
-  /**
-   * Expose our Services and Providers into Angular's dependency injection.
-   */
-  providers: [
-    AdminElasticsearchService,
-    AuthGuard,
-    AuthService,
-    AdminGuard,
-    CategoryService,
-    CollectionResolver,
-    CollectionService,
-    CreditsService,
-    JsonClassFactoryService,
-    LikedModelsResolver,
-    LikedWorldsResolver,
-    ModelResolver,
-    ModelService,
-    NewModelGuard,
-    NewWorldGuard,
-    Ng2DeviceService,
-    OrganizationService,
-    OwnerCollectionsResolver,
-    OwnerProfileResolver,
-    PublicCollectionsResolver,
-    PublicModelsResolver,
-    PublicWorldsResolver,
-    SimulationResolver,
-    SimulationService,
-    Title,
-    UserModelsResolver,
-    UserService,
-    UserWorldsResolver,
-    WorldResolver,
-    WorldService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-    {
-      provide: OverlayContainer,
-      useClass: FullscreenOverlayContainer
-    }
-  ]
+    ReactiveFormsModule], providers: [
+      AdminElasticsearchService,
+      AuthGuard,
+      AuthService,
+      AdminGuard,
+      CategoryService,
+      CollectionResolver,
+      CollectionService,
+      CreditsService,
+      JsonClassFactoryService,
+      LikedModelsResolver,
+      LikedWorldsResolver,
+      ModelResolver,
+      ModelService,
+      NewModelGuard,
+      NewWorldGuard,
+      Ng2DeviceService,
+      OrganizationService,
+      OwnerCollectionsResolver,
+      OwnerProfileResolver,
+      PublicCollectionsResolver,
+      PublicModelsResolver,
+      PublicWorldsResolver,
+      SimulationResolver,
+      SimulationService,
+      Title,
+      UserModelsResolver,
+      UserService,
+      UserWorldsResolver,
+      WorldResolver,
+      WorldService,
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true,
+      },
+      {
+        provide: OverlayContainer,
+        useClass: FullscreenOverlayContainer
+      },
+      provideHttpClient(withInterceptorsFromDi())
+    ]
 })
 export class AppModule {
   constructor(

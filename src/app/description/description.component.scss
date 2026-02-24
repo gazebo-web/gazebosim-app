@@ -1,12 +1,11 @@
-@import '~@angular/material/theming';
-@import '../../styles.scss';
+
 
 .hide-element {
   display: none;
 }
 
 #description-field ::ng-deep a {
-  color: mat-color($custom-theme-primary, 800);
+  color: #0277bd;
 }
 
 #description-field {

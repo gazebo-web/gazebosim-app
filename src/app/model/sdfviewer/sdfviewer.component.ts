@@ -7,9 +7,10 @@ import { WorldService } from './../../world/world.service';
 import { AssetViewer, AssetViewerConfig } from 'gzweb';
 
 @Component({
-  selector: 'gz-sdfviewer',
-  templateUrl: 'sdfviewer.component.html',
-  styleUrls: ['sdfviewer.component.scss']
+    selector: 'gz-sdfviewer',
+    templateUrl: 'sdfviewer.component.html',
+    styleUrls: ['sdfviewer.component.scss'],
+    standalone: false
 })
 
 /**

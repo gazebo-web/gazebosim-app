@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { WorldService } from '../world.service';
 /**
  * Resolver that fetches the worlds that a user liked.
  */
-export class LikedWorldsResolver implements Resolve<PaginatedWorlds> {
+export class LikedWorldsResolver  {
 
   /**
    * @param worldService Service used to get World List information from the Server

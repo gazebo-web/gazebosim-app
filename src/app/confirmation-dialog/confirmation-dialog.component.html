@@ -6,19 +6,20 @@
   <div [innerHtml]="data.message">
   </div>
 
-  <div *ngIf="data.hasInput" class="marginTop">
-    <div [innerHtml]="data.inputMessage">
+  @if (data.hasInput) {
+    <div class="marginTop">
+      <div [innerHtml]="data.inputMessage">
+      </div>
+      <form class="marginTop">
+        <mat-form-field>
+          <input matInput
+            placeholder="{{data.inputPlaceholder}}"
+            [(ngModel)]="data.inputValue"
+            [ngModelOptions]="{standalone: true}">
+        </mat-form-field>
+      </form>
     </div>
-
-    <form class="marginTop">
-      <mat-form-field>
-        <input matInput
-          placeholder="{{data.inputPlaceholder}}"
-          [(ngModel)]="data.inputValue"
-          [ngModelOptions]="{standalone: true}">
-      </mat-form-field>
-    </form>
-  </div>
+  }
 </div>
 
 <div mat-dialog-actions align="end">

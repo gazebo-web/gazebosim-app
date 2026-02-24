@@ -11,9 +11,10 @@ import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
 
 @Component({
-  selector: 'gz-search',
-  templateUrl: 'search.component.html',
-  styleUrls: ['search.component.scss']
+    selector: 'gz-search',
+    templateUrl: 'search.component.html',
+    styleUrls: ['search.component.scss'],
+    standalone: false
 })
 
 /**

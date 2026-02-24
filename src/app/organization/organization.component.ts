@@ -20,9 +20,10 @@ import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 
 @Component({
-  selector: 'gz-organization',
-  templateUrl: 'organization.component.html',
-  styleUrls: ['organization.component.scss']
+    selector: 'gz-organization',
+    templateUrl: 'organization.component.html',
+    styleUrls: ['organization.component.scss'],
+    standalone: false
 })
 
 /**
@@ -85,13 +86,13 @@ export class OrganizationComponent implements OnInit {
    * Form field for the Username input.
    */
   public usernameInputForm = new FormControl('', {validators: [Validators.required],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * Form field for the role select dropdown.
    */
   public roleDropdownForm = new FormControl('', {validators: [Validators.required],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * Confirmation dialog reference.

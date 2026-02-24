@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { ModelService } from '../model.service';
 /**
  * Resolver that fetches the models that a user liked.
  */
-export class LikedModelsResolver implements Resolve<PaginatedModels> {
+export class LikedModelsResolver  {
 
   /**
    * @param modelService Service used to get Model List information from the Server

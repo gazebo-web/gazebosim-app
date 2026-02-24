@@ -4,9 +4,10 @@ import { environment } from '../../environments/environment';
 declare const SwaggerUIBundle: any;
 
 @Component({
-  selector: 'gz-information',
-  templateUrl: 'information.component.html',
-  styleUrls: ['information.component.scss']
+    selector: 'gz-information',
+    templateUrl: 'information.component.html',
+    styleUrls: ['information.component.scss'],
+    standalone: false
 })
 
 /**

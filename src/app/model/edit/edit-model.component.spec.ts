@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +34,7 @@ import { PageTitleComponent } from '../../page-title';
 import { SdfViewerComponent } from '../sdfviewer/sdfviewer.component';
 import { TagsComponent } from '../../tags/tags.component';
 import { MetadataComponent } from '../../metadata/metadata.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('EditModelComponent', () => {
 
@@ -61,10 +62,20 @@ describe('EditModelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        CategoriesComponent,
+        ConfirmationDialogComponent,
+        DescriptionComponent,
+        DndDirective,
+        EditModelComponent,
+        FileUploadComponent,
+        MetadataComponent,
+        PageTitleComponent,
+        SdfViewerComponent,
+        TagsComponent
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientTestingModule,
         MarkdownModule,
         MatButtonModule,
         MatChipsModule,
@@ -77,36 +88,25 @@ describe('EditModelComponent', () => {
         MatSnackBarModule,
         MatTableModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        CategoriesComponent,
-        ConfirmationDialogComponent,
-        DescriptionComponent,
-        DndDirective,
-        EditModelComponent,
-        FileUploadComponent,
-        MetadataComponent,
-        PageTitleComponent,
-        SdfViewerComponent,
-        TagsComponent
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         JsonClassFactoryService,
         ModelService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: testModel
-              }
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: testModel
+                    }
+                }
             }
-          }
         },
-        ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [ ConfirmationDialogComponent ],

@@ -4,9 +4,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AdminElasticsearchService } from '../admin-elasticsearch.service';
 
 @Component({
-  selector: 'gz-elasticsearch-config-dialog',
-  templateUrl: 'config-dialog.component.html',
-  styleUrls: ['config-dialog.component.scss']
+    selector: 'gz-elasticsearch-config-dialog',
+    templateUrl: 'config-dialog.component.html',
+    styleUrls: ['config-dialog.component.scss'],
+    standalone: false
 })
 
 /**
@@ -28,21 +29,21 @@ export class ElasticsearchConfigDialogComponent {
    */
   public addressInputForm = new FormControl('',
     {validators: [Validators.required, Validators.pattern('[^\/]*')],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * Input form for the username.
    */
   public usernameInputForm = new FormControl('',
     {validators: [Validators.pattern('[^\/]*')],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * Input form for the password.
    */
   public passwordInputForm = new FormControl('',
     {validators: [Validators.pattern('[^\/]*')],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * @param dialog Reference to the opened dialog.

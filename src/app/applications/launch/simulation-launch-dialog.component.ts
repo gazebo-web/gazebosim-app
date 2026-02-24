@@ -12,9 +12,10 @@ import { SimulationService } from '../../cloudsim/simulation.service';
 import { validParents } from './valid-parents';
 
 @Component({
-  selector: 'gz-simulation-launch-dialog',
-  templateUrl: 'simulation-launch-dialog.component.html',
-  styleUrls: ['simulation-launch-dialog.component.scss']
+    selector: 'gz-simulation-launch-dialog',
+    templateUrl: 'simulation-launch-dialog.component.html',
+    styleUrls: ['simulation-launch-dialog.component.scss'],
+    standalone: false
 })
 
 /**
@@ -35,7 +36,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
       Validators.minLength(3),
       Validators.pattern('[a-zA-Z0-9]+'),
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: 'change',
   });
 
   /**
@@ -48,7 +49,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
       Validators.maxLength(24),
       Validators.pattern('[a-zA-Z0-9]+')
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: 'change',
   });
 
   /**
@@ -58,7 +59,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
     validators: [
       Validators.required,
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: 'change',
   });
 
   /**
@@ -68,7 +69,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
     validators: [
       Validators.required,
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: 'change',
   });
 
   /**
@@ -80,7 +81,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
       Validators.maxLength(24),
       Validators.pattern('[a-zA-Z0-9]+')
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: 'change',
   });
 
   /**
@@ -90,7 +91,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
     validators: [
       Validators.required,
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: 'change',
   });
 
   /**

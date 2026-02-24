@@ -7,7 +7,8 @@ import {
 @Component({
     selector: 'gz-report-dialog',
     templateUrl: 'report-dialog.component.html',
-    styleUrls: ['report-dialog.component.scss']
+    styleUrls: ['report-dialog.component.scss'],
+    standalone: false
 })
 
 /**

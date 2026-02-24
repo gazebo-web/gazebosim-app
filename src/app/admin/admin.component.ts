@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gz-admin',
-  templateUrl: 'admin.component.html',
+    selector: 'gz-admin',
+    templateUrl: 'admin.component.html',
+    standalone: false
 })
 
 /**

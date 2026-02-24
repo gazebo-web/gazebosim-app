@@ -1,7 +1,11 @@
 <div fxLayout="row" fxLayoutAlign="start center">
-  <mat-icon *ngIf="svgIcon" [svgIcon]="svgIcon"></mat-icon>
+  @if (svgIcon) {
+    <mat-icon [svgIcon]="svgIcon"></mat-icon>
+  }
 
-  <mat-icon *ngIf="icon">{{icon}}</mat-icon>
+  @if (icon) {
+    <mat-icon>{{icon}}</mat-icon>
+  }
 
   <h1>{{title}}</h1>
 </div>

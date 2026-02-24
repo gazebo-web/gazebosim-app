@@ -1,5 +1,4 @@
-@import '~@angular/material/theming';
-@import '../../../styles.scss';
+
 
 .page-content {
   padding: 0 20px;
@@ -16,7 +15,7 @@ gz-page-title {
 }
 
 a {
-  color: mat-color($custom-theme-primary, 700);
+  color: #0288d1;
 }
 
 .contentRules {

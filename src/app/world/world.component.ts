@@ -19,9 +19,10 @@ import * as FileSaver from 'file-saver';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
-  selector: 'gz-world',
-  templateUrl: 'world.component.html',
-  styleUrls: ['world.component.scss']
+    selector: 'gz-world',
+    templateUrl: 'world.component.html',
+    styleUrls: ['world.component.scss'],
+    standalone: false
 })
 
 /**

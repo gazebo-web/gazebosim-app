@@ -11,17 +11,21 @@
       </a>
     </div>
 
-    <div *ngIf='!models || models.length === 0' class='mat-typography'>
-      <h3>There are no models yet.</h3>
-    </div>
+    @if (!models || models.length === 0) {
+      <div class='mat-typography'>
+        <h3>There are no models yet.</h3>
+      </div>
+    }
 
     <div fxLayout="row wrap" fxLayoutAlign="center center">
-      <gz-item-card class="card"
-        fxFlex.xs="100%"
-        fxFlex.gt-xs="50%"
-        fxFlex.gt-md="25%"
-        [resource]="model" type="models" *ngFor="let model of models">
-      </gz-item-card>
+      @for (model of models; track model) {
+        <gz-item-card class="card"
+          fxFlex.xs="100%"
+          fxFlex.gt-xs="50%"
+          fxFlex.gt-md="25%"
+          [resource]="model" type="models">
+        </gz-item-card>
+      }
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">
@@ -46,17 +50,21 @@
       </a>
     </div>
 
-    <div *ngIf='!worlds || worlds.length === 0' class='mat-typography'>
-      <h3>There are no worlds yet.</h3>
-    </div>
+    @if (!worlds || worlds.length === 0) {
+      <div class='mat-typography'>
+        <h3>There are no worlds yet.</h3>
+      </div>
+    }
 
     <div fxLayout="row wrap" fxLayoutAlign="center center">
-      <gz-item-card class="card"
-        fxFlex.xs="100%"
-        fxFlex.gt-xs="50%"
-        fxFlex.gt-md="25%"
-        [resource]="world" type="worlds" *ngFor="let world of worlds">
-      </gz-item-card>
+      @for (world of worlds; track world) {
+        <gz-item-card class="card"
+          fxFlex.xs="100%"
+          fxFlex.gt-xs="50%"
+          fxFlex.gt-md="25%"
+          [resource]="world" type="worlds">
+        </gz-item-card>
+      }
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">
@@ -75,23 +83,27 @@
 
     <div class="section-title mat-typography">
       <a href='#' routerLink='/collections'
-         fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
         <mat-icon>collections</mat-icon>
         <h2>Latest collections</h2>
       </a>
     </div>
 
-    <div *ngIf='!collections || collections.length === 0' class='mat-typography'>
-      <h3>There are no collections yet.</h3>
-    </div>
+    @if (!collections || collections.length === 0) {
+      <div class='mat-typography'>
+        <h3>There are no collections yet.</h3>
+      </div>
+    }
 
     <div fxLayout="row wrap" fxLayoutAlign="center center">
-      <gz-item-card class="card"
-        fxFlex.xs="100%"
-        fxFlex.gt-xs="50%"
-        fxFlex.gt-md="25%"
-        [resource]="collection" type="collections" *ngFor="let collection of collections">
-      </gz-item-card>
+      @for (collection of collections; track collection) {
+        <gz-item-card class="card"
+          fxFlex.xs="100%"
+          fxFlex.gt-xs="50%"
+          fxFlex.gt-md="25%"
+          [resource]="collection" type="collections">
+        </gz-item-card>
+      }
     </div>
 
     <div fxLayout="row" fxLayoutAlign="center center">

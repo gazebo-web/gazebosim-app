@@ -7,9 +7,10 @@ import { ModelService } from '../model.service';
 import { PaginatedModels } from '../paginated-models';
 
 @Component({
-  selector: 'gz-models',
-  templateUrl: 'model-list.component.html',
-  styleUrls: ['model-list.component.scss']
+    selector: 'gz-models',
+    templateUrl: 'model-list.component.html',
+    styleUrls: ['model-list.component.scss'],
+    standalone: false
 })
 
 /**

@@ -10,7 +10,8 @@ import { SimulationService } from '../simulation.service';
 @Component({
   selector: 'gz-simulation',
   templateUrl: 'simulation.component.html',
-  styleUrls: ['simulation.component.scss']
+  styleUrls: ['simulation.component.scss'],
+  standalone: false
 })
 
 /**
@@ -191,8 +192,8 @@ export class SimulationComponent implements OnInit, OnDestroy {
    */
   public follow(model): void {
     if (model !== undefined && model !== null) {
-        this.following = true;
-        this.sceneMgr.follow(model['gz3dName']);
+      this.following = true;
+      this.sceneMgr.follow(model['gz3dName']);
     } else {
       this.following = false;
       this.sceneMgr.follow(null);
@@ -223,7 +224,7 @@ export class SimulationComponent implements OnInit, OnDestroy {
    * Listen to the Escape key to stop following.
    */
   @HostListener('window:keydown', ['$event'])
-  private keyEscape(event: KeyboardEvent): void {
+  public keyEscape(event: KeyboardEvent): void {
     if (event.key === 'Escape' || event.code === 'Escape') {
       this.sceneMgr.follow(null);
     }

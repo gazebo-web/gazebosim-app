@@ -11,9 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import { FuelResource } from '../fuel-resource';
 
 @Component({
-  selector: 'gz-fuel-resource-list',
-  templateUrl: 'fuel-resource-list.component.html',
-  styleUrls: ['fuel-resource-list.component.scss']
+    selector: 'gz-fuel-resource-list',
+    templateUrl: 'fuel-resource-list.component.html',
+    styleUrls: ['fuel-resource-list.component.scss'],
+    standalone: false
 })
 
 /**

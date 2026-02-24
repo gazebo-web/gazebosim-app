@@ -18,9 +18,10 @@ import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.co
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
-  selector: 'gz-collection',
-  templateUrl: 'collection.component.html',
-  styleUrls: ['collection.component.scss']
+    selector: 'gz-collection',
+    templateUrl: 'collection.component.html',
+    styleUrls: ['collection.component.scss'],
+    standalone: false
 })
 
 /**

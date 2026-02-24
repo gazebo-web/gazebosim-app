@@ -1,25 +1,18 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SwiperModule } from 'swiper/angular';
+
 import { SafeUrl } from '@angular/platform-browser';
 
-import SwiperCore, {FreeMode, Navigation, Thumbs, SwiperOptions} from 'swiper';
-SwiperCore.use([FreeMode, Navigation, Thumbs]);
-
 /**
- * The Gallery Component encapsulates Swiper.
+ * The Gallery Component displays a simple image gallery with thumbnail navigation.
+ * Replaces the previous Swiper-based implementation (swiper/angular is incompatible with Angular 21).
  * Receives the gallery images as an input.
  */
 @Component({
   selector: 'gz-gallery',
-  standalone: true,
-  imports: [
-    CommonModule,
-    SwiperModule,
-  ],
   templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss', './swiper.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./gallery.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class GalleryComponent implements OnChanges {
   /**
@@ -28,26 +21,9 @@ export class GalleryComponent implements OnChanges {
   @Input() public images: SafeUrl[];
 
   /**
-   * A reference to the thumbnail slider, to be used by the main slider.
-   * It is changed by events in the thumbnail slider.
+   * The index of the currently displayed image.
    */
-  public thumbsSwiper: SwiperCore;
-
-  /**
-   * Configuration of the main slider.
-   */
-  public mainConfig: SwiperOptions = {
-    spaceBetween: 0,
-    navigation: true,
-  };
-
-  /**
-   * Configuration of the thumbnails slider.
-   */
-  public thumbsConfig: SwiperOptions = {
-    spaceBetween: 0,
-    freeMode: true,
-  };
+  public currentIndex: number = 0;
 
   /**
    * OnChanges Lifecycle hook.
@@ -58,7 +34,32 @@ export class GalleryComponent implements OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     if ('images' in changes) {
       this.images = changes['images'].currentValue as SafeUrl[];
-      this.thumbsConfig.slidesPerView = this.images ? this.images.length : 0;
+      this.currentIndex = 0;
     }
+  }
+
+  /**
+   * Navigate to the previous image.
+   */
+  public prev(): void {
+    if (this.images && this.images.length > 0) {
+      this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+    }
+  }
+
+  /**
+   * Navigate to the next image.
+   */
+  public next(): void {
+    if (this.images && this.images.length > 0) {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    }
+  }
+
+  /**
+   * Select a specific image by index.
+   */
+  public selectImage(index: number): void {
+    this.currentIndex = index;
   }
 }

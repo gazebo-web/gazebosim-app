@@ -1,102 +1,102 @@
 <div class="content" fxLayout="column" fxLayoutAlign="start" fxLayoutGap="20px" fxFill>
-  <div *ngIf="!authService.isAuthenticated()">
-    <h1 class="unauthorized">Log in to use applications.</h1>
-
-    <p>
-      Applications are cloud hosted simulation instances. An example is application is the <a href='https://github.com/osrf/subt'>SubT Simulator</a>. When logged in, you will be able to see a history of your application instances, and launch new instances.
-    </p>
-
-    <p>
-      <a href='https://openrobotics.freshdesk.com/support/solutions/43000370684'>Click here for more information about applications</a>
-    </p>
-
-    <p>
-      <a href='https://github.com/osrf/subt/wiki/Cloudsim'>Click here for more information about our cloud architecture and how it is used for SubT.</a>
-    </p>
-
-  </div>
-
-  <div *ngIf="authService.isAuthenticated()">
-    <gz-credits></gz-credits>
-
-    <button mat-raised-button color="primary" class="launch-btn" (click)="openLaunchDialog()">Launch Simulation</button>
-
-    <button mat-icon-button (click)="openInfoDialog()">
-      <mat-icon>help_outline</mat-icon>
-    </button>
-
-    <div *ngIf="paginatedSimulations && paginatedSimulations.simulations.length === 0">
-      <h1>You have no simulations.</h1>
+  @if (!authService.isAuthenticated()) {
+    <div>
+      <h1 class="unauthorized">Log in to use applications.</h1>
+      <p>
+        Applications are cloud hosted simulation instances. An example is application is the <a href='https://github.com/osrf/subt'>SubT Simulator</a>. When logged in, you will be able to see a history of your application instances, and launch new instances.
+      </p>
+      <p>
+        <a href='https://openrobotics.freshdesk.com/support/solutions/43000370684'>Click here for more information about applications</a>
+      </p>
+      <p>
+        <a href='https://github.com/osrf/subt/wiki/Cloudsim'>Click here for more information about our cloud architecture and how it is used for SubT.</a>
+      </p>
     </div>
+  }
 
-    <div *ngIf="paginatedSimulations && paginatedSimulations.simulations.length > 0">
-      <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="startedAt">
-          <th mat-header-cell *matHeaderCellDef>Started At</th>
-          <td mat-cell *matCellDef="let element">
-            <span>{{element.startedAt | date:'short'}}</span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let element">
-            <a class="sim-name" [title]="element?.name || 'N/A'" [routerLink]="['/simulations', element.groupId]">
-              <span>{{element?.name || "N/A"}}</span>
-            </a>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let element">
-            <div fxLayout="column">
-              <span>{{element.status}}</span>
-              <span *ngIf="element.errorStatus">Error: {{element.errorStatus}}</span>
-              <span *ngIf="!element.errorStatus">With no errors</span>
-            </div>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="control">
-          <th mat-header-cell *matHeaderCellDef>Control</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button (click)="showDetails(element)">
-              <mat-icon>info</mat-icon>
-            </button>
-
-            <button mat-icon-button *ngIf="element.status === 'Running'" (click)="stop(element)">
-              <mat-icon>stop</mat-icon>
-            </button>
-
-            <button mat-icon-button *ngIf="element.status === 'Terminated'" title="Get logs" [matMenuTriggerFor]="logsMenu">
-              <mat-icon>get_app</mat-icon>
-            </button>
-
-            <a mat-icon-button [disabled]="element.status !== 'Running'" [routerLink]="['/simulations', element.groupId]"
-               [title]="element.status === 'Running' ? 'View Simulation' : 'Simulation is only viewable in the &quot;Running&quot; state'">
-
-              <mat-icon>navigate_next</mat-icon>
-            </a>
-
-            <mat-menu #logsMenu="matMenu" xPosition="before" yPosition="below" overlapTrigger="false" class="logsMenu">
-              <div>
-                <button mat-menu-item (click)="getLogs(element)">Get logs</button>
-                <button *ngFor="let robot of element.extra.robots" mat-menu-item (click)="getLogs(element, robot)">Get ROS logs of {{robot.Name}}</button>
-              </div>
-            </mat-menu>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
-      </table>
-
-      <mat-paginator [length]="paginatedSimulations.totalCount"
-                     [pageSize]="10"
-                     [pageSizeOptions]="[10, 20, 50, 100]"
-                     (page)="pageEvent = pageChange($event)">
-      </mat-paginator>
+  @if (authService.isAuthenticated()) {
+    <div>
+      <gz-credits></gz-credits>
+      <button mat-raised-button color="primary" class="launch-btn" (click)="openLaunchDialog()">Launch Simulation</button>
+      <button mat-icon-button (click)="openInfoDialog()">
+        <mat-icon>help_outline</mat-icon>
+      </button>
+      @if (paginatedSimulations && paginatedSimulations.simulations.length === 0) {
+        <div>
+          <h1>You have no simulations.</h1>
+        </div>
+      }
+      @if (paginatedSimulations && paginatedSimulations.simulations.length > 0) {
+        <div>
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="startedAt">
+              <th mat-header-cell *matHeaderCellDef>Started At</th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{element.startedAt | date:'short'}}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let element">
+                <a class="sim-name" [title]="element?.name || 'N/A'" [routerLink]="['/simulations', element.groupId]">
+                  <span>{{element?.name || "N/A"}}</span>
+                </a>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">
+                <div fxLayout="column">
+                  <span>{{element.status}}</span>
+                  @if (element.errorStatus) {
+                    <span>Error: {{element.errorStatus}}</span>
+                  }
+                  @if (!element.errorStatus) {
+                    <span>With no errors</span>
+                  }
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="control">
+              <th mat-header-cell *matHeaderCellDef>Control</th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)="showDetails(element)">
+                  <mat-icon>info</mat-icon>
+                </button>
+                @if (element.status === 'Running') {
+                  <button mat-icon-button (click)="stop(element)">
+                    <mat-icon>stop</mat-icon>
+                  </button>
+                }
+                @if (element.status === 'Terminated') {
+                  <button mat-icon-button title="Get logs" [matMenuTriggerFor]="logsMenu">
+                    <mat-icon>get_app</mat-icon>
+                  </button>
+                }
+                <a mat-icon-button [disabled]="element.status !== 'Running'" [routerLink]="['/simulations', element.groupId]"
+                  [title]="element.status === 'Running' ? 'View Simulation' : 'Simulation is only viewable in the &quot;Running&quot; state'">
+                  <mat-icon>navigate_next</mat-icon>
+                </a>
+                <mat-menu #logsMenu="matMenu" xPosition="before" yPosition="below" overlapTrigger="false" class="logsMenu">
+                  <div>
+                    <button mat-menu-item (click)="getLogs(element)">Get logs</button>
+                    @for (robot of element.extra.robots; track robot) {
+                      <button mat-menu-item (click)="getLogs(element, robot)">Get ROS logs of {{robot.Name}}</button>
+                    }
+                  </div>
+                </mat-menu>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+          </table>
+          <mat-paginator [length]="paginatedSimulations.totalCount"
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 20, 50, 100]"
+            (page)="pageEvent = pageChange($event)">
+          </mat-paginator>
+        </div>
+      }
     </div>
-  </div>
+  }
 </div>

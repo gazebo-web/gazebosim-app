@@ -19,43 +19,52 @@
 
   <div fxLayout="row" fxLayoutAlign="center center" fxFill fxLayout.xs="column">
     <div fxFlex
-         gzDnd
-         class="dropzone-list"
-         (newValidFilesEmitter)="onValidFiles($event)"
-         (newInvalidFilesEmitter)="onInvalidFiles($event)"
-         [allowedExtensions]="allowedExtensions">
+      gzDnd
+      class="dropzone-list"
+      (newValidFilesEmitter)="onValidFiles($event)"
+      (newInvalidFilesEmitter)="onInvalidFiles($event)"
+      [allowedExtensions]="allowedExtensions">
 
-      <div *ngIf="!fileList || fileList.length == 0; else hasFiles"
-           class="mat-typography dropzone-msg"
-           fxLayout="column"
-           fxLayoutAlign="center center"
-           [innerHtml]="message">
-      </div>
-
-      <ng-template #hasFiles>
-        <div fxLayout="column" fxLayoutAlign="start stretch">
-          <div *ngFor="let file of fileList" class="file" fxLayout="row" fxLayoutAlign="space-between">
-            <span *ngIf="file.fullPath">{{file.fullPath}}</span>
-
-            <span *ngIf="!file.fullPath">{{file.name}}</span>
-
-            <i class="material-icons" button type="button" matSuffix (click)="removeFile(file)">
-              delete
-            </i>
-          </div>
+      @if (!fileList || fileList.length == 0) {
+        <div
+          class="mat-typography dropzone-msg"
+          fxLayout="column"
+          fxLayoutAlign="center center"
+          [innerHtml]="message">
         </div>
-      </ng-template>
+      } @else {
+        <div fxLayout="column" fxLayoutAlign="start stretch">
+          @for (file of fileList; track file) {
+            <div class="file" fxLayout="row" fxLayoutAlign="space-between">
+              @if (file.fullPath) {
+                <span>{{file.fullPath}}</span>
+              }
+              @if (!file.fullPath) {
+                <span>{{file.name}}</span>
+              }
+              <i class="material-icons" button type="button" matSuffix (click)="removeFile(file)">
+                delete
+              </i>
+            </div>
+          }
+        </div>
+      }
+
     </div>
 
-    <div *ngIf="hasGzWeb" fxFlex="50" class="viewer-wrapper">
-      <gz-sdfviewer
-        class="sdfviewer"
-        [fileList]="fileList">
-       </gz-sdfviewer>
-    </div>
+    @if (hasGzWeb) {
+      <div fxFlex="50" class="viewer-wrapper">
+        <gz-sdfviewer
+          class="sdfviewer"
+          [fileList]="fileList">
+        </gz-sdfviewer>
+      </div>
+    }
   </div>
 
-  <div *ngIf="uploading" fxLayout="row" fxLayoutAlign="center center" fxFill>
-    <div id="html-spinner"></div>
-  </div>
+  @if (uploading) {
+    <div fxLayout="row" fxLayoutAlign="center center" fxFill>
+      <div id="html-spinner"></div>
+    </div>
+  }
 </div>

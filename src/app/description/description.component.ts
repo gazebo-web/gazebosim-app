@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'gz-description',
-  templateUrl: 'description.component.html',
-  styleUrls: ['description.component.scss']
+    selector: 'gz-description',
+    templateUrl: 'description.component.html',
+    styleUrls: ['description.component.scss'],
+    standalone: false
 })
 
 /**

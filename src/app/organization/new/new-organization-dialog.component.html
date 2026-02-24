@@ -6,12 +6,13 @@
         <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.lt-sm="2.5em">
           <mat-form-field class="form-field">
             <input matInput required placeholder="Organization name" [formControl]="organizationName">
-            <mat-hint *ngIf="organizationName.value.trim() === ''; else organizationLink">
-              This will be the organization name on Gazebo Fuel
-            </mat-hint>
-            <ng-template #organizationLink>
+            @if (organizationName.value.trim() === '') {
+              <mat-hint>
+                This will be the organization name on Gazebo Fuel
+              </mat-hint>
+            } @else {
               <mat-hint>The organization will be accesible on https://app.gazebosim.org/{{organizationName.value}}</mat-hint>
-            </ng-template>
+            }
             <mat-error>{{getNameError()}}</mat-error>
           </mat-form-field>
 
@@ -37,7 +38,7 @@
               type="submit">
               Create
             </button>
-<!-- Disabled until we add more features. See other comment blocks.
+            <!-- Disabled until we add more features. See other comment blocks.
             <button
               mat-raised-button
               matStepperNext
@@ -46,7 +47,7 @@
               type="button">
               Next
             </button>
--->
+            -->
           </div>
         </div>
       </mat-step>
@@ -78,7 +79,7 @@
         </div>
       </mat-step>
       -->
-<!-- Disabled because we don't have billing.
+      <!-- Disabled because we don't have billing.
       <mat-step label="Done">
         <div class="mat-typography">
           <h2>Choose your plan</h2>
@@ -114,7 +115,7 @@
           </button>
         </div>
       </mat-step>
--->
+      -->
     </mat-horizontal-stepper>
   </form>
 </div>

@@ -4,7 +4,8 @@ import { Directive, HostListener, HostBinding, EventEmitter, Output, Input } fro
  * Directive to handle drag-and-drop
  */
 @Directive({
-  selector: '[gzDnd]'
+  selector: '[gzDnd]',
+  standalone: false
 })
 
 export class DndDirective {
@@ -37,7 +38,7 @@ export class DndDirective {
   /**
    * Local variable bound to the background style of the host.
    */
-  @HostBinding('style.background') private background = 'transparent';
+  @HostBinding('style.background') public background = 'transparent';
 
   /**
    * Listen to dragover events on the host.
@@ -182,10 +183,10 @@ export class DndDirective {
 
     const allPromises = Promise.all((resolvedPromises || []).concat(this.pendingFiles))
       .then((results) => {
-         return this.pendingFiles.length
-             ? this.waitForFiles(results)
-             : results;
-       });
+        return this.pendingFiles.length
+          ? this.waitForFiles(results)
+          : results;
+      });
 
     this.pendingFiles = [];
 

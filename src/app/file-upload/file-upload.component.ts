@@ -9,9 +9,10 @@ import { Component,
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'gz-file-upload',
-  templateUrl: 'file-upload.component.html',
-  styleUrls: ['file-upload.component.scss']
+    selector: 'gz-file-upload',
+    templateUrl: 'file-upload.component.html',
+    styleUrls: ['file-upload.component.scss'],
+    standalone: false
 })
 
 /**

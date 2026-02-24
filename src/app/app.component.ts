@@ -1,16 +1,18 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router,
-         ActivatedRoute,
-         Event,
-         ResolveStart,
-         ResolveEnd,
-         NavigationEnd,
-         NavigationCancel } from '@angular/router';
+import {
+  Router,
+  ActivatedRoute,
+  Event,
+  ResolveStart,
+  ResolveEnd,
+  NavigationEnd,
+  NavigationCancel
+} from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Title } from '@angular/platform-browser';
-import { MediaChange, MediaObserver } from '@angular/flex-layout';
+import { MediaChange, MediaObserver } from '@ngbracket/ngx-layout';
 
 import { SearchComponent } from './search';
 import { AuthService } from './auth/auth.service';
@@ -18,9 +20,10 @@ import { Ng2DeviceService } from './device-detector';
 
 
 @Component({
-  selector: 'gz-app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'gz-app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 
 /**
@@ -122,7 +125,7 @@ export class AppComponent implements OnInit {
           this.makeProgress();
         }
         if (event instanceof ResolveEnd ||
-            event instanceof NavigationCancel) {
+          event instanceof NavigationCancel) {
           this.progressBarValue = 100;
           this.resolvingRoute = false;
         }
@@ -135,15 +138,15 @@ export class AppComponent implements OnInit {
           // Dismisses any indefinite snackbar (duration of 0).
           const openedSnackbar = this.snackBar._openedSnackBarRef;
           if (openedSnackbar &&
-              openedSnackbar.containerInstance &&
-              openedSnackbar.containerInstance.snackBarConfig.duration === 0) {
+            openedSnackbar.containerInstance &&
+            openedSnackbar.containerInstance.snackBarConfig.duration === 0) {
             this.snackBar.dismiss();
           }
 
           // The title can be either a string or a function, which requires the current route as
           // its argument.
           let title = '';
-          if (typeof(currentRoute.snapshot.data.title) === 'function') {
+          if (typeof (currentRoute.snapshot.data.title) === 'function') {
             title = currentRoute.snapshot.data.title(currentRoute);
           } else {
             title = currentRoute.snapshot.data.title;
@@ -189,7 +192,7 @@ export class AppComponent implements OnInit {
    * @param search Search string.
    */
   public onSearch(search: string): void {
-    this.router.navigate(['search', {q: search}]);
+    this.router.navigate(['search', { q: search }]);
   }
 
   /**

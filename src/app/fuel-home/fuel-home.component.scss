@@ -1,5 +1,4 @@
-@import '~@angular/material/theming';
-@import '../../styles.scss';
+
 
 .section {
   padding: 40px 0;
@@ -16,7 +15,7 @@
 }
 
 .section p a {
-  color: mat-color($custom-theme-primary, 700);
+  color: #0288d1;
 }
 
 .card {

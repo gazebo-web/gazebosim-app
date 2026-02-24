@@ -12,9 +12,10 @@ import { PaginatedWorlds } from '../world/paginated-worlds';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
 
 @Component({
-  selector: 'gz-user',
-  templateUrl: 'user.component.html',
-  styleUrls: ['user.component.scss']
+    selector: 'gz-user',
+    templateUrl: 'user.component.html',
+    styleUrls: ['user.component.scss'],
+    standalone: false
 })
 
 /**

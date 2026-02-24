@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,7 @@ import { User } from './user';
 import { UserComponent } from './user.component';
 import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('UserComponent', () => {
   let fixture: ComponentFixture<UserComponent>;
@@ -65,43 +66,42 @@ describe('UserComponent', () => {
   // Create fixture and component before each test.
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        HttpClientTestingModule,
-        MatCardModule,
-        MatIconModule,
-        MatSnackBarModule,
-        MatTabsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
+    declarations: [
         AuthPipe,
         FuelResourceListComponent,
         ItemCardComponent,
         PageTitleComponent,
         UserComponent,
-        ],
-      providers: [
+    ],
+    imports: [BrowserAnimationsModule,
+        MatCardModule,
+        MatIconModule,
+        MatSnackBarModule,
+        MatTabsModule,
+        RouterTestingModule],
+    providers: [
         AuthService,
         CollectionService,
         JsonClassFactoryService,
         ModelService,
         WorldService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: new User({
-                  username: 'testUser',
-                  name: 'A Test User'
-                })
-              },
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: new User({
+                            username: 'testUser',
+                            name: 'A Test User'
+                        })
+                    },
+                }
             }
-          }
-        }
-        ],
-    });
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     fixture = TestBed.createComponent(UserComponent);
     component = fixture.debugElement.componentInstance;

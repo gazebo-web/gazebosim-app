@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -75,10 +75,21 @@ describe('WorldComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        AuthPipe,
+        CopyDialogComponent,
+        DescriptionComponent,
+        FileSizePipe,
+        FuelResourceListComponent,
+        ItemCardComponent,
+        MetadataComponent,
+        PageTitleComponent,
+        SdfViewerComponent,
+        TagsComponent,
+        WorldComponent,
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientModule,
         MarkdownModule,
         MatButtonModule,
         MatCardModule,
@@ -91,48 +102,35 @@ describe('WorldComponent', () => {
         MatTableModule,
         MatTabsModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        AuthPipe,
-        CopyDialogComponent,
-        DescriptionComponent,
-        FileSizePipe,
-        FuelResourceListComponent,
-        ItemCardComponent,
-        MetadataComponent,
-        PageTitleComponent,
-        SdfViewerComponent,
-        TagsComponent,
-        WorldComponent,
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         CollectionService,
         JsonClassFactoryService,
         WorldService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: new World({
-                  name: 'test-world',
-                  owner: 'test-owner',
-                  version: 5,
-                  images: []
-                })
-              },
-              paramMap: new Map([
-                ['worldname', 'test-world'],
-                ['owner', 'test-owner'],
-                ['version', '3']
-              ])
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: new World({
+                            name: 'test-world',
+                            owner: 'test-owner',
+                            version: 5,
+                            images: []
+                        })
+                    },
+                    paramMap: new Map([
+                        ['worldname', 'test-world'],
+                        ['owner', 'test-owner'],
+                        ['version', '3']
+                    ])
+                }
             }
-          }
-        }
-        ],
-    });
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+});
     // TestBed can't have entryComponents directly. We need to set them the following way.
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {

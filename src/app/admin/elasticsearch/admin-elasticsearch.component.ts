@@ -12,9 +12,10 @@ import { ElasticsearchConfig } from './elasticsearch-config';
 import { ElasticsearchConfigDialogComponent } from './config-dialog/config-dialog.component';
 
 @Component({
-  selector: 'gz-admin-elasticsearch',
-  templateUrl: 'admin-elasticsearch.component.html',
-  styleUrls: ['admin-elasticsearch.component.scss']
+    selector: 'gz-admin-elasticsearch',
+    templateUrl: 'admin-elasticsearch.component.html',
+    styleUrls: ['admin-elasticsearch.component.scss'],
+    standalone: false
 })
 
 /**

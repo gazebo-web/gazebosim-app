@@ -9,8 +9,9 @@ import { ErrMsg } from '../server/err-msg';
 import { UserService } from '../user/user.service';
 
 @Component({
-  templateUrl: 'callback.component.html',
-  styleUrls: ['callback.component.scss']
+    templateUrl: 'callback.component.html',
+    styleUrls: ['callback.component.scss'],
+    standalone: false
 })
 
 /**
@@ -24,7 +25,7 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
    * Input field for the username.
    */
   public username = new FormControl('', { validators: [Validators.required,
-    Validators.minLength(3), Validators.pattern('[a-zA-Z0-9]+')], updateOn: 'change' || 'submit'});
+    Validators.minLength(3), Validators.pattern('[a-zA-Z0-9]+')], updateOn: 'change'});
 
   /**
    * Check whether the user is logged in or not.

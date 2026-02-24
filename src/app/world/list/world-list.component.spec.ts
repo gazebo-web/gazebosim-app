@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +23,7 @@ import { PaginatedWorlds } from '../paginated-worlds';
 import { World } from '../world';
 import { WorldListComponent } from './world-list.component';
 import { WorldService } from '../world.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('WorldListComponent', () => {
   let fixture: ComponentFixture<WorldListComponent>;
@@ -50,45 +51,44 @@ describe('WorldListComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        AuthPipe,
+        FuelResourceListComponent,
+        ItemCardComponent,
+        PageTitleComponent,
+        WorldListComponent,
+    ],
+    imports: [BrowserAnimationsModule,
         MatCardModule,
         MatInputModule,
         MatIconModule,
         MatFormFieldModule,
         MatSelectModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        ],
-      declarations: [
-        AuthPipe,
-        FuelResourceListComponent,
-        ItemCardComponent,
-        PageTitleComponent,
-        WorldListComponent,
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         CategoryService,
         WorldService,
         Ng2DeviceService,
         JsonClassFactoryService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: paginatedWorlds,
-                title: () => {
-                  return 'testTitle';
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: paginatedWorlds,
+                        title: () => {
+                            return 'testTitle';
+                        }
+                    }
                 }
-              }
             }
-          }
         },
-        ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     fixture = TestBed.createComponent(WorldListComponent);
     component = fixture.debugElement.componentInstance;

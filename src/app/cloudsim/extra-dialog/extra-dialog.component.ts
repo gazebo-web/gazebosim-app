@@ -2,9 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'gz-extra-dialog',
-  templateUrl: 'extra-dialog.component.html',
-  styleUrls: ['extra-dialog.component.scss']
+    selector: 'gz-extra-dialog',
+    templateUrl: 'extra-dialog.component.html',
+    styleUrls: ['extra-dialog.component.scss'],
+    standalone: false
 })
 
 /**

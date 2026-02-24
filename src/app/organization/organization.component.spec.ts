@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -35,6 +35,7 @@ import { PaginatedModels } from '../model/paginated-models';
 import { PaginatedWorlds } from '../world/paginated-worlds';
 import { World } from '../world/world';
 import { WorldService } from '../world/world.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OrganizationComponent', () => {
   let fixture: ComponentFixture<OrganizationComponent>;
@@ -92,10 +93,16 @@ describe('OrganizationComponent', () => {
   // Create fixture and component before each test.
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        AuthPipe,
+        ConfirmationDialogComponent,
+        FuelResourceListComponent,
+        ItemCardComponent,
+        OrganizationComponent,
+        PageTitleComponent,
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientTestingModule,
         MatCardModule,
         MatChipsModule,
         MatDialogModule,
@@ -106,17 +113,8 @@ describe('OrganizationComponent', () => {
         MatSnackBarModule,
         MatTabsModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        AuthPipe,
-        ConfirmationDialogComponent,
-        FuelResourceListComponent,
-        ItemCardComponent,
-        OrganizationComponent,
-        PageTitleComponent,
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         CollectionService,
         JsonClassFactoryService,
@@ -124,20 +122,22 @@ describe('OrganizationComponent', () => {
         OrganizationService,
         WorldService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: new Organization({
-                  name: 'testOrgName',
-                  description: 'testOrgDesc'
-                })
-              },
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: new Organization({
+                            name: 'testOrgName',
+                            description: 'testOrgDesc'
+                        })
+                    },
+                }
             }
-          }
-        }
-        ],
-    });
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [ ConfirmationDialogComponent ],

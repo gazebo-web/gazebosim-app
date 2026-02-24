@@ -3,9 +3,10 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 
 @Component({
-  selector: 'gz-tags',
-  templateUrl: 'tags.component.html',
-  styleUrls: ['tags.component.scss']
+    selector: 'gz-tags',
+    templateUrl: 'tags.component.html',
+    styleUrls: ['tags.component.scss'],
+    standalone: false
 })
 
 /**

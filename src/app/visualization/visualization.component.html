@@ -13,13 +13,17 @@
           <input matInput [(ngModel)]="authKey" placeholder="Authorization Key">
         </mat-form-field>
 
-        <button mat-raised-button (click)="connect()" *ngIf="connectionStatus === 'disconnected'">
-          Connect
-        </button>
+        @if (connectionStatus === 'disconnected') {
+          <button mat-raised-button (click)="connect()">
+            Connect
+          </button>
+        }
 
-        <button mat-raised-button (click)="disconnect()" *ngIf="connectionStatus !== 'disconnected'">
-          Disconnect
-        </button>
+        @if (connectionStatus !== 'disconnected') {
+          <button mat-raised-button (click)="disconnect()">
+            Disconnect
+          </button>
+        }
       </div>
     </div>
   </div>
@@ -29,29 +33,37 @@
   <div class="visualizer" fxFill>
     <div class="outer" #fullScreen>
 
-      <a class="follow-button" *ngIf="following" mat-icon-button (click)="follow(null)" title="Stop following">Stop following</a>
+      @if (following) {
+        <a class="follow-button" mat-icon-button (click)="follow(null)" title="Stop following">Stop following</a>
+      }
 
-      <div class="controls" *ngIf="sceneMgr">
-        <a mat-icon-button (click)="snapshot()" title="Take a snapshot"><mat-icon>camera_alt</mat-icon></a>
-        <a mat-icon-button (click)="resetView()" title="Reset view"><mat-icon>home</mat-icon></a>
-        <a mat-icon-button (click)="toggleFullscreen()" title="Full screen"><mat-icon>fullscreen</mat-icon></a>
-      </div>
+      @if (sceneMgr) {
+        <div class="controls">
+          <a mat-icon-button (click)="snapshot()" title="Take a snapshot"><mat-icon>camera_alt</mat-icon></a>
+          <a mat-icon-button (click)="resetView()" title="Reset view"><mat-icon>home</mat-icon></a>
+          <a mat-icon-button (click)="toggleFullscreen()" title="Full screen"><mat-icon>fullscreen</mat-icon></a>
+        </div>
+      }
 
       <div class="inner" fxLayoutAlign="center center">
         <div fxLayout="row" fxLayoutAlign="center center">
           <div id="gz-scene" (window:resize)="resize()"></div>
-          <div fxLayout="column" class="gz3d-side-panel" *ngIf="models.length > 0">
-            <h2>Entities</h2>
-            <mat-list class="entity-list">
-              <mat-list-item *ngFor="let model of models" [matMenuTriggerFor]="menu">{{model['name']}}
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="select(model)">Select</button>
-                  <button mat-menu-item (click)="moveTo(model)">Move to</button>
-                  <button mat-menu-item (click)="follow(model)">Follow</button>
-                </mat-menu>
-              </mat-list-item>
-            </mat-list>
-          </div>
+          @if (models.length > 0) {
+            <div fxLayout="column" class="gz3d-side-panel">
+              <h2>Entities</h2>
+              <mat-list class="entity-list">
+                @for (model of models; track model) {
+                  <mat-list-item [matMenuTriggerFor]="menu">{{model['name']}}
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="select(model)">Select</button>
+                      <button mat-menu-item (click)="moveTo(model)">Move to</button>
+                      <button mat-menu-item (click)="follow(model)">Follow</button>
+                    </mat-menu>
+                  </mat-list-item>
+                }
+              </mat-list>
+            </div>
+          }
         </div>
       </div>
     </div>

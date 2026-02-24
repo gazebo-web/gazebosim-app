@@ -33,9 +33,10 @@ enum Tabs {
 }
 
 @Component({
-  selector: 'gz-settings',
-  templateUrl: 'settings.component.html',
-  styleUrls: ['settings.component.scss']
+    selector: 'gz-settings',
+    templateUrl: 'settings.component.html',
+    styleUrls: ['settings.component.scss'],
+    standalone: false
 })
 
 /**
@@ -69,7 +70,7 @@ export class SettingsComponent implements OnInit {
     tokenNameInputForm: new FormControl('',
       {validators: [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$'),
                     Validators.minLength(3)],
-      updateOn: 'change' || 'submit'}),
+      updateOn: 'change'}),
   });
 
   /**

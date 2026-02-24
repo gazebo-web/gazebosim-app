@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -36,10 +36,11 @@ describe('CollectionDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        CollectionDialogComponent
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientModule,
         MatAutocompleteModule,
         MatDialogModule,
         MatExpansionModule,
@@ -49,18 +50,15 @@ describe('CollectionDialogComponent', () => {
         MatSelectModule,
         MatSnackBarModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        CollectionDialogComponent
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         CollectionService,
         JsonClassFactoryService,
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: MatDialogRef, useValue: {close: Function} }
-      ]
-    });
+        { provide: MatDialogRef, useValue: { close: Function } },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+});
 
     fixture = TestBed.createComponent(CollectionDialogComponent);
     component = fixture.debugElement.componentInstance;

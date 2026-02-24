@@ -5,9 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Collection, CollectionService, PaginatedCollection } from '../../collection';
 
 @Component({
-  selector: 'gz-collections',
-  templateUrl: 'collection-list.component.html',
-  styleUrls: ['collection-list.component.scss']
+    selector: 'gz-collections',
+    templateUrl: 'collection-list.component.html',
+    styleUrls: ['collection-list.component.scss'],
+    standalone: false
 })
 
 /**

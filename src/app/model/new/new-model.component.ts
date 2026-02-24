@@ -15,9 +15,10 @@ import { Model } from '../model';
 import { ModelService } from '../model.service';
 
 @Component({
-  selector: 'gz-new-model',
-  templateUrl: 'new-model.component.html',
-  styleUrls: ['new-model.component.scss']
+    selector: 'gz-new-model',
+    templateUrl: 'new-model.component.html',
+    styleUrls: ['new-model.component.scss'],
+    standalone: false
 })
 
 /**
@@ -108,7 +109,7 @@ export class NewModelComponent implements OnInit {
    */
   public modelNameInputForm = new FormControl('',
     {validators: [Validators.required, Validators.pattern('[^\/%]*'), Validators.minLength(3)],
-    updateOn: 'change' || 'submit'});
+    updateOn: 'change'});
 
   /**
    * Form Input for the Model Privacy. By default it is Public (0).

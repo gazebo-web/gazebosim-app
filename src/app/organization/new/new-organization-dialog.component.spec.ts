@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
@@ -25,28 +25,26 @@ describe('NewOrganizationDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatDialogModule,
+    declarations: [
+        NewOrganizationDialogComponent,
+    ],
+    imports: [MatDialogModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpClientModule,
         MatInputModule,
         MatRadioModule,
         MatSnackBarModule,
         MatStepperModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        NewOrganizationDialogComponent,
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         JsonClassFactoryService,
         OrganizationService,
-        { provide: MatDialogRef, useValue: {} }
-        ],
-    });
+        { provide: MatDialogRef, useValue: {} },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+});
 
     // Create fixture and component before each test.
     fixture = TestBed.createComponent(NewOrganizationDialogComponent);

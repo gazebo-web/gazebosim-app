@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -12,7 +12,7 @@ import { Collection, CollectionService } from '../collection';
  *
  * Fetches the collection to display before the CollectionComponent is created.
  */
-export class CollectionResolver implements Resolve<Collection> {
+export class CollectionResolver  {
 
   /**
    * @param collectionService Service used to get Collection information from the Server.

@@ -2,7 +2,7 @@
   <mat-card-header class="header">
     <!-- User Avatar coming in version 2-->
     <!-- <img mat-card-avatar *ngIf='resource.ownerAvatar; else avatarIcon'
-         [src]='resource.ownerAvatar'>
+    [src]='resource.ownerAvatar'>
     <ng-template #avatarIcon>
       <a routerLink='/{{resource.owner}}' routerLinkActive='active'>
         <mat-icon class="material-icons">account_circle</mat-icon>
@@ -25,16 +25,19 @@
   <mat-card-content class="content">
     <div class="image-container">
       <a routerLink="/{{resource.owner}}/{{type}}/{{resource.name}}">
-        <div *ngIf="resource.hasThumbnail(); else noImage">
-          <img *ngIf="(resource.getThumbnail().url | gzAuthHeader | async) as result"
-               [src]="result" [alt]="resource.name" class="thumbnail">
-        </div>
-
-        <ng-template #noImage>
+        @if (resource.hasThumbnail()) {
+          <div>
+            @if ((resource.getThumbnail().url | gzAuthHeader | async); as result) {
+              <img
+                [src]="result" [alt]="resource.name" class="thumbnail">
+            }
+          </div>
+        } @else {
           <div class="message-container">
             <h3>No thumbnail available</h3>
           </div>
-        </ng-template>
+        }
+
 
         <button class="floating" mat-mini-fab>
           <mat-icon>favorite</mat-icon>
@@ -44,8 +47,10 @@
   </mat-card-content>
 
   <mat-card-actions>
-    <button mat-icon-button fxFlexAlign="end" *ngIf="removable">
-      <mat-icon (click)="onRemoveClicked()">delete</mat-icon>
-    </button>
+    @if (removable) {
+      <button mat-icon-button fxFlexAlign="end">
+        <mat-icon (click)="onRemoveClicked()">delete</mat-icon>
+      </button>
+    }
   </mat-card-actions>
 </mat-card>

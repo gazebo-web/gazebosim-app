@@ -1,8 +1,12 @@
 <div fxLayout="column" fxLayoutAlign="start center">
-  <div class="banner" *ngIf="collection?.getThumbnail()">
-    <img *ngIf="(collection?.getThumbnail().url | gzAuthHeader | async) as result"
-      [src]="result" alt="Collection Banner">
-  </div>
+  @if (collection?.getThumbnail()) {
+    <div class="banner">
+      @if ((collection?.getThumbnail().url | gzAuthHeader | async); as result) {
+        <img
+          [src]="result" alt="Collection Banner">
+      }
+    </div>
+  }
 
   <div class="header" fxLayout="row" fxLayoutAlign="space-between" fxFill>
     <div fxFlex="30%">
@@ -16,9 +20,9 @@
 
     <div fxFlex="40%" fxLayoutAlign="center center">
       <mat-form-field [floatLabel]="'never'" fxFill>
-          <mat-label>Search in collection</mat-label>
-          <input #search matInput class='search' type="search" (keyup.enter)="onSearch(search.value)">
-          <mat-icon matPrefix id="search-icon">search</mat-icon>
+        <mat-label>Search in collection</mat-label>
+        <input #search matInput class='search' type="search" (keyup.enter)="onSearch(search.value)">
+        <mat-icon matPrefix id="search-icon">search</mat-icon>
       </mat-form-field>
     </div>
 
@@ -53,17 +57,21 @@
         <mat-icon>library_books</mat-icon>
       </button>
 
-      <button mat-icon-button title="Edit collection" *ngIf="canEdit"
-        routerLink="/{{collection?.owner}}/collections/{{collection?.name}}/edit">
-        <mat-icon>mode_edit</mat-icon>
-      </button>
-      <button mat-icon-button title="Remove this collection" *ngIf="canEdit" (click)="removeCollection()">
-        <mat-icon>delete</mat-icon>
-      </button>
+      @if (canEdit) {
+        <button mat-icon-button title="Edit collection"
+          routerLink="/{{collection?.owner}}/collections/{{collection?.name}}/edit">
+          <mat-icon>mode_edit</mat-icon>
+        </button>
+      }
+      @if (canEdit) {
+        <button mat-icon-button title="Remove this collection" (click)="removeCollection()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
     </div>
   </div>
 
-    <div class="header" fxLayout="row" fxFill>
+  <div class="header" fxLayout="row" fxFill>
     <gz-description [description]="collection?.description"></gz-description>
   </div>
 
@@ -79,14 +87,14 @@
 
       <div class="tab-content">
         <gz-fuel-resource-list fxFlex
-                               resourceType="models"
-                               [resources]="collection.models"
-                               [length]="paginatedModels?.totalCount"
-                               [finished]="!paginatedModels?.hasNextPage()"
-                               [removable]="canEdit"
-                               [disabled]="activeTab !== 'models'"
-                               (pageChange)="loadModels($event)"
-                               (onRemoveItem)="removeItem($event)">
+          resourceType="models"
+          [resources]="collection.models"
+          [length]="paginatedModels?.totalCount"
+          [finished]="!paginatedModels?.hasNextPage()"
+          [removable]="canEdit"
+          [disabled]="activeTab !== 'models'"
+          (pageChange)="loadModels($event)"
+          (onRemoveItem)="removeItem($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -101,14 +109,14 @@
 
       <div class="tab-content">
         <gz-fuel-resource-list fxFlex
-                               resourceType="worlds"
-                               [resources]="collection.worlds"
-                               [length]="paginatedWorlds?.totalCount"
-                               [finished]="!paginatedWorlds?.hasNextPage()"
-                               [removable]="canEdit"
-                               [disabled]="activeTab !== 'models'"
-                               (pageChange)="loadWorlds($event)"
-                               (onRemoveItem)="removeItem($event)">
+          resourceType="worlds"
+          [resources]="collection.worlds"
+          [length]="paginatedWorlds?.totalCount"
+          [finished]="!paginatedWorlds?.hasNextPage()"
+          [removable]="canEdit"
+          [disabled]="activeTab !== 'models'"
+          (pageChange)="loadWorlds($event)"
+          (onRemoveItem)="removeItem($event)">
         </gz-fuel-resource-list>
       </div>
     </mat-tab>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CanActivate } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -14,7 +14,7 @@ import { UserService } from '../user';
  *
  * Prevents navigation based on sysAdmin status.
  */
-export class AdminGuard implements CanActivate {
+export class AdminGuard  {
 
   /**
    * Constructor of the Admin Guard service.

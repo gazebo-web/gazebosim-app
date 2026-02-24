@@ -10,9 +10,10 @@ import { Simulation } from '../simulation';
 import { PaginatedSimulation } from '../paginated-simulation';
 
 @Component({
-  selector: 'gz-simulation-table',
-  templateUrl: 'simulation-table.component.html',
-  styleUrls: ['simulation-table.component.scss']
+    selector: 'gz-simulation-table',
+    templateUrl: 'simulation-table.component.html',
+    styleUrls: ['simulation-table.component.scss'],
+    standalone: false
 })
 
 /**

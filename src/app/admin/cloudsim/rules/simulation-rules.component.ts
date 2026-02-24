@@ -14,9 +14,10 @@ import {
 } from '../../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'gz-simulation-rules',
-  templateUrl: 'simulation-rules.component.html',
-  styleUrls: ['simulation-rules.component.scss']
+    selector: 'gz-simulation-rules',
+    templateUrl: 'simulation-rules.component.html',
+    styleUrls: ['simulation-rules.component.scss'],
+    standalone: false
 })
 
 /**

@@ -2,7 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ComponentFixture, TestBed, getTestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ import { Collection, CollectionService } from '../../collection';
 import { DescriptionComponent } from '../../description/description.component';
 import { EditCollectionComponent } from './edit-collection.component';
 import { JsonClassFactoryService } from '../../factory/json-class-factory.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('EditCollectionComponent', () => {
   let fixture: ComponentFixture<EditCollectionComponent>;
@@ -44,10 +45,13 @@ describe('EditCollectionComponent', () => {
   // Create fixture and component before each test.
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    declarations: [
+        ConfirmationDialogComponent,
+        DescriptionComponent,
+        EditCollectionComponent
+    ],
+    imports: [BrowserAnimationsModule,
         FormsModule,
-        HttpClientTestingModule,
         MarkdownModule,
         MatDialogModule,
         MatIconModule,
@@ -55,29 +59,25 @@ describe('EditCollectionComponent', () => {
         MatRadioModule,
         MatSnackBarModule,
         ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
-        ConfirmationDialogComponent,
-        DescriptionComponent,
-        EditCollectionComponent
-        ],
-      providers: [
+        RouterTestingModule],
+    providers: [
         AuthService,
         CollectionService,
         JsonClassFactoryService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: testCollection
-              }
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: testCollection
+                    }
+                }
             }
-          }
         },
-        ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     testBed = getTestBed();
     fixture = TestBed.createComponent(EditCollectionComponent);

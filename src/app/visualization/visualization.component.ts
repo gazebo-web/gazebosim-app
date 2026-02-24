@@ -7,7 +7,8 @@ import { SceneManager } from 'gzweb';
 @Component({
   selector: 'gz-visualization',
   templateUrl: 'visualization.component.html',
-  styleUrls: ['visualization.component.scss']
+  styleUrls: ['visualization.component.scss'],
+  standalone: false
 })
 
 /**
@@ -60,8 +61,8 @@ export class VisualizationComponent implements OnDestroy {
    * @param snackbar Snackbar used to show notifications.
    * @param ws The Websocket Service used to get data from a Simulation.
    */
-   constructor(
-     public snackBar: MatSnackBar) {
+  constructor(
+    public snackBar: MatSnackBar) {
   }
 
   /**
@@ -109,8 +110,8 @@ export class VisualizationComponent implements OnDestroy {
    */
   public follow(model): void {
     if (model !== undefined && model !== null) {
-        this.following = true;
-        this.sceneMgr.follow(model['gz3dName']);
+      this.following = true;
+      this.sceneMgr.follow(model['gz3dName']);
     } else {
       this.following = false;
       this.sceneMgr.follow(null);
@@ -184,7 +185,7 @@ export class VisualizationComponent implements OnDestroy {
    * Listen to the Escape key to stop following.
    */
   @HostListener('window:keydown', ['$event'])
-  private keyEscape(event: KeyboardEvent): void {
+  public keyEscape(event: KeyboardEvent): void {
     if (event.key === 'Escape' || event.code === 'Escape') {
       this.sceneMgr.follow('follow_entity', null);
     }

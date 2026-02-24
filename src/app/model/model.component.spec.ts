@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -77,25 +77,7 @@ describe('ModelComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        FormsModule,
-        HttpClientModule,
-        MarkdownModule,
-        MatButtonModule,
-        MatCardModule,
-        MatChipsModule,
-        MatDialogModule,
-        MatIconModule,
-        MatListModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatTabsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        ],
-      declarations: [
+    declarations: [
         AuthPipe,
         CategoriesComponent,
         CopyDialogComponent,
@@ -108,35 +90,51 @@ describe('ModelComponent', () => {
         PageTitleComponent,
         SdfViewerComponent,
         TagsComponent
-        ],
-      providers: [
+    ],
+    imports: [BrowserAnimationsModule,
+        FormsModule,
+        MarkdownModule,
+        MatButtonModule,
+        MatCardModule,
+        MatChipsModule,
+        MatDialogModule,
+        MatIconModule,
+        MatListModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatTabsModule,
+        ReactiveFormsModule,
+        RouterTestingModule],
+    providers: [
         AuthService,
         CategoryService,
         CollectionService,
         JsonClassFactoryService,
         ModelService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                resolvedData: new Model({
-                  name: 'test-model',
-                  owner: 'test-owner',
-                  version: 5,
-                  images: []
-                })
-              },
-              paramMap: new Map([
-                ['modelname', 'test-model'],
-                ['owner', 'test-owner'],
-                ['version', '3']
-              ])
+            provide: ActivatedRoute,
+            useValue: {
+                snapshot: {
+                    data: {
+                        resolvedData: new Model({
+                            name: 'test-model',
+                            owner: 'test-owner',
+                            version: 5,
+                            images: []
+                        })
+                    },
+                    paramMap: new Map([
+                        ['modelname', 'test-model'],
+                        ['owner', 'test-owner'],
+                        ['version', '3']
+                    ])
+                }
             }
-          }
-        }
-        ],
-    });
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+});
     // TestBed can't have entryComponents directly. We need to set them the following way.
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {

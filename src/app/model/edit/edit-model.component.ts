@@ -14,9 +14,10 @@ import {
 } from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'gz-edit-model',
-  templateUrl: 'edit-model.component.html',
-  styleUrls: ['edit-model.component.scss']
+    selector: 'gz-edit-model',
+    templateUrl: 'edit-model.component.html',
+    styleUrls: ['edit-model.component.scss'],
+    standalone: false
 })
 
 /**

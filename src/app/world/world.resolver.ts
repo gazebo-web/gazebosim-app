@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -13,7 +13,7 @@ import { WorldService } from './world.service';
  *
  * Fetches the world to display before the WorldComponent is created.
  */
-export class WorldResolver implements Resolve<World> {
+export class WorldResolver  {
 
   /**
    * @param worldService Service used to get World information from the Server.

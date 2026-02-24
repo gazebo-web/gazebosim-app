@@ -12,9 +12,10 @@ import { AuthService } from '../../auth/auth.service';
 import { Collection, CollectionService } from '../../collection';
 
 @Component({
-  selector: 'gz-edit-collection',
-  templateUrl: 'edit-collection.component.html',
-  styleUrls: ['edit-collection.component.scss']
+    selector: 'gz-edit-collection',
+    templateUrl: 'edit-collection.component.html',
+    styleUrls: ['edit-collection.component.scss'],
+    standalone: false
 })
 
 /**

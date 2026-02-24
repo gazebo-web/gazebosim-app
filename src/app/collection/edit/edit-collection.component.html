@@ -1,58 +1,52 @@
 <div class="page-content-inner mat-typography">
 
-  <div class="unauthorized" *ngIf="!canEdit; else isAuthorized">
-    <h2>You are not authorized to edit this collection.</h2>
-  </div>
-
-  <ng-template #isAuthorized>
+  @if (!canEdit) {
+    <div class="unauthorized">
+      <h2>You are not authorized to edit this collection.</h2>
+    </div>
+  } @else {
     <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
       (ngSubmit)=onEdit()>
-
       <h2>Change the banner image</h2>
-
       <div fxLayout="row" fxLayoutAlign="space-between baseline">
         <button mat-raised-button type="button" color="primary" class="banner-button"
-                [disabled]="updating"
-                (click)="bannerInput.click()">
+          [disabled]="updating"
+          (click)="bannerInput.click()">
           Add banner
         </button>
-
         <input #bannerInput type=file accept="image/jpeg, image/png" hidden
           (change)="onFileInput($event)"/>
-
-        <span *ngIf="bannerFile; else noFile">
-          Selected file: {{bannerFile.name}}
-        </span>
-
-        <ng-template #noFile>No file selected.</ng-template>
+        @if (bannerFile) {
+          <span>
+            Selected file: {{bannerFile.name}}
+          </span>
+        } @else {
+          No file selected.
+        }
       </div>
-
       <h2>Edit description</h2>
-
       <gz-description [description]="collection.description"
-                       [edit]="true"
-                       [disabled]="updating"
-                       (onModify)="onModifyDescription($event)"
-                       fxFill>
+        [edit]="true"
+        [disabled]="updating"
+        (onModify)="onModifyDescription($event)"
+        fxFill>
       </gz-description>
-
       <div fxLayout="column" fxFill>
         <p>Select if your collection is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
-          <mat-radio-button *ngFor="let p of collectionService.getPermissionList(); let i = index"
-            [value]="i"
+          @for (p of collectionService.getPermissionList(); track p; let i = $index) {
+            <mat-radio-button
+              [value]="i"
             [checked]="(p === 'Private' && collection.private) || (p === 'Public' && !collection.private)">{{p}}</mat-radio-button>
+          }
         </mat-radio-group>
       </div>
-
       <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
         <button mat-raised-button type="button" (click)="back()">Cancel</button>
-
         <button mat-raised-button color="accent" type="submit">
           Save changes
         </button>
       </div>
-
       <div fxFill>
         <h2 class="danger">Dangerous Zone!</h2>
         <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
@@ -61,14 +55,12 @@
               Delete collection
             </a>
           </div>
-
           <div>
             <p>Be mindful when deleting a collection, other users could be counting on it.</p>
           </div>
-
         </div>
       </div>
-
     </form>
-  </ng-template>
+  }
+
 </div>

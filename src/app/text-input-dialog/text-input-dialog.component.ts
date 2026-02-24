@@ -2,8 +2,9 @@ import { Component, Inject, EventEmitter, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'gz-text-input-dialog',
-  templateUrl: 'text-input-dialog.component.html',
+    selector: 'gz-text-input-dialog',
+    templateUrl: 'text-input-dialog.component.html',
+    standalone: false
 })
 
 /**

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ import { OrganizationComponent } from '../organization/organization.component';
  * Fetches the corresponding User or Organization, along with it's type to disambiguate them.
  * As they require different components to display, the Component information is also returned.
  */
-export class OwnerProfileResolver implements Resolve<any> {
+export class OwnerProfileResolver  {
 
   /**
    * @param userService Service used to get the Owner profile information from the Server.

@@ -7,9 +7,10 @@ import { WorldService } from '../world/world.service';
 import { World } from '../world/world';
 
 @Component({
-  selector: 'gz-dashboard',
-  templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.scss']
+    selector: 'gz-dashboard',
+    templateUrl: 'dashboard.component.html',
+    styleUrls: ['dashboard.component.scss'],
+    standalone: false
 })
 
 /**
