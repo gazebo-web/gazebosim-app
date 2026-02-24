@@ -1,17 +1,24 @@
-import { Component,
-         Input,
-         Output,
-         EventEmitter,
-         ChangeDetectorRef,
-         NgZone,
-         OnInit
-       } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef, NgZone, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DndDirective } from '../dnd/dnd.directive';
 
 @Component({
   selector: 'gz-file-upload',
   templateUrl: 'file-upload.component.html',
-  styleUrls: ['file-upload.component.scss']
+  styleUrls: ['file-upload.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DndDirective,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

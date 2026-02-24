@@ -3,9 +3,11 @@ import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import { Collection, CollectionService, PaginatedCollection } from '../../collection';
+import { CollectionService, PaginatedCollection } from '../../collection';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver that fetches all public collections.

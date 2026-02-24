@@ -1,19 +1,22 @@
-import { Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-
-import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { ItemCardComponent } from 'src/app/item-card/item-card.component';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { FuelResource } from '../fuel-resource';
 
 @Component({
   selector: 'gz-fuel-resource-list',
   templateUrl: 'fuel-resource-list.component.html',
-  styleUrls: ['fuel-resource-list.component.scss']
+  styleUrls: ['fuel-resource-list.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    ItemCardComponent,
+    MatPaginatorModule,
+  ],
 })
 
 /**

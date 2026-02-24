@@ -12,7 +12,9 @@ import { PaginatedAccessToken } from '../settings/paginated-access-token';
 import { AccessToken } from '../settings/access-token';
 import { environment } from '../../environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The User Service is in charge of making User related requests to the Fuel server.

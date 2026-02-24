@@ -10,7 +10,10 @@ import { map } from 'rxjs/operators';
  * Usage:
  * <img *ngIf="(url | gzAuthHeader | async) as result" [src]=result>
  */
-@Pipe({name: 'gzAuthHeader'})
+@Pipe({
+  name: 'gzAuthHeader',
+  standalone: true,
+})
 export class AuthPipe implements PipeTransform, OnDestroy {
 
   /**

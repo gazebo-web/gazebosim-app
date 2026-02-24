@@ -1,20 +1,34 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectChange } from '@angular/material/select';
-import { PageEvent } from '@angular/material/paginator';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatButton } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 import { AdminElasticsearchService } from './admin-elasticsearch.service';
 import { ElasticsearchConfig } from './elasticsearch-config';
 import { ElasticsearchConfigDialogComponent } from './config-dialog/config-dialog.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'gz-admin-elasticsearch',
   templateUrl: 'admin-elasticsearch.component.html',
-  styleUrls: ['admin-elasticsearch.component.scss']
+  styleUrls: ['admin-elasticsearch.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatTableModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

@@ -16,7 +16,9 @@ import { QueueList } from '../admin/cloudsim/launch-queue/queue-list';
 import { environment } from '../../environments/environment';
 import { RobotType } from './robot-type';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Simulation service is in charge of making requests to the Cloudsim server.

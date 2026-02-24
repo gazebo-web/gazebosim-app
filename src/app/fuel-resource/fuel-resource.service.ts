@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { from, Observable, of, throwError } from 'rxjs';
 import { map, catchError, mergeMap } from 'rxjs/operators';
@@ -12,8 +11,6 @@ import { FuelResource } from './fuel-resource';
 import { FuelPaginatedResource } from './fuel-paginated-resource';
 
 import { parseLinkHeader } from '@web3-storage/parse-link-header';
-
-@Injectable()
 
 /**
  * The Fuel Resource service is in charge of making resource-related requests to the Backend

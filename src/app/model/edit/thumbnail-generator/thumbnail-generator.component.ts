@@ -4,6 +4,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FuelResource, FuelResourceService } from '../../../fuel-resource';
 import { ModelService } from '../../model.service';
 import { WorldService } from '../../../world/world.service';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 declare let GZ3D: any;
 declare let THREE: any;
@@ -11,7 +13,12 @@ declare let THREE: any;
 @Component({
   selector: 'gz-thumbnail-generator',
   templateUrl: 'thumbnail-generator.component.html',
-  styleUrls: ['thumbnail-generator.component.scss']
+  styleUrls: ['thumbnail-generator.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+  ],
 })
 
 /**

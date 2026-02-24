@@ -1,16 +1,16 @@
 <div *ngIf="edit; else metadataDisplay">
   <mat-list>
-    <mat-list-item *ngFor='let metadatum of metadata; let i = index; last as isLast'>
+    <mat-list-item *ngFor="let metadatum of metadata; let i = index; last as isLast">
       <mat-form-field>
         <input matInput
-               [(ngModel)]='metadata[i].key'
+               [(ngModel)]="metadata[i].key"
                placeholder="Key"
                (input)="onModify.emit(true);"/>
       </mat-form-field>
 
       <mat-form-field>
         <input matInput
-               [(ngModel)]='metadata[i].value'
+               [(ngModel)]="metadata[i].value"
                placeholder="Value"
                (input)="onModify.emit(true);"/>
       </mat-form-field>

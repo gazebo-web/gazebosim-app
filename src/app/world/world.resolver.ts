@@ -6,7 +6,9 @@ import { catchError } from 'rxjs/operators';
 import { World } from './world';
 import { WorldService } from './world.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver for the :owner/worlds/:worldname route.

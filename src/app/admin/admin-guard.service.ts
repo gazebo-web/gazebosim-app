@@ -7,7 +7,9 @@ import { map } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Admin Guard service is a route guard for the /admin route.

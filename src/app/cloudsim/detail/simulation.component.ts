@@ -1,8 +1,15 @@
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { MatSelectionListChange } from '@angular/material/list';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule, MatSelectionListChange } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 
+import { DurationPipe } from './duration.pipe';
+import { PageTitleComponent } from '../../page-title/page-title.component';
 import { SceneManager } from 'gzweb';
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
@@ -10,7 +17,19 @@ import { SimulationService } from '../simulation.service';
 @Component({
   selector: 'gz-simulation',
   templateUrl: 'simulation.component.html',
-  styleUrls: ['simulation.component.scss']
+  styleUrls: ['simulation.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DurationPipe,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatSelectModule,
+    PageTitleComponent,
+    RouterModule,
+  ],
 })
 
 /**

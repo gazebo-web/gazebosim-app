@@ -1,15 +1,29 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { CollectionService, Collection } from '../collection';
+import { ItemCardComponent } from '../item-card/item-card.component';
 import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
-import { WorldService } from '../world/world.service';
 import { World } from '../world/world';
+import { WorldService } from '../world/world.service';
 
 @Component({
   selector: 'gz-dashboard',
   templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.scss']
+  styleUrls: ['dashboard.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    ItemCardComponent,
+    MatButtonModule,
+    MatIconModule,
+    RouterModule,
+  ],
 })
 
 /**

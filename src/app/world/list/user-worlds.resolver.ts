@@ -6,7 +6,9 @@ import { catchError, map } from 'rxjs/operators';
 import { PaginatedWorlds } from '../paginated-worlds';
 import { WorldService } from '../world.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver that fetches the worlds that belong to a certain user.

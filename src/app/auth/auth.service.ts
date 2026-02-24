@@ -10,7 +10,9 @@ import { environment } from '../../environments/environment';
 import { AUTH_CONFIG } from './auth0-variables';
 import { FuelResource } from '../fuel-resource';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * This service provides login and logout capabilities throughout Auth0.

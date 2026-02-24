@@ -1,9 +1,17 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, SecurityContext, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Meta, DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { PageEvent } from '@angular/material/paginator';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { Subscription, forkJoin } from 'rxjs';
 import { finalize, switchMap } from 'rxjs/operators';
 
@@ -11,17 +19,44 @@ import { AuthService } from '../auth/auth.service';
 import { Collection, CollectionService, PaginatedCollection } from '../collection';
 import { CollectionDialogComponent } from '../collection/dialog/collection-dialog.component';
 import { CopyDialogComponent } from '../fuel-resource/copy-dialog/copy-dialog.component';
+import { DescriptionComponent } from '../description';
+import { FileSizePipe } from '../file-size/file-size.pipe';
+import { FuelResourceListComponent } from '../fuel-resource';
+import { GalleryComponent } from '../gallery/gallery.component';
+import { MetadataComponent } from '../metadata';
+import { PageTitleComponent } from '../page-title';
 import { ReportDialogComponent } from '../fuel-resource/report-dialog/report-dialog.component';
+import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
+import { TagsComponent } from '../tags';
 import { World } from './world';
 import { WorldService } from './world.service';
-import { SdfViewerComponent } from '../model/sdfviewer/sdfviewer.component';
 import * as FileSaver from 'file-saver';
-import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gz-world',
   templateUrl: 'world.component.html',
-  styleUrls: ['world.component.scss']
+  styleUrls: ['world.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DescriptionComponent,
+    FileSizePipe,
+    FlexLayoutModule,
+    FormsModule,
+    FuelResourceListComponent,
+    GalleryComponent,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatListModule,
+    MatSelectModule,
+    MatTabsModule,
+    MetadataComponent,
+    PageTitleComponent,
+    RouterModule,
+    SdfViewerComponent,
+    TagsComponent,
+  ],
 })
 
 /**

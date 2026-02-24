@@ -7,7 +7,9 @@ import { JsonClassFactoryService } from '../factory/json-class-factory.service';
 import { PaginatedWorlds } from './paginated-worlds';
 import { World } from './world';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The World Service is in charge of making World related requests to the Backend server.

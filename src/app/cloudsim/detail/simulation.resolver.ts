@@ -6,7 +6,9 @@ import { catchError } from 'rxjs/operators';
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver for the admin/cloudsim/:groupId route.

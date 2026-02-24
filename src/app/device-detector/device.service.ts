@@ -6,7 +6,9 @@
 import { Injectable } from '@angular/core';
 import * as Constants from './device.constants';
 import { ReTree } from './retree.service';
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class Ng2DeviceService {
     ua = '';
     userAgent = '';

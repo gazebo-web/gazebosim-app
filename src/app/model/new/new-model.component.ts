@@ -1,23 +1,48 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
+import { CategoriesComponent } from 'src/app/fuel-resource/categories/categories.component';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { DescriptionComponent } from 'src/app/description';
 import { ErrMsg } from '../../server/err-msg';
+import { FileUploadComponent } from 'src/app/file-upload';
 import { Model } from '../model';
 import { ModelService } from '../model.service';
+import { TagsComponent } from 'src/app/tags';
 
 @Component({
   selector: 'gz-new-model',
   templateUrl: 'new-model.component.html',
-  styleUrls: ['new-model.component.scss']
+  styleUrls: ['new-model.component.scss'],
+  standalone: true,
+  imports: [
+    CategoriesComponent,
+    CommonModule,
+    DescriptionComponent,
+    FileUploadComponent,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    TagsComponent,
+  ],
 })
 
 /**

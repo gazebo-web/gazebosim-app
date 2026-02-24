@@ -4,8 +4,8 @@
     <div fxLayoutAlign="space-between start">
       <textarea matInput
                 placeholder="Description"
-                matTextareaAutosize
-                matAutosizeMinRows = "2"
+                cdkTextareaAutosize=""
+                cdkAutosizeMinRows = "2"
                 [disabled]="disabled"
                 [ngModel]="description"
                 (ngModelChange)="setDescription($event)"

@@ -1,8 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+
 import { circuits as validCircuits } from './circuits';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
 import { Robot } from '../../cloudsim/robot';
@@ -14,7 +22,21 @@ import { validParents } from './valid-parents';
 @Component({
   selector: 'gz-simulation-launch-dialog',
   templateUrl: 'simulation-launch-dialog.component.html',
-  styleUrls: ['simulation-launch-dialog.component.scss']
+  styleUrls: ['simulation-launch-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

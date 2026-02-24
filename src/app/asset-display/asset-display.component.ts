@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component,
          OnInit,
          OnDestroy,
@@ -12,7 +13,11 @@ import { PageNotFoundComponent } from '../page-not-found';
 
 @Component({
   selector: 'gz-asset-display',
-  templateUrl: 'asset-display.component.html'
+  templateUrl: 'asset-display.component.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+  ],
 })
 
 /**

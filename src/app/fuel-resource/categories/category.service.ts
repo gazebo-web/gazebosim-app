@@ -8,7 +8,9 @@ import { JsonClassFactoryService } from '../../factory/json-class-factory.servic
 import { UiError } from '../../ui-error';
 import { environment } from '../../../environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Category service is in charge of making category-related requests to the Fuel server.

@@ -1,22 +1,41 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 
-import { SimulationService } from '../../../cloudsim';
+import { ConfirmationDialogComponent } from '../../../confirmation-dialog/confirmation-dialog.component';
 import { SimulationRule, PaginatedSimulationRules } from '../rules';
+import { SimulationService } from '../../../cloudsim';
 import { TextInputDialogComponent } from '../../../text-input-dialog';
-import {
-  ConfirmationDialogComponent
-} from '../../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'gz-simulation-rules',
   templateUrl: 'simulation-rules.component.html',
-  styleUrls: ['simulation-rules.component.scss']
+  styleUrls: ['simulation-rules.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatTableModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

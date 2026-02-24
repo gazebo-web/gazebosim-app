@@ -6,7 +6,9 @@ import { catchError, map } from 'rxjs/operators';
 import { PaginatedModels } from '../paginated-models';
 import { ModelService } from '../model.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * Resolver that fetches the models that belong to a certain user.

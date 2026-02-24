@@ -1,10 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+import { AuthPipe } from '../auth/auth.pipe';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'gz-item-card',
   templateUrl: 'item-card.component.html',
-  styleUrls: ['item-card.component.scss']
+  styleUrls: ['item-card.component.scss'],
+  standalone: true,
+  imports: [
+    AuthPipe,
+    CommonModule,
+    FlexLayoutModule,
+    MatCardModule,
+    MatIconModule,
+    RouterModule,
+  ],
 })
 
 /**

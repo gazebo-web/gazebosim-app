@@ -4,7 +4,8 @@ import { Directive, HostListener, HostBinding, EventEmitter, Output, Input } fro
  * Directive to handle drag-and-drop
  */
 @Directive({
-  selector: '[gzDnd]'
+  selector: '[gzDnd]',
+  standalone: true,
 })
 
 export class DndDirective {

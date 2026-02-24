@@ -1,10 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'gz-extra-dialog',
   templateUrl: 'extra-dialog.component.html',
-  styleUrls: ['extra-dialog.component.scss']
+  styleUrls: ['extra-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    MatDialogModule,
+    MatIconModule,
+    MatListModule,
+  ],
 })
 
 /**

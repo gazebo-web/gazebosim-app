@@ -1,7 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, switchMap, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -14,7 +22,21 @@ import { FuelResource } from '../../fuel-resource';
 @Component({
   selector: 'gz-collection-dialog',
   templateUrl: 'collection-dialog.component.html',
-  styleUrls: ['collection-dialog.component.scss']
+  styleUrls: ['collection-dialog.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

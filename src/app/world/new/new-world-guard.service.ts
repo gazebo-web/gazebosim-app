@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { CanActivate } from '@angular/router';
 import { Ng2DeviceService } from '../../device-detector';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The New World Guard service is a route guard for the worlds/upload route.

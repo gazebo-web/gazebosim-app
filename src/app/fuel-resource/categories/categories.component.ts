@@ -1,12 +1,26 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 
 import { CategoryService } from '../../fuel-resource/categories/category.service';
 
 @Component({
   selector: 'gz-categories',
   templateUrl: 'categories.component.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+  ],
 })
 
 /**

@@ -5,7 +5,9 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { UiError } from '../../ui-error';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Service used to communicate with the Billing endpoint, in order to do

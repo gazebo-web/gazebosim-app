@@ -1,18 +1,34 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { SelectionModel } from '@angular/cdk/collections';
 
 import { QueueElement } from './queue-element';
-import { SimulationService } from '../../../cloudsim';
 import { QueueList } from './queue-list';
+import { SimulationService } from '../../../cloudsim';
 
 @Component({
   selector: 'gz-launch-queue',
   templateUrl: 'launch-queue.component.html',
-  styleUrls: ['launch-queue.component.scss']
+  styleUrls: ['launch-queue.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatToolbarModule,
+  ],
 })
 export class LaunchQueueComponent implements OnInit {
   /**
@@ -51,7 +67,6 @@ export class LaunchQueueComponent implements OnInit {
   private paginatorLength: number = 0;
 
   constructor(
-    public dialog: MatDialog,
     public simulationService: SimulationService,
     public snackBar: MatSnackBar) {
   }

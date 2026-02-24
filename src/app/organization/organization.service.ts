@@ -13,7 +13,9 @@ import { environment } from '../../environments/environment';
 
 import { parseLinkHeader } from '@web3-storage/parse-link-header';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 /**
  * The Organization Service is in charge of making Organization related requests to the

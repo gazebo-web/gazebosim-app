@@ -1,8 +1,12 @@
 import { ActivatedRoute, Params } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 
+import { FuelResourceListComponent } from '../fuel-resource';
 import { Model } from '../model/model';
 import { ModelService } from '../model/model.service';
 import { PaginatedModels } from '../model/paginated-models';
@@ -13,7 +17,14 @@ import { WorldService } from '../world/world.service';
 @Component({
   selector: 'gz-search',
   templateUrl: 'search.component.html',
-  styleUrls: ['search.component.scss']
+  styleUrls: ['search.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+    FuelResourceListComponent,
+    MatIconModule,
+    MatTabsModule,
+  ],
 })
 
 /**

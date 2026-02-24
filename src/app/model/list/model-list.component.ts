@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { PageEvent } from '@angular/material/paginator';
 
+import { FuelResourceListComponent } from 'src/app/fuel-resource';
 import { Model } from '../model';
 import { ModelService } from '../model.service';
 import { PaginatedModels } from '../paginated-models';
@@ -9,7 +11,12 @@ import { PaginatedModels } from '../paginated-models';
 @Component({
   selector: 'gz-models',
   templateUrl: 'model-list.component.html',
-  styleUrls: ['model-list.component.scss']
+  styleUrls: ['model-list.component.scss'],
+  standalone: true,
+  imports: [
+    FlexLayoutModule,
+    FuelResourceListComponent,
+  ],
 })
 
 /**

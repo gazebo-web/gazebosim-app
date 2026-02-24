@@ -1,8 +1,13 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as FileSaver from 'file-saver';
 
@@ -18,7 +23,19 @@ import { SimulationLaunchDialogComponent } from './launch/simulation-launch-dial
 @Component({
   selector: 'gz-applications',
   templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  styleUrls: ['./applications.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    CreditsComponent,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatTableModule,
+    RouterModule,
+  ],
 })
 export class ApplicationsComponent implements OnInit, AfterViewInit {
 

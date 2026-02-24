@@ -1,18 +1,28 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import * as FileSaver from 'file-saver';
+
 import { AuthService } from '../../auth/auth.service';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { ExtraDialogComponent } from '../extra-dialog/extra-dialog.component';
 import { Simulation } from '../simulation';
 import { SimulationService } from '../simulation.service';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
-import { ExtraDialogComponent } from '../extra-dialog/extra-dialog.component';
-import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'gz-simulation-actions',
   templateUrl: 'simulation-actions.component.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 
 /**
