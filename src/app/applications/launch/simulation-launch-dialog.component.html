@@ -1,0 +1,198 @@
+<h1 mat-dialog-title>Launch a SubT Simulation</h1>
+
+<mat-dialog-content>
+  <p>
+    Please name your submission instance and enter the name, type and docker
+    image of your robots.
+  </p>
+
+  <form fxLayout="column">
+    <mat-form-field>
+      <input matInput placeholder="Name" [formControl]="simName" required />
+      @if (simName.hasError("required")) {
+        <mat-error> You must enter a value </mat-error>
+      }
+      @if (simName.hasError("minlength")) {
+        <mat-error> Name must have more than 3 characters </mat-error>
+      }
+      @if (simName.hasError("pattern")) {
+        <mat-error> Use only alphanumeric characters </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select
+        placeholder="Scenario"
+        [formControl]="circuitDropdownForm"
+        required
+      >
+        @for (circuit of circuits; track circuit) {
+          <mat-option [value]="circuit">
+            {{ circuit }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (circuitDropdownForm.hasError("required")) {
+        <mat-error> Please select a scenario </mat-error>
+      }
+    </mat-form-field>
+
+    <h1 mat-dialog-title>Robots</h1>
+
+    @if (creditsEnabled) {
+      <p [ngClass]="{ 'negative-credits': credits < 0 }">
+        <strong>SubT Credits left:</strong> {{ credits }}
+      </p>
+    }
+
+    @if (!types || types.length === 0) {
+      <p>Loading robot types, please wait...</p>
+    }
+
+    @if (types && types.length > 0) {
+      <form fxLayout="column" (ngSubmit)="addRobot()">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Robot name"
+            [formControl]="robotName"
+            required
+            [errorStateMatcher]="robotErrorStateMatcher"
+          />
+          @if (robotName.hasError("required")) {
+            <mat-error> You must enter a value </mat-error>
+          }
+          @if (robotName.hasError("minlength")) {
+            <mat-error> Name must have more than 2 characters </mat-error>
+          }
+          @if (robotName.hasError("maxlength")) {
+            <mat-error> Name can't have more than 24 characters </mat-error>
+          }
+          @if (robotName.hasError("pattern")) {
+            <mat-error> Use only alphanumeric characters </mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Docker Image URL"
+            [formControl]="robotImageUrl"
+            required
+            [errorStateMatcher]="robotErrorStateMatcher"
+          />
+          @if (robotImageUrl.hasError("required")) {
+            <mat-error> You must enter a value </mat-error>
+          }
+          @if (teambaseSelected()) {
+            <a
+              matSuffix
+              href="https://github.com/osrf/subt/wiki/Team-Base-Station-tutorial"
+              target="_blank"
+              matTooltip="The Team Base Station is an optional zero-cost computer in the staging area. Teams may assign a docker image to run on this stationary computer. [Click for more info]"
+            >
+              <mat-icon>help_outline</mat-icon>
+            </a>
+          }
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select
+            placeholder="Robot type"
+            [formControl]="typeDropdownForm"
+            required
+            [errorStateMatcher]="robotErrorStateMatcher"
+            (selectionChange)="typeChange($event)"
+          >
+            @for (type of types; track type) {
+              <mat-option [value]="type" [disabled]="teambaseExists(type)">{{
+                type.name
+              }}</mat-option>
+            }
+          </mat-select>
+          @if (typeDropdownForm.hasError("required")) {
+            <mat-error> Please select a type </mat-error>
+          }
+        </mat-form-field>
+        @if (showMarsupialPartner()) {
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Marsupial Partner (optional)"
+              [formControl]="marsupialPartner"
+              [errorStateMatcher]="robotErrorStateMatcher"
+            />
+            <a
+              matSuffix
+              href="https://github.com/osrf/subt/wiki/api#marsupials"
+              target="_blank"
+              matTooltip="Enter the name of a marsupial child platform. [Click for more info]"
+            >
+              <mat-icon>help_outline</mat-icon>
+            </a>
+            @if (marsupialPartner.hasError("minlength")) {
+              <mat-error>
+                Marsupial Partner Name must have more than 2 characters
+              </mat-error>
+            }
+            @if (marsupialPartner.hasError("maxlength")) {
+              <mat-error>
+                Marsupial Partner Name can't have more than 24 characters
+              </mat-error>
+            }
+            @if (marsupialPartner.hasError("pattern")) {
+              <mat-error> Use only alphanumeric characters </mat-error>
+            }
+          </mat-form-field>
+        }
+        <div fxLayoutAlign="end center">
+          <button mat-raised-button type="submit">Add</button>
+        </div>
+      </form>
+    }
+
+    @if (robots.length === 0) {
+      <div>
+        <p>No robots were submitted. Please submit at least one.</p>
+      </div>
+    } @else {
+      <mat-list>
+        <h3 mat-subheader>Robots to submit</h3>
+        @for (robot of robots; track robot; let i = $index) {
+          <mat-list-item class="list-divider">
+            <h4 mat-line>{{ robot.name }}</h4>
+            <p mat-line>{{ robot.image }}</p>
+            <p mat-line>
+              {{ robot.type.name }} (SubT Credits: {{ robot.type.credits }})
+            </p>
+            @if (robot.partner) {
+              <p mat-line>Marsupial Partner: {{ robot.partner }}</p>
+            }
+            <div>
+              <button
+                mat-icon-button
+                title="remove this"
+                type="button"
+                (click)="removeRobot(i)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+
+  <button
+    color="primary"
+    mat-raised-button
+    type="button"
+    (click)="upload()"
+    [disabled]="robots.length === 0"
+  >
+    Submit
+  </button>
+</mat-dialog-actions>

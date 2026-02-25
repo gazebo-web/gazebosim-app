@@ -93,5 +93,38 @@
         </gz-item-card>
       }
     </div>
+
+    <!-- Pagination / Sliding cards pagination logic -->
+    <div class="pagination-container">
+      <button
+        mat-mini-fab
+        color="white"
+        (click)="prevPage()"
+        [disabled]="page === 1"
+        aria-label="Previous page"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <div class="pagination-dots">
+        @for (dot of [1, 2, 3, 4, 5]; track dot) {
+          <span
+            class="dot"
+            [class.active]="page === dot"
+            (click)="goToPage(dot)"
+          ></span>
+        }
+      </div>
+
+      <button
+        mat-mini-fab
+        color="white"
+        (click)="nextPage()"
+        [disabled]="page === 5"
+        aria-label="Next page"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
   </div>
 </div>

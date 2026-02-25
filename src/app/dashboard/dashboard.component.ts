@@ -69,12 +69,17 @@ export class DashboardComponent implements OnInit {
   public displayedAssets: RankedAsset[] = [];
 
   /**
+   * Current page of the sliding cards.
+   */
+  public page: number = 1;
+
+  /**
    * Number of assets to fetch per type for the ranking pool.
    */
   private fetchCount: number = 20;
 
   /**
-   * Number of top assets to display on the dashboard.
+   * Number of top assets to display on the dashboard per "page".
    */
   private displayCount: number = 12;
 
@@ -107,7 +112,36 @@ export class DashboardComponent implements OnInit {
   public setFilter(filter: string): void {
     if (this.currentFilter !== filter) {
       this.currentFilter = filter;
+      this.page = 1;
       this.loadAssets();
+    }
+  }
+
+  /**
+   * Set the current page of assets.
+   *
+   * @param page The page number to go to.
+   */
+  public goToPage(page: number): void {
+    this.page = page;
+    this.loadAssets();
+  }
+
+  /**
+   * Go to the previous page of assets.
+   */
+  public prevPage(): void {
+    if (this.page > 1) {
+      this.goToPage(this.page - 1);
+    }
+  }
+
+  /**
+   * Go to the next page of assets.
+   */
+  public nextPage(): void {
+    if (this.page < 5) {
+      this.goToPage(this.page + 1);
     }
   }
 
@@ -200,7 +234,11 @@ export class DashboardComponent implements OnInit {
           });
         }
 
-        this.displayedAssets = allAssets.slice(0, this.displayCount);
+        const startIndex = (this.page - 1) * this.displayCount;
+        this.displayedAssets = allAssets.slice(
+          startIndex,
+          startIndex + this.displayCount,
+        );
       },
       error: (error) => {
         console.error("Error fetching assets:", error);
@@ -211,10 +249,11 @@ export class DashboardComponent implements OnInit {
   /**
    * Navigate to the models page with the search query.
    */
-  public onSearch(): void {
-    if (this.searchText && this.searchText.trim().length > 0) {
+  public onSearch(value: string): void {
+    const query = value || this.searchText;
+    if (query && query.trim().length > 0) {
       this.router.navigate(["/models"], {
-        queryParams: { q: this.searchText.trim() },
+        queryParams: { q: query.trim() },
       });
     }
   }
