@@ -14,14 +14,14 @@
   display: flex;
   gap: 8px;
 
-  button {
+  .mat-mdc-button.filter-btn {
     font-size: 0.85rem;
     color: #666;
     border-radius: 20px;
-    padding: 0 16px !important;
+    padding: 0 16px;
     height: 36px;
     line-height: 36px;
-    background: #f5f5f5 !important;
+    background: #f5f5f5;
     transition: all 0.2s ease;
     border: none;
     cursor: pointer;
@@ -36,12 +36,12 @@
     }
 
     &:hover {
-      background: #eeeeee !important;
+      background: #eeeeee;
     }
 
     &.active {
-      background-color: #e1f5fe !important;
-      color: #0277bd !important;
+      background-color: #e1f5fe;
+      color: #0277bd;
     }
   }
 }

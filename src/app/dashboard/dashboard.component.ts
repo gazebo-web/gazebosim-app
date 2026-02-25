@@ -54,11 +54,6 @@ export class DashboardComponent implements OnInit {
   public collectionsQuantity: number;
 
   /**
-   * Search text entered in the hero search bar.
-   */
-  public searchText: string = "";
-
-  /**
    * The current selected filter (popular, recent, alphabetical).
    */
   public currentFilter: string = "popular";
@@ -244,17 +239,5 @@ export class DashboardComponent implements OnInit {
         console.error("Error fetching assets:", error);
       },
     });
-  }
-
-  /**
-   * Navigate to the models page with the search query.
-   */
-  public onSearch(value: string): void {
-    const query = value || this.searchText;
-    if (query && query.trim().length > 0) {
-      this.router.navigate(["/models"], {
-        queryParams: { q: query.trim() },
-      });
-    }
   }
 }

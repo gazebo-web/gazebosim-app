@@ -117,7 +117,7 @@ export class ModelListComponent implements OnInit {
     this.currentFilter = filter;
     this.getModels({
       pageIndex: 0,
-      pageSize: this.paginatedModels.resources.length,
+      pageSize: 12,
       length: this.paginatedModels.totalCount,
     } as PageEvent);
   }

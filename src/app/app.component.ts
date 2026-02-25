@@ -233,8 +233,6 @@ export class AppComponent implements OnInit {
     // a user named 'models' or similar inadvertently, though for 'models'/etc
     // it's usually at the end or followed by a slash.
     const url = this.router.url.split("?")[0]; // discard query params
-    return (
-      url.includes(`/${routeKeyword}`) || url.includes(`/${routeKeyword}/`)
-    );
+    return url.split("/").includes(routeKeyword);
   }
 }

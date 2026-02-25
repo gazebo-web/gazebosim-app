@@ -1,14 +1,14 @@
-mat-card {
+mat-card.mat-mdc-card {
   margin: 10px;
   padding: 24px;
   transition:
     transform 0.2s ease-in-out,
-    box-shadow 0.2s ease-in-out !important;
+    box-shadow 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }
 }
 

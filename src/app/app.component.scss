@@ -163,12 +163,12 @@ $total-header-height: calc(#{$header-height-top} + #{$header-height-bottom});
 }
 
 // ─── General UI Elements ─────────────────────────────────────────────
-.header-icon-button {
-  color: #555 !important;
+.app-header .header-icon-button {
+  color: #555;
   margin-left: 8px;
 
   &:hover {
-    color: #0277bd !important;
+    color: #0277bd;
   }
 }
 

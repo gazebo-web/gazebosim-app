@@ -111,7 +111,7 @@ export class CollectionListComponent implements OnInit {
     this.currentFilter = filter;
     this.getCollections({
       pageIndex: 0,
-      pageSize: this.paginatedCollections.collections.length,
+      pageSize: 12,
       length: this.paginatedCollections.totalCount,
     } as PageEvent);
   }

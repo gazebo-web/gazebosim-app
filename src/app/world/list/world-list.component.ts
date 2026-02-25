@@ -117,7 +117,7 @@ export class WorldListComponent implements OnInit {
     this.currentFilter = filter;
     this.getWorlds({
       pageIndex: 0,
-      pageSize: this.paginatedWorlds.resources.length,
+      pageSize: 12,
       length: this.paginatedWorlds.totalCount,
     } as PageEvent);
   }
