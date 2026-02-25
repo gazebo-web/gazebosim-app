@@ -1,258 +1,97 @@
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">Discover simulation assets</h1>
+    <p class="hero-subtitle">
+      Find and share robots, environments, and collections for robot simulation
+    </p>
+
+    <!-- Category Cards -->
+    <div class="category-cards">
+      <a routerLink="/models" class="category-card">
+        <div class="category-icon">
+          <mat-icon svgIcon="gz-model"></mat-icon>
+        </div>
+        <div class="category-info">
+          <h3>Models</h3>
+          <span class="category-count">{{ modelsQuantity | number }}</span>
+          <p class="category-desc">Robots, vehicles, objects & environments</p>
+        </div>
+      </a>
+
+      <a routerLink="/worlds" class="category-card">
+        <div class="category-icon">
+          <mat-icon svgIcon="gz-world"></mat-icon>
+        </div>
+        <div class="category-info">
+          <h3>Worlds</h3>
+          <span class="category-count">{{ worldsQuantity | number }}</span>
+          <p class="category-desc">Complete simulation scenes ready to run</p>
+        </div>
+      </a>
+
+      <a routerLink="/collections" class="category-card">
+        <div class="category-icon">
+          <mat-icon>collections</mat-icon>
+        </div>
+        <div class="category-info">
+          <h3>Collections</h3>
+          <span class="category-count">{{ collectionsQuantity | number }}</span>
+          <p class="category-desc">Curated bundles of related assets</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <div class="page-content-inner">
-  <div
-    fxLayout="row"
-    fxLayoutGap="10px"
-    fxLayoutAlign="space-around"
-    fxFill
-    class="section"
-  >
-    <a routerLink="/models">
-      <div class="stats-box" fxLayout="column" fxLayoutAlign="center center">
-        <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon="gz-model"></mat-icon>
-          <h2 style="text-align: left; margin: 10px 10px">Models</h2>
-        </div>
-        <div>
-          <h2>{{ modelsQuantity }}</h2>
-        </div>
-      </div>
-    </a>
-
-    <a routerLink="/worlds">
-      <div class="stats-box" fxLayout="column" fxLayoutAlign="center center">
-        <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon svgIcon="gz-world"></mat-icon>
-          <h2 style="text-align: left; margin: 10px 10px">Worlds</h2>
-        </div>
-        <div>
-          <h2>{{ worldsQuantity }}</h2>
-        </div>
-      </div>
-    </a>
-
-    <a routerLink="/collections">
-      <div class="stats-box" fxLayout="column" fxLayoutAlign="center center">
-        <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon>collections</mat-icon>
-          <h2 style="text-align: left; margin: 10px 10px">Collections</h2>
-        </div>
-        <div>
-          <h2>{{ collectionsQuantity }}</h2>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <!-- Enable this after the release of the portal code(sometime in Dec 2018)
-  <div fxShow.gt-sm fxHide.lt-md fxLayout="column" fxLayout="row"
-    fxLayoutGap="20px" fxLayoutAlign='space-around' fxFill class="section">
-
-    <div class='stats-box' fxFlex='0 1 250px'>
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-icon svgIcon='gz-model'></mat-icon>
-        <h2 style='text-align: left; margin: 10px 10px'>Models</h2>
-      </div>
-      <table>
-        <tr>
-          <td class='stats-table-bold'>Total</td><td>{{total_models}}</td>
-        </tr>
-        <tr>
-          <td class='stats-table-bold'>Your creations</td><td>26</td>
-        </tr>
-        <tr>
-          <td class='stats-table-bold'>Your likes</td><td>26</td>
-        </tr>
-      </table>
-    </div>
-
-    <div class='stats-box' fxFlex="0 1 250px">
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-icon svgIcon='gz-world'></mat-icon>
-        <h2 style='text-align: left; margin: 10px 10px'>Worlds</h2>
-      </div>
-      <table>
-        <tr>
-          <td class='stats-table-bold'>Total</td><td>26</td>
-        </tr>
-        <tr>
-          <td class='stats-table-bold'>Your creations</td><td>26</td>
-        </tr>
-        <tr>
-          <td class='stats-table-bold'>Your likes</td><td>26</td>
-        </tr>
-      </table>
-    </div>
-
-    <div class='stats-box' fxFlex="0 1 250px">
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-icon>collections</mat-icon>
-        <h2 style='text-align: left; margin: 10px 10px'>Collections</h2>
-      </div>
-      <table>
-        <tr>
-          <td class='stats-table-bold'>Total</td><td>26</td>
-        </tr>
-        <tr>
-          <td class='stats-table-bold'>Your collections</td><td>26</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-  -->
-
-  <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"></div>
-
-    <div fxLayout="column" fxFlex="1 1 90%">
-      <div class="section-title mat-typography">
-        <a
-          href="#"
-          routerLink="/models"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-          fxLayoutGap="10px"
+  <!-- Filterable Assets Grid -->
+  <div class="content-section">
+    <div class="section-header">
+      <div class="filter-controls">
+        <button
+          mat-button
+          [class.active]="currentFilter === 'popular'"
+          (click)="setFilter('popular')"
         >
-          <mat-icon svgIcon="gz-model"></mat-icon>
-          <h2>Latest models</h2>
-        </a>
-      </div>
-
-      @if (!models || models.length === 0) {
-        <div class="mat-typography">
-          <h3>There are no models yet.</h3>
-        </div>
-      }
-
-      <div fxLayout="row wrap" fxLayoutAlign="center center">
-        @for (model of models; track model) {
-          <gz-item-card
-            class="card"
-            fxFlex.xs="100%"
-            fxFlex.gt-xs="50%"
-            fxFlex.gt-md="25%"
-            [resource]="model"
-            type="models"
-          >
-          </gz-item-card>
-        }
-      </div>
-
-      <div fxLayout="row" fxLayoutAlign="center center">
-        @if (models && models.length > 0) {
-          <a
-            mat-raised-button
-            color="primary"
-            routerLink="/models"
-            class="more-button"
-          >
-            Discover more
-          </a>
-        }
+          <mat-icon>trending_up</mat-icon>
+          Popular
+        </button>
+        <button
+          mat-button
+          [class.active]="currentFilter === 'recent'"
+          (click)="setFilter('recent')"
+        >
+          <mat-icon>schedule</mat-icon>
+          Recent
+        </button>
+        <button
+          mat-button
+          [class.active]="currentFilter === 'alphabetical'"
+          (click)="setFilter('alphabetical')"
+        >
+          <mat-icon>sort_by_alpha</mat-icon>
+          Alphabetical
+        </button>
       </div>
     </div>
-  </div>
 
-  <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"></div>
+    @if (!displayedAssets || displayedAssets.length === 0) {
+      <div class="empty-state">
+        <mat-icon>search_off</mat-icon>
+        <p>No assets available yet.</p>
+      </div>
+    }
 
-    <div fxLayout="column" fxFlex="1 1 90%">
-      <div class="section-title mat-typography">
-        <a
-          href="#"
-          routerLink="/worlds"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-          fxLayoutGap="10px"
+    <div class="card-grid card-grid-popular">
+      @for (item of displayedAssets; track item) {
+        <gz-item-card
+          class="card"
+          [resource]="item.resource"
+          [type]="item.type"
         >
-          <mat-icon svgIcon="gz-world"></mat-icon>
-          <h2>Latest worlds</h2>
-        </a>
-      </div>
-
-      @if (!worlds || worlds.length === 0) {
-        <div class="mat-typography">
-          <h3>There are no worlds yet.</h3>
-        </div>
+        </gz-item-card>
       }
-
-      <div fxLayout="row wrap" fxLayoutAlign="center center">
-        @for (world of worlds; track world) {
-          <gz-item-card
-            class="card"
-            fxFlex.xs="100%"
-            fxFlex.gt-xs="50%"
-            fxFlex.gt-md="25%"
-            [resource]="world"
-            type="worlds"
-          >
-          </gz-item-card>
-        }
-      </div>
-
-      <div fxLayout="row" fxLayoutAlign="center center">
-        @if (worlds && worlds.length > 0) {
-          <a
-            mat-raised-button
-            color="primary"
-            routerLink="/worlds"
-            class="more-button"
-          >
-            Discover more
-          </a>
-        }
-      </div>
-    </div>
-  </div>
-
-  <div fxFlexLayout="row" class="section" fxFill>
-    <div fxFlex="1 1 5%"></div>
-
-    <div fxLayout="column" fxFlex="1 1 90%">
-      <div class="section-title mat-typography">
-        <a
-          href="#"
-          routerLink="/collections"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-          fxLayoutGap="10px"
-        >
-          <mat-icon>collections</mat-icon>
-          <h2>Latest collections</h2>
-        </a>
-      </div>
-
-      @if (!collections || collections.length === 0) {
-        <div class="mat-typography">
-          <h3>There are no collections yet.</h3>
-        </div>
-      }
-
-      <div fxLayout="row wrap" fxLayoutAlign="center center">
-        @for (collection of collections; track collection) {
-          <gz-item-card
-            class="card"
-            fxFlex.xs="100%"
-            fxFlex.gt-xs="50%"
-            fxFlex.gt-md="25%"
-            [resource]="collection"
-            type="collections"
-          >
-          </gz-item-card>
-        }
-      </div>
-
-      <div fxLayout="row" fxLayoutAlign="center center">
-        @if (collections && collections.length > 0) {
-          <a
-            mat-raised-button
-            color="primary"
-            routerLink="/collections"
-            class="more-button"
-          >
-            Discover more
-          </a>
-        }
-      </div>
     </div>
   </div>
 </div>

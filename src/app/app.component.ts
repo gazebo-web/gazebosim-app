@@ -220,4 +220,21 @@ export class AppComponent implements OnInit {
       }
     }, 200);
   }
+
+  /**
+   * Check if a specific route keyword is part of the current URL
+   * to determine if the associated sidebar link should be highlighted.
+   *
+   * @param routeKeyword The keyword to look for in the URL (e.g. 'models')
+   * @returns true if the keyword is part of the path
+   */
+  public isRouteActive(routeKeyword: string): boolean {
+    // We surround with slashes or check end of string to ensure we don't match
+    // a user named 'models' or similar inadvertently, though for 'models'/etc
+    // it's usually at the end or followed by a slash.
+    const url = this.router.url.split("?")[0]; // discard query params
+    return (
+      url.includes(`/${routeKeyword}`) || url.includes(`/${routeKeyword}/`)
+    );
+  }
 }

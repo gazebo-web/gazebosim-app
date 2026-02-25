@@ -18,6 +18,51 @@
 }
 
 .mat-paginator {
-  background-color: transparent;
-  color: black;
+  // Use the MDC specific class and variable for transparency
+  &.mat-mdc-paginator {
+    --mat-paginator-container-background-color: transparent;
+    background-color: transparent !important;
+  }
+
+  margin-top: 1rem;
+}
+
+::ng-deep {
+  // Force transparency on the main container and internal fields
+  .mat-mdc-paginator {
+    background-color: transparent !important;
+
+    .mat-mdc-paginator-container {
+      background-color: transparent !important;
+      color: rgba(0, 0, 0, 0.87) !important;
+      justify-content: center !important;
+      padding: 0.5rem 0 !important;
+    }
+
+    .mat-mdc-form-field-flex {
+      background-color: transparent !important;
+    }
+  }
+
+  // Modern navigation button styles
+  .mat-mdc-paginator-navigation-next,
+  .mat-mdc-paginator-navigation-previous,
+  .mat-mdc-paginator-navigation-first,
+  .mat-mdc-paginator-navigation-last {
+    margin: 0 4px !important;
+    transition: all 0.2s ease-in-out !important;
+
+    &:hover:not(.mat-mdc-button-disabled) {
+      background-color: rgba(2, 119, 189, 0.08) !important;
+      color: #0277bd !important;
+    }
+
+    .mat-mdc-button-touch-target {
+      display: none;
+    }
+
+    .mat-icon {
+      color: inherit !important;
+    }
+  }
 }

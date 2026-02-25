@@ -47,6 +47,12 @@ export class PublicCollectionsResolver {
       params["per_page"] = route.queryParams["per_page"];
     }
 
+    if (route.queryParams["sort"]) {
+      params["sort"] = route.queryParams["sort"];
+    } else if (!route.queryParams["q"]) {
+      params["sort"] = "most_liked";
+    }
+
     return this.collectionService.getCollectionList(params).pipe(
       map((collections) => {
         return collections;

@@ -34,6 +34,11 @@ export class ModelListComponent implements OnInit {
   public title: string;
 
   /**
+   * The current filter being used.
+   */
+  public currentFilter: string = "most_liked";
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data.
    * @param modelService Service used to get the paginated Models.
    * @param router The router used to call navigation methods.
@@ -54,6 +59,18 @@ export class ModelListComponent implements OnInit {
     this.paginatedModels = this.activatedRoute.snapshot.data["resolvedData"];
     this.models = this.paginatedModels.resources;
 
+    // Evaluates the initial filter from the route's query params.
+    if (this.activatedRoute.snapshot.queryParams["sort"]) {
+      this.currentFilter = this.activatedRoute.snapshot.queryParams["sort"];
+    } else if (!this.activatedRoute.snapshot.queryParams["q"]) {
+      this.currentFilter = "most_liked";
+    } else {
+      this.currentFilter = "";
+    }
+
+    // Sort models locally as a fallback for backend sorting.
+    this.sortModels();
+
     // Evaluates the route's title.
     this.title = this.activatedRoute.snapshot.data["title"](
       this.activatedRoute,
@@ -66,20 +83,67 @@ export class ModelListComponent implements OnInit {
    * @param event The Page Event emitted by the list's paginator.
    */
   public getModels(event: PageEvent) {
-    this.modelService
-      .getList({
-        page: event.pageIndex + 1,
-        per_page: event.pageSize,
-      })
-      .subscribe((models) => {
-        this.paginatedModels = models;
-        this.models = this.paginatedModels.resources;
+    const params = {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize,
+    };
+    if (this.currentFilter) {
+      params["sort"] = this.currentFilter;
+    }
 
-        // Navigate to the Model List page.
-        // Note that this does not recreate the component, since the navigation is to the same page.
-        this.router.navigateByUrl(
-          `/models?page=${event.pageIndex + 1}&per_page=${event.pageSize}`,
-        );
+    this.modelService.getList(params).subscribe((models) => {
+      this.paginatedModels = models;
+      this.models = this.paginatedModels.resources;
+
+      // Sort models locally as a fallback for backend sorting.
+      this.sortModels();
+
+      // Navigate to the Model List page.
+      // Note that this does not recreate the component, since the navigation is to the same page.
+      let url = `/models?page=${event.pageIndex + 1}&per_page=${event.pageSize}`;
+      if (this.currentFilter) {
+        url += `&sort=${this.currentFilter}`;
+      }
+      this.router.navigateByUrl(url);
+    });
+  }
+
+  /**
+   * Called when a filter is selected.
+   *
+   * @param filter The filter to set.
+   */
+  public setFilter(filter: string): void {
+    this.currentFilter = filter;
+    this.getModels({
+      pageIndex: 0,
+      pageSize: this.paginatedModels.resources.length,
+      length: this.paginatedModels.totalCount,
+    } as PageEvent);
+  }
+
+  /**
+   * Sorts the current list of models based on the current filter.
+   */
+  private sortModels(): void {
+    if (!this.models || !this.currentFilter) {
+      return;
+    }
+
+    if (this.currentFilter === "most_liked") {
+      this.models.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+    } else if (this.currentFilter === "recent") {
+      this.models.sort((a, b) => {
+        const dateA = a.modifyDate ? new Date(a.modifyDate).getTime() : 0;
+        const dateB = b.modifyDate ? new Date(b.modifyDate).getTime() : 0;
+        return dateB - dateA;
       });
+    } else if (this.currentFilter === "name") {
+      this.models.sort((a, b) => {
+        const nameA = (a.name || "").toLowerCase();
+        const nameB = (b.name || "").toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+    }
   }
 }

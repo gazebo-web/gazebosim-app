@@ -99,6 +99,9 @@ export abstract class FuelResourceService {
           params["per_page"].toString(),
         );
       }
+      if (params["sort"]) {
+        httpParams = httpParams.append("sort", params["sort"]);
+      }
     }
 
     return this.http.get(url, { observe: "response", params: httpParams }).pipe(

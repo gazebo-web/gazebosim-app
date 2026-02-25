@@ -57,7 +57,6 @@ import { AdminElasticsearchService } from "./admin/elasticsearch";
 import { AdminGuard } from "./admin/admin-guard.service";
 import { APIComponent } from "./api";
 import { AppComponent } from "./app.component";
-import { ApplicationsComponent } from "./applications/applications.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AssetDisplayComponent } from "./asset-display";
 import { AuthCallbackComponent } from "./auth/callback.component";
@@ -123,7 +122,6 @@ import { SearchComponent } from "./search/search.component";
 import { SettingsComponent } from "./settings";
 import { SimulationActionsComponent } from "./cloudsim";
 import { SimulationComponent } from "./cloudsim/detail/simulation.component";
-import { SimulationLaunchDialogComponent } from "./applications/launch/simulation-launch-dialog.component";
 import { SimulationTableComponent } from "./cloudsim";
 import { SimulationResolver } from "./cloudsim/detail/simulation.resolver";
 import { SimulationRulesComponent } from "./admin/cloudsim/rules/simulation-rules.component";
@@ -159,7 +157,6 @@ import { WorldService } from "./world/world.service";
     AdminElasticsearchComponent,
     APIComponent,
     AppComponent,
-    ApplicationsComponent,
     AssetDisplayComponent,
     AuthCallbackComponent,
     AuthPipe,
@@ -202,7 +199,6 @@ import { WorldService } from "./world/world.service";
     SettingsComponent,
     SimulationActionsComponent,
     SimulationComponent,
-    SimulationLaunchDialogComponent,
     SimulationTableComponent,
     SimulationRulesComponent,
     TagsComponent,
