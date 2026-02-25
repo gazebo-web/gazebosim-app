@@ -1,15 +1,19 @@
-import { TestBed, getTestBed } from '@angular/core/testing';
+import { TestBed, getTestBed } from "@angular/core/testing";
 import {
-  HttpClientTestingModule,
   HttpTestingController,
-  TestRequest
-} from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+  TestRequest,
+  provideHttpClientTesting,
+} from "@angular/common/http/testing";
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 
-import { AuthInterceptor } from './auth.interceptor';
+import { AuthInterceptor } from "./auth.interceptor";
 
-describe('AuthInterceptor', () => {
-
+describe("AuthInterceptor", () => {
   // The injectable HttpTestingController allows mocking and flushing requests.
   let httpMock: HttpTestingController;
   let http: HttpClient;
@@ -17,16 +21,16 @@ describe('AuthInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [],
       providers: [
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
           multi: true,
         },
-      ]
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     testBed = getTestBed();
     httpMock = testBed.inject(HttpTestingController);
@@ -38,34 +42,34 @@ describe('AuthInterceptor', () => {
     httpMock.verify();
   });
 
-  it('should add an Authorization header', () => {
+  it("should add an Authorization header", () => {
     // Note: This is fake route.
-    const url = '/';
+    const url = "/";
 
     // Mock the local storage.
-    spyOn(localStorage, 'getItem').and.callFake((key) => {
-      if (key === 'token') {
-        return 'test-token';
+    spyOn(localStorage, "getItem").and.callFake((key) => {
+      if (key === "token") {
+        return "test-token";
       }
     });
 
     http.get(url).subscribe();
 
     const req: TestRequest = httpMock.expectOne(url);
-    expect(req.request.method).toBe('GET');
-    expect(req.request.headers.has('Authorization')).toBe(true);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer test-token');
+    expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBe(true);
+    expect(req.request.headers.get("Authorization")).toBe("Bearer test-token");
 
-    req.flush('');
+    req.flush("");
   });
 
-  it('should NOT add an Authorization header if there is no token', () => {
+  it("should NOT add an Authorization header if there is no token", () => {
     // Note: This is fake route.
-    const url = '/';
+    const url = "/";
 
     // Mock the local storage.
-    spyOn(localStorage, 'getItem').and.callFake((key) => {
-      if (key === 'token') {
+    spyOn(localStorage, "getItem").and.callFake((key) => {
+      if (key === "token") {
         return null;
       }
     });
@@ -73,9 +77,9 @@ describe('AuthInterceptor', () => {
     http.get(url).subscribe();
 
     const req: TestRequest = httpMock.expectOne(url);
-    expect(req.request.method).toBe('GET');
-    expect(req.request.headers.has('Authorization')).toBe(false);
+    expect(req.request.method).toBe("GET");
+    expect(req.request.headers.has("Authorization")).toBe(false);
 
-    req.flush('');
+    req.flush("");
   });
 });

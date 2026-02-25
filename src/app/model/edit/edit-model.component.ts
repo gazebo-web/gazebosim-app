@@ -1,29 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { finalize } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { FormControl } from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { finalize } from "rxjs/operators";
 
-import { AuthService } from '../../auth/auth.service';
-import { ModelService } from '../model.service';
+import { AuthService } from "../../auth/auth.service";
+import { ModelService } from "../model.service";
 
-import { Model } from '../model';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
+import { Model } from "../model";
+import { ConfirmationDialogComponent } from "../../confirmation-dialog/confirmation-dialog.component";
 
 @Component({
-  selector: 'gz-edit-model',
-  templateUrl: 'edit-model.component.html',
-  styleUrls: ['edit-model.component.scss']
+  selector: "gz-edit-model",
+  templateUrl: "edit-model.component.html",
+  styleUrls: ["edit-model.component.scss"],
+  standalone: false,
 })
 
 /**
  * Edit Model Component is the page used to edit a model.
  */
 export class EditModelComponent implements OnInit {
-
   /**
    * The model being edited. It is fetched using a Route Resolver.
    */
@@ -99,8 +97,8 @@ export class EditModelComponent implements OnInit {
     public dialog: MatDialog,
     public modelService: ModelService,
     public router: Router,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -109,7 +107,7 @@ export class EditModelComponent implements OnInit {
    * the user is authorized to edit it.
    */
   public ngOnInit(): void {
-    this.model = this.activatedRoute.snapshot.data['resolvedData'];
+    this.model = this.activatedRoute.snapshot.data["resolvedData"];
 
     this.canEdit = this.authService.canWriteResource(this.model);
   }
@@ -166,12 +164,12 @@ export class EditModelComponent implements OnInit {
 
     // Check if Description has been modified.
     if (this.descriptionModified) {
-      formData.append('description', this.model.description.trim());
+      formData.append("description", this.model.description.trim());
     }
 
     // Check if the Tags have been modified.
     if (this.tagsModified) {
-      formData.append('tags', this.model.tags.join());
+      formData.append("tags", this.model.tags.join());
     }
 
     // Check if the metadata has been modified.
@@ -180,16 +178,18 @@ export class EditModelComponent implements OnInit {
       // {key: '', value: ''}. This feature should be handled automatically
       // by the metadata component.
       for (const m of this.model.metadata) {
-        if (this.model.metadata.length === 1 ||
-            (m.key !== '' && m.value !== '')) {
-          formData.append('metadata', JSON.stringify(m));
+        if (
+          this.model.metadata.length === 1 ||
+          (m.key !== "" && m.value !== "")
+        ) {
+          formData.append("metadata", JSON.stringify(m));
         }
       }
     }
 
     // Check if the Categories have been modified.
     if (this.categoriesModified) {
-      formData.append('categories', this.model.categories.join());
+      formData.append("categories", this.model.categories.join());
     }
 
     // Check if there are files to upload and analyze them.
@@ -203,23 +203,26 @@ export class EditModelComponent implements OnInit {
         // Avoid duplicated toLowerCase calls in Edit and New components.
         // File rename should be a method of this class, if necessary.
         // See: https://app.asana.com/0/660089940802243/729343249232870/f
-        if (file.name === 'model.config') {
+        if (file.name === "model.config") {
           hasConfig = true;
         }
         // Verify there is a SDF file.
-        if (file.name.toLowerCase().indexOf('.sdf') > 0) {
+        if (file.name.toLowerCase().indexOf(".sdf") > 0) {
           hasSDF = true;
         }
-        formData.append('file', file, (file as any).fullPath);
+        formData.append("file", file, (file as any).fullPath);
       }
 
       if (!hasConfig) {
-        this.snackBar.open(`Missing a 'model.config' file. It must be lowercase.`, 'Got it');
+        this.snackBar.open(
+          `Missing a 'model.config' file. It must be lowercase.`,
+          "Got it",
+        );
         return;
       }
 
       if (!hasSDF) {
-        this.snackBar.open('Missing an SDF file.', 'Got it');
+        this.snackBar.open("Missing an SDF file.", "Got it");
         return;
       }
     }
@@ -228,17 +231,21 @@ export class EditModelComponent implements OnInit {
     this.updating = true;
 
     // Update the privacy and permissions.
-    if (this.privacyInputForm.value !== null && this.privacyInputForm.value !== undefined) {
+    if (
+      this.privacyInputForm.value !== null &&
+      this.privacyInputForm.value !== undefined
+    ) {
       const privacyBoolean = !!this.privacyInputForm.value;
-      formData.append('private', privacyBoolean.toString());
-      formData.append('permission', this.privacyInputForm.value.toString());
+      formData.append("private", privacyBoolean.toString());
+      formData.append("permission", this.privacyInputForm.value.toString());
     }
 
-    this.modelService.edit(this.model.owner, this.model.name, formData)
+    this.modelService
+      .edit(this.model.owner, this.model.name, formData)
       .pipe(
         finalize(() => {
           this.updating = false;
-        })
+        }),
       )
       .subscribe(
         (response) => {
@@ -250,9 +257,13 @@ export class EditModelComponent implements OnInit {
           this.descriptionModified = false;
 
           // Notify the user.
-          this.snackBar.open(`${this.model.name} successfully updated`, 'Got it', {
-            duration: 2750
-          });
+          this.snackBar.open(
+            `${this.model.name} successfully updated`,
+            "Got it",
+            {
+              duration: 2750,
+            },
+          );
 
           // Go back to the model details.
           this.back();
@@ -260,55 +271,60 @@ export class EditModelComponent implements OnInit {
         (error) => {
           // The error code comes from gz-go and is specified by the fuelserver.
           if (error.code === 4002) {
-            this.snackBar.open('Organization members cannot modify ' +
-            'this model\'s permissions.', 'Got it');
+            this.snackBar.open(
+              "Organization members cannot modify " +
+                "this model's permissions.",
+              "Got it",
+            );
           } else {
-            this.snackBar.open(`${error.message}`, 'Got it');
+            this.snackBar.open(`${error.message}`, "Got it");
           }
-        });
+        },
+      );
   }
 
   /**
    * Callback when delete button is pressed
    */
   public onDelete(): void {
-
     const dialogOps = {
       data: {
         title: 'Delete model "' + this.model.name + '"',
-        message: 'Be mindful when deleting a model, other users could be ' +
-                 'counting on it. <br><b>Once deleted, the model can\'t be restored.</b>',
-        buttonText: 'Delete',
+        message:
+          "Be mindful when deleting a model, other users could be " +
+          "counting on it. <br><b>Once deleted, the model can't be restored.</b>",
+        buttonText: "Delete",
         hasInput: true,
-        inputMessage: 'To confirm, type the model name (case-sensitive)',
-        inputPlaceholder: 'Model name',
-        inputTarget: this.model.name
-      }
+        inputMessage: "To confirm, type the model name (case-sensitive)",
+        inputPlaceholder: "Model name",
+        inputTarget: this.model.name,
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed()
-      .subscribe(
-        (result) => {
-          if (result !== true) {
-            return;
-          }
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result !== true) {
+        return;
+      }
 
-          // Request deletion
-          this.modelService.delete(this.model)
-              .subscribe(
-                (response) => {
-                  this.snackBar.open(this.model.name + ' model deleted', 'Got it', {
-                    duration: 2750
-                  });
-                  this.router.navigate([this.model.owner + '/models']);
-                },
-                (error) => {
-                  this.snackBar.open(`${error.message}`, 'Got it');
-                });
-              });
+      // Request deletion
+      this.modelService.delete(this.model).subscribe(
+        (response) => {
+          this.snackBar.open(this.model.name + " model deleted", "Got it", {
+            duration: 2750,
+          });
+          this.router.navigate([this.model.owner + "/models"]);
+        },
+        (error) => {
+          this.snackBar.open(`${error.message}`, "Got it");
+        },
+      );
+    });
   }
 
   /**

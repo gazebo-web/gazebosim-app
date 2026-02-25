@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PageEvent } from "@angular/material/paginator";
 
-import { Model } from '../model';
-import { ModelService } from '../model.service';
-import { PaginatedModels } from '../paginated-models';
+import { Model } from "../model";
+import { ModelService } from "../model.service";
+import { PaginatedModels } from "../paginated-models";
 
 @Component({
-  selector: 'gz-models',
-  templateUrl: 'model-list.component.html',
-  styleUrls: ['model-list.component.scss']
+  selector: "gz-models",
+  templateUrl: "model-list.component.html",
+  styleUrls: ["model-list.component.scss"],
+  standalone: false,
 })
 
 /**
  * Model List Component is a page that displays a list of models.
  */
 export class ModelListComponent implements OnInit {
-
   /**
    * The array of Models this component represents.
    */
@@ -41,8 +41,8 @@ export class ModelListComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private modelService: ModelService,
-    private router: Router) {
-  }
+    private router: Router,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -50,13 +50,14 @@ export class ModelListComponent implements OnInit {
    * It retrieves the list of models obtained from the Route Resolver.
    */
   public ngOnInit(): void {
-
     // Take the resources from the resolved data.
-    this.paginatedModels = this.activatedRoute.snapshot.data['resolvedData'];
+    this.paginatedModels = this.activatedRoute.snapshot.data["resolvedData"];
     this.models = this.paginatedModels.resources;
 
     // Evaluates the route's title.
-    this.title = this.activatedRoute.snapshot.data['title'](this.activatedRoute);
+    this.title = this.activatedRoute.snapshot.data["title"](
+      this.activatedRoute,
+    );
   }
 
   /**
@@ -65,18 +66,20 @@ export class ModelListComponent implements OnInit {
    * @param event The Page Event emitted by the list's paginator.
    */
   public getModels(event: PageEvent) {
-    this.modelService.getList({
-      page: event.pageIndex + 1,
-      per_page: event.pageSize,
-    }).subscribe(
-      (models) => {
+    this.modelService
+      .getList({
+        page: event.pageIndex + 1,
+        per_page: event.pageSize,
+      })
+      .subscribe((models) => {
         this.paginatedModels = models;
         this.models = this.paginatedModels.resources;
 
         // Navigate to the Model List page.
         // Note that this does not recreate the component, since the navigation is to the same page.
-        this.router.navigateByUrl(`/models?page=${event.pageIndex+1}&per_page=${event.pageSize}`);
-      }
-    );
+        this.router.navigateByUrl(
+          `/models?page=${event.pageIndex + 1}&per_page=${event.pageSize}`,
+        );
+      });
   }
 }

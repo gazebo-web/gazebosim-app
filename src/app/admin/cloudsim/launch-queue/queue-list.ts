@@ -1,4 +1,4 @@
-import { QueueElement } from './queue-element';
+import { QueueElement } from "./queue-element";
 
 /**
  * Represents the list of elements from the queue.

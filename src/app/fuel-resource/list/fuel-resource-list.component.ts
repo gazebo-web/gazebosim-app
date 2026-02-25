@@ -1,19 +1,15 @@
-import { Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute } from '@angular/router';
+import { PageEvent } from "@angular/material/paginator";
+import { ActivatedRoute } from "@angular/router";
 
-import { FuelResource } from '../fuel-resource';
+import { FuelResource } from "../fuel-resource";
 
 @Component({
-  selector: 'gz-fuel-resource-list',
-  templateUrl: 'fuel-resource-list.component.html',
-  styleUrls: ['fuel-resource-list.component.scss']
+  selector: "gz-fuel-resource-list",
+  templateUrl: "fuel-resource-list.component.html",
+  styleUrls: ["fuel-resource-list.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -23,7 +19,6 @@ import { FuelResource } from '../fuel-resource';
  * pagination.
  */
 export class FuelResourceListComponent implements OnInit {
-
   /**
    * The page index to use in the paginator.
    */
@@ -108,8 +103,7 @@ export class FuelResourceListComponent implements OnInit {
   /**
    * @param route The activated route in order to get pagination information.
    */
-  constructor(public route: ActivatedRoute) {
-  }
+  constructor(public route: ActivatedRoute) {}
 
   /**
    * OnInit Lifecycle hook. Used to sync the query parameters with the paginator.
@@ -117,11 +111,11 @@ export class FuelResourceListComponent implements OnInit {
   public ngOnInit(): void {
     const params = this.route.snapshot.queryParams;
     if (params) {
-      if (params['page'] && params['page'] > 0) {
-        this.pageIndex = params['page'] - 1;
+      if (params["page"] && params["page"] > 0) {
+        this.pageIndex = params["page"] - 1;
       }
-      if (params['per_page']) {
-        this.pageSize = params['per_page'];
+      if (params["per_page"]) {
+        this.pageSize = params["per_page"];
       }
     }
   }

@@ -1,20 +1,27 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from "@angular/common/http";
+import { Observable, throwError } from "rxjs";
+import { map, catchError, mergeMap } from "rxjs/operators";
 
-import { AuthService } from '../auth/auth.service';
-import { UiError } from '../ui-error';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { Machine } from './machine';
-import { PaginatedMachine } from './paginated-machine';
-import { Simulation } from './simulation';
-import { PaginatedSimulation } from './paginated-simulation';
-import { SimulationRule, PaginatedSimulationRules } from '../admin/cloudsim/rules';
-import { QueueElement } from '../admin/cloudsim/launch-queue/queue-element';
-import { QueueList } from '../admin/cloudsim/launch-queue/queue-list';
-import { environment } from '../../environments/environment';
-import { RobotType } from './robot-type';
+import { AuthService } from "../auth/auth.service";
+import { UiError } from "../ui-error";
+import { JsonClassFactoryService } from "../factory/json-class-factory.service";
+import { Machine } from "./machine";
+import { PaginatedMachine } from "./paginated-machine";
+import { Simulation } from "./simulation";
+import { PaginatedSimulation } from "./paginated-simulation";
+import {
+  SimulationRule,
+  PaginatedSimulationRules,
+} from "../admin/cloudsim/rules";
+import { QueueElement } from "../admin/cloudsim/launch-queue/queue-element";
+import { QueueList } from "../admin/cloudsim/launch-queue/queue-list";
+import { environment } from "../../environments/environment";
+import { RobotType } from "./robot-type";
 
 @Injectable()
 
@@ -22,11 +29,10 @@ import { RobotType } from './robot-type';
  * The Simulation service is in charge of making requests to the Cloudsim server.
  */
 export class SimulationService {
-
   /**
    * Private field used as a constant to represent X-Total-Count header name.
    */
-  private static readonly headerTotalCount: string = 'X-Total-Count';
+  private static readonly headerTotalCount: string = "X-Total-Count";
 
   /**
    * The Simulation Server's base URL, including version.
@@ -41,8 +47,8 @@ export class SimulationService {
   constructor(
     protected authService: AuthService,
     protected factory: JsonClassFactoryService,
-    protected http: HttpClient) {
-  }
+    protected http: HttpClient,
+  ) {}
 
   /**
    * Get the list of all Simulations.
@@ -58,40 +64,49 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/simulations`;
     let httpParams = new HttpParams();
     if (params) {
-      if (params['status']) {
-        httpParams = httpParams.set('status', params['status']);
+      if (params["status"]) {
+        httpParams = httpParams.set("status", params["status"]);
       }
-      if (params['errorStatus']) {
-        httpParams = httpParams.set('errorStatus', params['errorStatus']);
+      if (params["errorStatus"]) {
+        httpParams = httpParams.set("errorStatus", params["errorStatus"]);
       }
-      if (params['owner']) {
-        httpParams = httpParams.set('owner', params['owner']);
+      if (params["owner"]) {
+        httpParams = httpParams.set("owner", params["owner"]);
       }
-      if (params['page']) {
-        httpParams = httpParams.set('page', params['page'].toString());
+      if (params["page"]) {
+        httpParams = httpParams.set("page", params["page"].toString());
       }
-      if (params['children']) {
-        httpParams = httpParams.set('children', params['children']);
+      if (params["children"]) {
+        httpParams = httpParams.set("children", params["children"]);
       }
-      if (params['circuit']) {
-        httpParams = httpParams.set('circuit', params['circuit']);
+      if (params["circuit"]) {
+        httpParams = httpParams.set("circuit", params["circuit"]);
       }
-      if (params['pageSize']) {
-        httpParams = httpParams.set('per_page', params['pageSize']);
+      if (params["pageSize"]) {
+        httpParams = httpParams.set("per_page", params["pageSize"]);
       }
     }
-    if (!httpParams.has('per_page')) {
-      httpParams = httpParams.set('per_page', '10');
+    if (!httpParams.has("per_page")) {
+      httpParams = httpParams.set("per_page", "10");
     }
-    return this.http.get<PaginatedSimulation>(url, {params: httpParams, observe: 'response'})
+    return this.http
+      .get<PaginatedSimulation>(url, {
+        params: httpParams,
+        observe: "response",
+      })
       .pipe(
         map((response) => {
           const paginatedSim = new PaginatedSimulation();
-          paginatedSim.totalCount = +response.headers.get(SimulationService.headerTotalCount);
-          paginatedSim.simulations = this.factory.fromJson(response.body, Simulation);
+          paginatedSim.totalCount = +response.headers.get(
+            SimulationService.headerTotalCount,
+          );
+          paginatedSim.simulations = this.factory.fromJson(
+            response.body,
+            Simulation,
+          );
           return paginatedSim;
         }),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
@@ -103,7 +118,7 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/simulations/${groupId}`;
     return this.http.get<Simulation>(url).pipe(
       map((response) => this.factory.fromJson(response, Simulation)),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -113,9 +128,7 @@ export class SimulationService {
    */
   public getSimulationWebsocket(groupId: string): Observable<any> {
     const url: string = `${this.baseUrl}/simulations/${groupId}/websocket`;
-    return this.http.get<any>(url).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
   /**
@@ -128,7 +141,7 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/simulations`;
     return this.http.post<Simulation>(url, formData).pipe(
       map((response) => this.factory.fromJson(response, Simulation)),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -140,9 +153,7 @@ export class SimulationService {
    */
   public stop(groupId: string): Observable<any> {
     const url: string = `${this.baseUrl}/simulations/${groupId}`;
-    return this.http.delete(url).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete(url).pipe(catchError(this.handleError));
   }
 
   /**
@@ -153,9 +164,9 @@ export class SimulationService {
    */
   public restart(groupId: string): Observable<Simulation> {
     const url: string = `${this.baseUrl}/simulations/${groupId}/restart`;
-    return this.http.post(url, '').pipe(
+    return this.http.post(url, "").pipe(
       map((response) => this.factory.fromJson(response, Simulation)),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -169,14 +180,16 @@ export class SimulationService {
     const url = `${this.baseUrl}/simulations/${groupId}/logs/file`;
 
     // Note: MergeMap allows chaining requests.
-    return this.http.get(url, {params: new HttpParams().set('link', 'true')}).pipe(
-      mergeMap((responseUrl) => {
-        // Note: The request to the S3 signed URL will fail if it has an Authorization header.
-        // In the HTTP interceptor, the 'X-Amz-Signature' query parameter is detected in order to
-        // skip adding this header.
-        return this.http.get(responseUrl as string, {responseType: 'blob'});
-      })
-    );
+    return this.http
+      .get(url, { params: new HttpParams().set("link", "true") })
+      .pipe(
+        mergeMap((responseUrl) => {
+          // Note: The request to the S3 signed URL will fail if it has an Authorization header.
+          // In the HTTP interceptor, the 'X-Amz-Signature' query parameter is detected in order to
+          // skip adding this header.
+          return this.http.get(responseUrl as string, { responseType: "blob" });
+        }),
+      );
   }
 
   /**
@@ -191,29 +204,35 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/machines`;
     let httpParams = new HttpParams();
     if (params) {
-      if (params['status']) {
-        httpParams = httpParams.set('status', params['status']);
+      if (params["status"]) {
+        httpParams = httpParams.set("status", params["status"]);
       } else {
-        httpParams = httpParams.set('status', '');
+        httpParams = httpParams.set("status", "");
       }
-      if (params['groupId']) {
-        httpParams = httpParams.set('groupId', params['groupId']);
+      if (params["groupId"]) {
+        httpParams = httpParams.set("groupId", params["groupId"]);
       }
 
-      if (params['page']) {
-        httpParams = httpParams.set('page', params['page'].toString());
+      if (params["page"]) {
+        httpParams = httpParams.set("page", params["page"].toString());
       }
     }
-    httpParams = httpParams.set('per_page', '10');
-    return this.http.get<PaginatedMachine>(url, {params: httpParams, observe: 'response'})
+    httpParams = httpParams.set("per_page", "10");
+    return this.http
+      .get<PaginatedMachine>(url, { params: httpParams, observe: "response" })
       .pipe(
         map((response) => {
           const paginatedMachine = new PaginatedMachine();
-          paginatedMachine.totalCount = +response.headers.get(SimulationService.headerTotalCount);
-          paginatedMachine.machines = this.factory.fromJson(response.body, Machine);
+          paginatedMachine.totalCount = +response.headers.get(
+            SimulationService.headerTotalCount,
+          );
+          paginatedMachine.machines = this.factory.fromJson(
+            response.body,
+            Machine,
+          );
           return paginatedMachine;
         }),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
@@ -228,20 +247,29 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/rules`;
     let httpParams = new HttpParams();
     if (params) {
-      if (params['page']) {
-        httpParams = httpParams.set('page', params['page'].toString());
+      if (params["page"]) {
+        httpParams = httpParams.set("page", params["page"].toString());
       }
     }
-    httpParams = httpParams.set('per_page', '10');
-    return this.http.get<PaginatedSimulationRules>(url, {params: httpParams, observe: 'response'})
+    httpParams = httpParams.set("per_page", "10");
+    return this.http
+      .get<PaginatedSimulationRules>(url, {
+        params: httpParams,
+        observe: "response",
+      })
       .pipe(
         map((response) => {
           const paginatedRules = new PaginatedSimulationRules();
-          paginatedRules.totalCount = +response.headers.get(SimulationService.headerTotalCount);
-          paginatedRules.rules = this.factory.fromJson(response.body, SimulationRule);
+          paginatedRules.totalCount = +response.headers.get(
+            SimulationService.headerTotalCount,
+          );
+          paginatedRules.rules = this.factory.fromJson(
+            response.body,
+            SimulationRule,
+          );
           return paginatedRules;
         }),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
@@ -252,13 +280,12 @@ export class SimulationService {
    * @returns The created or edited simulation rule.
    */
   public editOrCreateRule(rule: SimulationRule): Observable<SimulationRule> {
-
     let url: string = `${this.baseUrl}/rules`;
     url += `/${rule.circuit}/${rule.owner}/${rule.type}/${rule.value}`;
 
     return this.http.put<SimulationRule>(url, {}).pipe(
       map((response) => this.factory.fromJson(response, SimulationRule)),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -269,12 +296,11 @@ export class SimulationService {
    * @returns The removed simulation rule.
    */
   public deleteRule(rule: SimulationRule): Observable<SimulationRule> {
-
     const url: string = `${this.baseUrl}/rules/${rule.circuit}/${rule.owner}/${rule.type}`;
 
     return this.http.delete<SimulationRule>(url).pipe(
       map((response) => this.factory.fromJson(response, SimulationRule)),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -289,21 +315,25 @@ export class SimulationService {
     let httpParams = new HttpParams();
 
     if (page) {
-      httpParams = httpParams.append('page', page.toString());
+      httpParams = httpParams.append("page", page.toString());
     }
 
     if (perPage) {
-      httpParams = httpParams.append('per_page', perPage.toString());
+      httpParams = httpParams.append("per_page", perPage.toString());
     }
 
-    return this.http.get<string[]>(url, {params: httpParams, observe: 'response'}).pipe(
-      map((response) => {
-        const list: QueueList = new QueueList(response.body);
-        list.totalCount = +response.headers.get(SimulationService.headerTotalCount);
-        return list;
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<string[]>(url, { params: httpParams, observe: "response" })
+      .pipe(
+        map((response) => {
+          const list: QueueList = new QueueList(response.body);
+          list.totalCount = +response.headers.get(
+            SimulationService.headerTotalCount,
+          );
+          return list;
+        }),
+        catchError(this.handleError),
+      );
   }
 
   /**
@@ -313,7 +343,7 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/queue/count`;
     return this.http.get<number>(url).pipe(
       map((length) => length),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -327,7 +357,7 @@ export class SimulationService {
 
     return this.http.patch<string>(url, null).pipe(
       map((item) => !!item),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -342,7 +372,7 @@ export class SimulationService {
       map((item) => ({
         groupId: item,
       })),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -357,7 +387,7 @@ export class SimulationService {
       map((item) => ({
         groupId: item,
       })),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -372,7 +402,7 @@ export class SimulationService {
       map((item) => ({
         groupId: item,
       })),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -386,14 +416,14 @@ export class SimulationService {
     return this.http.get<RobotType[]>(url).pipe(
       map((robotTypes) => {
         try {
-          return Object.keys(robotTypes).map(type => robotTypes[type]);
+          return Object.keys(robotTypes).map((type) => robotTypes[type]);
         } catch (e) {
           return [];
         }
       }),
-      catchError(error => {
+      catchError((error) => {
         throw new UiError(error);
-      })
+      }),
     );
   }
 
@@ -408,14 +438,16 @@ export class SimulationService {
     const url: string = `${this.baseUrl}/simulations/${simulation.groupId}/logs/file`;
     let httpParams = new HttpParams();
 
-    httpParams = httpParams.append('link', 'true');
+    httpParams = httpParams.append("link", "true");
     if (robotName) {
-      httpParams = httpParams.append('robot', robotName);
+      httpParams = httpParams.append("robot", robotName);
     }
 
-    return this.http.get(url, {params: httpParams}).pipe(
-      mergeMap(awsUrl => this.http.get(awsUrl as string, {responseType: 'blob'})),
-      catchError(this.handleError)
+    return this.http.get(url, { params: httpParams }).pipe(
+      mergeMap((awsUrl) =>
+        this.http.get(awsUrl as string, { responseType: "blob" }),
+      ),
+      catchError(this.handleError),
     );
   }
 
@@ -427,7 +459,7 @@ export class SimulationService {
    * message to display.
    */
   private handleError(response: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred', response);
+    console.error("An error occurred", response);
     return throwError(new UiError(response));
   }
 }

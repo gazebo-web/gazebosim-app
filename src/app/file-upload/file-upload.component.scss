@@ -1,6 +1,3 @@
-@import '~@angular/material/theming';
-@import '../../styles.scss';
-
 .button-row {
   margin-bottom: 20px;
 }
@@ -40,7 +37,7 @@
 }
 
 .file:hover {
-  background-color: mat-color($custom-theme-accent, A100);
+  background-color: #ff9e80;
 }
 
 .file > i {
@@ -48,7 +45,7 @@
 }
 
 .file > i:hover {
-  color: mat-color($custom-theme-accent, A700);
+  color: #dd2c00;
 }
 
 .viewer-wrapper {
@@ -65,4 +62,3 @@
   height: 100%;
   z-index: 1001;
 }
-

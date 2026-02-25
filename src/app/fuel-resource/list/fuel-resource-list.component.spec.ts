@@ -1,103 +1,75 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { ActivatedRoute } from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { PageEvent } from "@angular/material/paginator";
 
-import { AuthPipe } from '../../auth/auth.pipe';
-import { FuelResource } from '../fuel-resource';
-import { FuelResourceListComponent } from './fuel-resource-list.component';
-import { ItemCardComponent } from '../../item-card/item-card.component';
+import { AuthPipe } from "../../auth/auth.pipe";
+import { FuelResource } from "../fuel-resource";
+import { FuelResourceListComponent } from "./fuel-resource-list.component";
+import { ItemCardComponent } from "../../item-card/item-card.component";
 
-describe('FuelResourceListComponent', () => {
+describe("FuelResourceListComponent", () => {
   let fixture: ComponentFixture<FuelResourceListComponent>;
   let component: FuelResourceListComponent;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MatCardModule,
-        MatIconModule,
-        RouterTestingModule,
+      imports: [MatCardModule, MatIconModule, RouterTestingModule],
+      declarations: [AuthPipe, FuelResourceListComponent, ItemCardComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+            },
+          },
+        },
       ],
-      declarations: [
-        AuthPipe,
-        FuelResourceListComponent,
-        ItemCardComponent,
-      ]
     });
 
     fixture = TestBed.createComponent(FuelResourceListComponent);
     component = fixture.debugElement.componentInstance;
-    spyOn(component.onLoadMore, 'emit');
-    spyOn(component.ref, 'detectChanges');
   });
 
   it(`should stop loading after resources are set`, () => {
-    // Mock data. Use Models, as FuelResource is abstract and can't be instantiated.
     const resources: FuelResource[] = [];
     component.loading = true;
     component.resources = resources;
     expect(component.loading).toBe(false);
-    expect(component.ref.detectChanges).toHaveBeenCalled();
     expect(component.resources.length).toBe(0);
   });
 
-  it(`should load resource on a scroll callback`, () => {
-    spyOn(component, 'loadMoreResources');
-    component.onScroll();
-    expect(component.loadMoreResources).toHaveBeenCalled();
+  it(`should emit pageChange on pageEvent`, () => {
+    spyOn(component.pageChange, "emit");
+    const event: PageEvent = { pageIndex: 1, pageSize: 20, length: 100 };
+    component.pageEvent(event);
+    expect(component.pageChange.emit).toHaveBeenCalledWith(event);
   });
 
-  it(`should load resources if it's not loading and there are resources to load`, () => {
-    // Test loading.
-    component.loading = false;
-    component.finished = false;
-    component.loadMoreResources();
-    expect(component.loading).toBe(true);
-    expect(component.onLoadMore.emit).toHaveBeenCalled();
-    expect(component.ref.detectChanges).toHaveBeenCalled();
+  it(`should emit onRemoveItem on remove`, () => {
+    spyOn(component.onRemoveItem, "emit");
+    const mockEvent = { resource: "test" };
+    component.remove(mockEvent);
+    expect(component.onRemoveItem.emit).toHaveBeenCalledWith(mockEvent);
   });
 
-  it(`should NOT load resources if loading, or there aren't any left`, () => {
-    // Test loading.
-    component.loading = true;
-    component.finished = false;
-    component.loadMoreResources();
-    expect(component.onLoadMore.emit).not.toHaveBeenCalled();
+  it(`should initialize pagination from query params`, () => {
+    const route = TestBed.inject(ActivatedRoute);
+    (route.snapshot.queryParams as any) = { page: "3", per_page: "50" };
 
-    // Test finished.
-    component.loading = false;
-    component.finished = true;
-    component.loadMoreResources();
-    expect(component.onLoadMore.emit).not.toHaveBeenCalled();
+    component.ngOnInit();
+
+    expect(component.pageIndex).toBe(2);
+    expect(component.pageSize).toBe("50" as any);
   });
 
-  it(`should ensure the scrollbar appears after a change in the view`, () => {
-    const loadResourcesSpy = spyOn(component, 'loadMoreResources');
-    spyOn(component, 'getWindowHeight').and.returnValue(10);
+  it(`should use default pagination when no query params`, () => {
+    component.ngOnInit();
 
-    // Mock the Infinite Scroll component.
-    component.listElement = {
-      nativeElement: {
-        offsetHeight: 0,
-      }
-    };
-
-    // Shouldn't load if the scroll element's height is 0. This can happen while the DOM is
-    // loading.
-    component.ngAfterViewChecked();
-    expect(loadResourcesSpy).not.toHaveBeenCalled();
-    loadResourcesSpy.calls.reset();
-
-    // Shouldn't load if the scroll element's height is larger than the window.
-    component.listElement.nativeElement.offsetHeight = 20;
-    component.ngAfterViewChecked();
-    expect(component.loadMoreResources).not.toHaveBeenCalled();
-    loadResourcesSpy.calls.reset();
-
-    // Should load if the scroll element's height is smaller than the window.
-    component.listElement.nativeElement.offsetHeight = 5;
-    component.ngAfterViewChecked();
-    expect(component.loadMoreResources).toHaveBeenCalled();
+    expect(component.pageIndex).toBe(0);
+    expect(component.pageSize).toBe(20);
   });
 });

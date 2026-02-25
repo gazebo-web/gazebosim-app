@@ -1,29 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { finalize } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { FormControl } from "@angular/forms";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { finalize } from "rxjs/operators";
 
-import { AuthService } from '../../auth/auth.service';
-import { WorldService } from '../world.service';
+import { AuthService } from "../../auth/auth.service";
+import { WorldService } from "../world.service";
 
-import { World } from '../world';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
+import { World } from "../world";
+import { ConfirmationDialogComponent } from "../../confirmation-dialog/confirmation-dialog.component";
 
 @Component({
-  selector: 'gz-edit-world',
-  templateUrl: 'edit-world.component.html',
-  styleUrls: ['edit-world.component.scss']
+  selector: "gz-edit-world",
+  templateUrl: "edit-world.component.html",
+  styleUrls: ["edit-world.component.scss"],
+  standalone: false,
 })
 
 /**
  * Edit World Component is the page used to edit a world.
  */
 export class EditWorldComponent implements OnInit {
-
   /**
    * The world being edited. It is fetched using a Route Resolver.
    */
@@ -94,8 +92,8 @@ export class EditWorldComponent implements OnInit {
     public dialog: MatDialog,
     public worldService: WorldService,
     public router: Router,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -104,7 +102,7 @@ export class EditWorldComponent implements OnInit {
    * the user is authorized to edit it.
    */
   public ngOnInit(): void {
-    this.world = this.activatedRoute.snapshot.data['resolvedData'];
+    this.world = this.activatedRoute.snapshot.data["resolvedData"];
 
     this.canEdit = this.authService.canWriteResource(this.world);
   }
@@ -150,12 +148,12 @@ export class EditWorldComponent implements OnInit {
 
     // Check if Description has been modified.
     if (this.descriptionModified) {
-      formData.append('description', this.world.description.trim());
+      formData.append("description", this.world.description.trim());
     }
 
     // Check if the Tags have been modified.
     if (this.tagsModified) {
-      formData.append('tags', this.world.tags.join());
+      formData.append("tags", this.world.tags.join());
     }
 
     // Check if the metadata has been modified.
@@ -164,9 +162,11 @@ export class EditWorldComponent implements OnInit {
       // {key: '', value: ''}. This feature should be handled automatically
       // by the metadata component.
       for (const m of this.world.metadata) {
-        if (this.world.metadata.length === 1 ||
-            (m.key !== '' && m.value !== '')) {
-          formData.append('metadata', JSON.stringify(m));
+        if (
+          this.world.metadata.length === 1 ||
+          (m.key !== "" && m.value !== "")
+        ) {
+          formData.append("metadata", JSON.stringify(m));
         }
       }
     }
@@ -181,14 +181,14 @@ export class EditWorldComponent implements OnInit {
         // Avoid duplicated toLowerCase calls in Edit and New components.
         // See: https://app.asana.com/0/660089940802243/729343249232870/f
         const filename = file.name.toLowerCase();
-        if (filename.indexOf('.world') > 0 || filename.indexOf('.sdf') > 0) {
+        if (filename.indexOf(".world") > 0 || filename.indexOf(".sdf") > 0) {
           hasRequiredFile = true;
         }
-        formData.append('file', file, (file as any).fullPath);
+        formData.append("file", file, (file as any).fullPath);
       }
 
       if (!hasRequiredFile) {
-        this.snackBar.open('Missing a world file or a sdf file.', 'Got it');
+        this.snackBar.open("Missing a world file or a sdf file.", "Got it");
         return;
       }
     }
@@ -197,17 +197,21 @@ export class EditWorldComponent implements OnInit {
     this.updating = true;
 
     // Update the privacy and permissions.
-    if (this.privacyInputForm.value !== null && this.privacyInputForm.value !== undefined) {
+    if (
+      this.privacyInputForm.value !== null &&
+      this.privacyInputForm.value !== undefined
+    ) {
       const privacyBoolean = !!this.privacyInputForm.value;
-      formData.append('private', privacyBoolean.toString());
-      formData.append('permission', this.privacyInputForm.value.toString());
+      formData.append("private", privacyBoolean.toString());
+      formData.append("permission", this.privacyInputForm.value.toString());
     }
 
-    this.worldService.edit(this.world.owner, this.world.name, formData)
+    this.worldService
+      .edit(this.world.owner, this.world.name, formData)
       .pipe(
         finalize(() => {
           this.updating = false;
-        })
+        }),
       )
       .subscribe(
         (response) => {
@@ -218,59 +222,65 @@ export class EditWorldComponent implements OnInit {
           this.descriptionModified = false;
 
           // Notify the user.
-          this.snackBar.open(`${this.world.name} successfully updated`, 'Got it', {
-            duration: 2750
-          });
+          this.snackBar.open(
+            `${this.world.name} successfully updated`,
+            "Got it",
+            {
+              duration: 2750,
+            },
+          );
 
           // Go back to the world details.
           this.back();
         },
         (error) => {
-          this.snackBar.open(`${error.message}`, 'Got it');
-        });
+          this.snackBar.open(`${error.message}`, "Got it");
+        },
+      );
   }
 
   /**
    * Callback when delete button is pressed
    */
   public onDelete(): void {
-
     const dialogOps = {
       data: {
         title: 'Delete world "' + this.world.name + '"',
-        message: 'Be mindful when deleting a world, other users could be ' +
-                 'counting on it. <br><b>Once deleted, the world can\'t be restored.</b>',
-        buttonText: 'Delete',
+        message:
+          "Be mindful when deleting a world, other users could be " +
+          "counting on it. <br><b>Once deleted, the world can't be restored.</b>",
+        buttonText: "Delete",
         hasInput: true,
-        inputMessage: 'To confirm, type the world name (case-sensitive)',
-        inputPlaceholder: 'World name',
-        inputTarget: this.world.name
-      }
+        inputMessage: "To confirm, type the world name (case-sensitive)",
+        inputPlaceholder: "World name",
+        inputTarget: this.world.name,
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed()
-      .subscribe(
-        (result) => {
-          if (result !== true) {
-            return;
-          }
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result !== true) {
+        return;
+      }
 
-          // Request deletion
-          this.worldService.delete(this.world)
-              .subscribe(
-                (response) => {
-                  this.snackBar.open(this.world.name + ' world deleted', 'Got it', {
-                    duration: 2750
-                  });
-                  this.router.navigate([this.world.owner + '/worlds']);
-                },
-                (error) => {
-                  this.snackBar.open(`${error.message}`, 'Got it');
-                });
-              });
+      // Request deletion
+      this.worldService.delete(this.world).subscribe(
+        (response) => {
+          this.snackBar.open(this.world.name + " world deleted", "Got it", {
+            duration: 2750,
+          });
+          this.router.navigate([this.world.owner + "/worlds"]);
+        },
+        (error) => {
+          this.snackBar.open(`${error.message}`, "Got it");
+        },
+      );
+    });
   }
 
   /**

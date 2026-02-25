@@ -1,17 +1,17 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-  selector: 'gz-extra-dialog',
-  templateUrl: 'extra-dialog.component.html',
-  styleUrls: ['extra-dialog.component.scss']
+  selector: "gz-extra-dialog",
+  templateUrl: "extra-dialog.component.html",
+  styleUrls: ["extra-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
  * The Extra Dialog is used to show information about an specific simulation
  */
 export class ExtraDialogComponent {
-
   /**
    * @param dialog Reference to the opened dialog.
    * @param data Data for the dialog. Fields:
@@ -25,6 +25,6 @@ export class ExtraDialogComponent {
    */
   constructor(
     public dialog: MatDialogRef<ExtraDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 }

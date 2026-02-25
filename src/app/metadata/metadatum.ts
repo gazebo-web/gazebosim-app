@@ -5,10 +5,10 @@ export class Metadatum {
   /**
    * The key
    */
-  public key: string = '';
+  public key: string = "";
 
   /**
    * The value
    */
-  public value: string = '';
+  public value: string = "";
 }

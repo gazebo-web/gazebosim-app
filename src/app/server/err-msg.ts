@@ -2,7 +2,6 @@
  * An enum module with server error codes.
  */
 export enum ErrMsg {
-
   /**
    * ErrorFormDuplicateModelName is triggered when the POSTed model carries duplicate
    * model name.
@@ -26,5 +25,5 @@ export enum ErrMsg {
    * because the requested id already exists. E.g.: When the creation of a new
    * model is requested but the server already has a model with the same id.
    */
-  ErrorResourceExists = 100001
+  ErrorResourceExists = 100001,
 }

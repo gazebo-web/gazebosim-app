@@ -1,11 +1,10 @@
-import { World } from './world';
+import { World } from "./world";
 
-describe('World', () => {
-
+describe("World", () => {
   const world = new World({});
 
   it(`should set 'worlds' as a resource type`, () => {
-    expect(world.type).toBe('worlds');
+    expect(world.type).toBe("worlds");
   });
 
   it(`should have allowed extensions`, () => {

@@ -1,10 +1,9 @@
-import { Machine } from '.';
+import { Machine } from ".";
 
 /**
  * A class that represents a Paginated List of Machines.
  */
 export class PaginatedMachine {
-
   /**
    * The total number of machines.
    */

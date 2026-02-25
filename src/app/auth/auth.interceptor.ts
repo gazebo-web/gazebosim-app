@@ -1,6 +1,11 @@
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+} from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 
 @Injectable()
 
@@ -12,7 +17,6 @@ import { Observable } from 'rxjs';
  * won't have the authorization header.
  */
 export class AuthInterceptor implements HttpInterceptor {
-
   /**
    * Main method of the HttpInterceptor, that allows us to provide a middleman to HttpClient and
    * modify the request by appending the Authorization Header.
@@ -20,17 +24,19 @@ export class AuthInterceptor implements HttpInterceptor {
    * @param req The original request made.
    * @param next Passes the request to the next handler.
    */
-  public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    const token = localStorage.getItem('token');
+  public intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
+    const token = localStorage.getItem("token");
 
     // Skip if there is a S3-related query parameter in the URL.
-    const skip = req.url.indexOf('X-Amz-Signature') > -1;
+    const skip = req.url.indexOf("X-Amz-Signature") > -1;
 
     if (token && !skip) {
       // The request is immutable, so we need to clone it.
       const clonedRequest = req.clone({
-        headers: req.headers.set('Authorization', `Bearer ${token}`),
+        headers: req.headers.set("Authorization", `Bearer ${token}`),
       });
       return next.handle(clonedRequest);
     } else {

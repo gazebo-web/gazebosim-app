@@ -1,24 +1,25 @@
-import { Component,
-         Input,
-         Output,
-         EventEmitter,
-         ChangeDetectorRef,
-         NgZone,
-         OnInit
-       } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+  NgZone,
+  OnInit,
+} from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
-  selector: 'gz-file-upload',
-  templateUrl: 'file-upload.component.html',
-  styleUrls: ['file-upload.component.scss']
+  selector: "gz-file-upload",
+  templateUrl: "file-upload.component.html",
+  styleUrls: ["file-upload.component.scss"],
+  standalone: false,
 })
 
 /**
  * Component to allow upload of files and folders with buttons and drag and drop.
  */
 export class FileUploadComponent implements OnInit {
-
   /**
    * The list of valid files held by the component.
    */
@@ -37,7 +38,7 @@ export class FileUploadComponent implements OnInit {
   /**
    * Type of resource being uploaded, such as 'model' or 'world'
    */
-  @Input() public resourceType: string = 'model';
+  @Input() public resourceType: string = "model";
 
   /**
    * The allowed extensions of files to be uploaded.
@@ -52,7 +53,8 @@ export class FileUploadComponent implements OnInit {
   /**
    * Text to be displayed in the middle of the drag-and-drop area.
    */
-  @Input() public message: string = '<h3>Select or drag and drop files to upload!</h3>';
+  @Input() public message: string =
+    "<h3>Select or drag and drop files to upload!</h3>";
 
   /**
    * Event emitted whenever files are uploaded.
@@ -67,21 +69,24 @@ export class FileUploadComponent implements OnInit {
   constructor(
     private ref: ChangeDetectorRef,
     public snackBar: MatSnackBar,
-    private zone: NgZone) {
-  }
+    private zone: NgZone,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-
     // Check if the browser supports WebGL.
-    const canvas = document.createElement('canvas');
-    const hasWebGL = !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    const canvas = document.createElement("canvas");
+    const hasWebGL = !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
 
     // Enable GzWeb as an experimental feature.
-    const enabledFeature = (localStorage.getItem('experimental_gzweb') === 'true');
-    this.hasGzWeb = hasWebGL && enabledFeature && (this.resourceType === 'model');
+    const enabledFeature =
+      localStorage.getItem("experimental_gzweb") === "true";
+    this.hasGzWeb = hasWebGL && enabledFeature && this.resourceType === "model";
   }
 
   /**
@@ -93,13 +98,13 @@ export class FileUploadComponent implements OnInit {
     const validFiles = [];
     const invalidFiles = [];
 
-    const files: File[] = Array.from(event.target['files']);
+    const files: File[] = Array.from(event.target["files"]);
     for (const file of files) {
       // Set the fullPath. Required for consistency between Chrome and Firefox browsers.
-      if (file['webkitRelativePath'] === '') {
-        file['fullPath'] = file['name'];
+      if (file["webkitRelativePath"] === "") {
+        file["fullPath"] = file["name"];
       } else {
-        file['fullPath'] = file['webkitRelativePath'];
+        file["fullPath"] = file["webkitRelativePath"];
       }
 
       if (this.isValidFile(file)) {
@@ -145,8 +150,9 @@ export class FileUploadComponent implements OnInit {
     this.zone.run(() => {
       this.snackBar.open(
         `One or more files have an unsupported type, and will not be included.\
-         The allowed file types are: ${this.allowedExtensions.join(', ')}.`,
-        'Got it');
+         The allowed file types are: ${this.allowedExtensions.join(", ")}.`,
+        "Got it",
+      );
     });
   }
 
@@ -157,7 +163,7 @@ export class FileUploadComponent implements OnInit {
    * @returns A boolean whether the file is valid or not.
    */
   public isValidFile(file: File): boolean {
-    const ext = file.name.toLowerCase().split('.').slice(1).join('.');
+    const ext = file.name.toLowerCase().split(".").slice(1).join(".");
     return this.allowedExtensions.indexOf(ext) !== -1;
   }
 

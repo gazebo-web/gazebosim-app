@@ -1,10 +1,9 @@
-import { SimulationRule } from './simulation-rule';
+import { SimulationRule } from "./simulation-rule";
 
 /**
  * A class that represents a Paginated List of Simulation Rules.
  */
 export class PaginatedSimulationRules {
-
   /**
    * The total number of rules.
    */

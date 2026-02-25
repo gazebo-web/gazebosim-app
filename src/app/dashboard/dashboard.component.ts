@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from "@angular/core";
 
-import { CollectionService, Collection } from '../collection';
-import { Model } from '../model/model';
-import { ModelService } from '../model/model.service';
-import { WorldService } from '../world/world.service';
-import { World } from '../world/world';
+import { CollectionService, Collection } from "../collection";
+import { Model } from "../model/model";
+import { ModelService } from "../model/model.service";
+import { WorldService } from "../world/world.service";
+import { World } from "../world/world";
 
 @Component({
-  selector: 'gz-dashboard',
-  templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.scss']
+  selector: "gz-dashboard",
+  templateUrl: "dashboard.component.html",
+  styleUrls: ["dashboard.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -60,8 +61,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private collectionService: CollectionService,
     private modelService: ModelService,
-    private worldService: WorldService) {
-  }
+    private worldService: WorldService,
+  ) {}
 
   /**
    * OnInit lifecycle hook.
@@ -69,7 +70,7 @@ export class DashboardComponent implements OnInit {
    * Get the resources to display.
    */
   public ngOnInit(): void {
-    this.modelService.getList({per_page: this.displayCount}).subscribe(
+    this.modelService.getList({ per_page: this.displayCount }).subscribe(
       (models) => {
         if (models !== undefined) {
           this.models = models.resources;
@@ -77,10 +78,11 @@ export class DashboardComponent implements OnInit {
         }
       },
       (error) => {
-        console.error('Error getting public models:', error);
-      });
+        console.error("Error getting public models:", error);
+      },
+    );
 
-    this.worldService.getList({per_page: this.displayCount}).subscribe(
+    this.worldService.getList({ per_page: this.displayCount }).subscribe(
       (worlds) => {
         if (worlds !== undefined) {
           this.worlds = worlds.resources;
@@ -88,18 +90,22 @@ export class DashboardComponent implements OnInit {
         }
       },
       (error) => {
-        console.error('Error getting public worlds:', error);
-      });
-
-    this.collectionService.getCollectionList({per_page: this.displayCount}).subscribe(
-      (collections) => {
-        if (collections !== undefined) {
-          this.collections = collections.collections;
-          this.collectionsQuantity = collections.totalCount;
-        }
+        console.error("Error getting public worlds:", error);
       },
-      (error) => {
-        console.error('Error getting collections:', error);
-      });
+    );
+
+    this.collectionService
+      .getCollectionList({ per_page: this.displayCount })
+      .subscribe(
+        (collections) => {
+          if (collections !== undefined) {
+            this.collections = collections.collections;
+            this.collectionsQuantity = collections.totalCount;
+          }
+        },
+        (error) => {
+          console.error("Error getting collections:", error);
+        },
+      );
   }
 }

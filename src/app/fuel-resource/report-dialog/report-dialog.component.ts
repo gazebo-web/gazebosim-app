@@ -1,13 +1,16 @@
-import { Component, EventEmitter, Output, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { Component, EventEmitter, Output, Inject } from "@angular/core";
 import {
-  ConfirmationDialogComponent,
-} from '../../confirmation-dialog/confirmation-dialog.component';
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialog,
+} from "@angular/material/dialog";
+import { ConfirmationDialogComponent } from "../../confirmation-dialog/confirmation-dialog.component";
 
 @Component({
-    selector: 'gz-report-dialog',
-    templateUrl: 'report-dialog.component.html',
-    styleUrls: ['report-dialog.component.scss']
+  selector: "gz-report-dialog",
+  templateUrl: "report-dialog.component.html",
+  styleUrls: ["report-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -15,7 +18,6 @@ import {
  * choose one to report a resource
  */
 export class ReportDialogComponent {
-
   /**
    * Event emitter when the submit button is clicked.
    */
@@ -52,7 +54,7 @@ export class ReportDialogComponent {
   constructor(
     public dialog: MatDialog,
     public confirmationDialog: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   /**
@@ -69,20 +71,21 @@ export class ReportDialogComponent {
         message: `<p>Are you sure you want to report model
         <b>${this.data.name}</b> created by <b>${this.data.owner}</b>
          due to <b>${this.selectedOption}</b>?</p>`,
-        buttonText: 'Submit',
+        buttonText: "Submit",
       },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, options);
-
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        if (!result) {
-          return;
-        }
-        this.submit();
-      },
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      options,
     );
+
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      this.submit();
+    });
   }
 
   /**

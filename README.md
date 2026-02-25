@@ -5,33 +5,34 @@
   <p>Gazebo Web Application</p>
 </div>
 
-* Framework: Angular 10
-* CI: GitLab pipelines
-* CD: GitLab pipelines + AWS S3 + CloudFront
+- Framework: Angular 21
+- CI: GitLab pipelines
+- CD: GitLab pipelines + AWS S3 + CloudFront
 
 ---
 
 # Prequisites
 
 This project requires:
-- node 14.x
-- npm 6.x
+
+- node 24.x
+- npm 11.x
 
 To install node, it is highly recommended to use Node Version Manager, [NVM](https://github.com/nvm-sh/nvm). You can install it the following way:
 
         # Install NVM. Check their repository for the latest version.
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
         # Source .bashrc so we can use the nvm command.
         source ~/.bashrc
 
-        # Install node version 14. This will also install npm version 6.
-        nvm install 14
+        # Install node version 24. This will also install npm version 11.
+        nvm install 24
 
 When you work on this project, make sure you are using the right version of node.
 
-        # Use node version 14.
-        nvm use 14
+        # Use node version 24.
+        nvm use 24
 
         # Verify the versions with the following commands.
         node -v
@@ -40,19 +41,19 @@ When you work on this project, make sure you are using the right version of node
 If you don't want to use NVM, you can install node the following way.
 
         # Install node without NVM.
-        curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+        curl -sL https://deb.nodesource.com/setup_24.x | sudo bash -
         sudo apt-get install -y nodejs
 
 ---
 
 # Setup
 
-1. Clone this repo and change directory into it:
+1.  Clone this repo and change directory into it:
 
         git clone https://github.com/gazebo-web/gazebosim-frontend.git
         cd app
 
-1. Install dependencies
+1.  Install dependencies
 
         npm install
 
@@ -95,13 +96,13 @@ The output can be found in the `dist/app` folder.
 
 ## Other useful scripts
 
-* Run tests
+- Run tests
 
         npm run test
 
-    The generated coverage can be found in `./coverage/html/index.html`.
+  The generated coverage can be found in `./coverage/html/index.html`.
 
-* Run the linter
+- Run the linter
 
         npm run lint
 
@@ -135,25 +136,24 @@ First, you need the AWS CLI installed and configured. You can do it the followin
         # Configure
         aws configure
 
-1. Provide the environment variables and build the app for the desired environment, as mentioned in the previous section.
+1.  Provide the environment variables and build the app for the desired environment, as mentioned in the previous section.
 
-1. Enable preview stage (for Cloudfront support).
+1.  Enable preview stage (for Cloudfront support).
 
         aws configure set preview.cloudfront true
 
-1. Sync the build output to the corresponding S3 bucket.
+1.  Sync the build output to the corresponding S3 bucket.
 
     Where `APPLICATION_ENVIRONMENT` can be
-
     - Integration: `integration-app.gazebosim.org`
 
     - Staging: `staging-app.gazebosim.org`
 
     - Production: `app.gazebosim.org`
 
-        aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
+      aws s3 sync dist/app s3://$APPLICATION_ENVIRONMENT
 
-1. Trigger an invalidation in Cloudfront.
+1.  Trigger an invalidation in Cloudfront.
 
         aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
 

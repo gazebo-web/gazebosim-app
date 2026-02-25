@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError } from "rxjs/operators";
 
-import { Collection, CollectionService } from '../collection';
+import { Collection, CollectionService } from "../collection";
 
 @Injectable()
 
@@ -12,13 +12,11 @@ import { Collection, CollectionService } from '../collection';
  *
  * Fetches the collection to display before the CollectionComponent is created.
  */
-export class CollectionResolver implements Resolve<Collection> {
-
+export class CollectionResolver {
   /**
    * @param collectionService Service used to get Collection information from the Server.
    */
-  constructor(private collectionService: CollectionService) {
-  }
+  constructor(private collectionService: CollectionService) {}
 
   /**
    * Resolve method.
@@ -30,13 +28,13 @@ export class CollectionResolver implements Resolve<Collection> {
    * @returns An observable of the collection or an observable of null if it couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<Collection> {
-    const colOwner: string = route.paramMap.get('user');
-    const colName: string = route.paramMap.get('collection');
+    const colOwner: string = route.paramMap.get("user");
+    const colName: string = route.paramMap.get("collection");
 
     return this.collectionService.getCollection(colOwner, colName).pipe(
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

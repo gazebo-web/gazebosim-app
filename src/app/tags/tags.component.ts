@@ -1,18 +1,18 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { MatChipInputEvent } from "@angular/material/chips";
+import { ENTER, COMMA } from "@angular/cdk/keycodes";
 
 @Component({
-  selector: 'gz-tags',
-  templateUrl: 'tags.component.html',
-  styleUrls: ['tags.component.scss']
+  selector: "gz-tags",
+  templateUrl: "tags.component.html",
+  styleUrls: ["tags.component.scss"],
+  standalone: false,
 })
 
 /**
  * The Tags Component is used to display or edit tags.
  */
 export class TagsComponent {
-
   /**
    * The tags this component represents.
    */
@@ -54,7 +54,7 @@ export class TagsComponent {
       }
 
       // Clear the input field.
-      event.input.value = '';
+      event.input.value = "";
     }
   }
 
@@ -83,7 +83,7 @@ export class TagsComponent {
       const value = input.value;
       // A MatChipInputEvent is an interface that requires the input element
       // and its value.
-      this.addTagChip({input, value} as MatChipInputEvent);
+      this.addTagChip({ input, value } as MatChipInputEvent);
     }
   }
 }

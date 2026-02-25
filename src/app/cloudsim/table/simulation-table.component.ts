@@ -1,25 +1,25 @@
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectChange } from '@angular/material/select';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnChanges, Input, SimpleChanges } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatSelectChange } from "@angular/material/select";
+import { PageEvent } from "@angular/material/paginator";
 
-import { AuthService } from '../../auth/auth.service';
-import { SimulationService } from '../simulation.service';
-import { Simulation } from '../simulation';
-import { PaginatedSimulation } from '../paginated-simulation';
+import { AuthService } from "../../auth/auth.service";
+import { SimulationService } from "../simulation.service";
+import { Simulation } from "../simulation";
+import { PaginatedSimulation } from "../paginated-simulation";
 
 @Component({
-  selector: 'gz-simulation-table',
-  templateUrl: 'simulation-table.component.html',
-  styleUrls: ['simulation-table.component.scss']
+  selector: "gz-simulation-table",
+  templateUrl: "simulation-table.component.html",
+  styleUrls: ["simulation-table.component.scss"],
+  standalone: false,
 })
 
 /**
  * The Simulation Table Component is a reusable table that contains an array of simulations.
  */
 export class SimulationTableComponent implements OnChanges {
-
   /**
    * The paginated simulations to be represented.
    */
@@ -34,62 +34,62 @@ export class SimulationTableComponent implements OnChanges {
    * The Error Status List for filtering purposes.
    */
   public errorStatusList: string[] = [
-    'TerminationFailed',
-    'InitializationFailed',
-    'AdminReview',
-    'ServerRestart',
-    'FailedToUploadLogs',
-    'Rejected',
+    "TerminationFailed",
+    "InitializationFailed",
+    "AdminReview",
+    "ServerRestart",
+    "FailedToUploadLogs",
+    "Rejected",
   ];
 
   /**
    * The dropdown circuit list
    */
   public circuitList: string[] = [
-    'Virtual Stix',
-    'Tunnel Circuit',
-    'Tunnel Practice 1',
-    'Tunnel Practice 2',
-    'Tunnel Practice 3',
-    'Simple Tunnel 1',
-    'Simple Tunnel 2',
-    'Simple Tunnel 3',
-    'Urban Qualification',
-    'Urban Simple 1',
-    'Urban Simple 2',
-    'Urban Simple 3',
-    'Urban Practice 1',
-    'Urban Practice 2',
-    'Urban Practice 3',
-    'Urban Circuit',
-    'Urban Circuit World 1',
-    'Urban Circuit World 2',
-    'Urban Circuit World 3',
-    'Urban Circuit World 4',
-    'Urban Circuit World 5',
-    'Urban Circuit World 6',
-    'Urban Circuit World 7',
-    'Urban Circuit World 8',
-    'Cave Qualification',
-    'Cave Simple 1',
-    'Cave Simple 2',
-    'Cave Simple 3',
-    'Cave Practice 1',
-    'Cave Practice 2',
-    'Cave Practice 3',
-    'Cave Circuit',
+    "Virtual Stix",
+    "Tunnel Circuit",
+    "Tunnel Practice 1",
+    "Tunnel Practice 2",
+    "Tunnel Practice 3",
+    "Simple Tunnel 1",
+    "Simple Tunnel 2",
+    "Simple Tunnel 3",
+    "Urban Qualification",
+    "Urban Simple 1",
+    "Urban Simple 2",
+    "Urban Simple 3",
+    "Urban Practice 1",
+    "Urban Practice 2",
+    "Urban Practice 3",
+    "Urban Circuit",
+    "Urban Circuit World 1",
+    "Urban Circuit World 2",
+    "Urban Circuit World 3",
+    "Urban Circuit World 4",
+    "Urban Circuit World 5",
+    "Urban Circuit World 6",
+    "Urban Circuit World 7",
+    "Urban Circuit World 8",
+    "Cave Qualification",
+    "Cave Simple 1",
+    "Cave Simple 2",
+    "Cave Simple 3",
+    "Cave Practice 1",
+    "Cave Practice 2",
+    "Cave Practice 3",
+    "Cave Circuit",
   ];
 
   /**
    * The columns of the table.
    */
   public columns = [
-    'name',
-    'owner',
-    'groupId',
-    'status',
-    'startedAt',
-    'controlButtons',
+    "name",
+    "owner",
+    "groupId",
+    "status",
+    "startedAt",
+    "controlButtons",
   ];
 
   /**
@@ -121,8 +121,8 @@ export class SimulationTableComponent implements OnChanges {
   constructor(
     public authService: AuthService,
     public simulationService: SimulationService,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * OnChange lifecycle hook.
@@ -135,7 +135,9 @@ export class SimulationTableComponent implements OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     const newPaginatedSimulations = changes.paginatedSimulations.currentValue;
     if (newPaginatedSimulations) {
-      this.dataSource = new MatTableDataSource(newPaginatedSimulations.simulations);
+      this.dataSource = new MatTableDataSource(
+        newPaginatedSimulations.simulations,
+      );
     }
   }
 
@@ -162,7 +164,7 @@ export class SimulationTableComponent implements OnChanges {
       errorStatus: this.errorStatusFilter,
       circuit: this.circuitFilter,
       pageSize: pageEvent.pageSize,
-      page
+      page,
     });
   }
 
@@ -176,14 +178,16 @@ export class SimulationTableComponent implements OnChanges {
    *               - page: Number. The page of simulations to get.
    */
   public getSimulations(params?: object): void {
-    this.simulationService.getSimulations({children: true, ...params}).subscribe(
-      (response) => {
-        this.paginatedSimulations = response;
-        this.dataSource = new MatTableDataSource(response.simulations);
-      },
-      (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
-    );
+    this.simulationService
+      .getSimulations({ children: true, ...params })
+      .subscribe(
+        (response) => {
+          this.paginatedSimulations = response;
+          this.dataSource = new MatTableDataSource(response.simulations);
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
   }
 }

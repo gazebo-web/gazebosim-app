@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
 
-import { Metadatum } from './metadatum';
+import { Metadatum } from "./metadatum";
 
 @Component({
-  selector: 'gz-metadata',
-  templateUrl: 'metadata.component.html',
-  styleUrls: ['metadata.component.scss']
+  selector: "gz-metadata",
+  templateUrl: "metadata.component.html",
+  styleUrls: ["metadata.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -17,7 +18,6 @@ import { Metadatum } from './metadatum';
  *    {key: '', value: ''} to the server.
  */
 export class MetadataComponent implements OnInit {
-
   /**
    * The metadata this component represents.
    */
@@ -41,7 +41,7 @@ export class MetadataComponent implements OnInit {
   /**
    * Columns of the leader board.
    */
-  public displayedColumns: string[] = ['key', 'value'];
+  public displayedColumns: string[] = ["key", "value"];
 
   /**
    * Data source for the leader board's Material Table.

@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from "@angular/common/http";
 
 /**
  * A class that allows a better error handling between Services and Components.
@@ -7,7 +7,6 @@ import { HttpErrorResponse } from '@angular/common/http';
  * components to display the error or act upon it.
  */
 export class UiError {
-
   /**
    * Associated Error Code.
    * If the error does not comes from the Gazebo server, the status code is used.
@@ -29,8 +28,11 @@ export class UiError {
       this.message = `Error #${httpResponse.error.errcode}: ${httpResponse.error.msg}`;
     } else {
       // Check if it's an authentication error.
-      if (httpResponse.status === 401 && httpResponse.error === 'Token is expired\n') {
-        this.message = 'Your session expired. Please log in again';
+      if (
+        httpResponse.status === 401 &&
+        httpResponse.error === "Token is expired\n"
+      ) {
+        this.message = "Your session expired. Please log in again";
       } else {
         this.message = httpResponse.statusText;
       }

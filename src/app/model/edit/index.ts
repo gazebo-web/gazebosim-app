@@ -1,1 +1,1 @@
-export * from './edit-model.component';
+export * from "./edit-model.component";

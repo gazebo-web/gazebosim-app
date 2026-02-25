@@ -1,4 +1,4 @@
-import { environment } from '../../environments/environment';
+import { environment } from "../../environments/environment";
 
 interface AuthConfig {
   CLIENT_ID: string;
@@ -15,5 +15,5 @@ export const AUTH_CONFIG: AuthConfig = {
   AUDIENCE: environment.AUTH0_AUDIENCE,
   REDIRECT: environment.AUTH0_REDIRECT,
   SCOPE: environment.AUTH0_SCOPE,
-  API_HOST_URL: environment.API_HOST
+  API_HOST_URL: environment.API_HOST,
 };

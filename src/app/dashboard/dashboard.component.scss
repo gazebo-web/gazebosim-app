@@ -1,22 +1,20 @@
-@import '~@angular/material/theming';
-@import '../../styles.scss';
-
 .section {
   padding: 40px 0;
 }
 
 .section-title {
-  color: rgb(110, 110, 110);
-  font-weight: 300;
-  font-size: 1.8em !important;
+  color: rgb(140, 140, 140);
+  font-weight: 200;
+  font-size: 1.3em !important;
 }
 
 .section-title h2 {
   margin: 10px 0 !important;
+  font-weight: 500;
 }
 
 .section p a {
-  color: mat-color($custom-theme-primary, 700);
+  color: #0288d1;
 }
 
 .card {
@@ -78,7 +76,9 @@
 }
 
 .stats-box {
-  // background-color: #ff0000;
+  h2 {
+    font-weight: 500;
+  }
 }
 
 .stats-box > table {

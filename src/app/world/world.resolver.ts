@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError } from "rxjs/operators";
 
-import { World } from './world';
-import { WorldService } from './world.service';
+import { World } from "./world";
+import { WorldService } from "./world.service";
 
 @Injectable()
 
@@ -13,13 +13,11 @@ import { WorldService } from './world.service';
  *
  * Fetches the world to display before the WorldComponent is created.
  */
-export class WorldResolver implements Resolve<World> {
-
+export class WorldResolver {
   /**
    * @param worldService Service used to get World information from the Server.
    */
-  constructor(private worldService: WorldService) {
-  }
+  constructor(private worldService: WorldService) {}
 
   /**
    * Resolve method.
@@ -31,13 +29,13 @@ export class WorldResolver implements Resolve<World> {
    * @returns An observable of the world or an observable of null if it couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<World> {
-    const worldOwner: string = route.paramMap.get('owner');
-    const worldName: string = route.paramMap.get('worldname');
+    const worldOwner: string = route.paramMap.get("owner");
+    const worldName: string = route.paramMap.get("worldname");
 
     return this.worldService.get(worldOwner, worldName).pipe(
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

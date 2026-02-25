@@ -1,27 +1,31 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { PageEvent } from '@angular/material/paginator';
-import { Subscription } from 'rxjs';
-import * as FileSaver from 'file-saver';
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTableDataSource } from "@angular/material/table";
+import { PageEvent } from "@angular/material/paginator";
+import { Subscription } from "rxjs";
+import * as FileSaver from "file-saver";
 
-import { AuthService } from '../auth/auth.service';
-import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { CreditsComponent } from '../settings/credits/credits.component';
-import { CreditsService } from '../settings/credits/credits.service';
-import { environment } from '../../environments/environment';
-import { ExtraDialogComponent } from '../cloudsim/extra-dialog/extra-dialog.component';
-import { PaginatedSimulation, Simulation, SimulationService } from '../cloudsim';
-import { SimulationLaunchDialogComponent } from './launch/simulation-launch-dialog.component';
+import { AuthService } from "../auth/auth.service";
+import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
+import { CreditsComponent } from "../settings/credits/credits.component";
+import { CreditsService } from "../settings/credits/credits.service";
+import { environment } from "../../environments/environment";
+import { ExtraDialogComponent } from "../cloudsim/extra-dialog/extra-dialog.component";
+import {
+  PaginatedSimulation,
+  Simulation,
+  SimulationService,
+} from "../cloudsim";
+import { SimulationLaunchDialogComponent } from "./launch/simulation-launch-dialog.component";
 
 @Component({
-  selector: 'gz-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  selector: "gz-applications",
+  templateUrl: "./applications.component.html",
+  styleUrls: ["./applications.component.scss"],
+  standalone: false,
 })
 export class ApplicationsComponent implements OnInit, AfterViewInit {
-
   /**
    * Credit Component.
    */
@@ -47,12 +51,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
   /**
    * The columns of the Simulations table.
    */
-  public columns: string[] = [
-    'startedAt',
-    'name',
-    'status',
-    'control',
-  ];
+  public columns: string[] = ["startedAt", "name", "status", "control"];
 
   /**
    * Dialog to upload a new simulation.
@@ -81,7 +80,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     public simulationService: SimulationService,
     public snackBar: MatSnackBar,
-  ) { }
+  ) {}
 
   /**
    * On Init lifecycle hook.
@@ -112,8 +111,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
         this.dataSource = new MatTableDataSource(response.simulations);
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 
@@ -135,7 +134,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
     const page = pageEvent.pageIndex + 1;
     this.getSimulations({
       pageSize: pageEvent.pageSize,
-      page
+      page,
     });
   }
 
@@ -144,14 +143,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
    */
   public openLaunchDialog(): void {
     // Check for credits and warn the user if necessary.
-    if (this.creditsComponent && this.creditsComponent.credits < this.creditsRequired) {
+    if (
+      this.creditsComponent &&
+      this.creditsComponent.credits < this.creditsRequired
+    ) {
       this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, {
         data: {
           title: `Not enough credits`,
           message: `<p>You don't have enough credits to launch a simulation. A minimum of ${this.creditsRequired} is required.</p>
                     <p>Please purchase <a href="/settings#credits">credits here</a>.</p>`,
-          buttonText: 'OK',
-        }
+          buttonText: "OK",
+        },
       });
       return;
     }
@@ -159,26 +161,32 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
     const dialogOps = {
       data: {
         user: this.authService.userProfile.username,
-      }
+      },
     };
-    this.simUploadDialog = this.dialog.open(SimulationLaunchDialogComponent, dialogOps);
+    this.simUploadDialog = this.dialog.open(
+      SimulationLaunchDialogComponent,
+      dialogOps,
+    );
 
     // Subscribe to the event coming from the Dialog.
-    const sub: Subscription = this.simUploadDialog.componentInstance.onSubmit.subscribe(
-      (form) => {
+    const sub: Subscription =
+      this.simUploadDialog.componentInstance.onSubmit.subscribe((form) => {
         this.simulationService.launch(form).subscribe(
           (simulation) => {
-            this.snackBar.open(`Simulation ${simulation.name} was launched`, 'Got it', {
-              duration: 2750
-            });
+            this.snackBar.open(
+              `Simulation ${simulation.name} was launched`,
+              "Got it",
+              {
+                duration: 2750,
+              },
+            );
             this.getSimulations();
           },
           (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          }
+            this.snackBar.open(error.message, "Got it");
+          },
         );
-      }
-    );
+      });
 
     // Unsubscribe from the dialog event.
     this.simUploadDialog.afterClosed().subscribe(() => sub.unsubscribe());
@@ -193,7 +201,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
     this.simulationDetailsDialog = this.dialog.open(ExtraDialogComponent, {
       data: {
         ...simulation,
-      }
+      },
     });
   }
 
@@ -209,35 +217,40 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
         title: `Stop simulation ${simulation.name}`,
         message: `<p>Are you sure you want to stop this simulation?</p>
                   <p>You will be charged for the simulation time used, but you will not spend further credits on it.</p>`,
-        buttonText: 'Stop',
-      }
+        buttonText: "Stop",
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        // Filters any result that is not the main action.
-        if (result !== true) {
-          return;
-        }
-
-        // Stop the simulation.
-        this.simulationService.stop(simulation.groupId).subscribe(
-          (response) => {
-            this.snackBar.open(`Simulation ${simulation.name} was stopped`, 'Got it', {
-              duration: 2750
-            });
-            this.getCredits();
-            this.getSimulations();
-          },
-          (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          }
-        );
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      // Filters any result that is not the main action.
+      if (result !== true) {
+        return;
       }
-    );
+
+      // Stop the simulation.
+      this.simulationService.stop(simulation.groupId).subscribe(
+        (response) => {
+          this.snackBar.open(
+            `Simulation ${simulation.name} was stopped`,
+            "Got it",
+            {
+              duration: 2750,
+            },
+          );
+          this.getCredits();
+          this.getSimulations();
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+    });
   }
 
   /**
@@ -254,9 +267,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
       },
       (error) => {
         if (error.status === 404) {
-          this.snackBar.open('There are no logs to download', 'Got it', { duration: 2750 });
+          this.snackBar.open("There are no logs to download", "Got it", {
+            duration: 2750,
+          });
         }
-      }
+      },
     );
   }
 
@@ -278,8 +293,8 @@ export class ApplicationsComponent implements OnInit, AfterViewInit {
               Click here for more information about applications
             </a>
           </p>`,
-        buttonText: 'OK',
-      }
+        buttonText: "OK",
+      },
     });
   }
 }

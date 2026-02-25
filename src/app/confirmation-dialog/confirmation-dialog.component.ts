@@ -1,23 +1,23 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject } from "@angular/core";
 import {
   MatDialog,
   MatDialogConfig,
   MatDialogRef,
-  MAT_DIALOG_DATA
-} from '@angular/material/dialog';
-import { AuthService } from '../auth/auth.service';
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { AuthService } from "../auth/auth.service";
 
 @Component({
-  selector: 'gz-confirmation-dialog',
-  templateUrl: 'confirmation-dialog.component.html',
-  styleUrls: ['confirmation-dialog.component.scss']
+  selector: "gz-confirmation-dialog",
+  templateUrl: "confirmation-dialog.component.html",
+  styleUrls: ["confirmation-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
  * Generic confirmation dialog which can be configured for different use-cases.
  */
 export class ConfirmationDialogComponent {
-
   /**
    * @param dialog Reference to the opened dialog.
    * @param data Data for the dialog. Fields:
@@ -33,6 +33,6 @@ export class ConfirmationDialogComponent {
    */
   constructor(
     public dialog: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 }

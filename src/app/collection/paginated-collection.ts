@@ -1,11 +1,10 @@
-import { Collection } from './collection';
+import { Collection } from "./collection";
 
 /**
  * A class that represents a paginated list of collections.
  * This resource comes paginated
  */
 export class PaginatedCollection {
-
   /**
    * The total number of collections.
    */

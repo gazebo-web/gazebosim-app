@@ -1,11 +1,9 @@
-@import '~@angular/material/theming';
-@import '../styles.scss';
-
 // Local variables.
 $sidenav-width: 170px;
 
 mat-sidenav {
   width: $sidenav-width;
+  color: #fefefe;
 }
 
 mat-sidenav .title {
@@ -42,13 +40,32 @@ mat-sidenav .copyright {
   margin-bottom: 20px;
   color: #fefefe;
 }
+
 mat-sidenav mat-divider {
   border-top-color: #fefefe;
   margin: 10px;
 }
 
-.sidenav-list a.mat-list-item {
-  color:#fefefe;
+.sidenav-list a.mat-list-item,
+.sidenav-list a.mat-mdc-list-item {
+  color: #fefefe !important;
+}
+
+mat-sidenav a {
+  color: #fefefe !important;
+}
+
+// Override MDC internal text spans that have high-specificity default colors
+mat-sidenav .mdc-list-item__primary-text,
+mat-sidenav .mat-mdc-list-item-unscoped-content,
+mat-sidenav .mdc-list-item__content {
+  color: #fefefe !important;
+}
+
+// Vertically center icon and text within each sidebar list item
+mat-sidenav .mat-mdc-list-item-unscoped-content {
+  display: flex;
+  align-items: center;
 }
 
 .sidenav-list .indent {
@@ -57,22 +74,33 @@ mat-sidenav mat-divider {
 
 .sidenav-list mat-icon {
   margin-right: 10px;
+  color: #fefefe;
+}
+
+mat-sidenav .mat-mdc-list-item-icon,
+mat-sidenav .mat-icon,
+mat-sidenav mat-icon {
+  color: #fefefe !important;
 }
 
 .mat-drawer {
-  background-color: mat-color($custom-theme-primary);
+  background-color: #03a9f4;
 }
 
 gz-page-title {
   padding-left: 20px;
 }
 
-.mat-toolbar {
+.mat-toolbar,
+.mat-mdc-toolbar {
   color: #6e6e6e;
+  background-color: #f5f5f5;
   padding: 0 20px;
   position: fixed;
   top: 0;
   z-index: 3000;
+  box-sizing: border-box;
+
   // Since the toolbar is fixed to the top, we need to adjust its width when
   // the sidenav is hidden.
   @media screen and (min-width: 600px) {
@@ -84,6 +112,7 @@ gz-page-title {
 // margin of the content to avoid overlap.
 .page-content {
   margin-top: 64px;
+
   @media screen and (max-width: 600px) {
     margin-top: 56px;
   }
@@ -103,7 +132,8 @@ gz-page-title {
 
 #profile-icon {
   font-size: 28px;
-  width: 100%;
+  width: 28px;
+  height: 28px;
 }
 
 .profile-img {

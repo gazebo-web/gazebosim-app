@@ -1,59 +1,59 @@
-@import '~@angular/material/theming';
-
-@include mat-core();
+@use "@angular/material" as mat;
 
 // choose from https://material.io/guidelines/style/color.html#color-color-palette
-$custom-theme-primary: mat-palette($mat-light-blue, 500);
-$custom-theme-accent: mat-palette($mat-deep-orange, 500, 300, 800);
-$custom-theme-warn: mat-palette($mat-red);
+$custom-theme-primary: mat.m2-define-palette(mat.$m2-light-blue-palette, 500);
+$custom-theme-accent: mat.m2-define-palette(
+  mat.$m2-deep-orange-palette,
+  500,
+  300,
+  800
+);
+$custom-theme-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
-
-$custom-typography: mat-typography-config(
-  $font-family: 'Roboto, sans-serif',
-
-  // Large, one-off headers, usually at the top of the page (e.g. a hero)
-  $display-4:     mat-typography-level(112px, 112px, 300),
-  $display-3:     mat-typography-level(56px, 56px, 400),
-  $display-2:     mat-typography-level(45px, 48px, 400),
-  $display-1:     mat-typography-level(34px, 40px, 400),
-
-  // corresponds to <h1>
-  $headline:      mat-typography-level(24px, 32px, 400),
-
-  // corresponds to <h2>
-  $title:         mat-typography-level(20px, 32px, 500),
-
-  // corresponds to <h3>
-  $subheading-2:  mat-typography-level(16px, 28px, 400),
-
-  // corresponds to <h4>
-  $subheading-1:  mat-typography-level(15px, 24px, 400),
-
-  // Bolder body text
-  $body-2:        mat-typography-level(14px, 24px, 500),
-
-  // Base body text
-  $body-1:        mat-typography-level(14px, 20px, 400),
-
-  // Small body and hint text
-  $caption:       mat-typography-level(12px, 20px, 400),
-
-  // Buttons and anchors
-  $button:        mat-typography-level(14px, 14px, 500),
-
-  // Line-height must be unit-less fraction of the font-size.
-  $input:         mat-typography-level(inherit, 1.125, 400)
+$custom-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $custom-theme-primary,
+      accent: $custom-theme-accent,
+      warn: $custom-theme-warn,
+    ),
+    typography: mat.m2-define-typography-config(
+        $font-family: unquote("Roboto, sans-serif"),
+        // Large, one-off headers, usually at the top of the page (e.g. a hero)
+        $headline-1: mat.m2-define-typography-level(112px, 112px, 300),
+        $headline-2: mat.m2-define-typography-level(56px, 56px, 400),
+        $headline-3: mat.m2-define-typography-level(45px, 48px, 400),
+        $headline-4: mat.m2-define-typography-level(34px, 40px, 400),
+        // corresponds to <h1>
+        $headline-5: mat.m2-define-typography-level(24px, 32px, 400),
+        // corresponds to <h2>
+        $headline-6: mat.m2-define-typography-level(20px, 32px, 500),
+        // corresponds to <h3>
+        $subtitle-1: mat.m2-define-typography-level(16px, 28px, 400),
+        // corresponds to <h4>
+        $subtitle-2: mat.m2-define-typography-level(15px, 24px, 400),
+        // Bolder body text
+        $body-1: mat.m2-define-typography-level(14px, 24px, 500),
+        // Base body text
+        $body-2: mat.m2-define-typography-level(14px, 20px, 400),
+        // Small body and hint text
+        $caption: mat.m2-define-typography-level(12px, 20px, 400),
+        // Buttons and anchors
+        $button: mat.m2-define-typography-level(14px, 14px, 500),
+      ),
+  )
 );
 
-@include angular-material-theme($custom-theme);
-@include angular-material-typography($custom-typography);
+@include mat.all-component-themes($custom-theme);
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -64,34 +64,59 @@ a {
   color: inherit;
   outline: 0;
 
-  -o-transition:.5s;
-  -ms-transition:.5s;
-  -moz-transition:.5s;
-  -webkit-transition:.5s;
+  -o-transition: 0.5s;
+  -ms-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -webkit-transition: 0.5s;
   /* ...and now for the proper property */
-  transition:.5s;
+  transition: 0.5s;
 }
 
 a:hover {
-  color: mat-color($custom-theme-primary, 800);
+  color: mat.m2-get-color-from-palette($custom-theme-primary, 800);
 }
 
 a.color-link {
-  color: mat-color($custom-theme-primary, 700);
+  color: mat.m2-get-color-from-palette($custom-theme-primary, 700);
 }
 
 // The following is from: https://materialdesignicons.com/getting-started
 button.mat-menu-item {
   line-height: 24px !important;
 }
+
 a.mat-menu-item > mat-icon {
   margin-bottom: 14px;
 }
+
 .mat-icon svg {
   height: 24px;
   width: 24px;
 }
+
 // End of style from https://materialdesignicons.com/getting-started
+
+// Force all sidenav text and links to be white.
+// This must be global (not component-scoped) to override Angular Material's
+// MDC internal styles which have high specificity.
+mat-sidenav {
+  a,
+  .mdc-list-item__primary-text,
+  .mat-mdc-list-item-unscoped-content,
+  .mdc-list-item__content,
+  .mdc-list-item,
+  .mat-mdc-list-item,
+  .mat-mdc-list-item span,
+  mat-icon {
+    color: #fefefe !important;
+  }
+
+  // Vertically center icon and text within each sidebar list item
+  .mat-mdc-list-item-unscoped-content {
+    display: flex;
+    align-items: center;
+  }
+}
 
 // Class used for the panel of modals related to settings.
 .gz-modal-panel {
@@ -119,6 +144,7 @@ a.mat-menu-item > mat-icon {
   width: 5em;
   height: 5em;
 }
+
 #html-spinner {
   margin: 30px auto;
   font-size: 10px;
@@ -132,24 +158,27 @@ a.mat-menu-item > mat-icon {
   -webkit-animation: rotate 1.1s infinite linear;
   animation: rotate 1.1s infinite linear;
 }
+
 @-webkit-keyframes rotate {
   0% {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
+
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
 
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

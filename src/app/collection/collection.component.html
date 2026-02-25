@@ -1,92 +1,150 @@
 <div fxLayout="column" fxLayoutAlign="start center">
-  <div class="banner" *ngIf="collection?.getThumbnail()">
-    <img *ngIf="(collection?.getThumbnail().url | gzAuthHeader | async) as result"
-      [src]="result" alt="Collection Banner">
-  </div>
+  @if (collection?.getThumbnail()) {
+    <div class="banner">
+      @if (collection?.getThumbnail().url | gzAuthHeader | async; as result) {
+        <img [src]="result" alt="Collection Banner" />
+      }
+    </div>
+  }
 
   <div class="header" fxLayout="row" fxLayoutAlign="space-between" fxFill>
     <div fxFlex="30%">
-
-      <gz-page-title [title]="collection.name" icon="collections"></gz-page-title>
+      <gz-page-title
+        [title]="collection.name"
+        icon="collections"
+      ></gz-page-title>
       <h4>
-        By <a class="color-link" routerLink="/{{collection?.owner}}" routerLinkActive="active">{{collection?.owner}}</a>
+        By
+        <a
+          class="color-link"
+          routerLink="/{{ collection?.owner }}"
+          routerLinkActive="active"
+          >{{ collection?.owner }}</a
+        >
       </h4>
-
     </div>
 
     <div fxFlex="40%" fxLayoutAlign="center center">
       <mat-form-field [floatLabel]="'never'" fxFill>
-          <mat-label>Search in collection</mat-label>
-          <input #search matInput class='search' type="search" (keyup.enter)="onSearch(search.value)">
-          <mat-icon matPrefix id="search-icon">search</mat-icon>
+        <mat-label>Search in collection</mat-label>
+        <input
+          #search
+          matInput
+          class="search"
+          type="search"
+          (keyup.enter)="onSearch(search.value)"
+        />
+        <mat-icon matPrefix id="search-icon">search</mat-icon>
       </mat-form-field>
     </div>
 
     <div fxFlex="30%" fxLayout="row wrap" fxLayoutAlign="end" class="buttons">
-      <button mat-icon-button [matMenuTriggerFor]="downloadDialog" #menuTrigger title="Download this collection.">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="downloadDialog"
+        #menuTrigger
+        title="Download this collection."
+      >
         <mat-icon>file_download</mat-icon>
       </button>
       <mat-menu #downloadDialog="matMenu">
-        <div fxLayout="column" (click)="$event.stopPropagation()" class='download-link'>
+        <div
+          fxLayout="column"
+          (click)="$event.stopPropagation()"
+          class="download-link"
+        >
           <h1>Collection Download</h1>
           <h3>Run this command using the script below</h3>
-          <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" class='command'>
-            <pre>{{downloadCommand}}</pre>
-            <button mat-icon-button title="Copy command"
-              (click)="copyDownloadCommand()">
+          <div
+            fxLayout="row"
+            fxLayoutGap="20px"
+            fxLayoutAlign="center center"
+            class="command"
+          >
+            <pre>{{ downloadCommand }}</pre>
+            <button
+              mat-icon-button
+              title="Copy command"
+              (click)="copyDownloadCommand()"
+            >
               <mat-icon>content_copy</mat-icon>
             </button>
           </div>
-          <a href="assets/scripts/download_collection.py" download>Download script</a>
+          <a href="assets/scripts/download_collection.py" download
+            >Download script</a
+          >
         </div>
       </mat-menu>
 
-      <button mat-icon-button
+      <button
+        mat-icon-button
         [disabled]="!authService.isAuthenticated()"
         [title]="getCopyButtonTitle()"
-        (click)="copyCollection()">
+        (click)="copyCollection()"
+      >
         <mat-icon>content_copy</mat-icon>
       </button>
 
-      <button mat-icon-button title="Copy Bibtex to clipboard"
-        (click)="copyBibtex()">
+      <button
+        mat-icon-button
+        title="Copy Bibtex to clipboard"
+        (click)="copyBibtex()"
+      >
         <mat-icon>library_books</mat-icon>
       </button>
 
-      <button mat-icon-button title="Edit collection" *ngIf="canEdit"
-        routerLink="/{{collection?.owner}}/collections/{{collection?.name}}/edit">
-        <mat-icon>mode_edit</mat-icon>
-      </button>
-      <button mat-icon-button title="Remove this collection" *ngIf="canEdit" (click)="removeCollection()">
-        <mat-icon>delete</mat-icon>
-      </button>
+      @if (canEdit) {
+        <button
+          mat-icon-button
+          title="Edit collection"
+          routerLink="/{{ collection?.owner }}/collections/{{
+            collection?.name
+          }}/edit"
+        >
+          <mat-icon>mode_edit</mat-icon>
+        </button>
+      }
+      @if (canEdit) {
+        <button
+          mat-icon-button
+          title="Remove this collection"
+          (click)="removeCollection()"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
     </div>
   </div>
 
-    <div class="header" fxLayout="row" fxFill>
+  <div class="header" fxLayout="row" fxFill>
     <gz-description [description]="collection?.description"></gz-description>
   </div>
 
-
-  <mat-tab-group dynamicHeight fxFill (selectedIndexChange)="setActiveTab($event)">
+  <mat-tab-group
+    dynamicHeight
+    fxFill
+    (selectedIndexChange)="setActiveTab($event)"
+  >
     <mat-tab>
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
           <mat-icon svgIcon="gz-model"></mat-icon>
-          <span>Models ({{paginatedModels?.totalCount}})</span>
+          <span>Models ({{ paginatedModels?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list fxFlex
-                               resourceType="models"
-                               [resources]="collection.models"
-                               [length]="paginatedModels?.totalCount"
-                               [finished]="!paginatedModels?.hasNextPage()"
-                               [removable]="canEdit"
-                               [disabled]="activeTab !== 'models'"
-                               (pageChange)="loadModels($event)"
-                               (onRemoveItem)="removeItem($event)">
+        <gz-fuel-resource-list
+          fxFlex
+          resourceType="models"
+          [resources]="collection.models"
+          [length]="paginatedModels?.totalCount"
+          [finished]="!paginatedModels?.hasNextPage()"
+          [removable]="canEdit"
+          [disabled]="activeTab !== 'models'"
+          (pageChange)="loadModels($event)"
+          (onRemoveItem)="removeItem($event)"
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>
@@ -95,20 +153,22 @@
       <ng-template mat-tab-label>
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
           <mat-icon svgIcon="gz-world"></mat-icon>
-          <span>Worlds ({{paginatedWorlds?.totalCount}})</span>
+          <span>Worlds ({{ paginatedWorlds?.totalCount }})</span>
         </div>
       </ng-template>
 
       <div class="tab-content">
-        <gz-fuel-resource-list fxFlex
-                               resourceType="worlds"
-                               [resources]="collection.worlds"
-                               [length]="paginatedWorlds?.totalCount"
-                               [finished]="!paginatedWorlds?.hasNextPage()"
-                               [removable]="canEdit"
-                               [disabled]="activeTab !== 'models'"
-                               (pageChange)="loadWorlds($event)"
-                               (onRemoveItem)="removeItem($event)">
+        <gz-fuel-resource-list
+          fxFlex
+          resourceType="worlds"
+          [resources]="collection.worlds"
+          [length]="paginatedWorlds?.totalCount"
+          [finished]="!paginatedWorlds?.hasNextPage()"
+          [removable]="canEdit"
+          [disabled]="activeTab !== 'models'"
+          (pageChange)="loadWorlds($event)"
+          (onRemoveItem)="removeItem($event)"
+        >
         </gz-fuel-resource-list>
       </div>
     </mat-tab>

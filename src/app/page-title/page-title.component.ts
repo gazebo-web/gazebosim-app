@@ -1,16 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: 'gz-page-title',
-  templateUrl: './page-title.component.html',
-  styleUrls: ['./page-title.component.scss']
+  selector: "gz-page-title",
+  templateUrl: "./page-title.component.html",
+  styleUrls: ["./page-title.component.scss"],
+  standalone: false,
 })
 
 /**
  * The Page Title Component is a visual component that allows setting a title with an optional icon.
  */
 export class PageTitleComponent {
-
   /**
    * The title to display.
    */

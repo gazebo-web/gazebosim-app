@@ -1,20 +1,30 @@
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
-import { circuits as validCircuits } from './circuits';
-import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
-import { Robot } from '../../cloudsim/robot';
-import { robotClass } from './base-class';
-import { RobotType } from '../../cloudsim/robot-type';
-import { SimulationService } from '../../cloudsim/simulation.service';
-import { validParents } from './valid-parents';
+import { Component, EventEmitter, Inject, OnInit, Output } from "@angular/core";
+import {
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+  Validators,
+} from "@angular/forms";
+import { ErrorStateMatcher } from "@angular/material/core";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { MatSelectChange } from "@angular/material/select";
+import { circuits as validCircuits } from "./circuits";
+import { ConfirmationDialogComponent } from "../../confirmation-dialog/confirmation-dialog.component";
+import { Robot } from "../../cloudsim/robot";
+import { robotClass } from "./base-class";
+import { RobotType } from "../../cloudsim/robot-type";
+import { SimulationService } from "../../cloudsim/simulation.service";
+import { validParents } from "./valid-parents";
 
 @Component({
-  selector: 'gz-simulation-launch-dialog',
-  templateUrl: 'simulation-launch-dialog.component.html',
-  styleUrls: ['simulation-launch-dialog.component.scss']
+  selector: "gz-simulation-launch-dialog",
+  templateUrl: "simulation-launch-dialog.component.html",
+  styleUrls: ["simulation-launch-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -29,68 +39,62 @@ export class SimulationLaunchDialogComponent implements OnInit {
   /**
    * Input form for the simulation name.
    */
-  public simName = new FormControl('', {
+  public simName = new FormControl("", {
     validators: [
       Validators.required,
       Validators.minLength(3),
-      Validators.pattern('[a-zA-Z0-9]+'),
+      Validators.pattern("[a-zA-Z0-9]+"),
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: "change",
   });
 
   /**
    * Input form for a new Robot name.
    */
-  public robotName = new FormControl('', {
+  public robotName = new FormControl("", {
     validators: [
       Validators.required,
       Validators.minLength(2),
       Validators.maxLength(24),
-      Validators.pattern('[a-zA-Z0-9]+')
+      Validators.pattern("[a-zA-Z0-9]+"),
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: "change",
   });
 
   /**
    * Input form for a new Robot image URL.
    */
-  public robotImageUrl = new FormControl('', {
-    validators: [
-      Validators.required,
-    ],
-    updateOn: 'change' || 'submit',
+  public robotImageUrl = new FormControl("", {
+    validators: [Validators.required],
+    updateOn: "change",
   });
 
   /**
    * Form field for the Robot type select dropdown.
    */
-  public typeDropdownForm = new FormControl('', {
-    validators: [
-      Validators.required,
-    ],
-    updateOn: 'change' || 'submit',
+  public typeDropdownForm = new FormControl("", {
+    validators: [Validators.required],
+    updateOn: "change",
   });
 
   /**
    * Input form control for Marsupial Partner.
    */
-  public marsupialPartner = new FormControl('', {
+  public marsupialPartner = new FormControl("", {
     validators: [
       Validators.minLength(2),
       Validators.maxLength(24),
-      Validators.pattern('[a-zA-Z0-9]+')
+      Validators.pattern("[a-zA-Z0-9]+"),
     ],
-    updateOn: 'change' || 'submit',
+    updateOn: "change",
   });
 
   /**
    * Form field for the Circuit type select dropdown.
    */
-  public circuitDropdownForm = new FormControl('', {
-    validators: [
-      Validators.required,
-    ],
-    updateOn: 'change' || 'submit',
+  public circuitDropdownForm = new FormControl("", {
+    validators: [Validators.required],
+    updateOn: "change",
   });
 
   /**
@@ -147,8 +151,8 @@ export class SimulationLaunchDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
     public simulationService: SimulationService,
-    public dialogRef: MatDialogRef<SimulationLaunchDialogComponent>) {
-  }
+    public dialogRef: MatDialogRef<SimulationLaunchDialogComponent>,
+  ) {}
 
   /**
    * OnInit lifecycle hook. Used to set the array of robot types available.
@@ -169,7 +173,11 @@ export class SimulationLaunchDialogComponent implements OnInit {
     this.simName.setValue(this.simName.value.trim());
     this.simName.updateValueAndValidity();
 
-    if (this.simName.invalid || this.circuitDropdownForm.invalid || !this.data.user) {
+    if (
+      this.simName.invalid ||
+      this.circuitDropdownForm.invalid ||
+      !this.data.user
+    ) {
       return;
     }
 
@@ -182,14 +190,18 @@ export class SimulationLaunchDialogComponent implements OnInit {
     if (this.creditsEnabled && this.credits < 0) {
       const dialogOps = {
         data: {
-          title: 'Upload a Submission',
-          message: '<p>Your robots exceed the maximum credit limit.</p>' +
-            '<p>To continue, please remove some of your robots in order to fit this criteria.</p>',
-          buttonText: 'OK'
-        }
+          title: "Upload a Submission",
+          message:
+            "<p>Your robots exceed the maximum credit limit.</p>" +
+            "<p>To continue, please remove some of your robots in order to fit this criteria.</p>",
+          buttonText: "OK",
+        },
       };
 
-      this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+      this.confirmationDialog = this.dialog.open(
+        ConfirmationDialogComponent,
+        dialogOps,
+      );
 
       return;
     }
@@ -198,37 +210,41 @@ export class SimulationLaunchDialogComponent implements OnInit {
     const errors = this.validateTeamSubmission();
     // const errors = null;
     if (errors) {
-      let message = '<h2>Submission Error</h2><ul>';
-      errors.forEach(error => {
+      let message = "<h2>Submission Error</h2><ul>";
+      errors.forEach((error) => {
         message += `<li>${error}</li>`;
       });
-      message += '</ul><p>For information, consult the <a href="https://github.com/osrf/subt/wiki/API#marsupials" target="_blank">SubT API on Marsupial Robots</a> and the <a href="https://www.subtchallenge.com/resources.html" target="_blank">SubT Challenge Rules</a>.</p>';
+      message +=
+        '</ul><p>For information, consult the <a href="https://github.com/osrf/subt/wiki/API#marsupials" target="_blank">SubT API on Marsupial Robots</a> and the <a href="https://www.subtchallenge.com/resources.html" target="_blank">SubT Challenge Rules</a>.</p>';
       const dialogOps = {
         data: {
-          title: 'Upload a Submission',
+          title: "Upload a Submission",
           message,
-          buttonText: 'Dismiss',
-          hideCancel: true
-        }
+          buttonText: "Dismiss",
+          hideCancel: true,
+        },
       };
 
-      this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+      this.confirmationDialog = this.dialog.open(
+        ConfirmationDialogComponent,
+        dialogOps,
+      );
 
       return;
     }
 
     // Prepare the form.
     const formData = new FormData();
-    formData.append('owner', this.data.user);
-    formData.append('name', this.simName.value);
-    formData.append('circuit', this.circuitDropdownForm.value);
+    formData.append("owner", this.data.user);
+    formData.append("name", this.simName.value);
+    formData.append("circuit", this.circuitDropdownForm.value);
 
     this.robots.forEach((robot) => {
-      formData.append('robot_name', robot.name);
-      formData.append('robot_type', robot.type.type);
-      formData.append('robot_image', robot.image);
+      formData.append("robot_name", robot.name);
+      formData.append("robot_type", robot.type.type);
+      formData.append("robot_image", robot.image);
       if (robot.partner) {
-        formData.append('marsupial', `${robot.name}:${robot.partner}`);
+        formData.append("marsupial", `${robot.name}:${robot.partner}`);
       }
     });
 
@@ -248,10 +264,12 @@ export class SimulationLaunchDialogComponent implements OnInit {
     this.marsupialPartner.setValue(this.marsupialPartner.value.trim());
     this.marsupialPartner.updateValueAndValidity();
 
-    if (this.robotName.invalid ||
-        this.robotImageUrl.invalid ||
-        this.typeDropdownForm.invalid ||
-        this.marsupialPartner.invalid) {
+    if (
+      this.robotName.invalid ||
+      this.robotImageUrl.invalid ||
+      this.typeDropdownForm.invalid ||
+      this.marsupialPartner.invalid
+    ) {
       return;
     }
 
@@ -259,20 +277,20 @@ export class SimulationLaunchDialogComponent implements OnInit {
     const robot: Robot = {
       name: this.robotName.value,
       image: this.robotImageUrl.value,
-      type: {type: this.typeDropdownForm.value},
+      type: { type: this.typeDropdownForm.value },
     };
     if (this.marsupialPartner.value.length > 0) {
-      robot['partner'] = this.marsupialPartner.value;
+      robot["partner"] = this.marsupialPartner.value;
     }
 
     this.robots.push(robot);
     this.credits -= robot.type.credits;
 
     // reset if teambase was added because there can only be one robot of type teambase
-    if (robot.type.name === 'TEAMBASE') {
-      this.robotName.reset('');
-      this.robotImageUrl.reset('');
-      this.typeDropdownForm.reset('');
+    if (robot.type.name === "TEAMBASE") {
+      this.robotName.reset("");
+      this.robotImageUrl.reset("");
+      this.typeDropdownForm.reset("");
     }
   }
 
@@ -300,7 +318,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
    */
   public openWarningDialog(formData: FormData, circuit: string): void {
     // Parse the HTML body.
-    let body = '';
+    let body = "";
     this.robots.forEach((robot, index) => {
       body += `<p>Robot ${index + 1}</p>`;
       body += `<ul><li>Name: ${robot.name}</li>`;
@@ -312,15 +330,12 @@ export class SimulationLaunchDialogComponent implements OnInit {
     this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent);
 
     // Check for the result of the dialog. Upload when the user accepts.
-    this.confirmationDialog.afterClosed()
-      .subscribe(
-        (result) => {
-          if (result === true) {
-            this.onSubmit.emit(formData);
-            this.dialogRef.close();
-          }
-        }
-      );
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.onSubmit.emit(formData);
+        this.dialogRef.close();
+      }
+    });
   }
 
   /**
@@ -333,18 +348,18 @@ export class SimulationLaunchDialogComponent implements OnInit {
 
   public typeChange(event: MatSelectChange): void {
     if (!this.showMarsupialPartner()) {
-      this.marsupialPartner.reset('');
+      this.marsupialPartner.reset("");
     }
 
     // If TEAMBASE is selected, autofill the Robot Name field with the text "TEAMBASE "
     // but allow it to be modified
     if (this.teambaseSelected() && this.robotName.pristine) {
-      this.robotName.setValue('TEAMBASE');
+      this.robotName.setValue("TEAMBASE");
     }
 
     // if prev type was TEAMBASE, reset name
-    if (this.prevType === 'TEAMBASE') {
-      this.robotName.reset('');
+    if (this.prevType === "TEAMBASE") {
+      this.robotName.reset("");
     }
 
     // update prev type
@@ -356,14 +371,19 @@ export class SimulationLaunchDialogComponent implements OnInit {
    * Disable if a robot of type TEAMBASE is already added
    */
   public teambaseExists(robotType: object): boolean {
-    return robotType['type'] === 'TEAMBASE' && this.robots.some(r => r['type']['name'] === 'TEAMBASE');
+    return (
+      robotType["type"] === "TEAMBASE" &&
+      this.robots.some((r) => r["type"]["name"] === "TEAMBASE")
+    );
   }
 
   /**
    * Return true if TEAMBASE type is currently selected
    */
   public teambaseSelected(): boolean {
-    return this.typeDropdownForm.value && this.typeDropdownForm.value === 'TEAMBASE';
+    return (
+      this.typeDropdownForm.value && this.typeDropdownForm.value === "TEAMBASE"
+    );
   }
 
   /**
@@ -378,16 +398,20 @@ export class SimulationLaunchDialogComponent implements OnInit {
    */
   private validateTeamSubmission(): string[] {
     const errors = [];
-    const submittedRobotClasses: { [baseClass: string]: number; } = {};
+    const submittedRobotClasses: { [baseClass: string]: number } = {};
 
     // for every robot
     this.robots.forEach((robot) => {
       // store a dictionary of robot classes in this submission
       // remove constant '_SENSOR_CONFIG_X' from the robot type
 
-      const baseClass = robotClass[
-        robot.type.type.substring(0, robot.type.type.indexOf('_SENSOR_CONFIG'))
-      ];
+      const baseClass =
+        robotClass[
+          robot.type.type.substring(
+            0,
+            robot.type.type.indexOf("_SENSOR_CONFIG"),
+          )
+        ];
 
       // increment entry in dictionary
       if (isNaN(submittedRobotClasses[baseClass])) {
@@ -399,16 +423,21 @@ export class SimulationLaunchDialogComponent implements OnInit {
       // if has partner
       if (robot.partner) {
         // make sure partner exists
-        const partner = this.robots.find(robotPartner => robotPartner.name === robot.partner);
+        const partner = this.robots.find(
+          (robotPartner) => robotPartner.name === robot.partner,
+        );
         if (!partner) {
-          errors.push(`The marsupial child robot with name "${robot['partner']}" has not been specified.`);
+          errors.push(
+            `The marsupial child robot with name "${robot["partner"]}" has not been specified.`,
+          );
           return;
         }
         // and is valid partner
-        const partnerValid = validParents[robot.type.type].indexOf(partner.type.type) > -1;
+        const partnerValid =
+          validParents[robot.type.type].indexOf(partner.type.type) > -1;
         if (!partnerValid) {
           errors.push(
-            `Robot of type ${robot.type.type} cannot be Marsupial Partners with robots of type ${partner.type.type}.`
+            `Robot of type ${robot.type.type} cannot be Marsupial Partners with robots of type ${partner.type.type}.`,
           );
         }
       }
@@ -417,7 +446,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
     // if any class count is greater than 5, throw an error
     const MAXIMUM_ALLOWED_IN_CLASS = 5;
     let classMax = 0;
-    let classMaxClass = '';
+    let classMaxClass = "";
     for (const rClass in submittedRobotClasses) {
       if (rClass) {
         const value = submittedRobotClasses[rClass];
@@ -430,7 +459,7 @@ export class SimulationLaunchDialogComponent implements OnInit {
     if (classMax > MAXIMUM_ALLOWED_IN_CLASS) {
       errors.push(
         `The submission contains ${classMax} platforms of base platform type "${classMaxClass}",
-        but only ${MAXIMUM_ALLOWED_IN_CLASS} are allowed`
+        but only ${MAXIMUM_ALLOWED_IN_CLASS} are allowed`,
       );
     }
 
@@ -442,7 +471,10 @@ export class SimulationLaunchDialogComponent implements OnInit {
  * Error state matcher implementation which displays errors when control is dirty, touched, invalid.
  */
 class RobotErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl, form: FormGroupDirective | NgForm): boolean {
+  isErrorState(
+    control: FormControl,
+    form: FormGroupDirective | NgForm,
+  ): boolean {
     return control && (control.dirty || control.touched) && control.invalid;
   }
 }

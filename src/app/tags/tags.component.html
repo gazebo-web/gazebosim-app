@@ -1,44 +1,51 @@
-<div *ngIf="edit; else tagsDisplay">
-  <mat-form-field fxFill hintLabel="Separate your tags by commas.">
-    <!-- This div was needed for our tag "jump" preventation <div>-->
+@if (edit) {
+  <div>
+    <mat-form-field fxFill hintLabel="Separate your tags by commas.">
+      <!-- This div was needed for our tag "jump" preventation <div>-->
       <mat-placeholder>Tags</mat-placeholder>
-    <!-- Ditto: end div for the above comment </div>-->
-
-    <mat-chip-list class="chip-list-input" #chipList [disabled]="disabled">
-      <mat-chip *ngFor="let tag of tags; let i=index"
-                [removable]="!disabled"
-                selectable="false"
-                [disabled]="disabled"
-                (removed)="removeTag(i)">
-                  {{tag}}
-                  <mat-icon matChipRemove *ngIf="!disabled">cancel</mat-icon>
-      </mat-chip>
-
-      <input matInput [matChipInputFor]="chipList"
-             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-             (matChipInputTokenEnd)="addTagChip($event)"
-             [disabled]="disabled"
-             (blur)="closeTagOnBlur($event)"/>
-    </mat-chip-list>
-  </mat-form-field>
-</div>
-
-<ng-template #tagsDisplay>
+      <!-- Ditto: end div for the above comment </div>-->
+      <mat-chip-list class="chip-list-input" #chipList [disabled]="disabled">
+        @for (tag of tags; track tag; let i = $index) {
+          <mat-chip
+            [removable]="!disabled"
+            selectable="false"
+            [disabled]="disabled"
+            (removed)="removeTag(i)"
+          >
+            {{ tag }}
+            @if (!disabled) {
+              <mat-icon matChipRemove>cancel</mat-icon>
+            }
+          </mat-chip>
+        }
+        <input
+          matInput
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addTagChip($event)"
+          [disabled]="disabled"
+          (blur)="closeTagOnBlur($event)"
+        />
+      </mat-chip-list>
+    </mat-form-field>
+  </div>
+} @else {
   <div fxLayout="row" fxLayoutGap="10px" fxFill>
     <mat-icon class="margin-align" title="Tags">sell</mat-icon>
-
-    <div *ngIf="tags && tags.length > 0; else noTagsBlock">
-      <mat-chip-list>
-        <mat-chip *ngFor="let tag of tags">
-          {{tag}}
-        </mat-chip>
-      </mat-chip-list>
-    </div>
-
-    <ng-template #noTagsBlock>
+    @if (tags && tags.length > 0) {
+      <div>
+        <mat-chip-list>
+          @for (tag of tags; track tag) {
+            <mat-chip>
+              {{ tag }}
+            </mat-chip>
+          }
+        </mat-chip-list>
+      </div>
+    } @else {
       <div class="margin-align" fxLayout="row" fxLayoutAlign="start center">
         <span>No tags.</span>
       </div>
-    </ng-template>
+    }
   </div>
-</ng-template>
+}

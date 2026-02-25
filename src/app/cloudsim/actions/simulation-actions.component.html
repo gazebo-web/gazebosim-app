@@ -1,21 +1,29 @@
-<div fxLayout="row wrap" fxLayoutAlign="center center" >
+<div fxLayout="row wrap" fxLayoutAlign="center center">
   <!-- Placeholder. Uncomment when implemented. -->
   <!-- <button mat-icon-button (click)="$event.stopPropagation()">
-    <mat-icon>play_arrow</mat-icon>
-  </button> -->
+  <mat-icon>play_arrow</mat-icon>
+</button> -->
 
   <!-- Placeholder. Uncomment when implemented. -->
   <!-- <button mat-icon-button (click)="$event.stopPropagation()">
-    <mat-icon>pause</mat-icon>
-  </button> -->
+<mat-icon>pause</mat-icon>
+</button> -->
 
-  <button mat-icon-button (click)="stop($event)" *ngIf="simulation.isLaunching() || simulation.status === 'Running'">
-    <mat-icon>stop</mat-icon>
-  </button>
+  @if (simulation.isLaunching() || simulation.status === "Running") {
+    <button mat-icon-button (click)="stop($event)">
+      <mat-icon>stop</mat-icon>
+    </button>
+  }
 
-  <button mat-icon-button (click)="restart($event)" *ngIf="simulation.canBeRestarted()" title="Restart this simulation">
-    <mat-icon>replay</mat-icon>
-  </button>
+  @if (simulation.canBeRestarted()) {
+    <button
+      mat-icon-button
+      (click)="restart($event)"
+      title="Restart this simulation"
+    >
+      <mat-icon>replay</mat-icon>
+    </button>
+  }
 
   <button mat-icon-button (click)="download($event)">
     <mat-icon>file_download</mat-icon>
@@ -25,7 +33,13 @@
     <mat-icon>info</mat-icon>
   </button>
 
-  <a mat-icon-button [href]="s3bucketLink()" target="_blank" rel="noopener" title="Link to the S3 bucket">
+  <a
+    mat-icon-button
+    [href]="s3bucketLink()"
+    target="_blank"
+    rel="noopener"
+    title="Link to the S3 bucket"
+  >
     <mat-icon>folder</mat-icon>
   </a>
 </div>

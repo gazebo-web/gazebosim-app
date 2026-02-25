@@ -1,47 +1,48 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router,
-         ActivatedRoute,
-         Event,
-         ResolveStart,
-         ResolveEnd,
-         NavigationEnd,
-         NavigationCancel } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSidenav } from '@angular/material/sidenav';
-import { Title } from '@angular/platform-browser';
-import { MediaChange, MediaObserver } from '@angular/flex-layout';
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+  Router,
+  ActivatedRoute,
+  Event,
+  ResolveStart,
+  ResolveEnd,
+  NavigationEnd,
+  NavigationCancel,
+} from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatSidenav } from "@angular/material/sidenav";
+import { Title } from "@angular/platform-browser";
+import { MediaChange, MediaObserver } from "@ngbracket/ngx-layout";
 
-import { SearchComponent } from './search';
-import { AuthService } from './auth/auth.service';
-import { Ng2DeviceService } from './device-detector';
-
+import { SearchComponent } from "./search";
+import { AuthService } from "./auth/auth.service";
+import { Ng2DeviceService } from "./device-detector";
 
 @Component({
-  selector: 'gz-app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: "gz-app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
+  standalone: false,
 })
 
 /**
  * App Component is the main component and entry point of the Web Application.
  */
 export class AppComponent implements OnInit {
-
   /**
    * The sidenav element. Used to control it's behavior from the component.
    */
-  @ViewChild('sidenav') public sidenav: MatSidenav;
+  @ViewChild("sidenav") public sidenav: MatSidenav;
 
   /**
    * Search element.
    */
-  @ViewChild('search') public searchBar: ElementRef;
+  @ViewChild("search") public searchBar: ElementRef;
 
   /**
    * Title of the Web Application.
    */
-  public readonly title = 'Gazebo';
+  public readonly title = "Gazebo";
 
   /**
    * Current year to display in the copyright.
@@ -86,7 +87,8 @@ export class AppComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public snackBar: MatSnackBar,
-    private titleService: Title) {
+    private titleService: Title,
+  ) {
     this.authService.handleAuth();
   }
 
@@ -97,80 +99,79 @@ export class AppComponent implements OnInit {
    * to media events in order to control the behavior of the sidenav.
    */
   public ngOnInit(): void {
-
     // Subscribe to media changes. Detects the change in a layout breakpoint.
     this.media.asObservable().subscribe((changes: MediaChange[]) => {
-      if (changes.some(change => change.mqAlias === 'xs')) {
-        if (this.sidenav.mode === 'side') {
-          this.sidenav.mode = 'over';
+      if (changes.some((change) => change.mqAlias === "xs")) {
+        if (this.sidenav.mode === "side") {
+          this.sidenav.mode = "over";
           this.sidenav.close();
         }
       } else {
-        if (this.sidenav.mode === 'over') {
-          this.sidenav.mode = 'side';
+        if (this.sidenav.mode === "over") {
+          this.sidenav.mode = "side";
           this.sidenav.open();
         }
       }
     });
 
     // Subscribe to router events.
-    this.router.events.subscribe(
-      (event) => {
-        if (event instanceof ResolveStart) {
-          this.progressBarValue = 0;
-          this.resolvingRoute = true;
-          this.makeProgress();
+    this.router.events.subscribe((event) => {
+      if (event instanceof ResolveStart) {
+        this.progressBarValue = 0;
+        this.resolvingRoute = true;
+        this.makeProgress();
+      }
+      if (event instanceof ResolveEnd || event instanceof NavigationCancel) {
+        this.progressBarValue = 100;
+        this.resolvingRoute = false;
+      }
+      if (event instanceof NavigationEnd) {
+        let currentRoute = this.route.root;
+        while (currentRoute.children[0] !== undefined) {
+          currentRoute = currentRoute.children[0];
         }
-        if (event instanceof ResolveEnd ||
-            event instanceof NavigationCancel) {
-          this.progressBarValue = 100;
-          this.resolvingRoute = false;
+
+        // Dismisses any indefinite snackbar (duration of 0).
+        const openedSnackbar = this.snackBar._openedSnackBarRef;
+        if (
+          openedSnackbar &&
+          openedSnackbar.containerInstance &&
+          openedSnackbar.containerInstance.snackBarConfig.duration === 0
+        ) {
+          this.snackBar.dismiss();
         }
-        if (event instanceof NavigationEnd) {
-          let currentRoute = this.route.root;
-          while (currentRoute.children[0] !== undefined) {
-            currentRoute = currentRoute.children[0];
-          }
 
-          // Dismisses any indefinite snackbar (duration of 0).
-          const openedSnackbar = this.snackBar._openedSnackBarRef;
-          if (openedSnackbar &&
-              openedSnackbar.containerInstance &&
-              openedSnackbar.containerInstance.snackBarConfig.duration === 0) {
-            this.snackBar.dismiss();
-          }
-
-          // The title can be either a string or a function, which requires the current route as
-          // its argument.
-          let title = '';
-          if (typeof(currentRoute.snapshot.data.title) === 'function') {
-            title = currentRoute.snapshot.data.title(currentRoute);
-          } else {
-            title = currentRoute.snapshot.data.title;
-          }
-
-          // Set the title in the titlebar
-          if (currentRoute.snapshot.data.titlebarTitle !== undefined) {
-            this.titlebarTitle = currentRoute.snapshot.data.titlebarTitle;
-          } else {
-            this.titlebarTitle = '';
-          }
-
-          // Set the subtitle in the titlebar
-          if (currentRoute.snapshot.data.titlebarSubtitle !== undefined) {
-            this.titlebarSubtitle = currentRoute.snapshot.data.titlebarSubtitle;
-          } else {
-            this.titlebarSubtitle = '';
-          }
-
-          // Set the Browser's title.
-          if (title) {
-            this.titleService.setTitle(`${this.title} - ${title}`);
-          } else {
-            this.titleService.setTitle(this.title);
-          }
+        // The title can be either a string or a function, which requires the current route as
+        // its argument.
+        let title = "";
+        if (typeof currentRoute.snapshot.data.title === "function") {
+          title = currentRoute.snapshot.data.title(currentRoute);
+        } else {
+          title = currentRoute.snapshot.data.title;
         }
-      });
+
+        // Set the title in the titlebar
+        if (currentRoute.snapshot.data.titlebarTitle !== undefined) {
+          this.titlebarTitle = currentRoute.snapshot.data.titlebarTitle;
+        } else {
+          this.titlebarTitle = "";
+        }
+
+        // Set the subtitle in the titlebar
+        if (currentRoute.snapshot.data.titlebarSubtitle !== undefined) {
+          this.titlebarSubtitle = currentRoute.snapshot.data.titlebarSubtitle;
+        } else {
+          this.titlebarSubtitle = "";
+        }
+
+        // Set the Browser's title.
+        if (title) {
+          this.titleService.setTitle(`${this.title} - ${title}`);
+        } else {
+          this.titleService.setTitle(this.title);
+        }
+      }
+    });
   }
 
   /**
@@ -178,7 +179,7 @@ export class AppComponent implements OnInit {
    * less than 600px wide.
    */
   public closeSidenav(): void {
-    if (this.sidenav.mode === 'over') {
+    if (this.sidenav.mode === "over") {
       this.sidenav.close();
     }
   }
@@ -189,7 +190,7 @@ export class AppComponent implements OnInit {
    * @param search Search string.
    */
   public onSearch(search: string): void {
-    this.router.navigate(['search', {q: search}]);
+    this.router.navigate(["search", { q: search }]);
   }
 
   /**
@@ -198,7 +199,7 @@ export class AppComponent implements OnInit {
   public onDeactivate(event): void {
     // Clear the search text
     if (event instanceof SearchComponent) {
-      this.searchBar.nativeElement.value = '';
+      this.searchBar.nativeElement.value = "";
     }
   }
 

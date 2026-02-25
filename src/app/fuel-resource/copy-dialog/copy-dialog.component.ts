@@ -1,10 +1,11 @@
-import { Component, Inject, Output, EventEmitter } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, Output, EventEmitter } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-  selector: 'gz-copy-dialog',
-  templateUrl: 'copy-dialog.component.html',
-  styleUrls: ['copy-dialog.component.scss']
+  selector: "gz-copy-dialog",
+  templateUrl: "copy-dialog.component.html",
+  styleUrls: ["copy-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -12,7 +13,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
  * It has a "busy state" that can display an animation with a message.
  */
 export class CopyDialogComponent {
-
   /**
    * Event emitter when the submit button is clicked.
    */
@@ -38,8 +38,8 @@ export class CopyDialogComponent {
    */
   constructor(
     public dialog: MatDialogRef<CopyDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 
   /**
    * Set the busy state.
@@ -65,7 +65,7 @@ export class CopyDialogComponent {
   public submit(): void {
     const copyData = {
       copyName: this.data.name,
-      copyOwner: this.data.owner
+      copyOwner: this.data.owner,
     };
     this.onSubmit.emit(copyData);
   }

@@ -1,13 +1,14 @@
-import { Component, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, ViewChild, HostListener } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Subscription } from "rxjs";
 
-import { SceneManager } from 'gzweb';
+import { SceneManager } from "gzweb";
 
 @Component({
-  selector: 'gz-visualization',
-  templateUrl: 'visualization.component.html',
-  styleUrls: ['visualization.component.scss']
+  selector: "gz-visualization",
+  templateUrl: "visualization.component.html",
+  styleUrls: ["visualization.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -18,18 +19,18 @@ export class VisualizationComponent implements OnDestroy {
   /**
    * Connection status from the Websocket.
    */
-  public connectionStatus: string = 'disconnected';
+  public connectionStatus: string = "disconnected";
 
   /**
    * The Websocket URL to connect to.
    * A simulation should expose a URL to connect to. For testing purposes, we can provide one here.
    */
-  public wsUrl: string = 'ws://localhost:9002';
+  public wsUrl: string = "ws://localhost:9002";
 
   /**
    * The Authorization Key to use.
    */
-  public authKey: string = '';
+  public authKey: string = "";
 
   /**
    * List of 3d models.
@@ -54,15 +55,13 @@ export class VisualizationComponent implements OnDestroy {
   /**
    * Reference to the <div> that can be toggled fullscreen.
    */
-  @ViewChild('fullScreen') private divRef;
+  @ViewChild("fullScreen") private divRef;
 
   /**
    * @param snackbar Snackbar used to show notifications.
    * @param ws The Websocket Service used to get data from a Simulation.
    */
-   constructor(
-     public snackBar: MatSnackBar) {
-  }
+  constructor(public snackBar: MatSnackBar) {}
 
   /**
    * On Destroy lifecycle hook used to make sure the websocket connection is terminated.
@@ -79,7 +78,7 @@ export class VisualizationComponent implements OnDestroy {
       websocketUrl: this.wsUrl,
       websocketKey: this.authKey,
     });
-    this.connectionStatus = 'connected';
+    this.connectionStatus = "connected";
   }
 
   /**
@@ -87,21 +86,21 @@ export class VisualizationComponent implements OnDestroy {
    */
   public disconnect(): void {
     this.sceneMgr.disconnect();
-    this.connectionStatus = 'disconnected';
+    this.connectionStatus = "disconnected";
   }
 
   /**
    * Select the given model
    */
   public select(model): void {
-    this.sceneMgr.select(model['gz3dName']);
+    this.sceneMgr.select(model["gz3dName"]);
   }
 
   /**
    * Instruct the camera to move to the given model.
    */
   public moveTo(model): void {
-    this.sceneMgr.moveTo(model['gz3dName']);
+    this.sceneMgr.moveTo(model["gz3dName"]);
   }
 
   /**
@@ -109,8 +108,8 @@ export class VisualizationComponent implements OnDestroy {
    */
   public follow(model): void {
     if (model !== undefined && model !== null) {
-        this.following = true;
-        this.sceneMgr.follow(model['gz3dName']);
+      this.following = true;
+      this.sceneMgr.follow(model["gz3dName"]);
     } else {
       this.following = false;
       this.sceneMgr.follow(null);
@@ -183,10 +182,10 @@ export class VisualizationComponent implements OnDestroy {
   /**
    * Listen to the Escape key to stop following.
    */
-  @HostListener('window:keydown', ['$event'])
-  private keyEscape(event: KeyboardEvent): void {
-    if (event.key === 'Escape' || event.code === 'Escape') {
-      this.sceneMgr.follow('follow_entity', null);
+  @HostListener("window:keydown", ["$event"])
+  public keyEscape(event: KeyboardEvent): void {
+    if (event.key === "Escape" || event.code === "Escape") {
+      this.sceneMgr.follow("follow_entity", null);
     }
   }
 }

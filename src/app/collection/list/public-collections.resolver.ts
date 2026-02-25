@@ -1,9 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { map, catchError } from "rxjs/operators";
 
-import { Collection, CollectionService, PaginatedCollection } from '../../collection';
+import {
+  Collection,
+  CollectionService,
+  PaginatedCollection,
+} from "../../collection";
 
 @Injectable()
 
@@ -12,13 +16,11 @@ import { Collection, CollectionService, PaginatedCollection } from '../../collec
  *
  * Fetches the collection to display before the CollectionListComponent is created.
  */
-export class PublicCollectionsResolver implements Resolve<PaginatedCollection> {
-
+export class PublicCollectionsResolver {
   /**
    * @param collectionService Service used to get Collection information from the Server.
    */
-  constructor(private collectionService: CollectionService) {
-  }
+  constructor(private collectionService: CollectionService) {}
 
   /**
    * Resolve method.
@@ -29,19 +31,20 @@ export class PublicCollectionsResolver implements Resolve<PaginatedCollection> {
    * @param route A snapshot of the activated route.
    * @returns An observable of the collections or an observable of null if they couldn't be fetched.
    */
-  public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedCollection> {
-
+  public resolve(
+    route: ActivatedRouteSnapshot,
+  ): Observable<PaginatedCollection> {
     const params = {};
-    if (route.queryParams['q']) {
-      params['search'] = route.queryParams['q'];
+    if (route.queryParams["q"]) {
+      params["search"] = route.queryParams["q"];
     }
 
-    if (route.queryParams['page'] && route.queryParams['page'] > 0) {
-      params['page'] = route.queryParams['page'];
+    if (route.queryParams["page"] && route.queryParams["page"] > 0) {
+      params["page"] = route.queryParams["page"];
     }
 
-    if (route.queryParams['per_page']) {
-      params['per_page'] = route.queryParams['per_page'];
+    if (route.queryParams["per_page"]) {
+      params["per_page"] = route.queryParams["per_page"];
     }
 
     return this.collectionService.getCollectionList(params).pipe(
@@ -50,7 +53,7 @@ export class PublicCollectionsResolver implements Resolve<PaginatedCollection> {
       }),
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

@@ -2,16 +2,15 @@
  * A class that represents a machine instance.
  */
 export class Machine {
-
   /**
    * Static array that contains the available status.
    */
   public static readonly StatusList = [
-    'Initializing',
-    'Running',
-    'Terminating',
-    'Terminated',
-    'Error',
+    "Initializing",
+    "Running",
+    "Terminating",
+    "Terminated",
+    "Error",
   ];
 
   /**
@@ -43,10 +42,10 @@ export class Machine {
    * Constructor
    */
   constructor(json: any) {
-    this.createdAt = json['created_at'];
-    this.instanceId = json['instance_id'];
-    this.privateIp = json['private_ip'];
-    this.status = json['status'];
-    this.groupId = json['group_id'];
+    this.createdAt = json["created_at"];
+    this.instanceId = json["instance_id"];
+    this.privateIp = json["private_ip"];
+    this.status = json["status"];
+    this.groupId = json["group_id"];
   }
 }

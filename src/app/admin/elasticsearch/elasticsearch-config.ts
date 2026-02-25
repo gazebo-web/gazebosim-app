@@ -2,7 +2,6 @@
  * Represents an Elasticsearch configuration
  */
 export class ElasticsearchConfig {
-
   /**
    * ID of the search config in the database.
    */
@@ -32,10 +31,10 @@ export class ElasticsearchConfig {
    * @param json A JSON that contains the required fields of the collection.
    */
   constructor(json: any) {
-    this.id = json['id'];
-    this.address = json['address'];
-    this.username = json['username'];
-    this.password = json['password'];
-    this.primary = json['primary'];
+    this.id = json["id"];
+    this.address = json["address"];
+    this.username = json["username"];
+    this.password = json["password"];
+    this.primary = json["primary"];
   }
 }

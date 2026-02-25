@@ -33,13 +33,11 @@
               "src/robots.txt",
               "src/sitemap.xml"
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": [
               "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
               "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js",
-              "node_modules/marked/marked.min.js"
+              "node_modules/marked/lib/marked.umd.js"
             ]
           },
           "configurations": {
@@ -82,15 +80,15 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "app:build",
+            "buildTarget": "gazebosim:build",
             "port": 3000
           },
           "configurations": {
             "production": {
-              "browserTarget": "gazebosim:build:production"
+              "buildTarget": "gazebosim:build:production"
             },
             "development": {
-              "browserTarget": "gazebosim:build:development"
+              "buildTarget": "gazebosim:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -98,7 +96,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gazebosim:build"
+            "buildTarget": "gazebosim:build"
           }
         },
         "test": {
@@ -109,16 +107,9 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [
-              "node_modules/marked/marked.min.js"
-            ]
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
+            "scripts": ["node_modules/marked/lib/marked.umd.js"]
           }
         }
       }
@@ -126,5 +117,31 @@
   },
   "cli": {
     "analytics": false
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
   }
 }

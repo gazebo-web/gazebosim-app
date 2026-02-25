@@ -2,7 +2,6 @@
  * A class that represents an Image.
  */
 export class Image {
-
   /**
    * URL of the image.
    */
@@ -15,6 +14,6 @@ export class Image {
    * @returns The encoded URL without single quote characters.
    */
   public getEncodedUrl(): string {
-    return this.url.replace(new RegExp(`\'`, 'g'), '%27');
+    return this.url.replace(new RegExp(`\'`, "g"), "%27");
   }
 }

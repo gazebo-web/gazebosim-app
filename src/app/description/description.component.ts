@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { FormControl } from "@angular/forms";
 
 @Component({
-  selector: 'gz-description',
-  templateUrl: 'description.component.html',
-  styleUrls: ['description.component.scss']
+  selector: "gz-description",
+  templateUrl: "description.component.html",
+  styleUrls: ["description.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -12,11 +13,10 @@ import { FormControl } from '@angular/forms';
  * or to edit it, allowing the user to preview their input in Markdown.
  */
 export class DescriptionComponent {
-
   /**
    * The description to display or edit.
    */
-  @Input() public description: string = '';
+  @Input() public description: string = "";
 
   /**
    * Enable the edit mode. Allows the text input and markdown preview button.

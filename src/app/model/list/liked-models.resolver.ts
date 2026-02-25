@@ -1,23 +1,21 @@
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
-import { PaginatedModels } from '../paginated-models';
-import { ModelService } from '../model.service';
+import { PaginatedModels } from "../paginated-models";
+import { ModelService } from "../model.service";
 
 @Injectable()
 
 /**
  * Resolver that fetches the models that a user liked.
  */
-export class LikedModelsResolver implements Resolve<PaginatedModels> {
-
+export class LikedModelsResolver {
   /**
    * @param modelService Service used to get Model List information from the Server
    */
-  constructor(private modelService: ModelService) {
-  }
+  constructor(private modelService: ModelService) {}
 
   /**
    * Resolve method.
@@ -29,7 +27,7 @@ export class LikedModelsResolver implements Resolve<PaginatedModels> {
    * @returns An observable of the models or an observable of null if they couldn't be fetched.
    */
   public resolve(route: ActivatedRouteSnapshot): Observable<PaginatedModels> {
-    const user: string = route.paramMap.get('user');
+    const user: string = route.paramMap.get("user");
 
     return this.modelService.getUserLikedList(user).pipe(
       map((models) => {
@@ -37,7 +35,7 @@ export class LikedModelsResolver implements Resolve<PaginatedModels> {
       }),
       catchError((err) => {
         return of(null);
-      })
+      }),
     );
   }
 }

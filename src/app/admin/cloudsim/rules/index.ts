@@ -1,2 +1,2 @@
-export * from './simulation-rule';
-export * from './paginated-simulation-rules';
+export * from "./simulation-rule";
+export * from "./paginated-simulation-rules";

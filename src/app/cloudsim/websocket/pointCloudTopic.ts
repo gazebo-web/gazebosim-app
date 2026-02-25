@@ -1,4 +1,4 @@
-import { Topic } from './topic';
+import { Topic } from "./topic";
 
 declare let THREE: any;
 
@@ -8,7 +8,6 @@ declare let THREE: any;
  * Uses the Topic interface and provides custom logic to deal with point clouds.
  */
 export class PointCloudTopic implements Topic {
-
   /**
    * Topic name.
    */
@@ -71,8 +70,8 @@ export class PointCloudTopic implements Topic {
     // Get the sensor frame and construct the lidar object.
     if (!this.lidar) {
       msg.header.data.forEach((data) => {
-        if (data.key === 'frame_id') {
-          this.lidar = this.scene.getByProperty('scopedName', data.value[0]);
+        if (data.key === "frame_id") {
+          this.lidar = this.scene.getByProperty("scopedName", data.value[0]);
 
           // Add the points to the lidar if found.
           if (this.lidar) {
@@ -86,7 +85,7 @@ export class PointCloudTopic implements Topic {
     const view = new DataView(
       msg.data.buffer,
       msg.data.byteOffset,
-      msg.data.byteLength
+      msg.data.byteLength,
     );
 
     // Compute the total number of points, assuming each point has an X, Y, and Z component.
@@ -106,7 +105,10 @@ export class PointCloudTopic implements Topic {
       }
     }
 
-    this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    this.geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(vertices, 3),
+    );
   }
 
   /**

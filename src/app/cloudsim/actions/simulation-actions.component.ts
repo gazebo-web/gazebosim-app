@@ -1,18 +1,17 @@
-import { Component, Input } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AuthService } from '../../auth/auth.service';
-import { Simulation } from '../simulation';
-import { SimulationService } from '../simulation.service';
-import {
-  ConfirmationDialogComponent
-} from '../../confirmation-dialog/confirmation-dialog.component';
-import { ExtraDialogComponent } from '../extra-dialog/extra-dialog.component';
-import * as FileSaver from 'file-saver';
+import { Component, Input } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { AuthService } from "../../auth/auth.service";
+import { Simulation } from "../simulation";
+import { SimulationService } from "../simulation.service";
+import { ConfirmationDialogComponent } from "../../confirmation-dialog/confirmation-dialog.component";
+import { ExtraDialogComponent } from "../extra-dialog/extra-dialog.component";
+import * as FileSaver from "file-saver";
 
 @Component({
-  selector: 'gz-simulation-actions',
-  templateUrl: 'simulation-actions.component.html',
+  selector: "gz-simulation-actions",
+  templateUrl: "simulation-actions.component.html",
+  standalone: false,
 })
 
 /**
@@ -20,7 +19,6 @@ import * as FileSaver from 'file-saver';
  * to interact with it,
  */
 export class SimulationActionsComponent {
-
   /**
    * The simulation that will be the target of the interactions.
    */
@@ -46,15 +44,14 @@ export class SimulationActionsComponent {
     public authService: AuthService,
     public dialog: MatDialog,
     public simulationService: SimulationService,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * Stop the simulation.
    * @param event fired when stop button is clicked.
    */
   public stop(event: MouseEvent): void {
-
     // Prevent the propagation of the click event, to ensure only the stop action is executed.
     event.stopPropagation();
 
@@ -63,32 +60,38 @@ export class SimulationActionsComponent {
       data: {
         title: `Stop simulation ${this.simulation.groupId}`,
         message: `<p>Are you sure you want to stop this simulation?</p>`,
-        buttonText: 'Stop',
-      }
+        buttonText: "Stop",
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        // Filters any result that is not the main action.
-        if (result !== true) {
-          return;
-        }
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      // Filters any result that is not the main action.
+      if (result !== true) {
+        return;
+      }
 
-        // Stop the simulation.
-        this.simulationService.stop(this.simulation.groupId).subscribe(
-          (response) => {
-            this.snackBar.open(`Simulation ${this.simulation.groupId} was stopped`, 'Got it', {
-              duration: 2750
-            });
-          },
-          (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          }
-        );
-      });
+      // Stop the simulation.
+      this.simulationService.stop(this.simulation.groupId).subscribe(
+        (response) => {
+          this.snackBar.open(
+            `Simulation ${this.simulation.groupId} was stopped`,
+            "Got it",
+            {
+              duration: 2750,
+            },
+          );
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+    });
   }
 
   /**
@@ -96,7 +99,6 @@ export class SimulationActionsComponent {
    * @param event fired when the restart simulation button is clicked.
    */
   public restart(event: MouseEvent): void {
-
     // Prevent the propagation of the click event, to ensure only the stop action is executed.
     event.stopPropagation();
 
@@ -106,32 +108,38 @@ export class SimulationActionsComponent {
         title: `Restart simulation`,
         message: `<p>Are you sure you want to restart the simulation
                   <b>${this.simulation.groupId}</b>?</p>`,
-        buttonText: 'Restart',
-      }
+        buttonText: "Restart",
+      },
     };
 
-    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, dialogOps);
+    this.confirmationDialog = this.dialog.open(
+      ConfirmationDialogComponent,
+      dialogOps,
+    );
 
     // Callback when the Dialog is closed.
-    this.confirmationDialog.afterClosed().subscribe(
-      (result) => {
-        // Filters any result that is not the main action.
-        if (result !== true) {
-          return;
-        }
+    this.confirmationDialog.afterClosed().subscribe((result) => {
+      // Filters any result that is not the main action.
+      if (result !== true) {
+        return;
+      }
 
-        // Restart the simulation.
-        this.simulationService.restart(this.simulation.groupId).subscribe(
-          (response) => {
-            this.snackBar.open(`Simulation ${this.simulation.groupId} was restarted`, 'Got it', {
-              duration: 2750
-            });
-          },
-          (error) => {
-            this.snackBar.open(error.message, 'Got it');
-          }
-        );
-      });
+      // Restart the simulation.
+      this.simulationService.restart(this.simulation.groupId).subscribe(
+        (response) => {
+          this.snackBar.open(
+            `Simulation ${this.simulation.groupId} was restarted`,
+            "Got it",
+            {
+              duration: 2750,
+            },
+          );
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+    });
   }
 
   /**
@@ -139,25 +147,26 @@ export class SimulationActionsComponent {
    * @param event fired when the download button is clicked.
    */
   public download(event: MouseEvent): void {
-
     // Prevent the propagation of the click event, to ensure only the stop action is executed.
     event.stopPropagation();
 
     this.simulationService.download(this.simulation.groupId).subscribe(
       (response) => {
-        let extension = '.tar.gz';
+        let extension = ".tar.gz";
         if (this.simulation.multiSim === 1) {
           // Tunnel Circuit simulations only have a json file.
-          extension = '.json';
+          extension = ".json";
         }
         const filename = `${this.simulation.name}-${this.simulation.groupId}${extension}`;
         FileSaver.saveAs(response, filename);
       },
       (error) => {
         if (error.status === 404) {
-          this.snackBar.open('There are no logs to download', 'Got it', { duration: 2750 });
+          this.snackBar.open("There are no logs to download", "Got it", {
+            duration: 2750,
+          });
         }
-      }
+      },
     );
   }
 
@@ -172,13 +181,13 @@ export class SimulationActionsComponent {
       (response) => {
         this.extraDialog = this.dialog.open(ExtraDialogComponent, {
           data: {
-            ...response
-          }
+            ...response,
+          },
         });
       },
       (error) => {
-        this.snackBar.open(error.message, 'Got it');
-      }
+        this.snackBar.open(error.message, "Got it");
+      },
     );
   }
 

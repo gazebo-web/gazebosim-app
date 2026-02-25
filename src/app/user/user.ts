@@ -2,7 +2,6 @@
  * A class that represents a User.
  */
 export class User {
-
   /**
    * Username. Chosen name within Fuel.
    */
@@ -37,11 +36,11 @@ export class User {
    * @param json A JSON that contains the required fields of the organization.
    */
   constructor(json: any) {
-    this.username = json['username'];
-    this.name = json['name'];
-    this.email = json['email'];
-    this.organizations = json['orgs'];
-    this.orgRoles = json['orgRoles'];
-    this.sysAdmin = json['sysAdmin'];
+    this.username = json["username"];
+    this.name = json["name"];
+    this.email = json["email"];
+    this.organizations = json["orgs"];
+    this.orgRoles = json["orgRoles"];
+    this.sysAdmin = json["sysAdmin"];
   }
 }

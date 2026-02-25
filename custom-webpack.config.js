@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+const webpack = require("webpack");
 
 /**
  * This enables us to use environment variables defined in the system.
@@ -24,7 +24,7 @@ module.exports = {
       // Other
       AWS_GZ_LOGS_BUCKET: null,
       STRIPE_PK: null,
-      CREDITS_REQUIRED: null
-    })
-  ]
-}
+      CREDITS_REQUIRED: null,
+    }),
+  ],
+};

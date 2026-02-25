@@ -1,26 +1,26 @@
-import { ActivatedRoute, Params } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Params } from "@angular/router";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Subscription } from "rxjs";
 
-import { Model } from '../model/model';
-import { ModelService } from '../model/model.service';
-import { PaginatedModels } from '../model/paginated-models';
-import { PaginatedWorlds } from '../world/paginated-worlds';
-import { World } from '../world/world';
-import { WorldService } from '../world/world.service';
+import { Model } from "../model/model";
+import { ModelService } from "../model/model.service";
+import { PaginatedModels } from "../model/paginated-models";
+import { PaginatedWorlds } from "../world/paginated-worlds";
+import { World } from "../world/world";
+import { WorldService } from "../world/world.service";
 
 @Component({
-  selector: 'gz-search',
-  templateUrl: 'search.component.html',
-  styleUrls: ['search.component.scss']
+  selector: "gz-search",
+  templateUrl: "search.component.html",
+  styleUrls: ["search.component.scss"],
+  standalone: false,
 })
 
 /**
  * Search Component displays the information regarding a search query.
  */
 export class SearchComponent implements OnInit, OnDestroy {
-
   /**
    * The list of search models.
    */
@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Active tab in the tab group.
    */
-  public activeTab: 'models' | 'worlds' = 'models';
+  public activeTab: "models" | "worlds" = "models";
 
   /**
    * Subscription to the route's params.
@@ -61,8 +61,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public modelService: ModelService,
     public snackBar: MatSnackBar,
-    public worldService: WorldService) {
-  }
+    public worldService: WorldService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -71,17 +71,17 @@ export class SearchComponent implements OnInit, OnDestroy {
     let search: string;
     // This subscription makes the search re-run if the user changes params.
     this.activatedRoute.params.subscribe((params: Params) => {
-      search = params['q'];
+      search = params["q"];
 
       // Replace ampersand with %26 so that it gets sent over the wire
       // correctly.
       // todo: Consider supporting form search, instead of only a single "?q"
       // parameter.
       if (search !== null && search !== undefined) {
-        search = search.replace(/&/gi, '%26');
+        search = search.replace(/&/gi, "%26");
       }
 
-      this.modelService.getList({search}).subscribe(
+      this.modelService.getList({ search }).subscribe(
         (models) => {
           if (models !== undefined) {
             this.paginatedModels = models;
@@ -89,12 +89,12 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         },
         (error) => {
-          console.error('Error searching for models', error);
-          this.snackBar.open(error.message, 'Got it');
-        }
+          console.error("Error searching for models", error);
+          this.snackBar.open(error.message, "Got it");
+        },
       );
 
-      this.worldService.getList({search}).subscribe(
+      this.worldService.getList({ search }).subscribe(
         (worlds) => {
           if (worlds !== undefined) {
             this.paginatedWorlds = worlds;
@@ -102,9 +102,9 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         },
         (error) => {
-          console.error('Error searching for worlds:', error);
-          this.snackBar.open(error.message, 'Got it');
-        }
+          console.error("Error searching for worlds:", error);
+          this.snackBar.open(error.message, "Got it");
+        },
       );
     });
   }
@@ -125,8 +125,9 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public loadNextModelsPage(): void {
     if (this.paginatedModels.hasNextPage()) {
-      this.modelService.getNextPage(this.paginatedModels).subscribe(
-        (pagModels) => {
+      this.modelService
+        .getNextPage(this.paginatedModels)
+        .subscribe((pagModels) => {
           this.paginatedModels = pagModels;
           // Copy and extend the existing array of models with the new ones.
           // A copy is required in order to trigger changes.
@@ -135,8 +136,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             newModels.push(model);
           }
           this.models = newModels;
-        }
-      );
+        });
     }
   }
 
@@ -145,8 +145,9 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
   public loadNextWorldsPage(): void {
     if (this.paginatedWorlds.hasNextPage()) {
-      this.worldService.getNextPage(this.paginatedWorlds).subscribe(
-        (pagWorlds) => {
+      this.worldService
+        .getNextPage(this.paginatedWorlds)
+        .subscribe((pagWorlds) => {
           this.paginatedWorlds = pagWorlds;
           // Copy and extend the existing array of models with the new ones.
           // A copy is required in order to trigger changes.
@@ -155,8 +156,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             newWorlds.push(world);
           }
           this.worlds = newWorlds;
-        }
-      );
+        });
     }
   }
 
@@ -166,11 +166,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   public setActiveTab(event: number): void {
     switch (event) {
       case 0: {
-        this.activeTab = 'models';
+        this.activeTab = "models";
         break;
       }
       case 1: {
-        this.activeTab = 'worlds';
+        this.activeTab = "worlds";
         break;
       }
     }

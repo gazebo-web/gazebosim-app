@@ -1,2 +1,2 @@
-export * from './metadata.component';
-export * from './metadatum';
+export * from "./metadata.component";
+export * from "./metadatum";

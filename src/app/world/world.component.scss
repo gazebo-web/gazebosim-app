@@ -1,6 +1,3 @@
-@import '~@angular/material/theming';
-@import '../../styles.scss';
-
 gz-gallery {
   width: 100%;
   height: 100%;
@@ -34,7 +31,7 @@ gz-gallery {
 }
 
 .world-name {
-  color: mat-color($custom-theme-primary);
+  color: #03a9f4;
 }
 
 .world-name h1 {
@@ -144,9 +141,9 @@ gz-gallery {
 }
 
 .sdfviewer {
-  position : absolute;
-  left : 0;
-  top : 0;
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   z-index: 1001;
@@ -157,7 +154,7 @@ gz-gallery {
   right: 2em;
   position: absolute;
   z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
+  color: #dd2c00;
 }
 
 .buttonFullscreen {
@@ -165,7 +162,7 @@ gz-gallery {
   right: 6em;
   position: absolute;
   z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
+  color: #dd2c00;
 }
 
 .buttonResetView {
@@ -173,9 +170,8 @@ gz-gallery {
   right: 10em;
   position: absolute;
   z-index: 1002;
-  color: mat-color($custom-theme-accent, A700);
+  color: #dd2c00;
 }
-
 
 /* Media query to increase the size of the gallery in mobile views.
    Otherwise, the gallery images are too small. */
@@ -200,5 +196,5 @@ pre.bibtex {
 
 .bibtex:hover {
   cursor: pointer;
-  color: mat-color($custom-theme-primary);
+  color: #03a9f4;
 }

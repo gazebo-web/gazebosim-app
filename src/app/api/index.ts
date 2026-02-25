@@ -1,1 +1,1 @@
-export * from './api.component';
+export * from "./api.component";

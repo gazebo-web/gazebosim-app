@@ -1,69 +1,88 @@
 <div class="page-content-inner mat-typography">
-
-  <div *ngIf="!canEdit; else isAuthorized">
-    <p>You are not authorized to edit this world.</p>
-  </div>
-
-  <ng-template #isAuthorized>
-
-    <gz-page-title title="Editing {{world.owner}}'s {{world.name}} world" svgIcon="gz-world"></gz-page-title>
-
-    <form fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="20px" class="content"
-      (ngSubmit)=onEdit()>
-
+  @if (!canEdit) {
+    <div>
+      <p>You are not authorized to edit this world.</p>
+    </div>
+  } @else {
+    <gz-page-title
+      title="Editing {{ world.owner }}'s {{ world.name }} world"
+      svgIcon="gz-world"
+    ></gz-page-title>
+    <form
+      fxLayout="column"
+      fxLayoutAlign="space-between start"
+      fxLayoutGap="20px"
+      class="content"
+      (ngSubmit)="onEdit()"
+    >
       <h2>Edit World details</h2>
-
-      <gz-description [description]="world.description"
-                       [edit]="true"
-                       [disabled]="updating"
-                       (onModify)="onModifyDescription($event)"
-                       fxFill>
+      <gz-description
+        [description]="world.description"
+        [edit]="true"
+        [disabled]="updating"
+        (onModify)="onModifyDescription($event)"
+        fxFill
+      >
       </gz-description>
-
-      <gz-tags [tags]="world.tags"
-                [edit]="true"
-                [disabled]="updating"
-                (onModify)="onModifyTags()"
-                fxFill>
+      <gz-tags
+        [tags]="world.tags"
+        [edit]="true"
+        [disabled]="updating"
+        (onModify)="onModifyTags()"
+        fxFill
+      >
       </gz-tags>
-
       <div fxLayout="column" fxFill>
         <p>Select if your world is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
-          <mat-radio-button *ngFor="let p of worldService.getPermissionList(); let i = index"
-            [value]="i"
-            [checked]="(p === 'Private' && world.private) || (p === 'Public' && !world.private)">{{p}}</mat-radio-button>
+          @for (
+            p of worldService.getPermissionList();
+            track p;
+            let i = $index
+          ) {
+            <mat-radio-button
+              [value]="i"
+              [checked]="
+                (p === 'Private' && world.private) ||
+                (p === 'Public' && !world.private)
+              "
+              >{{ p }}</mat-radio-button
+            >
+          }
         </mat-radio-group>
       </div>
-
       <h2>Metadata</h2>
-
-      <gz-metadata [metadata]="world.metadata"
-                    [edit]="true"
-                    [disabled]="updating"
-                    (onModify)="onModifyMetadata()"
-                    fxFill>
+      <gz-metadata
+        [metadata]="world.metadata"
+        [edit]="true"
+        [disabled]="updating"
+        (onModify)="onModifyMetadata()"
+        fxFill
+      >
       </gz-metadata>
-
       <!-- nkoenig: Disabling until we fix THREE dependency
       <h2>Thumbnails</h2>
-
       <gz-thumbnail-generator [resource]="world"></gz-thumbnail-generator>
       -->
-
       <h2>Replace files</h2>
-
-      <gz-file-upload (files)="onReceiveFiles($event)"
-                       [allowedExtensions]="allowedExtensions"
-                       [uploading]="updating"
-                       [resourceType]="'world'"
-                       [message]="'<h3>Select or drag and drop new files to upload.</h3><br/>
+      <gz-file-upload
+        (files)="onReceiveFiles($event)"
+        [allowedExtensions]="allowedExtensions"
+        [uploading]="updating"
+        [resourceType]="'world'"
+        [message]="'<h3>Select or drag and drop new files to upload.</h3><br/>
                                    Leave empty to keep the current files.<br/>
                                    If any files are uploaded, a new world version will be created with those files.<br/>'"
-                       fxFill>
+        fxFill
+      >
       </gz-file-upload>
 
-      <div class="save-buttons" fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+      <div
+        class="save-buttons"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxFill
+      >
         <button mat-raised-button type="button" (click)="back()">Cancel</button>
 
         <button mat-raised-button color="accent" type="submit">
@@ -81,14 +100,13 @@
           </div>
 
           <div>
-            <p>Be mindful when deleting a world, other users could be counting on it. Once deleted, the world can't be restored.</p>
+            <p>
+              Be mindful when deleting a world, other users could be counting on
+              it. Once deleted, the world can't be restored.
+            </p>
           </div>
-
         </div>
       </div>
-
     </form>
-
-  </ng-template>
-
+  }
 </div>

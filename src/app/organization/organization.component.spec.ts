@@ -1,42 +1,48 @@
-import { ActivatedRoute } from '@angular/router';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { of, throwError } from 'rxjs';
+import { ActivatedRoute } from "@angular/router";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MatCardModule } from "@angular/material/card";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTabsModule } from "@angular/material/tabs";
+import { of, throwError } from "rxjs";
 
-import { AuthPipe } from '../auth/auth.pipe';
-import { AuthService } from '../auth/auth.service';
+import { AuthPipe } from "../auth/auth.pipe";
+import { AuthService } from "../auth/auth.service";
+import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
 import {
-  ConfirmationDialogComponent
-} from '../confirmation-dialog/confirmation-dialog.component';
-import { Collection, CollectionService, PaginatedCollection } from '../collection';
-import { FuelResourceListComponent } from '../fuel-resource';
-import { ItemCardComponent } from '../item-card/item-card.component';
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { Model } from '../model/model';
-import { ModelService } from '../model/model.service';
-import { Organization } from './organization';
-import { OrganizationComponent } from './organization.component';
-import { OrganizationService } from './organization.service';
-import { PageTitleComponent } from '../page-title';
-import { PaginatedModels } from '../model/paginated-models';
-import { PaginatedWorlds } from '../world/paginated-worlds';
-import { World } from '../world/world';
-import { WorldService } from '../world/world.service';
+  Collection,
+  CollectionService,
+  PaginatedCollection,
+} from "../collection";
+import { FuelResourceListComponent } from "../fuel-resource";
+import { ItemCardComponent } from "../item-card/item-card.component";
+import { JsonClassFactoryService } from "../factory/json-class-factory.service";
+import { Model } from "../model/model";
+import { ModelService } from "../model/model.service";
+import { Organization } from "./organization";
+import { OrganizationComponent } from "./organization.component";
+import { OrganizationService } from "./organization.service";
+import { PageTitleComponent } from "../page-title";
+import { PaginatedModels } from "../model/paginated-models";
+import { PaginatedWorlds } from "../world/paginated-worlds";
+import { World } from "../world/world";
+import { WorldService } from "../world/world.service";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 
-describe('OrganizationComponent', () => {
+describe("OrganizationComponent", () => {
   let fixture: ComponentFixture<OrganizationComponent>;
   let component: OrganizationComponent;
   let authService: AuthService;
@@ -47,55 +53,62 @@ describe('OrganizationComponent', () => {
   let worldService: WorldService;
 
   // Test Organization.
-  const testOrganization: Organization = new Organization({name: 'testOrg'});
+  const testOrganization: Organization = new Organization({ name: "testOrg" });
 
   // Test Organization Models.
   const testModels: PaginatedModels = new PaginatedModels();
   testModels.resources = [
-    new Model({name: 'testModel0'}),
-    new Model({name: 'testModel1'}),
+    new Model({ name: "testModel0" }),
+    new Model({ name: "testModel1" }),
   ];
   testModels.totalCount = testModels.resources.length;
 
   // Test Organization Worlds.
   const testWorlds: PaginatedWorlds = new PaginatedWorlds();
   testWorlds.resources = [
-    new World({name: 'testWorld0'}),
-    new World({name: 'testWorld1'}),
+    new World({ name: "testWorld0" }),
+    new World({ name: "testWorld1" }),
   ];
   testWorlds.totalCount = testWorlds.resources.length;
 
   // Test Organization Collections.
   const testCollections: PaginatedCollection = new PaginatedCollection();
   testCollections.collections = [
-    new Collection({name: 'testCol0', owner: 'testOrg'}),
-    new Collection({name: 'testCol1', owner: 'testOrg'}),
+    new Collection({ name: "testCol0", owner: "testOrg" }),
+    new Collection({ name: "testCol1", owner: "testOrg" }),
   ];
   testCollections.totalCount = testCollections.collections.length;
 
   // Test Organization Users.
   const testUsers = [
     {
-      name: 'Test User A',
-      username: 'testUserA',
-      orgRoles: {}
+      name: "Test User A",
+      username: "testUserA",
+      orgRoles: {},
     },
     {
-      name: 'Test User B',
-      username: 'testUserB',
-      orgRoles: {}
-    }
+      name: "Test User B",
+      username: "testUserB",
+      orgRoles: {},
+    },
   ];
-  testUsers[0].orgRoles[testOrganization.name] = 'member';
-  testUsers[1].orgRoles[testOrganization.name] = 'owner';
+  testUsers[0].orgRoles[testOrganization.name] = "member";
+  testUsers[1].orgRoles[testOrganization.name] = "owner";
 
   // Create fixture and component before each test.
   beforeEach(() => {
     TestBed.configureTestingModule({
+      declarations: [
+        AuthPipe,
+        ConfirmationDialogComponent,
+        FuelResourceListComponent,
+        ItemCardComponent,
+        OrganizationComponent,
+        PageTitleComponent,
+      ],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
-        HttpClientTestingModule,
         MatCardModule,
         MatChipsModule,
         MatDialogModule,
@@ -107,15 +120,7 @@ describe('OrganizationComponent', () => {
         MatTabsModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        ],
-      declarations: [
-        AuthPipe,
-        ConfirmationDialogComponent,
-        FuelResourceListComponent,
-        ItemCardComponent,
-        OrganizationComponent,
-        PageTitleComponent,
-        ],
+      ],
       providers: [
         AuthService,
         CollectionService,
@@ -129,19 +134,16 @@ describe('OrganizationComponent', () => {
             snapshot: {
               data: {
                 resolvedData: new Organization({
-                  name: 'testOrgName',
-                  description: 'testOrgDesc'
-                })
+                  name: "testOrgName",
+                  description: "testOrgDesc",
+                }),
               },
-            }
-          }
-        }
-        ],
-    });
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [ ConfirmationDialogComponent ],
-      },
+            },
+          },
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
 
     fixture = TestBed.createComponent(OrganizationComponent);
@@ -154,23 +156,25 @@ describe('OrganizationComponent', () => {
     worldService = TestBed.inject(WorldService);
   });
 
-  it('should get the organization from the resolved data', () => {
-    spyOn(modelService, 'getOwnerList').and.callThrough();
-    spyOn(worldService, 'getOwnerList').and.callThrough();
-    spyOn(organizationService, 'getOrganizationUsers').and.callThrough();
+  it("should get the organization from the resolved data", () => {
+    spyOn(modelService, "getOwnerList").and.callThrough();
+    spyOn(worldService, "getOwnerList").and.callThrough();
+    spyOn(organizationService, "getOrganizationUsers").and.callThrough();
 
     component.ngOnInit();
 
-    expect(component.organization.name).toBe('testOrgName');
-    expect(component.organization.description).toBe('testOrgDesc');
-    expect(modelService.getOwnerList).toHaveBeenCalledWith('testOrgName');
-    expect(worldService.getOwnerList).toHaveBeenCalledWith('testOrgName');
-    expect(organizationService.getOrganizationUsers).toHaveBeenCalledWith(component.organization);
+    expect(component.organization.name).toBe("testOrgName");
+    expect(component.organization.description).toBe("testOrgDesc");
+    expect(modelService.getOwnerList).toHaveBeenCalledWith("testOrgName", {});
+    expect(worldService.getOwnerList).toHaveBeenCalledWith("testOrgName", {});
+    expect(organizationService.getOrganizationUsers).toHaveBeenCalledWith(
+      component.organization,
+    );
   });
 
   it(`should get the organization's models on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
-    const spy = spyOn(modelService, 'getOwnerList');
+    const spy = spyOn(modelService, "getOwnerList");
 
     // Test failure.
     spy.and.returnValue(throwError({}));
@@ -190,7 +194,7 @@ describe('OrganizationComponent', () => {
 
   it(`should get the organization's worlds on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
-    const spy = spyOn(worldService, 'getOwnerList');
+    const spy = spyOn(worldService, "getOwnerList");
 
     // Test failure.
     spy.and.returnValue(throwError({}));
@@ -210,7 +214,7 @@ describe('OrganizationComponent', () => {
 
   it(`should get the organization's collections on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
-    const spy = spyOn(collectionService, 'getOwnerCollectionList');
+    const spy = spyOn(collectionService, "getOwnerCollectionList");
 
     // Test failure.
     spy.and.returnValue(throwError({}));
@@ -224,12 +228,14 @@ describe('OrganizationComponent', () => {
     component.ngOnInit();
     expect(component.collections).toEqual(testCollections.collections);
     expect(component.paginatedCollections).toEqual(testCollections);
-    expect(component.paginatedCollections.totalCount).toBe(testCollections.totalCount);
+    expect(component.paginatedCollections.totalCount).toBe(
+      testCollections.totalCount,
+    );
   });
 
   it(`should get the organization's users on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
-    const spy = spyOn(organizationService, 'getOrganizationUsers');
+    const spy = spyOn(organizationService, "getOrganizationUsers");
 
     // Test failure.
     spy.and.returnValue(throwError({}));
@@ -245,73 +251,61 @@ describe('OrganizationComponent', () => {
   });
 
   it(`should load the next page of models`, () => {
+    // Set up the organization first (needed by loadModels)
+    component.organization = { name: "testOrgName" } as any;
     component.models = [];
     component.paginatedModels = testModels;
-    const spyGetNextUrl = spyOn(modelService, 'getNextPage');
+    const spy = spyOn(modelService, "getOwnerList").and.returnValue(
+      of(testModels),
+    );
 
-    // Without a next page.
-    component.paginatedModels.nextPage = null;
-    component.loadNextModelsPage();
-    expect(component.models.length).toBe(0);
-    expect(spyGetNextUrl).not.toHaveBeenCalled();
-
-    // Has a next page.
-    component.paginatedModels.nextPage = 'testNextPage';
-    spyGetNextUrl.and.returnValue(of(testModels));
-    component.loadNextModelsPage();
-    expect(spyGetNextUrl).toHaveBeenCalledWith(testModels);
+    component.loadModels();
+    expect(spy).toHaveBeenCalledWith("testOrgName", {});
     expect(component.models.length).toBe(2);
     expect(component.models[0].name).toBe(testModels.resources[0].name);
     expect(component.models[1].name).toBe(testModels.resources[1].name);
   });
 
   it(`should load the next page of worlds`, () => {
+    component.organization = { name: "testOrgName" } as any;
     component.worlds = [];
     component.paginatedWorlds = testWorlds;
-    const spyGetNextUrl = spyOn(worldService, 'getNextPage');
+    const spy = spyOn(worldService, "getOwnerList").and.returnValue(
+      of(testWorlds),
+    );
 
-    // Without a next page.
-    component.paginatedWorlds.nextPage = null;
-    component.loadNextWorldsPage();
-    expect(component.worlds.length).toBe(0);
-    expect(spyGetNextUrl).not.toHaveBeenCalled();
-
-    // Has a next page.
-    component.paginatedWorlds.nextPage = 'testNextPage';
-    spyGetNextUrl.and.returnValue(of(testWorlds));
-    component.loadNextWorldsPage();
-    expect(spyGetNextUrl).toHaveBeenCalledWith(testWorlds);
+    component.loadWorlds();
+    expect(spy).toHaveBeenCalledWith("testOrgName", {});
     expect(component.worlds.length).toBe(2);
     expect(component.worlds[0].name).toBe(testWorlds.resources[0].name);
     expect(component.worlds[1].name).toBe(testWorlds.resources[1].name);
   });
 
   it(`should load the next page of collections`, () => {
+    component.organization = { name: "testOrgName" } as any;
     component.collections = [];
     component.paginatedCollections = testCollections;
-    const spyGetNextUrl = spyOn(collectionService, 'getNextPage');
+    const spy = spyOn(
+      collectionService,
+      "getOwnerCollectionList",
+    ).and.returnValue(of(testCollections));
 
-    // Without a next page.
-    component.paginatedCollections.nextPage = null;
-    component.loadNextCollectionsPage();
-    expect(component.collections.length).toBe(0);
-    expect(spyGetNextUrl).not.toHaveBeenCalled();
-
-    // Has a next page.
-    component.paginatedCollections.nextPage = 'testNextPage';
-    spyGetNextUrl.and.returnValue(of(testCollections));
-    component.loadNextCollectionsPage();
-    expect(spyGetNextUrl).toHaveBeenCalledWith(testCollections);
+    component.loadCollections();
+    expect(spy).toHaveBeenCalledWith("testOrgName", {});
     expect(component.collections.length).toBe(2);
-    expect(component.collections[0].name).toBe(testCollections.collections[0].name);
-    expect(component.collections[1].name).toBe(testCollections.collections[1].name);
+    expect(component.collections[0].name).toBe(
+      testCollections.collections[0].name,
+    );
+    expect(component.collections[1].name).toBe(
+      testCollections.collections[1].name,
+    );
   });
 
   it(`should NOT add a new user if the username is empty`, () => {
     const snackBar = component.snackBar;
-    spyOn(organizationService, 'addUserToOrganization');
+    spyOn(organizationService, "addUserToOrganization");
 
-    component.usernameInputForm.setValue('');
+    component.usernameInputForm.setValue("");
     component.addUser();
 
     expect(organizationService.addUserToOrganization).not.toHaveBeenCalled();
@@ -320,10 +314,10 @@ describe('OrganizationComponent', () => {
 
   it(`should NOT add a new user if the role is empty`, () => {
     const snackBar = component.snackBar;
-    spyOn(organizationService, 'addUserToOrganization');
+    spyOn(organizationService, "addUserToOrganization");
 
-    component.usernameInputForm.setValue('correct');
-    component.roleDropdownForm.setValue('');
+    component.usernameInputForm.setValue("correct");
+    component.roleDropdownForm.setValue("");
     component.addUser();
 
     expect(organizationService.addUserToOrganization).not.toHaveBeenCalled();
@@ -332,12 +326,12 @@ describe('OrganizationComponent', () => {
 
   it(`should add a new user if the fields are correct`, () => {
     const snackBar = component.snackBar;
-    spyOn(organizationService, 'addUserToOrganization').and.returnValue(of({}));
+    spyOn(organizationService, "addUserToOrganization").and.returnValue(of({}));
 
     component.organization = testOrganization;
     component.users = [];
-    component.usernameInputForm.setValue('correct');
-    component.roleDropdownForm.setValue('Member');
+    component.usernameInputForm.setValue("correct");
+    component.roleDropdownForm.setValue("Member");
     component.addUser();
 
     expect(organizationService.addUserToOrganization).toHaveBeenCalled();
@@ -350,7 +344,7 @@ describe('OrganizationComponent', () => {
     component.users = testUsers;
     component.organization = testOrganization;
 
-    const dialogSpy = spyOn(confirmationDialog, 'open').and.callThrough();
+    const dialogSpy = spyOn(confirmationDialog, "open").and.callThrough();
 
     // Leave the Organization.
     // Mock the logged in user.
@@ -358,21 +352,29 @@ describe('OrganizationComponent', () => {
     const mockDialogOps = {
       data: {
         title: `Remove from Organization`,
-        message: `You are about to leave the ${testOrganization.name} organization.` +
-        ` Are you sure?`,
-        buttonText: `Leave`
-      }
+        message:
+          `You are about to leave the ${testOrganization.name} organization.` +
+          ` Are you sure?`,
+        buttonText: `Leave`,
+      },
     };
     component.removeUser(testUsers[0]);
-    expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, mockDialogOps);
+    expect(dialogSpy).toHaveBeenCalledWith(
+      ConfirmationDialogComponent,
+      mockDialogOps,
+    );
 
     // Remove a user.
     dialogSpy.calls.reset();
-    mockDialogOps.data.message = `You are about to remove the user ${testUsers[1].username}` +
+    mockDialogOps.data.message =
+      `You are about to remove the user ${testUsers[1].username}` +
       ` from the ${testOrganization.name} organization. Are you sure?`;
     mockDialogOps.data.buttonText = `Remove`;
     component.removeUser(testUsers[1]);
-    expect(dialogSpy).toHaveBeenCalledWith(ConfirmationDialogComponent, mockDialogOps);
+    expect(dialogSpy).toHaveBeenCalledWith(
+      ConfirmationDialogComponent,
+      mockDialogOps,
+    );
   });
 
   it(`should disable the remove button for owners`, () => {
@@ -392,13 +394,13 @@ describe('OrganizationComponent', () => {
     component.users = testUsers;
     component.organization = testOrganization;
     component.authService.userProfile = testUsers[0];
-    const disableSpy = spyOn(component, 'disableRemoveButton');
+    const disableSpy = spyOn(component, "disableRemoveButton");
     let tooltip: string;
 
     // Enabled button.
     disableSpy.and.returnValue(false);
     tooltip = component.getRemoveButtonTooltip(testUsers[0]);
-    expect(tooltip).toBe('');
+    expect(tooltip).toBe("");
 
     // Disabled button.
     disableSpy.and.returnValue(true);
@@ -420,24 +422,24 @@ describe('OrganizationComponent', () => {
 
     // Logged user is the one to remove.
     label = component.getRemoveButtonLabel(testUsers[0]);
-    expect(label).toBe('Leave');
+    expect(label).toBe("Leave");
 
     // Logged user is not the one to remove.
     label = component.getRemoveButtonLabel(testUsers[1]);
-    expect(label).toBe('Remove');
+    expect(label).toBe("Remove");
   });
 
   it(`should change the active tab`, () => {
     // Start showing models.
-    expect(component.activeTab).toBe('models');
+    expect(component.activeTab).toBe("models");
 
     component.setActiveTab(1);
-    expect(component.activeTab).toBe('worlds');
+    expect(component.activeTab).toBe("worlds");
     component.setActiveTab(2);
-    expect(component.activeTab).toBe('users');
+    expect(component.activeTab).toBe("users");
     component.setActiveTab(3);
-    expect(component.activeTab).toBe('collections');
+    expect(component.activeTab).toBe("collections");
     component.setActiveTab(0);
-    expect(component.activeTab).toBe('models');
+    expect(component.activeTab).toBe("models");
   });
 });

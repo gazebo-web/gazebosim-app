@@ -1,17 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { from, Observable, of, throwError } from 'rxjs';
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import {
+  HttpClient,
+  HttpResponse,
+  HttpErrorResponse,
+  HttpParams,
+} from "@angular/common/http";
+import { from, Observable, of, throwError } from "rxjs";
+import { map, catchError, mergeMap } from "rxjs/operators";
 
-import { JsonClassFactoryService } from '../factory/json-class-factory.service';
-import { UiError } from '../ui-error';
-import { AuthService } from '../auth/auth.service';
-import { environment } from '../../environments/environment';
+import { JsonClassFactoryService } from "../factory/json-class-factory.service";
+import { UiError } from "../ui-error";
+import { AuthService } from "../auth/auth.service";
+import { environment } from "../../environments/environment";
 
-import { FuelResource } from './fuel-resource';
-import { FuelPaginatedResource } from './fuel-paginated-resource';
+import { FuelResource } from "./fuel-resource";
+import { FuelPaginatedResource } from "./fuel-paginated-resource";
 
-import { parseLinkHeader } from '@web3-storage/parse-link-header';
+import { parseLinkHeader } from "@web3-storage/parse-link-header";
 
 @Injectable()
 
@@ -24,11 +29,10 @@ import { parseLinkHeader } from '@web3-storage/parse-link-header';
  * extends this one.
  */
 export abstract class FuelResourceService {
-
   /**
    * Private field used as a constant to represent X-Total-Count header name.
    */
-  private static readonly headerTotalCount: string = 'X-Total-Count';
+  private static readonly headerTotalCount: string = "X-Total-Count";
 
   /**
    * Base server URL, including version.
@@ -66,8 +70,8 @@ export abstract class FuelResourceService {
   constructor(
     protected authService: AuthService,
     protected factory: JsonClassFactoryService,
-    protected http: HttpClient) {
-  }
+    protected http: HttpClient,
+  ) {}
 
   /**
    * Get the first page of all the resources from the Backend.
@@ -78,32 +82,39 @@ export abstract class FuelResourceService {
    *               - per_page: Number. The number of resources to get per page.
    * @returns An observable of the paginated resources.
    */
-   public getList(params?: object): Observable<FuelPaginatedResource> {
+  public getList(params?: object): Observable<FuelPaginatedResource> {
     const url = this.getListUrl();
     let httpParams = new HttpParams();
 
     if (params) {
-      if (params['search']) {
-        httpParams = httpParams.append('q', params['search']);
+      if (params["search"]) {
+        httpParams = httpParams.append("q", params["search"]);
       }
-      if (params['page']) {
-        httpParams = httpParams.append('page', params['page'].toString());
+      if (params["page"]) {
+        httpParams = httpParams.append("page", params["page"].toString());
       }
-      if (params['per_page']) {
-        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      if (params["per_page"]) {
+        httpParams = httpParams.append(
+          "per_page",
+          params["per_page"].toString(),
+        );
       }
     }
 
-    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
+    return this.http.get(url, { observe: "response", params: httpParams }).pipe(
       map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
-          FuelResourceService.headerTotalCount);
-        paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
+          FuelResourceService.headerTotalCount,
+        );
+        paginatedResource.resources = this.factory.fromJson(
+          response.body,
+          this.resourceClass,
+        );
         paginatedResource.nextPage = this.parseHeader(response);
         return paginatedResource;
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -117,32 +128,42 @@ export abstract class FuelResourceService {
    *               - per_page: Number. The number of resources to get per page.
    * @returns An observable of the paginated resources.
    */
-  public getOwnerList(owner: string, params?: object): Observable<FuelPaginatedResource> {
+  public getOwnerList(
+    owner: string,
+    params?: object,
+  ): Observable<FuelPaginatedResource> {
     const url = this.getOwnerListUrl(owner);
     let httpParams = new HttpParams();
 
     if (params) {
-      if (params['search']) {
-        httpParams = httpParams.append('q', params['search']);
+      if (params["search"]) {
+        httpParams = httpParams.append("q", params["search"]);
       }
-      if (params['page']) {
-        httpParams = httpParams.append('page', params['page'].toString());
+      if (params["page"]) {
+        httpParams = httpParams.append("page", params["page"].toString());
       }
-      if (params['per_page']) {
-        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      if (params["per_page"]) {
+        httpParams = httpParams.append(
+          "per_page",
+          params["per_page"].toString(),
+        );
       }
     }
 
-    return this.http.get(url, {observe: 'response', params: httpParams}).pipe(
+    return this.http.get(url, { observe: "response", params: httpParams }).pipe(
       map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
-          FuelResourceService.headerTotalCount);
-        paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
+          FuelResourceService.headerTotalCount,
+        );
+        paginatedResource.resources = this.factory.fromJson(
+          response.body,
+          this.resourceClass,
+        );
         paginatedResource.nextPage = this.parseHeader(response);
         return paginatedResource;
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -155,16 +176,20 @@ export abstract class FuelResourceService {
   public getUserLikedList(username: string): Observable<FuelPaginatedResource> {
     const url = this.getUserLikedListUrl(username);
 
-    return this.http.get(url, {observe: 'response'}).pipe(
+    return this.http.get(url, { observe: "response" }).pipe(
       map((response) => {
         const paginatedResource = new this.paginatedResourceClass();
         paginatedResource.totalCount = +response.headers.get(
-          FuelResourceService.headerTotalCount);
-        paginatedResource.resources = this.factory.fromJson(response.body, this.resourceClass);
+          FuelResourceService.headerTotalCount,
+        );
+        paginatedResource.resources = this.factory.fromJson(
+          response.body,
+          this.resourceClass,
+        );
         paginatedResource.nextPage = this.parseHeader(response);
         return paginatedResource;
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -180,32 +205,46 @@ export abstract class FuelResourceService {
    *               - per_page: Number. The number of resources to get per page.
    * @returns An observable of the paginated resources.
    */
-  public getNextPage(paginatedResource: FuelPaginatedResource, params?: object): Observable<FuelPaginatedResource> {
+  public getNextPage(
+    paginatedResource: FuelPaginatedResource,
+    params?: object,
+  ): Observable<FuelPaginatedResource> {
     let httpParams = new HttpParams();
 
     if (params) {
-      if (params['search']) {
-        httpParams = httpParams.append('q', params['search']);
+      if (params["search"]) {
+        httpParams = httpParams.append("q", params["search"]);
       }
-      if (params['page']) {
-        httpParams = httpParams.append('page', params['page'].toString());
+      if (params["page"]) {
+        httpParams = httpParams.append("page", params["page"].toString());
       }
-      if (params['per_page']) {
-        httpParams = httpParams.append('per_page', params['per_page'].toString());
+      if (params["per_page"]) {
+        httpParams = httpParams.append(
+          "per_page",
+          params["per_page"].toString(),
+        );
       }
     }
 
-    return this.http.get<FuelResource[]>(paginatedResource.nextPage, { observe: 'response', params: httpParams }).pipe(
-      map((response) => {
-        const res = new this.paginatedResourceClass();
-        res.totalCount = +response.headers.get(
-          FuelResourceService.headerTotalCount);
-        res.resources = this.factory.fromJson(response.body, this.resourceClass);
-        res.nextPage = this.parseHeader(response);
-        return res;
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<
+        FuelResource[]
+      >(paginatedResource.nextPage, { observe: "response", params: httpParams })
+      .pipe(
+        map((response) => {
+          const res = new this.paginatedResourceClass();
+          res.totalCount = +response.headers.get(
+            FuelResourceService.headerTotalCount,
+          );
+          res.resources = this.factory.fromJson(
+            response.body,
+            this.resourceClass,
+          );
+          res.nextPage = this.parseHeader(response);
+          return res;
+        }),
+        catchError(this.handleError),
+      );
   }
 
   /**
@@ -221,7 +260,7 @@ export abstract class FuelResourceService {
       map((response) => {
         return this.factory.fromJson(response, this.resourceClass);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -231,11 +270,13 @@ export abstract class FuelResourceService {
    * @param formData The form data to be uploaded.
    * @returns An observable of the HTTP response. It contains the uploaded resource in its body.
    */
-  public upload(formData: FormData): Observable<HttpResponse<FuelResource> | any> {
+  public upload(
+    formData: FormData,
+  ): Observable<HttpResponse<FuelResource> | any> {
     const url = this.getListUrl();
-    return this.http.post(url, formData, { observe: 'response' }).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .post(url, formData, { observe: "response" })
+      .pipe(catchError(this.handleError));
   }
 
   /**
@@ -246,13 +287,17 @@ export abstract class FuelResourceService {
    * @param formData The form data that contains the parameters to edit.
    * @returns An observable of the edited resource.
    */
-  public edit(owner: string, name: string, formData: any): Observable<FuelResource> {
+  public edit(
+    owner: string,
+    name: string,
+    formData: any,
+  ): Observable<FuelResource> {
     const url = this.getResourceUrl(owner, name);
     return this.http.patch<FuelResource>(url, formData).pipe(
       map((response) => {
         return this.factory.fromJson(response, this.resourceClass);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -264,9 +309,7 @@ export abstract class FuelResourceService {
    */
   public delete(res: FuelResource): Observable<FuelResource | any> {
     const url = this.getResourceUrl(res.owner, res.name);
-    return this.http.delete(url).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete(url).pipe(catchError(this.handleError));
   }
 
   /**
@@ -277,9 +320,7 @@ export abstract class FuelResourceService {
    */
   public like(res: FuelResource): Observable<number | any> {
     const url = this.getLikeUrl(res.owner, res.name);
-    return this.http.post(url, null).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post(url, null).pipe(catchError(this.handleError));
   }
 
   /**
@@ -290,9 +331,7 @@ export abstract class FuelResourceService {
    */
   public unlike(res: FuelResource): Observable<number | any> {
     const url = this.getLikeUrl(res.owner, res.name);
-    return this.http.delete(url).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete(url).pipe(catchError(this.handleError));
   }
 
   /**
@@ -307,14 +346,14 @@ export abstract class FuelResourceService {
     const url = this.getCopyUrl(res.owner, res.name);
 
     const form = new FormData();
-    form.append('name', newName);
-    form.append('owner', newOwner);
+    form.append("name", newName);
+    form.append("owner", newOwner);
 
     return this.http.post<FuelResource>(url, form).pipe(
       map((response) => {
         return this.factory.fromJson(response, this.resourceClass);
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
@@ -326,34 +365,43 @@ export abstract class FuelResourceService {
    * one is downloaded.
    * @returns An observable of the Blob to download.
    */
-  public download(res: FuelResource, version?: string | number): Observable<Blob> {
+  public download(
+    res: FuelResource,
+    version?: string | number,
+  ): Observable<Blob> {
     // Use ?link=true in order to receive the signed S3 link.
     let httpParams = new HttpParams();
-    httpParams = httpParams.append('link', 'true');
+    httpParams = httpParams.append("link", "true");
 
     const url = `${this.getZipUrl(res.owner, res.name, version)}`;
-    return this.http.get(url, { params: httpParams, observe: 'response', responseType: 'blob' }).pipe(
-      mergeMap((response) => {
-        const contentType = response.headers.get('Content-Type');
-        switch (contentType) {
-          case 'application/zip':
-            return of(new Blob([response.body]));
-          case 'text/plain':
-            return from(response.body.text()).pipe(
-              mergeMap(url => this.http.get(url, { responseType: 'blob' })),
-            );
-          default:
-            let msg = 'Error getting the zip file: Invalid Content-Type';
-            if (contentType) {
-              msg += ` (${contentType})`;
-            }
-            return throwError({
-              statusText: msg,
-            });
-        }
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get(url, {
+        params: httpParams,
+        observe: "response",
+        responseType: "blob",
+      })
+      .pipe(
+        mergeMap((response) => {
+          const contentType = response.headers.get("Content-Type");
+          switch (contentType) {
+            case "application/zip":
+              return of(new Blob([response.body]));
+            case "text/plain":
+              return from(response.body.text()).pipe(
+                mergeMap((url) => this.http.get(url, { responseType: "blob" })),
+              );
+            default:
+              let msg = "Error getting the zip file: Invalid Content-Type";
+              if (contentType) {
+                msg += ` (${contentType})`;
+              }
+              return throwError({
+                statusText: msg,
+              });
+          }
+        }),
+        catchError(this.handleError),
+      );
   }
 
   /**
@@ -365,10 +413,10 @@ export abstract class FuelResourceService {
    */
   public report(res: FuelResource, reason: string): Observable<any> {
     const form = new FormData();
-    form.append('reason', reason);
-    return this.http.post(this.getReportUrl(res.owner, res.name), form).pipe(
-      catchError(this.handleError)
-    );
+    form.append("reason", reason);
+    return this.http
+      .post(this.getReportUrl(res.owner, res.name), form)
+      .pipe(catchError(this.handleError));
   }
 
   /**
@@ -378,9 +426,9 @@ export abstract class FuelResourceService {
    * @returns An observable of the Blob.
    */
   public getFileAsBlob(url: string): Observable<Blob> {
-    return this.http.get(url, { responseType: 'blob' }).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .get(url, { responseType: "blob" })
+      .pipe(catchError(this.handleError));
   }
 
   /**
@@ -391,12 +439,13 @@ export abstract class FuelResourceService {
    * is returned.
    * @returns An observable that contains the file tree of the resource.
    */
-  public getFileTree(res: FuelResource, version?: string | number): Observable<any> {
+  public getFileTree(
+    res: FuelResource,
+    version?: string | number,
+  ): Observable<any> {
     const url = this.getFilesUrl(res.owner, res.name, version);
 
-    return this.http.get(url).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get(url).pipe(catchError(this.handleError));
   }
 
   /**
@@ -422,12 +471,16 @@ export abstract class FuelResourceService {
    * @param version (Optional) The version of the resource. If empty, tip is used.
    * @returns The base URL of the server route to a resource with its version.
    */
-  public getBaseVersionUrl(owner: string, name: string, version?: string | number): string {
+  public getBaseVersionUrl(
+    owner: string,
+    name: string,
+    version?: string | number,
+  ): string {
     let modelVersion;
     if (version) {
       modelVersion = version;
     } else {
-      modelVersion = 'tip';
+      modelVersion = "tip";
     }
     return `${this.getBaseUrl(owner, name)}/${modelVersion}`;
   }
@@ -441,8 +494,12 @@ export abstract class FuelResourceService {
    * @param version Optional. The version of the resource.
    * @returns The URL of the server route to an individual file.
    */
-  public getIndividualFileUrl(res: FuelResource, file: File, version?: number | string): string {
-    const filePath = file['path'];
+  public getIndividualFileUrl(
+    res: FuelResource,
+    file: File,
+    version?: number | string,
+  ): string {
+    const filePath = file["path"];
     // The file path starts with the forward slash.
     return `${this.getFilesUrl(res.owner, res.name, version)}${filePath}`;
   }
@@ -453,7 +510,7 @@ export abstract class FuelResourceService {
    * @returns A list of strings, one for each permission.
    */
   public getPermissionList(): string[] {
-    return ['Public', 'Private'];
+    return ["Public", "Private"];
   }
 
   /**
@@ -548,7 +605,11 @@ export abstract class FuelResourceService {
    * @param version (Optional) The version of the resource. If empty, tip is used.
    * @returns The URL of the resource zip file.
    */
-  private getZipUrl(owner: string, name: string, version?: string | number): string {
+  private getZipUrl(
+    owner: string,
+    name: string,
+    version?: string | number,
+  ): string {
     const encodedName = encodeURIComponent(name);
     return `${this.getBaseVersionUrl(owner, name, version)}/${encodedName}.zip`;
   }
@@ -562,7 +623,11 @@ export abstract class FuelResourceService {
    * @param version (Optional) The version of the resource. If empty, tip is used.
    * @returns The URL of the server route to get the file tree of a single resource.
    */
-  private getFilesUrl(owner: string, name: string, version?: string | number): string {
+  private getFilesUrl(
+    owner: string,
+    name: string,
+    version?: string | number,
+  ): string {
     return `${this.getBaseVersionUrl(owner, name, version)}/files`;
   }
 
@@ -574,10 +639,8 @@ export abstract class FuelResourceService {
    * @returns The URL of the next page or null if there is none.
    */
   private parseHeader(response: HttpResponse<any>): string {
-    const link = response.headers.get('link');
-    if (link &&
-      parseLinkHeader(link) &&
-      parseLinkHeader(link).next) {
+    const link = response.headers.get("link");
+    if (link && parseLinkHeader(link) && parseLinkHeader(link).next) {
       const url = parseLinkHeader(link).next.url;
       this.nextUrl = `${environment.API_HOST}${url}`;
     } else {
@@ -597,7 +660,7 @@ export abstract class FuelResourceService {
    * message to display.
    */
   private handleError(response: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred', response);
+    console.error("An error occurred", response);
     return throwError(new UiError(response));
   }
 }

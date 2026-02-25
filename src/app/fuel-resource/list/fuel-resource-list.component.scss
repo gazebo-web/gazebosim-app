@@ -1,6 +1,3 @@
-@import '~@angular/material/theming';
-@import '../../../styles.scss';
-
 .item-card {
   min-width: 12em;
   width: 25%;
@@ -9,18 +6,18 @@
 
 /* At this breakpoint, Angular Flexbox API flex overrides the max-width.
    We don't want this behavior*/
-   @media screen and (min-width: 1280px) {
-    .item-card {
-      flex: none !important;
-    }
+@media screen and (min-width: 1280px) {
+  .item-card {
+    flex: none !important;
   }
+}
 
 .loading-footer {
   padding: 2em;
   align-items: center;
 }
 
-.mat-paginator  {
+.mat-paginator {
   background-color: transparent;
   color: black;
 }

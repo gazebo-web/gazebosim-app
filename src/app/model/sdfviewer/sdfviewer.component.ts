@@ -1,22 +1,22 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 
-import { FuelResource } from '../../fuel-resource';
-import { ModelService } from './../model.service';
-import { WorldService } from './../../world/world.service';
+import { FuelResource } from "../../fuel-resource";
+import { ModelService } from "./../model.service";
+import { WorldService } from "./../../world/world.service";
 
-import { AssetViewer, AssetViewerConfig } from 'gzweb';
+import { AssetViewer, AssetViewerConfig } from "gzweb";
 
 @Component({
-  selector: 'gz-sdfviewer',
-  templateUrl: 'sdfviewer.component.html',
-  styleUrls: ['sdfviewer.component.scss']
+  selector: "gz-sdfviewer",
+  templateUrl: "sdfviewer.component.html",
+  styleUrls: ["sdfviewer.component.scss"],
+  standalone: false,
 })
 
 /**
  * Sdf Viewer Component uses Gzweb library to show a model or world in a 3D scene.
  */
 export class SdfViewerComponent implements OnInit, OnDestroy {
-
   /**
    * Model or world to display.
    */
@@ -43,18 +43,23 @@ export class SdfViewerComponent implements OnInit, OnDestroy {
    */
   constructor(
     private modelService: ModelService,
-    private worldService: WorldService) {
-  }
+    private worldService: WorldService,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
    */
   public ngOnInit(): void {
-    const service = this.resource.type === 'models' ? this.modelService : this.worldService;
+    const service =
+      this.resource.type === "models" ? this.modelService : this.worldService;
 
     // Get from Fuel all the URLs associated with the resource.
     this.fileUrls = this.resource.files.map((file) => {
-      return service.getIndividualFileUrl(this.resource, file, this.currentVersion);
+      return service.getIndividualFileUrl(
+        this.resource,
+        file,
+        this.currentVersion,
+      );
     });
 
     this.initializeAssetViewer();
@@ -76,15 +81,15 @@ export class SdfViewerComponent implements OnInit, OnDestroy {
    */
   public initializeAssetViewer(): void {
     const config: AssetViewerConfig = {
-      elementId: 'container',
-    }
+      elementId: "container",
+    };
 
     if (this.resource.private) {
-      config.token = localStorage.getItem('token');
+      config.token = localStorage.getItem("token");
     }
 
     // Models are scaled and can also use PBR Materials. On worlds, PBR materials are disabled for performance.
-    if (this.resource.type === 'models') {
+    if (this.resource.type === "models") {
       config.scaleModel = true;
       config.enablePBR = true;
     }

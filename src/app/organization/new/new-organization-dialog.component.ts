@@ -1,17 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { ErrMsg } from '../../server/err-msg';
-import { Organization } from '../organization';
-import { OrganizationService } from '../organization.service';
-import { AuthService } from '../../auth/auth.service';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+} from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Subscription } from "rxjs";
+import { ErrMsg } from "../../server/err-msg";
+import { Organization } from "../organization";
+import { OrganizationService } from "../organization.service";
+import { AuthService } from "../../auth/auth.service";
 
 @Component({
-  selector: 'gz-new-organization-dialog',
-  templateUrl: 'new-organization-dialog.component.html',
-  styleUrls: ['new-organization-dialog.component.scss']
+  selector: "gz-new-organization-dialog",
+  templateUrl: "new-organization-dialog.component.html",
+  styleUrls: ["new-organization-dialog.component.scss"],
+  standalone: false,
 })
 
 /**
@@ -19,14 +25,19 @@ import { AuthService } from '../../auth/auth.service';
  * step by step.
  */
 export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
-
   /**
    * Form control for the Organization name.
    * Only alphanumeric characters, dashes, underscores and spaces are accepted. It uses the same
    * regexp pattern as the Server. Also, length must be 3 characters or more.
    */
-  public organizationName = new FormControl('', {validators: [Validators.required,
-    Validators.pattern('^[\\w\\-\\s]+$'), Validators.minLength(3)], updateOn: 'change' });
+  public organizationName = new FormControl("", {
+    validators: [
+      Validators.required,
+      Validators.pattern("^[\\w\\-\\s]+$"),
+      Validators.minLength(3),
+    ],
+    updateOn: "change",
+  });
 
   /**
    * Subscription to the changes of the organizationName.
@@ -49,16 +60,12 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
   /**
    * Radio group containing plan options.
    */
-  public planOptions: string[] = [
-    'Free: Unlimited public assets',
-  ];
+  public planOptions: string[] = ["Free: Unlimited public assets"];
 
   /**
    * Future plan options to appear as disabled radio buttons.
    */
-  public disabledPlanOptions: string[] = [
-    'Team: Coming soon',
-  ];
+  public disabledPlanOptions: string[] = ["Team: Coming soon"];
 
   /**
    * Form control for the Organization plan.
@@ -82,8 +89,8 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public formBuilder: FormBuilder,
     public organizationService: OrganizationService,
-    public snackBar: MatSnackBar) {
-  }
+    public snackBar: MatSnackBar,
+  ) {}
 
   /**
    * OnInit Lifecycle hook.
@@ -95,7 +102,7 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
       // Billing email and invitation list to be added soon.
       // email: this.organizationEmail,
       // invitationList: this.invitationList,
-      plan: this.organizationPlan
+      plan: this.organizationPlan,
     });
 
     // Subscribe to value changes in the name.
@@ -104,7 +111,8 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
     this.nameValueChanges = this.organizationName.valueChanges.subscribe(
       (change) => {
         this.organizationName.markAsTouched();
-      });
+      },
+    );
   }
 
   /**
@@ -131,7 +139,7 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
     this.organizationName.updateValueAndValidity();
     if (this.organizationName.invalid) {
       // TODO: Mark the step 1 as invalid.
-      this.snackBar.open('Please provide an organization name.', 'Got it');
+      this.snackBar.open("Please provide an organization name.", "Got it");
       return;
     }
 
@@ -163,29 +171,36 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
         // See https://app.asana.com/0/719578238881157/756403371264694/f
         if (this.authService.userProfile.orgs) {
           this.authService.userProfile.orgs.push(response.name);
-          this.authService.userProfile.orgRoles[response.name] = 'owner';
+          this.authService.userProfile.orgRoles[response.name] = "owner";
         } else {
           this.authService.userProfile.orgs = [response.name];
           this.authService.userProfile.orgRoles = {};
-          this.authService.userProfile.orgRoles[response.name] = 'owner';
+          this.authService.userProfile.orgRoles[response.name] = "owner";
         }
-        localStorage.setItem('profile', JSON.stringify(this.authService.userProfile));
+        localStorage.setItem(
+          "profile",
+          JSON.stringify(this.authService.userProfile),
+        );
 
         // Close the Dialog by ID.
         // Using the mat-dialog-close directive prevents the form from being submitted.
-        const dialog = this.dialog.getDialogById('new-organization-dialog');
+        const dialog = this.dialog.getDialogById("new-organization-dialog");
         if (dialog) {
           dialog.close();
         }
       },
       (error) => {
         if (error.code === ErrMsg.ErrorResourceExists) {
-          this.snackBar.open(`An organization with the same name already exists`, 'Got it');
+          this.snackBar.open(
+            `An organization with the same name already exists`,
+            "Got it",
+          );
           this.organizationName.setErrors({ duplicated: true });
         } else {
-          this.snackBar.open(`${error.message}`, 'Got it');
+          this.snackBar.open(`${error.message}`, "Got it");
         }
-      });
+      },
+    );
   }
 
   /**
@@ -195,27 +210,27 @@ export class NewOrganizationDialogComponent implements OnInit, OnDestroy {
    */
   public getNameError(): string {
     // Empty organization name.
-    if (this.organizationName.hasError('required')) {
-      return 'An organization name is required';
+    if (this.organizationName.hasError("required")) {
+      return "An organization name is required";
     }
 
     // Duplicated organization name.
-    if (this.organizationName.hasError('duplicated')) {
-      return 'This organization already exists. Please use a different name';
+    if (this.organizationName.hasError("duplicated")) {
+      return "This organization already exists. Please use a different name";
     }
 
     // Pattern error in organization name.
-    if (this.organizationName.hasError('pattern')) {
-      return 'Only alphanumeric characters, spaces, dashes and underscores are accepted.';
+    if (this.organizationName.hasError("pattern")) {
+      return "Only alphanumeric characters, spaces, dashes and underscores are accepted.";
     }
 
     // Length error in organization name.
-    if (this.organizationName.hasError('minlength')) {
-      return 'Name must have more than three characters.';
+    if (this.organizationName.hasError("minlength")) {
+      return "Name must have more than three characters.";
     }
 
     // No error.
-    return '';
+    return "";
   }
 
   /**

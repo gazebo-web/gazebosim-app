@@ -5,7 +5,7 @@ stages:
   - linting
   - testing
   - building
-  - packaging   # TODO: Add job to packaging stage to build and push a docker image.
+  - packaging # TODO: Add job to packaging stage to build and push a docker image.
   - deploying
 
 # Cache policy configuration
@@ -31,7 +31,6 @@ cache:
   - npm -v
   - node -v
   - npm install --silent
-
 
 #####################################
 

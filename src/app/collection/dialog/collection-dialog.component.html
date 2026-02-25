@@ -1,8 +1,11 @@
-<div class="mat-typography content" fxLayout="column" fxLayoutAlign="start center">
-
+<div
+  class="mat-typography content"
+  fxLayout="column"
+  fxLayoutAlign="start center"
+>
   <h1 mat-dialog-title>Add to collection</h1>
   <mat-accordion>
-    <mat-expansion-panel [expanded]='true' (opened)="openOption(0)">
+    <mat-expansion-panel [expanded]="true" (opened)="openOption(0)">
       <mat-expansion-panel-header>
         <mat-panel-title>Existing</mat-panel-title>
         <mat-panel-description>
@@ -11,19 +14,24 @@
       </mat-expansion-panel-header>
 
       <form fxLayout="row">
-        <div fxFill
-            fxLayout.gt-xs="row"
-            fxLayout.xs="column">
+        <div fxFill fxLayout.gt-xs="row" fxLayout.xs="column">
           <mat-form-field class="collection-input">
-            <input matInput
-                   placeholder="Collection"
-                   [matAutocomplete]="auto"
-                   [formControl]="collectionAddInputForm">
+            <input
+              matInput
+              placeholder="Collection"
+              [matAutocomplete]="auto"
+              [formControl]="collectionAddInputForm"
+            />
 
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getCollectionName()">
-              <mat-option *ngFor="let collection of (collectionList | async)"
-                          [value]="collection">{{collection.name}} by {{collection.owner}}
-              </mat-option>
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="getCollectionName()"
+            >
+              @for (collection of collectionList | async; track collection) {
+                <mat-option [value]="collection"
+                  >{{ collection.name }} by {{ collection.owner }}
+                </mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
         </div>
@@ -40,49 +48,66 @@
 
       <form fxLayout="column">
         <mat-form-field>
-          <input matInput
-                 placeholder="Collection name"
-                 [formControl]="collectionNameInputForm" required/>
-          <mat-error>{{getCollectionNameError()}}</mat-error>
+          <input
+            matInput
+            placeholder="Collection name"
+            [formControl]="collectionNameInputForm"
+            required
+          />
+          <mat-error>{{ getCollectionNameError() }}</mat-error>
         </mat-form-field>
 
         <mat-form-field>
-          <mat-select [(ngModel)]="owner"
-                      name="ownerList"
-                      placeholder="Owner"
-                      required>
-            <mat-option *ngFor="let owner of collectionOwnerList; let i = index"
-                        [value]="i">{{owner}}</mat-option>
+          <mat-select
+            [(ngModel)]="owner"
+            name="ownerList"
+            placeholder="Owner"
+            required
+          >
+            @for (owner of collectionOwnerList; track owner; let i = $index) {
+              <mat-option [value]="i">{{ owner }}</mat-option>
+            }
           </mat-select>
         </mat-form-field>
 
         <mat-form-field>
-          <textarea [(ngModel)]="collectionDescription"
-                    name="description"
-                    matInput
-                    placeholder="Description">
+          <textarea
+            [(ngModel)]="collectionDescription"
+            name="description"
+            matInput
+            placeholder="Description"
+          >
           </textarea>
         </mat-form-field>
 
         <div fxLayout="row" fxFill fxLayoutGap="20px">
           <p>Privacy</p>
           <mat-radio-group [formControl]="privacyInputForm">
-            <mat-radio-button *ngFor="let p of collectionService.getPermissionList(); let i = index"
-                              [value]="i"
-                              [checked]="p === 'Public'">{{p}}</mat-radio-button>
+            @for (
+              p of collectionService.getPermissionList();
+              track p;
+              let i = $index
+            ) {
+              <mat-radio-button [value]="i" [checked]="p === 'Public'">{{
+                p
+              }}</mat-radio-button>
+            }
           </mat-radio-group>
         </div>
       </form>
     </mat-expansion-panel>
   </mat-accordion>
 
-  <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between space-between" fxFill>
-    <button mat-button mat-dialog-close color="primary">
-      Cancel
-    </button>
+  <div
+    mat-dialog-actions
+    fxLayout="row"
+    fxLayoutAlign="space-between space-between"
+    fxFill
+  >
+    <button mat-button mat-dialog-close color="primary">Cancel</button>
 
     <button mat-raised-button (click)="submit()" color="primary">
-      {{options[option]}}
+      {{ options[option] }}
     </button>
   </div>
 </div>
