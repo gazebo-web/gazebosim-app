@@ -88,6 +88,7 @@ describe("CollectionListComponent", () => {
               paramMap: convertToParamMap({
                 user: "",
               }),
+              queryParams: {},
             },
           },
         },

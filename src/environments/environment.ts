@@ -3,6 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 // Devnote: Environment variables are handled by Webpack.
 // Guard against missing `process` in browser environments (e.g. Karma tests).
+if (typeof process === "undefined") {
+  (window as any).process = { env: {} };
+}
+
 export const environment = {
   production: false,
   // Auth0
