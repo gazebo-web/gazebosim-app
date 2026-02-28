@@ -7,7 +7,7 @@
         (click)="$event.stopPropagation(); setFilter('most_liked')"
       >
         <mat-icon>trending_up</mat-icon>
-        Popular
+        <span>Popular</span>
       </button>
       <button
         mat-button
@@ -15,7 +15,7 @@
         (click)="$event.stopPropagation(); setFilter('recent')"
       >
         <mat-icon>schedule</mat-icon>
-        Recent
+        <span>Recent</span>
       </button>
       <button
         mat-button
@@ -23,7 +23,7 @@
         (click)="$event.stopPropagation(); setFilter('name')"
       >
         <mat-icon>sort_by_alpha</mat-icon>
-        Alphabetical
+        <span>Alphabetical</span>
       </button>
     </div>
   </div>
