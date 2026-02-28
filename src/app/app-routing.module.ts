@@ -6,6 +6,7 @@ import { AdminComponent } from "./admin";
 import { AdminElasticsearchComponent } from "./admin/elasticsearch/admin-elasticsearch.component";
 import { AdminGuard } from "./admin/admin-guard.service";
 import { APIComponent } from "./api/api.component";
+import { ApplicationsComponent } from "./applications/applications.component";
 import { AssetDisplayComponent } from "./asset-display";
 import { AuthCallbackComponent } from "./auth/callback.component";
 import { AuthGuard } from "./auth/auth-guard.service";
@@ -158,6 +159,14 @@ const routes: Routes = [
     data: {
       titlebarTitle: "Fuel",
       titlebarSubtitle: "Assets for robotic apps",
+    },
+  },
+  {
+    path: "applications",
+    component: ApplicationsComponent,
+    data: {
+      titlebarTitle: "Applications",
+      titlebarSubtitle: "",
     },
   },
   {
