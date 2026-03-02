@@ -111,9 +111,11 @@ export class WorldListComponent implements OnInit {
   /**
    * Called when a filter is selected.
    *
+   * @param event The mouse event from the button click.
    * @param filter The filter to set.
    */
-  public setFilter(filter: string): void {
+  public setFilter(event: MouseEvent, filter: string): void {
+    event.stopPropagation();
     this.currentFilter = filter;
     this.getWorlds({
       pageIndex: 0,
