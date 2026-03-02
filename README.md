@@ -79,6 +79,37 @@ The app uses port 3000 by default. If you want to use a different one, you can s
 
         ng serve --port <port>
 
+## Run the app with Docker
+
+A `Dockerfile` is provided to run the development server inside a container. It uses
+the `development` Angular configuration, with environment variables pre-set to connect to
+the staging Fuel server (`staging-fuel.gazebosim.org`). These variables are injected into
+the bundle at serve time by the custom webpack `EnvironmentPlugin`.
+
+1.  Build the image:
+
+        docker build -t gazebosim-app .
+
+1.  Run the container:
+
+        docker run -p 3001:3001 gazebosim-app
+
+    Open your browser at `http://localhost:3001`.
+
+1.  (Optional) Override environment variables at run time — useful for providing Auth0
+    credentials or pointing at a different backend:
+
+        docker run \
+          -e AUTH0_CLIENT_ID=your-client-id \
+          -e AUTH0_CLIENT_DOMAIN=your-domain.auth0.com \
+          -e API_HOST=https://staging-fuel.gazebosim.org \
+          -p 3001:3001 \
+          gazebosim-app
+
+    Any variable defined in [custom-webpack.config.js](custom-webpack.config.js) can be
+    overridden this way (see the [Environment Variables](#environment-variables-1) section
+    for the full list).
+
 ## Build the app for deployment
 
 The app can be built for different environments with the following commands. The different environments are listed in the [angular.json](angular.json) file, each one having different options and optimization levels. Remember to provide the environment variables to use.
