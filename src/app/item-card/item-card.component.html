@@ -1,15 +1,17 @@
 <mat-card class="example-card" appearance="outlined">
   <mat-card-header>
-    <mat-card-title>
-      <a routerLink="/{{ resource.owner }}/{{ type }}/{{ resource.name }}">
-        {{ resource.name }}
-      </a>
-    </mat-card-title>
-    <mat-card-subtitle>
-      <a routerLink="/{{ resource.owner }}">
-        {{ resource.owner }}
-      </a>
-    </mat-card-subtitle>
+    <div class="title-container">
+      <mat-card-title [title]="resource.name">
+        <a routerLink="/{{ resource.owner }}/{{ type }}/{{ resource.name }}">
+          {{ resource.name }}
+        </a>
+      </mat-card-title>
+      <mat-card-subtitle>
+        <a routerLink="/{{ resource.owner }}">
+          {{ resource.owner }}
+        </a>
+      </mat-card-subtitle>
+    </div>
   </mat-card-header>
 
   <div class="thumbnail-container">

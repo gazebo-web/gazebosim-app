@@ -2,10 +2,20 @@ mat-card {
   margin: 10px;
 }
 
+.title-container {
+  width: 100%;
+}
+
 mat-card-title,
 mat-card-subtitle {
   font-size: 14px;
   font-weight: normal;
+}
+
+mat-card-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 mat-card-subtitle {
