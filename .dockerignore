@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.gitignore
+.angular
+.husky
+.vscode
+.idea
+*.md

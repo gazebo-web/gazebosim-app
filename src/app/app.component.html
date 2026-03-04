@@ -8,125 +8,102 @@
     ></mat-progress-bar>
   }
 
-  <!-- According to Angular Material, a sidenav container must take up the full space -->
-  <mat-sidenav-container class="mat-typography">
-    <mat-sidenav #sidenav mode="side" opened fixedInViewport>
-      <div fxLayout="column" fxLayoutAlign="start left" fxFill>
-        <div class="mat-typography title">
-          <a routerLink="/dashboard" (click)="closeSidenav()">
-            <img src="assets/images/gazebo_icon_white.svg" />
-          </a>
-        </div>
-
-        <mat-nav-list class="sidenav-list">
-          <a mat-list-item routerLink="/models" (click)="closeSidenav()">
-            <mat-icon svgIcon="gz-model"></mat-icon> Models
-          </a>
-          <a mat-list-item routerLink="/worlds" (click)="closeSidenav()">
-            <mat-icon svgIcon="gz-world"></mat-icon> Worlds
-          </a>
-          <a mat-list-item routerLink="/collections" (click)="closeSidenav()">
-            <mat-icon>collections</mat-icon> Collections
-          </a>
-          <a mat-list-item routerLink="/applications" (click)="closeSidenav()">
-            <mat-icon>widgets</mat-icon> Applications
-          </a>
-          <mat-divider></mat-divider>
-          <a mat-list-item routerLink="/visualization" (click)="closeSidenav()">
-            Visualization
-          </a>
-          <a mat-list-item routerLink="/information" (click)="closeSidenav()">
-            Information
-          </a>
-          <!-- Add link to System Admin page if the user is a system admin -->
-          @if (authService.userProfile?.sysAdmin) {
-            <a mat-list-item routerLink="/admin" (click)="closeSidenav()">
-              System Admin
-            </a>
-          }
-        </mat-nav-list>
-        <div class="copyright">&copy; {{ currentYear }} Open Robotics</div>
-      </div>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-      <mat-toolbar
-        class="mat-elevation-z1"
+  <div class="main-container">
+    <mat-toolbar fxLayout="column" class="app-header">
+      <!-- Top Row: Logo, Search, User Auth -->
+      <mat-toolbar-row
         fxLayout="row"
         fxLayoutAlign="space-between center"
+        class="header-top-row"
       >
-        <!-- Hamburger menu button -->
-        <button
-          fxHide
-          fxShow.xs="true"
-          mat-icon-button
-          (click)="sidenav.open('mouse')"
-        >
-          <mat-icon> menu </mat-icon>
-        </button>
-
-        <div class="title">
-          {{ titlebarTitle }} <small>{{ titlebarSubtitle }}</small>
+        <!-- Logo -->
+        <div class="header-logo">
+          <a routerLink="/dashboard" class="logo-link">
+            <img
+              src="assets/images/gazebo_icon_color.svg"
+              alt="Gazebo Logo"
+              class="brand-logo"
+            />
+            <span class="logo-text">Gazebo Fuel</span>
+          </a>
         </div>
 
-        <div class="toolbar-space"></div>
-
-        <mat-form-field [floatLabel]="'never'" fxFlex="2 0 100px">
-          <mat-label>Search</mat-label>
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <mat-icon class="search-icon">search</mat-icon>
           <input
             #search
-            matInput
-            type="search"
+            type="text"
+            class="search-input"
+            placeholder="Search models, worlds, and collections..."
             (keyup.enter)="onSearch(search.value)"
           />
-          <mat-icon matPrefix id="search-icon">search</mat-icon>
-        </mat-form-field>
+        </div>
 
-        <div class="toolbar-space"></div>
-
-        <!-- Add resource button -->
-        @if (deviceService.isDesktop()) {
-          <button
-            class="add-button"
+        <div class="header-right">
+          <!-- Documentation button -->
+          <a
             mat-icon-button
-            [matMenuTriggerFor]="addAssetMenu"
-            title="Add Resource"
+            routerLink="/information"
+            title="Documentation"
+            class="header-icon-button"
           >
-            <mat-icon>add_circle</mat-icon>
-          </button>
-        }
+            <mat-icon fontSet="material-symbols-outlined">school</mat-icon>
+          </a>
 
-        <mat-menu
-          #addAssetMenu="matMenu"
-          xPosition="before"
-          yPosition="below"
-          overlapTrigger="false"
-        >
-          <button
-            mat-menu-item
-            routerLink="/models/upload"
-            routerLinkActive="active"
-          >
-            Model
-          </button>
-
-          <button
-            mat-menu-item
-            routerLink="/worlds/upload"
-            routerLinkActive="active"
-          >
-            World
-          </button>
-        </mat-menu>
-
-        <!-- Login/logout and other user options -->
-        <button mat-icon-button [matMenuTriggerFor]="userMenu">
-          @if (!authService.isAuthenticated()) {
-            <mat-icon id="profile-icon"> account_circle </mat-icon>
-          } @else {
-            <img class="profile-img" [src]="authService.userProfile?.picture" />
+          <!-- Add resource button -->
+          @if (deviceService.isDesktop()) {
+            <button
+              class="add-button header-icon-button"
+              mat-icon-button
+              [matMenuTriggerFor]="addAssetMenu"
+              title="Add Resource"
+            >
+              <mat-icon fontSet="material-symbols-outlined">add</mat-icon>
+            </button>
           }
-        </button>
+
+          <mat-menu
+            #addAssetMenu="matMenu"
+            xPosition="before"
+            yPosition="below"
+            overlapTrigger="false"
+          >
+            <button
+              mat-menu-item
+              routerLink="/models/upload"
+              routerLinkActive="active"
+            >
+              Model
+            </button>
+
+            <button
+              mat-menu-item
+              routerLink="/worlds/upload"
+              routerLinkActive="active"
+            >
+              World
+            </button>
+          </mat-menu>
+          <!-- Login/logout and other user options -->
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="userMenu"
+            class="header-icon-button"
+            title="User Menu"
+          >
+            @if (!authService.isAuthenticated()) {
+              <mat-icon id="profile-icon" fontSet="material-symbols-outlined"
+                >person</mat-icon
+              >
+            } @else {
+              <img
+                class="profile-img"
+                [src]="authService.userProfile?.picture"
+              />
+            }
+          </button>
+        </div>
 
         <mat-menu
           #userMenu="matMenu"
@@ -199,11 +176,59 @@
             Manage Organizations
           </button>
         </mat-menu>
-      </mat-toolbar>
+      </mat-toolbar-row>
 
-      <div class="page-content">
-        <router-outlet (deactivate)="onDeactivate($event)"></router-outlet>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+      <!-- Bottom Row: Navigation Links -->
+      <mat-toolbar-row
+        fxLayout="row"
+        fxLayoutAlign="center center"
+        class="header-bottom-row"
+      >
+        <nav class="header-nav">
+          <a
+            routerLink="/models"
+            [class.active]="isRouteActive('models')"
+            class="nav-link"
+          >
+            Models
+          </a>
+          <a
+            routerLink="/worlds"
+            [class.active]="isRouteActive('worlds')"
+            class="nav-link"
+          >
+            Worlds
+          </a>
+          <a
+            routerLink="/collections"
+            [class.active]="isRouteActive('collections')"
+            class="nav-link"
+          >
+            Collections
+          </a>
+          <a
+            routerLink="/visualization"
+            [class.active]="isRouteActive('visualization')"
+            class="nav-link"
+          >
+            Visualization
+          </a>
+          @if (authService.userProfile?.sysAdmin) {
+            <a
+              routerLink="/admin"
+              [class.active]="isRouteActive('admin')"
+              class="nav-link"
+            >
+              System Admin
+            </a>
+          }
+        </nav>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div class="page-content">
+      <router-outlet (deactivate)="onDeactivate($event)"></router-outlet>
+      <div class="copyright">&copy; {{ currentYear }} Open Robotics</div>
+    </div>
+  </div>
 </div>

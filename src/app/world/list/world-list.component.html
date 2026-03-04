@@ -1,4 +1,32 @@
-<div class="page-content-inner mat-typography" fxLayout="column">
+<div class="page-content-inner list-page mat-typography" fxLayout="column">
+  <div class="section-header">
+    <div class="filter-controls">
+      <button
+        mat-button
+        [class.active]="currentFilter === 'most_liked'"
+        (click)="setFilter($event, 'most_liked')"
+      >
+        <mat-icon>trending_up</mat-icon>
+        <span>Popular</span>
+      </button>
+      <button
+        mat-button
+        [class.active]="currentFilter === 'recent'"
+        (click)="setFilter($event, 'recent')"
+      >
+        <mat-icon>schedule</mat-icon>
+        <span>Recent</span>
+      </button>
+      <button
+        mat-button
+        [class.active]="currentFilter === 'name'"
+        (click)="setFilter($event, 'name')"
+      >
+        <mat-icon>sort_by_alpha</mat-icon>
+        <span>Alphabetical</span>
+      </button>
+    </div>
+  </div>
   <gz-fuel-resource-list
     fxFlex
     resourceType="worlds"

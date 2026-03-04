@@ -43,6 +43,12 @@ export class PublicModelsResolver {
       params["per_page"] = route.queryParams["per_page"];
     }
 
+    if (route.queryParams["sort"]) {
+      params["sort"] = route.queryParams["sort"];
+    } else if (!route.queryParams["q"]) {
+      params["sort"] = "most_liked";
+    }
+
     return this.modelService.getList(params).pipe(
       map((models) => {
         return models;

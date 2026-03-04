@@ -8,7 +8,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RouterTestingModule } from "@angular/router/testing";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, convertToParamMap } from "@angular/router";
 import { of } from "rxjs";
 
 import { AuthPipe } from "../../auth/auth.pipe";
@@ -87,6 +87,8 @@ describe("ModelListComponent", () => {
                   return "testTitle";
                 },
               },
+              paramMap: convertToParamMap({}),
+              queryParams: {},
             },
           },
         },

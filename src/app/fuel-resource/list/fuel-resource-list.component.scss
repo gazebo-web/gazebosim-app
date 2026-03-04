@@ -18,6 +18,43 @@
 }
 
 .mat-paginator {
-  background-color: transparent;
-  color: black;
+  &.mat-mdc-paginator {
+    --mat-paginator-container-background-color: transparent;
+    background-color: transparent;
+  }
+
+  margin-top: 1rem;
+
+  .mat-mdc-paginator-container {
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.87);
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  .mat-mdc-form-field-flex {
+    background-color: transparent;
+  }
+
+  // Modern navigation button styles
+  .mat-mdc-paginator-navigation-next,
+  .mat-mdc-paginator-navigation-previous,
+  .mat-mdc-paginator-navigation-first,
+  .mat-mdc-paginator-navigation-last {
+    margin: 0 4px;
+    transition: all 0.2s ease-in-out;
+
+    &:hover:not(.mat-mdc-button-disabled) {
+      background-color: rgba(2, 119, 189, 0.08);
+      color: #0277bd;
+    }
+
+    .mat-mdc-button-touch-target {
+      display: none;
+    }
+
+    .mat-icon {
+      color: inherit;
+    }
+  }
 }

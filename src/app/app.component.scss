@@ -1,154 +1,213 @@
 // Local variables.
-$sidenav-width: 170px;
+$header-height-top: 64px;
+$header-height-bottom: 48px;
+$total-header-height: calc(#{$header-height-top} + #{$header-height-bottom});
 
-mat-sidenav {
-  width: $sidenav-width;
-  color: #fefefe;
-}
-
-mat-sidenav .title {
-  padding: 10px;
-  font-weight: 400;
-  font-size: 20px;
-  text-align: center;
-  align-self: center;
-  color: #fefefe;
-}
-
-mat-sidenav img {
-  display: block;
-  margin: auto;
-  width: 35%;
-}
-
+// The main wrapper for the full application
 .wrapper {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  flex-direction: column;
   width: 100%;
-  min-height: 100%;
+  min-height: 100vh;
+  background-color: #f6f7f7; // Slightly off-white background requested
 }
 
-mat-sidenav-container {
-  width: 100%;
-  align-self: stretch;
-}
-
-mat-sidenav .copyright {
-  margin-top: auto;
-  padding: 10px;
-  margin-bottom: 20px;
-  color: #fefefe;
-}
-
-mat-sidenav mat-divider {
-  border-top-color: #fefefe;
-  margin: 10px;
-}
-
-.sidenav-list a.mat-list-item,
-.sidenav-list a.mat-mdc-list-item {
-  color: #fefefe !important;
-}
-
-mat-sidenav a {
-  color: #fefefe !important;
-}
-
-// Override MDC internal text spans that have high-specificity default colors
-mat-sidenav .mdc-list-item__primary-text,
-mat-sidenav .mat-mdc-list-item-unscoped-content,
-mat-sidenav .mdc-list-item__content {
-  color: #fefefe !important;
-}
-
-// Vertically center icon and text within each sidebar list item
-mat-sidenav .mat-mdc-list-item-unscoped-content {
+.main-container {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
 }
 
-.sidenav-list .indent {
-  padding-left: 20px;
-}
-
-.sidenav-list mat-icon {
-  margin-right: 10px;
-  color: #fefefe;
-}
-
-mat-sidenav .mat-mdc-list-item-icon,
-mat-sidenav .mat-icon,
-mat-sidenav mat-icon {
-  color: #fefefe !important;
-}
-
-.mat-drawer {
-  background-color: #03a9f4;
-}
-
-gz-page-title {
-  padding-left: 20px;
-}
-
-.mat-toolbar,
-.mat-mdc-toolbar {
-  color: #6e6e6e;
-  background-color: #f5f5f5;
-  padding: 0 20px;
+// ─── Header Styling ──────────────────────────────────────────────────
+.app-header {
+  background-color: #fff;
+  color: #333;
+  padding: 0;
   position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 3000;
-  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
-  // Since the toolbar is fixed to the top, we need to adjust its width when
-  // the sidenav is hidden.
-  @media screen and (min-width: 600px) {
-    width: calc(100% - #{$sidenav-width});
+  .mat-toolbar-row {
+    padding: 0 24px;
   }
 }
 
-// The toolbar height changes when the screen is small. We need to adjust the
-// margin of the content to avoid overlap.
-.page-content {
-  margin-top: 64px;
+.header-top-row {
+  height: $header-height-top;
+}
 
-  @media screen and (max-width: 600px) {
-    margin-top: 56px;
+.header-bottom-row {
+  height: $header-height-bottom;
+  background-color: #fff;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  flex: 1;
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
   }
+
+  .brand-logo {
+    height: 36px;
+    display: block;
+    margin-right: 12px;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
 }
 
 .toolbar-space {
-  flex: 1 1 2em;
+  display: none;
 }
 
-#search-icon {
-  vertical-align: text-top;
+// ─── Search Bar ──────────────────────────────────────────────────────
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 4px 16px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  flex: 1;
+  height: 40px;
+  border: 1px solid transparent;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:focus-within {
+    background: #fff;
+    border-color: #0277bd;
+    box-shadow: 0 0 0 2px rgba(2, 119, 189, 0.1);
+  }
 }
 
-.add-button {
-  margin-right: 1em;
+.search-icon {
+  color: #757575;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 8px 0;
+  background: transparent;
+  color: #333;
+  min-width: 0;
+
+  &::placeholder {
+    color: #9e9e9e;
+  }
+}
+
+// ─── Navigation Links (Bottom Row) ───────────────────────────────────
+.header-nav {
+  display: flex;
+  gap: 32px; // Increased gap for better spacing
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  max-width: 800px; // Slightly wider than search bar to allow links to breathe but keep them centered
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 0 12px;
+  height: 100%;
+  border-bottom: 3px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-bottom-color 0.2s ease;
+
+  &:hover {
+    color: #0277bd;
+  }
+
+  &.active {
+    color: #0277bd;
+    border-bottom-color: #0277bd;
+  }
+}
+
+// ─── General UI Elements ─────────────────────────────────────────────
+.app-header .header-icon-button {
+  color: #555;
+  margin-left: 8px;
+
+  &:hover {
+    color: #0277bd;
+  }
 }
 
 #profile-icon {
   font-size: 28px;
   width: 28px;
   height: 28px;
+  color: #555;
 }
 
 .profile-img {
-  max-width: 100%;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
 }
 
 #progress-bar {
   height: 4px;
   position: fixed;
-  overflow: visible;
-  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 4000; // Above header
 }
 
-.title > small {
-  color: #7e7e7e;
-  font-weight: 400;
+// ─── Page Content Area ───────────────────────────────────────────────
+.page-content {
+  flex: 1;
+  margin-top: $total-header-height;
+  display: flex;
+  flex-direction: column;
+}
+
+.copyright {
+  text-align: center;
+  padding: 24px;
+  color: #9e9e9e;
+  font-size: 0.85rem;
+  margin-top: auto; // Push to bottom if content is short
 }

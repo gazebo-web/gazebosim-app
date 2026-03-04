@@ -1,3 +1,5 @@
-gz-page-title {
-  padding-left: 20px;
+@use "@angular/material" as mat;
+
+.list-page {
+  padding-top: 20px;
 }

@@ -43,6 +43,12 @@ export class PublicWorldsResolver {
       params["per_page"] = route.queryParams["per_page"];
     }
 
+    if (route.queryParams["sort"]) {
+      params["sort"] = route.queryParams["sort"];
+    } else if (!route.queryParams["q"]) {
+      params["sort"] = "most_liked";
+    }
+
     return this.worldService.getList(params).pipe(
       map((worlds) => {
         return worlds;

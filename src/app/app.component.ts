@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+// prettier-ignore
 import {
   Router,
   ActivatedRoute,
-  Event,
   ResolveStart,
   ResolveEnd,
   NavigationEnd,
@@ -10,9 +10,7 @@ import {
 } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatSidenav } from "@angular/material/sidenav";
 import { Title } from "@angular/platform-browser";
-import { MediaChange, MediaObserver } from "@ngbracket/ngx-layout";
 
 import { SearchComponent } from "./search";
 import { AuthService } from "./auth/auth.service";
@@ -29,11 +27,6 @@ import { Ng2DeviceService } from "./device-detector";
  * App Component is the main component and entry point of the Web Application.
  */
 export class AppComponent implements OnInit {
-  /**
-   * The sidenav element. Used to control it's behavior from the component.
-   */
-  @ViewChild("sidenav") public sidenav: MatSidenav;
-
   /**
    * Search element.
    */
@@ -73,7 +66,6 @@ export class AppComponent implements OnInit {
    * @param authService The Authentication Service.
    * @param deviceService Service used to determine the browser's user agent.
    * @param dialog Allows opening dialogs. Used to open the Settings dialog.
-   * @param media Allows detecting width changes on the media. Used to handle the sidenav behavior.
    * @param route The current Activated Route.
    * @param router The router used. Allows subscription to events.
    * @param snackBar The snackbar used for notification.
@@ -83,7 +75,6 @@ export class AppComponent implements OnInit {
     public authService: AuthService,
     public deviceService: Ng2DeviceService,
     public dialog: MatDialog,
-    public media: MediaObserver,
     private route: ActivatedRoute,
     private router: Router,
     public snackBar: MatSnackBar,
@@ -95,25 +86,9 @@ export class AppComponent implements OnInit {
   /**
    * OnInit lifecycle hook.
    *
-   * Subscribes to route events, in order to display the progress bar and the Browser title, and
-   * to media events in order to control the behavior of the sidenav.
+   * Subscribes to route events, in order to display the progress bar and the Browser title.
    */
   public ngOnInit(): void {
-    // Subscribe to media changes. Detects the change in a layout breakpoint.
-    this.media.asObservable().subscribe((changes: MediaChange[]) => {
-      if (changes.some((change) => change.mqAlias === "xs")) {
-        if (this.sidenav.mode === "side") {
-          this.sidenav.mode = "over";
-          this.sidenav.close();
-        }
-      } else {
-        if (this.sidenav.mode === "over") {
-          this.sidenav.mode = "side";
-          this.sidenav.open();
-        }
-      }
-    });
-
     // Subscribe to router events.
     this.router.events.subscribe((event) => {
       if (event instanceof ResolveStart) {
@@ -175,16 +150,6 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Close the sidenav, only if it's on 'Over' mode, which means that the viewport width is
-   * less than 600px wide.
-   */
-  public closeSidenav(): void {
-    if (this.sidenav.mode === "over") {
-      this.sidenav.close();
-    }
-  }
-
-  /**
    * Callback when enter key is pressed on search input.
    *
    * @param search Search string.
@@ -219,5 +184,20 @@ export class AppComponent implements OnInit {
         this.makeProgress();
       }
     }, 200);
+  }
+
+  /**
+   * Check if a specific route keyword is part of the current URL
+   * to determine if the associated sidebar link should be highlighted.
+   *
+   * @param routeKeyword The keyword to look for in the URL (e.g. 'models')
+   * @returns true if the keyword is part of the path
+   */
+  public isRouteActive(routeKeyword: string): boolean {
+    // We surround with slashes or check end of string to ensure we don't match
+    // a user named 'models' or similar inadvertently, though for 'models'/etc
+    // it's usually at the end or followed by a slash.
+    const url = this.router.url.split("?")[0]; // discard query params
+    return url.split("/").includes(routeKeyword);
   }
 }

@@ -30,6 +30,7 @@ export class CollectionListComponent implements OnInit {
   public collections: Collection[];
 
   /**
+   * @param router The router used to call navigation methods.
    * @param activatedRoute The current Activated Route to get associated the data.
    * @param collectionService Service used to get the collections.
    */
@@ -52,25 +53,26 @@ export class CollectionListComponent implements OnInit {
   }
 
   /**
-   * Get new models when a pagination even occurs.
+   * Get new collections when a pagination event occurs.
    *
    * @param event The Page Event emitted by the list's paginator.
    */
   public getCollections(event: PageEvent) {
+    const params = {
+      page: event.pageIndex + 1,
+      per_page: event.pageSize,
+    };
+
     this.collectionService
-      .getCollectionList({
-        page: event.pageIndex + 1,
-        per_page: event.pageSize,
-      })
+      .getCollectionList(params)
       .subscribe((collections) => {
         this.paginatedCollections = collections;
         this.collections = this.paginatedCollections.collections;
 
         // Navigate to the Collections List page.
         // Note that this does not recreate the component, since the navigation is to the same page.
-        this.router.navigateByUrl(
-          `/collections?page=${event.pageIndex + 1}&per_page=${event.pageSize}`,
-        );
+        const url = `/collections?page=${event.pageIndex + 1}&per_page=${event.pageSize}`;
+        this.router.navigateByUrl(url);
       });
   }
 

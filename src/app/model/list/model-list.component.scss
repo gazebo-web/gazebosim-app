@@ -1,0 +1,16 @@
+@use "@angular/material" as mat;
+
+.list-page {
+  padding-top: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 8px;
+}
