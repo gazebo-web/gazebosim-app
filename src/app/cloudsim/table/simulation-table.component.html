@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutGap="20px" class="filter">
+<div class="fx-layout-row filter" style="gap: 20px">
   <mat-form-field>
     <mat-select
       [(ngModel)]="statusFilter"
@@ -112,7 +112,7 @@
     </mat-paginator>
   </div>
 } @else {
-  <div fxLayout="row" fxLayoutAlign="center center">
+  <div class="fx-layout-row fx-layout-align-center-center">
     @if (!statusFilter && !errorStatusFilter) {
       <h3>Currently there are no simulations.</h3>
     }

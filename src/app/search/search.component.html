@@ -1,12 +1,15 @@
-<div fxLayout="column">
+<div class="fx-layout-column">
   <mat-tab-group
     dynamicHeight
-    fxFill
+    class="fx-fill"
     (selectedIndexChange)="setActiveTab($event)"
   >
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <div
+          class="fx-layout-row fx-layout-align-start-center"
+          style="gap: 10px"
+        >
           <mat-icon svgIcon="gz-model"></mat-icon>
           <span>Models ({{ paginatedModels?.totalCount }})</span>
         </div>
@@ -19,7 +22,7 @@
           [disabled]="activeTab !== 'models'"
           [finished]="!paginatedModels?.hasNextPage()"
           (onLoadMore)="loadNextModelsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>
@@ -27,7 +30,10 @@
 
     <mat-tab label="Worlds">
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <div
+          class="fx-layout-row fx-layout-align-start-center"
+          style="gap: 10px"
+        >
           <mat-icon svgIcon="gz-world"></mat-icon>
           <span>Worlds ({{ paginatedWorlds?.totalCount }})</span>
         </div>
@@ -40,7 +46,7 @@
           [disabled]="activeTab !== 'worlds'"
           [finished]="!paginatedWorlds?.hasNextPage()"
           (onLoadMore)="loadNextWorldsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>

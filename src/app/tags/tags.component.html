@@ -1,6 +1,6 @@
 @if (edit) {
   <div>
-    <mat-form-field fxFill hintLabel="Separate your tags by commas.">
+    <mat-form-field class="fx-fill" hintLabel="Separate your tags by commas.">
       <!-- This div was needed for our tag "jump" preventation <div>-->
       <mat-placeholder>Tags</mat-placeholder>
       <!-- Ditto: end div for the above comment </div>-->
@@ -30,7 +30,7 @@
     </mat-form-field>
   </div>
 } @else {
-  <div fxLayout="row" fxLayoutGap="10px" fxFill>
+  <div class="fx-layout-row fx-fill" style="gap: 10px">
     <mat-icon class="margin-align" title="Tags">sell</mat-icon>
     @if (tags && tags.length > 0) {
       <div>
@@ -43,7 +43,7 @@
         </mat-chip-list>
       </div>
     } @else {
-      <div class="margin-align" fxLayout="row" fxLayoutAlign="start center">
+      <div class="margin-align fx-layout-row fx-layout-align-start-center">
         <span>No tags.</span>
       </div>
     }

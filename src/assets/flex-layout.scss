@@ -1,0 +1,96 @@
+/* 
+ * Flex Layout utility classes to replace @angular/flex-layout
+ */
+
+.fx-layout-row {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.fx-layout-column {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.fx-layout-row-wrap {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+}
+
+.fx-layout-column-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+}
+
+/* Alignments */
+.fx-layout-align-start-center {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+}
+
+.fx-layout-align-center-center {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.fx-layout-align-space-between-center {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.fx-layout-align-space-between-start {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+}
+
+.fx-layout-align-end-center {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+}
+
+.fx-layout-align-start-start {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+}
+
+.fx-layout-align-center-start {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+}
+
+/* Flex sizing */
+.fx-flex {
+    flex: 1 1 0% !important;
+    box-sizing: border-box !important;
+}
+
+.fx-flex-auto {
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+}
+
+.fx-flex-none {
+    flex: 0 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Hide/Show */
+.fx-hide {
+    display: none !important;
+}
+
+.fx-fill {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+}

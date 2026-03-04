@@ -5,14 +5,12 @@
     </div>
   } @else {
     <form
-      fxLayout="column"
-      fxLayoutAlign="space-between start"
-      fxLayoutGap="20px"
-      class="content"
+      class="fx-layout-column fx-layout-align-space-between-start content"
+      style="gap: 20px"
       (ngSubmit)="onEdit()"
     >
       <h2>Change the banner image</h2>
-      <div fxLayout="row" fxLayoutAlign="space-between baseline">
+      <div class="fx-layout-row fx-layout-align-space-between-baseline">
         <button
           mat-raised-button
           type="button"
@@ -42,10 +40,10 @@
         [edit]="true"
         [disabled]="updating"
         (onModify)="onModifyDescription($event)"
-        fxFill
+        class="fx-fill"
       >
       </gz-description>
-      <div fxLayout="column" fxFill>
+      <div class="fx-layout-column fx-fill">
         <p>Select if your collection is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
           @for (
@@ -64,15 +62,18 @@
           }
         </mat-radio-group>
       </div>
-      <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+      <div class="fx-layout-row fx-layout-align-space-between-center fx-fill">
         <button mat-raised-button type="button" (click)="back()">Cancel</button>
         <button mat-raised-button color="accent" type="submit">
           Save changes
         </button>
       </div>
-      <div fxFill>
+      <div class="fx-fill">
         <h2 class="danger">Dangerous Zone!</h2>
-        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+        <div
+          class="fx-layout-row fx-layout-align-start-start"
+          style="gap: 20px"
+        >
           <div>
             <a (click)="onDelete()" mat-raised-button color="warn">
               Delete collection

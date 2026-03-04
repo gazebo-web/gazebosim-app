@@ -5,13 +5,11 @@
     </div>
   } @else {
     <form
-      fxLayout="column"
-      fxLayoutGap="20px"
-      fxLayoutAlign="space-between start"
-      class="content"
+      class="fx-layout-column fx-layout-align-space-between-start content"
+      style="gap: 20px"
       (ngSubmit)="verifyBeforeUpload()"
     >
-      <mat-form-field fxFill>
+      <mat-form-field class="fx-fill">
         <input
           matInput
           placeholder="Model name"
@@ -25,7 +23,7 @@
         [edit]="true"
         [disabled]="uploading"
         (onModify)="onModifyDescription($event)"
-        fxFill
+        class="fx-fill"
       >
       </gz-description>
       <gz-categories
@@ -33,18 +31,23 @@
         [edit]="true"
         [disabled]="uploading"
         (onModify)="onModifyCategories($event)"
-        fxFill
+        class="fx-fill"
       >
       </gz-categories>
-      <gz-tags [tags]="tags" [edit]="true" [disabled]="uploading" fxFill>
+      <gz-tags
+        [tags]="tags"
+        [edit]="true"
+        [disabled]="uploading"
+        class="fx-fill"
+      >
       </gz-tags>
       <div
-        fxLayout="row"
-        fxFill
-        fxLayoutGap="20px"
-        fxLayoutAlign="space-between start"
+        class="fx-layout-row fx-fill fx-layout-align-space-between-start"
+        style="gap: 20px"
       >
-        <mat-form-field fxFlex="50%">
+        <mat-form-field
+          style="flex: 1 1 50%; max-width: 50%; box-sizing: border-box"
+        >
           <mat-select
             [(ngModel)]="owner"
             name="ownerList"
@@ -57,7 +60,9 @@
             }
           </mat-select>
         </mat-form-field>
-        <mat-form-field fxFlex="50%">
+        <mat-form-field
+          style="flex: 1 1 50%; max-width: 50%; box-sizing: border-box"
+        >
           <mat-select
             [(ngModel)]="license"
             name="licenses"
@@ -71,7 +76,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div fxLayout="column" fxFill>
+      <div class="fx-layout-column fx-fill">
         <p>Select if your model is public or private:</p>
         <mat-radio-group [formControl]="privacyInputForm">
           @for (
@@ -88,27 +93,25 @@
         [allowedExtensions]="allowedExtensions"
         [uploading]="uploading"
         [resourceType]="'model'"
-        fxFill
+        class="fx-fill"
       >
       </gz-file-upload>
       @if (!uploading) {
-        <div fxLayout="row" fxLayoutAlign="space-between start" fxFill>
+        <div class="fx-layout-row fx-layout-align-space-between-start fx-fill">
           <button mat-raised-button (click)="location.back()">Cancel</button>
           <button mat-raised-button color="accent" type="submit">Upload</button>
         </div>
       } @else {
-        <div fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+        <div class="fx-layout-row fx-layout-align-space-between-center fx-fill">
           <button mat-raised-button color="accent" (click)="cancelUpload()">
             Cancel
           </button>
           <button mat-raised-button disabled>Uploading</button>
         </div>
       }
-      <div fxLayout="row" fxLayoutAlign="center center" fxFill>
+      <div class="fx-layout-row fx-layout-align-center-center fx-fill">
         <div
-          fxLayout="column"
-          fxLayoutAlign="center center"
-          class="contentRules"
+          class="fx-layout-column fx-layout-align-center-center contentRules"
         >
           <h2>A model may be taken down if it</h2>
           <ul>

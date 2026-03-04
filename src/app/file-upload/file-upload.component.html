@@ -1,5 +1,5 @@
-<div fxLayout="column" fxLayoutAlign="space-between start">
-  <div class="button-row" fxLayout="row" fxLayoutAlign="left">
+<div class="fx-layout-column fx-layout-align-space-between-start">
+  <div class="button-row fx-layout-row fx-layout-align-left">
     <div class="add-button-files">
       <label for="browse-files">
         <a mat-raised-button [disabled]="uploading">Add files</a>
@@ -30,26 +30,25 @@
     </div>
   </div>
 
-  <div fxLayout="row" fxLayoutAlign="center center" fxFill fxLayout.xs="column">
+  <div
+    class="fx-layout-row fx-layout-align-center-center fx-fill fx-layout-column-xs"
+  >
     <div
-      fxFlex
+      class="fx-flex dropzone-list"
       gzDnd
-      class="dropzone-list"
       (newValidFilesEmitter)="onValidFiles($event)"
       (newInvalidFilesEmitter)="onInvalidFiles($event)"
       [allowedExtensions]="allowedExtensions"
     >
       @if (!fileList || fileList.length == 0) {
         <div
-          class="mat-typography dropzone-msg"
-          fxLayout="column"
-          fxLayoutAlign="center center"
+          class="mat-typography dropzone-msg fx-layout-column fx-layout-align-center-center"
           [innerHtml]="message"
         ></div>
       } @else {
-        <div fxLayout="column" fxLayoutAlign="start stretch">
+        <div class="fx-layout-column fx-layout-align-start-stretch">
           @for (file of fileList; track file) {
-            <div class="file" fxLayout="row" fxLayoutAlign="space-between">
+            <div class="file fx-layout-row fx-layout-align-space-between">
               @if (file.fullPath) {
                 <span>{{ file.fullPath }}</span>
               }
@@ -72,14 +71,17 @@
     </div>
 
     @if (hasGzWeb) {
-      <div fxFlex="50" class="viewer-wrapper">
+      <div
+        style="flex: 1 1 50; max-width: 50; box-sizing: border-box"
+        class="viewer-wrapper"
+      >
         <gz-sdfviewer class="sdfviewer" [fileList]="fileList"> </gz-sdfviewer>
       </div>
     }
   </div>
 
   @if (uploading) {
-    <div fxLayout="row" fxLayoutAlign="center center" fxFill>
+    <div class="fx-layout-row fx-layout-align-center-center fx-fill">
       <div id="html-spinner"></div>
     </div>
   }

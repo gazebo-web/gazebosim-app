@@ -1,5 +1,5 @@
-<div class="mat-typography" fxLayout="row" fxLayoutAlign="start center">
-  <mat-tab-group dynamicHeight fxFlex class="tab-container" color="accent">
+<div class="mat-typography fx-layout-row fx-layout-align-start-center">
+  <mat-tab-group dynamicHeight class="fx-flex tab-container" color="accent">
     <mat-tab label="Simulation Instances">
       <a
         class="margin"
@@ -20,7 +20,7 @@
 
     <!-- Machine Instances tab -->
     <mat-tab label="Machine Instances">
-      <div fxLayout="row" fxLayoutGap="20px" class="margin">
+      <div class="fx-layout-row margin" style="gap: 20px">
         <mat-form-field>
           <mat-select
             placeholder="Status"
@@ -86,7 +86,7 @@
           </mat-paginator>
         </div>
       } @else {
-        <div fxLayout="row" fxLayoutAlign="center center">
+        <div class="fx-layout-row fx-layout-align-center-center">
           @if (machineStatusFilter) {
             <h3>
               Currently there are no machines with the status "{{

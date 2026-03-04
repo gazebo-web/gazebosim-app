@@ -1,14 +1,14 @@
-<div fxLayout="column" class="page-content-inner">
+<div class="fx-layout-column page-content-inner">
   <gz-page-title title="Organization: {{ organization.name }}"></gz-page-title>
 
   <mat-tab-group
     dynamicHeight
-    fxFill
+    class="fx-fill"
     (selectedIndexChange)="setActiveTab($event)"
   >
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon svgIcon="gz-model"></mat-icon>
           <span>Models ({{ paginatedModels?.totalCount }})</span>
         </div>
@@ -16,7 +16,7 @@
 
       <div class="tab-content">
         <gz-fuel-resource-list
-          fxFlex
+          class="fx-flex"
           resourceType="models"
           [resources]="models"
           [disabled]="activeTab !== 'models'"
@@ -30,7 +30,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon svgIcon="gz-world"></mat-icon>
           <span>Worlds ({{ paginatedWorlds?.totalCount }})</span>
         </div>
@@ -38,7 +38,7 @@
 
       <div class="tab-content">
         <gz-fuel-resource-list
-          fxFlex
+          class="fx-flex"
           resourceType="worlds"
           [resources]="worlds"
           [disabled]="activeTab !== 'worlds'"
@@ -52,7 +52,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon>collections</mat-icon>
           <span>Collections ({{ paginatedCollections?.totalCount }})</span>
         </div>
@@ -60,7 +60,7 @@
 
       <div class="tab-content">
         <gz-fuel-resource-list
-          fxFlex
+          class="fx-flex"
           resourceType="collections"
           [resources]="collections"
           [disabled]="activeTab !== 'collections'"
@@ -74,7 +74,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon>group</mat-icon>
           <span>Users ({{ users?.length }})</span>
         </div>
@@ -82,19 +82,19 @@
 
       <div class="tab-content">
         @if (authService.hasWriteAccess(organization.name)) {
-          <form fxLayoutAlign="center" (ngSubmit)="addUser()">
+          <form class="fx-layout-align-center" (ngSubmit)="addUser()">
             <div
-              fxFill
-              fxFlex.gt-xs="60%"
-              fxFlex.lt-sm="80%"
-              fxLayout="row"
-              fxLayoutAlign="center"
-              fxLayoutGap="1em"
-              fxLayout.lt-md="row wrap"
+              class="fx-fill fx-flex fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md"
+              .gt-xs="60%"
+              .lt-sm="80%"
+              style="gap: 1em"
               fxLayoutAlign.lt-md="space-between"
               fxLayoutGap.lt-md="0"
             >
-              <mat-form-field fxFill fxFlex="grow">
+              <mat-form-field
+                class="fx-fill"
+                style="flex: 1 1 grow; max-width: grow; box-sizing: border-box"
+              >
                 <input
                   matInput
                   placeholder="Add username"
@@ -133,14 +133,13 @@
           </form>
         }
 
-        <div fxFill fxLayout="row" fxLayoutAlign="center">
-          <mat-list fxFlex.gt-xs="60%" fxFlex.lt-sm="80%">
+        <div class="fx-fill fx-layout-row fx-layout-align-center">
+          <mat-list class="fx-flex fx-flex" .gt-xs="60%" .lt-sm="80%">
             @for (user of users; track user) {
               <mat-list-item class="list-divider">
                 <div
-                  fxLayout="row"
-                  fxLayoutAlign="start baseline"
-                  fxLayoutGap="10px"
+                  class="fx-layout-row fx-layout-align-start-baseline"
+                  style="gap: 10px"
                   matLine
                 >
                   <a routerLink="/{{ user.username }}">{{ user.username }}</a>
