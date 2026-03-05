@@ -1,0 +1,163 @@
+/* 
+ * Flex Layout utility classes to replace @angular/flex-layout
+ */
+
+.fx-layout-row {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.fx-layout-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.fx-layout-row-wrap {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+}
+
+.fx-layout-column-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: wrap !important;
+}
+
+/* Alignments */
+.fx-layout-align-start-center {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+
+.fx-layout-align-center-center {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.fx-layout-align-space-between-center {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.fx-layout-align-space-between-start {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+}
+
+.fx-layout-align-end-center {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+
+.fx-layout-align-start-start {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.fx-layout-align-center-start {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+}
+
+/* Flex sizing */
+.fx-flex {
+  flex: 1 1 0% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-auto {
+  flex: 1 1 auto !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-none {
+  flex: 0 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Hide/Show */
+.fx-hide {
+  display: none !important;
+}
+
+.fx-fill {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+}
+/* Additional alignments */
+.fx-flex-align-start {
+  align-self: flex-start !important;
+}
+
+.fx-flex-align-end {
+  align-self: flex-end !important;
+}
+
+/* Breakpoints */
+@media (max-width: 599px) {
+  /* xs, lt-sm */
+  .fx-layout-column-xs {
+    flex-direction: column !important;
+  }
+  .gap-lt-sm-dialog {
+    gap: 2.5em !important;
+  }
+}
+
+@media (min-width: 600px) {
+  /* gt-xs, sm and up */
+  .fx-layout-row-gt-xs {
+    flex-direction: row !important;
+  }
+}
+
+@media (max-width: 959px) {
+  /* lt-md */
+  .fx-layout-align-lt-md-space-between {
+    justify-content: space-between !important;
+  }
+  .fx-layout-gap-lt-md-0 {
+    gap: 0 !important;
+  }
+}
+
+/* Responsive Flex Sizing */
+.fx-flex-xs-100 {
+  flex: 1 1 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 600px) {
+  .fx-flex-sm-50 {
+    flex: 1 1 50% !important;
+    max-width: 50% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (min-width: 960px) {
+  .fx-flex-md-25 {
+    flex: 1 1 25% !important;
+    max-width: 25% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .fx-flex-lg-20 {
+    flex: 1 1 20% !important;
+    max-width: 20% !important;
+    box-sizing: border-box !important;
+  }
+}
