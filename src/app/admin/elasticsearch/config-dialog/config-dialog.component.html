@@ -33,12 +33,9 @@
           placeholder="Password"
           [formControl]="passwordInputForm"
         />
-        <mat-icon
-          matSuffix
-          (click)="hide = !hide"
-          style="vertical-align: bottom"
-          >{{ hide ? "visibility_off" : "visibility" }}</mat-icon
-        >
+        <mat-icon matSuffix (click)="hide = !hide" class="valign-bottom">{{
+          hide ? "visibility_off" : "visibility"
+        }}</mat-icon>
         <!--
         <mat-error>{{getCollectionNameError()}}</mat-error>
         -->

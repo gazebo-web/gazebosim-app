@@ -5,8 +5,7 @@
     </div>
   } @else {
     <form
-      class="fx-layout-column fx-layout-align-space-between-start content"
-      style="gap: 20px"
+      class="fx-layout-column fx-layout-align-space-between-start content gap-20"
       (ngSubmit)="onEdit()"
     >
       <h2>Change the banner image</h2>
@@ -70,10 +69,7 @@
       </div>
       <div class="fx-fill">
         <h2 class="danger">Dangerous Zone!</h2>
-        <div
-          class="fx-layout-row fx-layout-align-start-start"
-          style="gap: 20px"
-        >
+        <div class="fx-layout-row fx-layout-align-start-start gap-20">
           <div>
             <a (click)="onDelete()" mat-raised-button color="warn">
               Delete collection

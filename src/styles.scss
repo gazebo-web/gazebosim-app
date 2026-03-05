@@ -183,4 +183,78 @@ mat-sidenav {
   }
 }
 
+// Utility classes — gap
+.gap-10 {
+  gap: 10px !important;
+}
+
+.gap-20 {
+  gap: 20px !important;
+}
+
+.gap-40 {
+  gap: 40px !important;
+}
+
+.gap-half-em {
+  gap: 0.5em !important;
+}
+
+.gap-1em {
+  gap: 1em !important;
+}
+
+// Utility classes — text alignment
+.text-center {
+  text-align: center !important;
+}
+
+// Utility classes — vertical alignment
+.valign-bottom {
+  vertical-align: bottom !important;
+}
+
+// Utility classes — flex sizing
+.fx-flex-5 {
+  flex: 1 1 5% !important;
+  max-width: 5% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-30 {
+  flex: 1 1 30% !important;
+  max-width: 30% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-40 {
+  flex: 1 1 40% !important;
+  max-width: 40% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-50 {
+  flex: 1 1 50% !important;
+  max-width: 50% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-60 {
+  flex: 1 1 60% !important;
+  max-width: 60% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-80 {
+  flex: 1 1 80% !important;
+  max-width: 80% !important;
+  box-sizing: border-box !important;
+}
+
+.fx-flex-90 {
+  flex: 1 1 90% !important;
+  max-width: 90% !important;
+  box-sizing: border-box !important;
+}
+
 @import "styles/flex-layout.scss";

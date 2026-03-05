@@ -1,16 +1,9 @@
-<div
-  class="fx-layout-column"
-  style="flex: 1 1 1 0; max-width: 1 0; box-sizing: border-box"
->
+<div class="fx-layout-column fx-flex">
   <h1 mat-dialog-title class="mat-typography">Your New Access Token</h1>
 
-  <div
-    style="flex: 1 1 1 0; max-width: 1 0; box-sizing: border-box"
-    class="fx-fill mat-typography"
-    mat-dialog-content
-  >
+  <div class="fx-fill mat-typography fx-flex" mat-dialog-content>
     <form class="fx-layout-row">
-      <mat-form-field style="width: 470px">
+      <mat-form-field class="token-field">
         <input matInput value="{{ data.key }}" readonly #tokenInput />
       </mat-form-field>
       <button mat-icon-button title="Copy Token" (click)="copy(tokenInput)">

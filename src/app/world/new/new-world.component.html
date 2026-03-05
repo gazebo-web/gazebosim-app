@@ -5,8 +5,7 @@
     </div>
   } @else {
     <form
-      class="fx-layout-column fx-layout-align-space-between-start content"
-      style="gap: 20px"
+      class="fx-layout-column fx-layout-align-space-between-start content gap-20"
       (ngSubmit)="verifyBeforeUpload()"
     >
       <mat-form-field class="fx-fill">
@@ -34,12 +33,9 @@
       >
       </gz-tags>
       <div
-        class="fx-layout-row fx-fill fx-layout-align-space-between-start"
-        style="gap: 20px"
+        class="fx-layout-row fx-fill fx-layout-align-space-between-start gap-20"
       >
-        <mat-form-field
-          style="flex: 1 1 50%; max-width: 50%; box-sizing: border-box"
-        >
+        <mat-form-field class="fx-flex-50">
           <mat-select
             [(ngModel)]="owner"
             name="ownerList"
@@ -52,9 +48,7 @@
             }
           </mat-select>
         </mat-form-field>
-        <mat-form-field
-          style="flex: 1 1 50%; max-width: 50%; box-sizing: border-box"
-        >
+        <mat-form-field class="fx-flex-50">
           <mat-select
             [(ngModel)]="license"
             name="licenses"

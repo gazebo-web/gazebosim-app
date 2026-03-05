@@ -48,7 +48,7 @@
           </div>
         </mat-tab>
         <mat-tab label="Access Tokens">
-          <div class="tab-content fx-layout-column" style="gap: 20px">
+          <div class="tab-content fx-layout-column gap-20">
             <div>
               <p>
                 Access tokens can be used by your applications to gain access to
@@ -58,8 +58,7 @@
             <form
               [formGroup]="createAccessTokenForm"
               (ngSubmit)="createAccessToken()"
-              class="fx-layout-align-start fx-flex fx-flex fx-fill"
-              style="gap: 20px"
+              class="fx-layout-align-start fx-flex fx-flex fx-fill gap-20"
               fxlayout="row"
               .gt-sm="80%"
               .lt-md="100%"
@@ -166,7 +165,7 @@
           </div>
         </mat-tab>
         <mat-tab label="Credits">
-          <div class="tab-content fx-layout-column" style="gap: 20px">
+          <div class="tab-content fx-layout-column gap-20">
             <gz-credits></gz-credits>
           </div>
         </mat-tab>

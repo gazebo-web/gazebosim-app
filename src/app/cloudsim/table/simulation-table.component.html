@@ -1,4 +1,4 @@
-<div class="fx-layout-row filter" style="gap: 20px">
+<div class="fx-layout-row filter gap-20">
   <mat-form-field>
     <mat-select
       [(ngModel)]="statusFilter"
@@ -93,10 +93,10 @@
       </ng-container>
       <!-- Buttons Column -->
       <ng-container matColumnDef="controlButtons">
-        <mat-header-cell *matHeaderCellDef style="text-align: center">
+        <mat-header-cell *matHeaderCellDef class="text-center">
           Control
         </mat-header-cell>
-        <mat-cell *matCellDef="let element" style="text-align: center">
+        <mat-cell *matCellDef="let element" class="text-center">
           <gz-simulation-actions [simulation]="element"></gz-simulation-actions>
         </mat-cell>
       </ng-container>

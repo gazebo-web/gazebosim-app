@@ -71,10 +71,7 @@
     </div>
 
     @if (hasGzWeb) {
-      <div
-        style="flex: 1 1 50; max-width: 50; box-sizing: border-box"
-        class="viewer-wrapper"
-      >
+      <div class="viewer-wrapper fx-flex-50">
         <gz-sdfviewer class="sdfviewer" [fileList]="fileList"> </gz-sdfviewer>
       </div>
     }

@@ -207,15 +207,12 @@
     <div class="bottom-row-container fx-layout-row">
       <mat-tab-group dynamicHeight class="fx-flex tab-container" color="accent">
         <mat-tab label="World Description">
-          <div class="fx-layout-column tab-body" style="gap: 20px">
+          <div class="fx-layout-column tab-body gap-20">
             <gz-description [description]="world.description"></gz-description>
 
             <gz-tags [tags]="world.tags"></gz-tags>
 
-            <div
-              class="fx-layout-row fx-layout-align-start-center"
-              style="gap: 10px"
-            >
+            <div class="fx-layout-row fx-layout-align-start-center gap-10">
               <mat-icon class="material-icons">{{
                 world.private ? "visibility_off" : "visibility"
               }}</mat-icon>
@@ -224,10 +221,7 @@
               >
             </div>
 
-            <div
-              class="fx-layout-row fx-layout-align-start-center"
-              style="gap: 10px"
-            >
+            <div class="fx-layout-row fx-layout-align-start-center gap-10">
               <a
                 class="color-link"
                 rel="license"
@@ -254,10 +248,7 @@
               </a>
             </div>
 
-            <div
-              class="fx-layout-row fx-layout-align-start-start"
-              style="gap: 10px"
-            >
+            <div class="fx-layout-row fx-layout-align-start-start gap-10">
               <mat-icon title="Bibtex">library_books</mat-icon>
               <pre
                 (click)="copyBibtex()"

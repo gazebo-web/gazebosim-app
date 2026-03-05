@@ -3,11 +3,7 @@
   <form [formGroup]="newOrganizationForm" (ngSubmit)="onSubmit()">
     <mat-horizontal-stepper linear>
       <mat-step label="Account information" [stepControl]="newOrganizationForm">
-        <div
-          class="fx-layout-column"
-          style="gap: 0.5em"
-          fxLayoutGap.lt-sm="2.5em"
-        >
+        <div class="fx-layout-column gap-half-em" fxLayoutGap.lt-sm="2.5em">
           <mat-form-field class="form-field">
             <input
               matInput

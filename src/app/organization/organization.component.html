@@ -84,17 +84,13 @@
         @if (authService.hasWriteAccess(organization.name)) {
           <form class="fx-layout-align-center" (ngSubmit)="addUser()">
             <div
-              class="fx-fill fx-flex fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md"
+              class="fx-fill fx-flex fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md gap-1em"
               .gt-xs="60%"
               .lt-sm="80%"
-              style="gap: 1em"
               fxLayoutAlign.lt-md="space-between"
               fxLayoutGap.lt-md="0"
             >
-              <mat-form-field
-                class="fx-fill"
-                style="flex: 1 1 grow; max-width: grow; box-sizing: border-box"
-              >
+              <mat-form-field class="fx-fill fx-flex">
                 <input
                   matInput
                   placeholder="Add username"
@@ -138,8 +134,7 @@
             @for (user of users; track user) {
               <mat-list-item class="list-divider">
                 <div
-                  class="fx-layout-row fx-layout-align-start-baseline"
-                  style="gap: 10px"
+                  class="fx-layout-row fx-layout-align-start-baseline gap-10"
                   matLine
                 >
                   <a routerLink="/{{ user.username }}">{{ user.username }}</a>
