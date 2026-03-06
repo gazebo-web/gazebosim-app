@@ -1,9 +1,9 @@
-<div fxLayout="column">
+<div class="fx-layout-column">
   <h1 mat-dialog-title>Create an Organization</h1>
   <form [formGroup]="newOrganizationForm" (ngSubmit)="onSubmit()">
     <mat-horizontal-stepper linear>
       <mat-step label="Account information" [stepControl]="newOrganizationForm">
-        <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.lt-sm="2.5em">
+        <div class="fx-layout-column gap-half-em" fxLayoutGap.lt-sm="2.5em">
           <mat-form-field class="form-field">
             <input
               matInput
@@ -32,7 +32,7 @@
           </mat-form-field>
           -->
 
-          <div fxLayoutAlign="space-between" class="stepper-buttons">
+          <div class="fx-layout-align-space-between stepper-buttons">
             <button mat-button mat-dialog-close type="button">Cancel</button>
 
             <button mat-raised-button color="accent" type="submit">
@@ -61,7 +61,7 @@
 
         <p>Your teammates will get a confirmation email once they join the organization.</p>
 
-        <div fxLayoutAlign="space-between" class="stepper-buttons">
+        <div class="fx-layout-align-space-between stepper-buttons" >
           <button
             mat-button
             mat-dialog-close
@@ -99,7 +99,7 @@
           </mat-radio-button>
         </mat-radio-group>
 
-        <div fxLayoutAlign="space-between" class="stepper-buttons">
+        <div class="fx-layout-align-space-between stepper-buttons" >
           <button
             mat-dialog-close
             mat-button

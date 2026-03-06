@@ -82,7 +82,7 @@ a.color-link {
 
 // The following is from: https://materialdesignicons.com/getting-started
 button.mat-menu-item {
-  line-height: 24px !important;
+  line-height: 24px;
 }
 
 a.mat-menu-item > mat-icon {
@@ -108,7 +108,7 @@ mat-sidenav {
   .mat-mdc-list-item,
   .mat-mdc-list-item span,
   mat-icon {
-    color: #fefefe !important;
+    color: #fefefe;
   }
 
   // Vertically center icon and text within each sidebar list item
@@ -182,3 +182,79 @@ mat-sidenav {
     transform: rotate(360deg);
   }
 }
+
+// Utility classes — gap
+.gap-10 {
+  gap: 10px;
+}
+
+.gap-20 {
+  gap: 20px;
+}
+
+.gap-40 {
+  gap: 40px;
+}
+
+.gap-half-em {
+  gap: 0.5em;
+}
+
+.gap-1em {
+  gap: 1em;
+}
+
+// Utility classes — text alignment
+.text-center {
+  text-align: center;
+}
+
+// Utility classes — vertical alignment
+.valign-bottom {
+  vertical-align: bottom;
+}
+
+// Utility classes — flex sizing
+.fx-flex-5 {
+  flex: 1 1 5%;
+  max-width: 5%;
+  box-sizing: border-box;
+}
+
+.fx-flex-30 {
+  flex: 1 1 30%;
+  max-width: 30%;
+  box-sizing: border-box;
+}
+
+.fx-flex-40 {
+  flex: 1 1 40%;
+  max-width: 40%;
+  box-sizing: border-box;
+}
+
+.fx-flex-50 {
+  flex: 1 1 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+}
+
+.fx-flex-60 {
+  flex: 1 1 60%;
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+.fx-flex-80 {
+  flex: 1 1 80%;
+  max-width: 80%;
+  box-sizing: border-box;
+}
+
+.fx-flex-90 {
+  flex: 1 1 90%;
+  max-width: 90%;
+  box-sizing: border-box;
+}
+
+@import "styles/flex-layout.scss";

@@ -2,7 +2,7 @@
   <h1 mat-dialog-title class="mat-typography">Elasticsearch Configuration</h1>
 
   <form>
-    <div fxLayout="column" mat-dialog-content class="mat-typography">
+    <div class="fx-layout-column mat-typography" mat-dialog-content>
       <mat-form-field>
         <input
           matInput
@@ -33,12 +33,9 @@
           placeholder="Password"
           [formControl]="passwordInputForm"
         />
-        <mat-icon
-          matSuffix
-          (click)="hide = !hide"
-          style="vertical-align: bottom"
-          >{{ hide ? "visibility_off" : "visibility" }}</mat-icon
-        >
+        <mat-icon matSuffix (click)="hide = !hide" class="valign-bottom">{{
+          hide ? "visibility_off" : "visibility"
+        }}</mat-icon>
         <!--
         <mat-error>{{getCollectionNameError()}}</mat-error>
         -->

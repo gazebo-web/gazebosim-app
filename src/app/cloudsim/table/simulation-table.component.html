@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutGap="20px" class="filter">
+<div class="fx-layout-row filter gap-20">
   <mat-form-field>
     <mat-select
       [(ngModel)]="statusFilter"
@@ -93,10 +93,10 @@
       </ng-container>
       <!-- Buttons Column -->
       <ng-container matColumnDef="controlButtons">
-        <mat-header-cell *matHeaderCellDef style="text-align: center">
+        <mat-header-cell *matHeaderCellDef class="text-center">
           Control
         </mat-header-cell>
-        <mat-cell *matCellDef="let element" style="text-align: center">
+        <mat-cell *matCellDef="let element" class="text-center">
           <gz-simulation-actions [simulation]="element"></gz-simulation-actions>
         </mat-cell>
       </ng-container>
@@ -112,7 +112,7 @@
     </mat-paginator>
   </div>
 } @else {
-  <div fxLayout="row" fxLayoutAlign="center center">
+  <div class="fx-layout-row fx-layout-align-center-center">
     @if (!statusFilter && !errorStatusFilter) {
       <h3>Currently there are no simulations.</h3>
     }
