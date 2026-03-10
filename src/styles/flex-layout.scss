@@ -18,12 +18,6 @@
   flex-wrap: wrap;
 }
 
-.fx-layout-column-wrap {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-}
-
 /* Alignments */
 .fx-layout-align-start-center {
   display: flex;
@@ -49,12 +43,6 @@
   align-items: flex-start;
 }
 
-.fx-layout-align-end-center {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
 .fx-layout-align-start-start {
   display: flex;
   justify-content: flex-start;
@@ -73,34 +61,11 @@
   box-sizing: border-box;
 }
 
-.fx-flex-auto {
-  flex: 1 1 auto;
-  box-sizing: border-box;
-}
-
-.fx-flex-none {
-  flex: 0 0 auto;
-  box-sizing: border-box;
-}
-
-/* Hide/Show */
-.fx-hide {
-  display: none;
-}
-
 .fx-fill {
   width: 100%;
   height: 100%;
   min-width: 100%;
   min-height: 100%;
-}
-/* Additional alignments */
-.fx-flex-align-start {
-  align-self: flex-start;
-}
-
-.fx-flex-align-end {
-  align-self: flex-end;
 }
 
 /* Breakpoints */
@@ -160,4 +125,78 @@
     max-width: 20%;
     box-sizing: border-box;
   }
+}
+
+/* Utility classes — gap */
+.gap-10 {
+  gap: 10px;
+}
+
+.gap-20 {
+  gap: 20px;
+}
+
+.gap-40 {
+  gap: 40px;
+}
+
+.gap-half-em {
+  gap: 0.5em;
+}
+
+.gap-1em {
+  gap: 1em;
+}
+
+/* Utility classes — text alignment */
+.text-center {
+  text-align: center;
+}
+
+/* Utility classes — vertical alignment */
+.valign-bottom {
+  vertical-align: bottom;
+}
+
+/* Utility classes — flex sizing */
+.fx-flex-5 {
+  flex: 1 1 5%;
+  max-width: 5%;
+  box-sizing: border-box;
+}
+
+.fx-flex-30 {
+  flex: 1 1 30%;
+  max-width: 30%;
+  box-sizing: border-box;
+}
+
+.fx-flex-40 {
+  flex: 1 1 40%;
+  max-width: 40%;
+  box-sizing: border-box;
+}
+
+.fx-flex-50 {
+  flex: 1 1 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+}
+
+.fx-flex-60 {
+  flex: 1 1 60%;
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+.fx-flex-80 {
+  flex: 1 1 80%;
+  max-width: 80%;
+  box-sizing: border-box;
+}
+
+.fx-flex-90 {
+  flex: 1 1 90%;
+  max-width: 90%;
+  box-sizing: border-box;
 }

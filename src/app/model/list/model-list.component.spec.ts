@@ -122,4 +122,24 @@ describe("ModelListComponent", () => {
     expect(component.paginatedModels).toEqual(nextPaginatedModels);
     expect(component.models).toEqual(nextModels);
   });
+
+  it("should pass sort parameter to the service when a filter is set", () => {
+    const modelService = TestBed.inject(ModelService);
+    const spy = spyOn(modelService, "getList").and.returnValue(
+      of(nextPaginatedModels),
+    );
+    component.models = testModels;
+    component.paginatedModels = paginatedModels;
+    component.currentFilter = "most_liked";
+
+    const mockEvent = { pageIndex: 0, pageSize: 12, length: 0 };
+    component.getModels(mockEvent);
+    expect(spy).toHaveBeenCalledWith(
+      jasmine.objectContaining({ sort: "most_liked" }),
+    );
+  });
+
+  it("should not have a local sortModels method (sorting is server-side)", () => {
+    expect((component as any).sortModels).toBeUndefined();
+  });
 });
