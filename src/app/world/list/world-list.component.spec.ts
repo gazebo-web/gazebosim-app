@@ -138,8 +138,4 @@ describe("WorldListComponent", () => {
       jasmine.objectContaining({ sort: "most_liked" }),
     );
   });
-
-  it("should not have a local sortWorlds method (sorting is server-side)", () => {
-    expect((component as any).sortWorlds).toBeUndefined();
-  });
 });

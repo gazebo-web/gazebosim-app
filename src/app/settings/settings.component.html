@@ -6,7 +6,7 @@
 
 @if (authService.isAuthenticated()) {
   <div class="fx-layout-row fx-layout-align-center-start page-content-inner">
-    <div class="fx-flex fx-flex" .gt-xs="60%" .lt-sm="100%">
+    <div class="fx-flex fx-flex-gt-xs-60 fx-flex-lt-sm-100">
       <mat-tab-group dynamicHeight [selectedIndex]="selected.value">
         <mat-tab label="Account">
           <div class="tab-content">
@@ -58,10 +58,7 @@
             <form
               [formGroup]="createAccessTokenForm"
               (ngSubmit)="createAccessToken()"
-              class="fx-layout-align-start fx-flex fx-flex fx-fill gap-20"
-              fxlayout="row"
-              .gt-sm="80%"
-              .lt-md="100%"
+              class="fx-layout-align-start fx-flex fx-fill gap-20 fx-flex-gt-sm-80 fx-flex-lt-md-100"
             >
               <mat-form-field>
                 <input

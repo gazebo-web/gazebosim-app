@@ -84,11 +84,7 @@
         @if (authService.hasWriteAccess(organization.name)) {
           <form class="fx-layout-align-center" (ngSubmit)="addUser()">
             <div
-              class="fx-fill fx-flex fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md gap-1em"
-              .gt-xs="60%"
-              .lt-sm="80%"
-              fxLayoutAlign.lt-md="space-between"
-              fxLayoutGap.lt-md="0"
+              class="fx-fill fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md gap-1em fx-flex-gt-xs-60 fx-flex-lt-sm-80 fx-layout-align-lt-md-space-between fx-layout-gap-lt-md-0"
             >
               <mat-form-field class="fx-fill fx-flex">
                 <input
@@ -130,7 +126,7 @@
         }
 
         <div class="fx-fill fx-layout-row fx-layout-align-center">
-          <mat-list class="fx-flex fx-flex" .gt-xs="60%" .lt-sm="80%">
+          <mat-list class="fx-flex fx-flex-gt-xs-60 fx-flex-lt-sm-80">
             @for (user of users; track user) {
               <mat-list-item class="list-divider">
                 <div

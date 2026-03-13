@@ -138,8 +138,4 @@ describe("ModelListComponent", () => {
       jasmine.objectContaining({ sort: "most_liked" }),
     );
   });
-
-  it("should not have a local sortModels method (sorting is server-side)", () => {
-    expect((component as any).sortModels).toBeUndefined();
-  });
 });

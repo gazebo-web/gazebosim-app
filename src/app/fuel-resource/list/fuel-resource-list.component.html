@@ -4,10 +4,7 @@
       <div class="fx-layout-row-wrap fx-layout-align-center-start fx-fill">
         @for (res of resources; track res) {
           <gz-item-card
-            class="item-card fx-flex fx-flex fx-flex"
-            .xs="100%"
-            .sm="50%"
-            .md="25%"
+            class="item-card fx-flex fx-flex-xs-100 fx-flex-sm-50 fx-flex-md-25"
             [removable]="removable"
             [resource]="res"
             [type]="resourceType"

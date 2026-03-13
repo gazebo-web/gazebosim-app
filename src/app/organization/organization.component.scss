@@ -9,6 +9,7 @@ div ::ng-deep .mat-tab-header {
   @media screen and (min-width: 600px) {
     width: 60%;
   }
+
   @media screen and (max-width: 599px) {
     width: 80%;
   }
@@ -20,6 +21,7 @@ div ::ng-deep .mat-tab-labels {
 
 div ::ng-deep .mat-tab-label {
   flex-grow: 1;
+
   mat-icon {
     margin-right: 10px;
   }
@@ -40,4 +42,8 @@ div ::ng-deep .mat-tab-label {
 
 form {
   margin-top: 20px;
+}
+
+.gap-1em {
+  gap: 1em;
 }

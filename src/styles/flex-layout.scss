@@ -74,15 +74,48 @@
   .fx-layout-column-xs {
     flex-direction: column;
   }
-  .gap-lt-sm-dialog {
-    gap: 2.5em;
-  }
 }
 
 @media (min-width: 600px) {
   /* gt-xs, sm and up */
   .fx-layout-row-gt-xs {
     flex-direction: row;
+  }
+
+  .fx-flex-gt-xs-50 {
+    flex: 1 1 50%;
+    max-width: 50%;
+    box-sizing: border-box;
+  }
+
+  .fx-flex-gt-xs-60 {
+    flex: 1 1 60%;
+    max-width: 60%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 599px) {
+  /* xs, lt-sm */
+  .fx-flex-lt-sm-80 {
+    flex: 1 1 80%;
+    max-width: 80%;
+    box-sizing: border-box;
+  }
+
+  .fx-flex-lt-sm-100 {
+    flex: 1 1 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 768px) {
+  /* gt-sm */
+  .fx-flex-gt-sm-80 {
+    flex: 1 1 80%;
+    max-width: 80%;
+    box-sizing: border-box;
   }
 }
 
@@ -91,8 +124,15 @@
   .fx-layout-align-lt-md-space-between {
     justify-content: space-between;
   }
+
   .fx-layout-gap-lt-md-0 {
     gap: 0;
+  }
+
+  .fx-flex-lt-md-100 {
+    flex: 1 1 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 
@@ -113,6 +153,13 @@
 
 @media (min-width: 960px) {
   .fx-flex-md-25 {
+    flex: 1 1 25%;
+    max-width: 25%;
+    box-sizing: border-box;
+  }
+
+  /* gt-md (greater than md, i.e. lg and up) */
+  .fx-flex-gt-md-25 {
     flex: 1 1 25%;
     max-width: 25%;
     box-sizing: border-box;
@@ -140,14 +187,6 @@
   gap: 40px;
 }
 
-.gap-half-em {
-  gap: 0.5em;
-}
-
-.gap-1em {
-  gap: 1em;
-}
-
 /* Utility classes — text alignment */
 .text-center {
   text-align: center;
@@ -165,38 +204,8 @@
   box-sizing: border-box;
 }
 
-.fx-flex-30 {
-  flex: 1 1 30%;
-  max-width: 30%;
-  box-sizing: border-box;
-}
-
-.fx-flex-40 {
-  flex: 1 1 40%;
-  max-width: 40%;
-  box-sizing: border-box;
-}
-
 .fx-flex-50 {
   flex: 1 1 50%;
   max-width: 50%;
-  box-sizing: border-box;
-}
-
-.fx-flex-60 {
-  flex: 1 1 60%;
-  max-width: 60%;
-  box-sizing: border-box;
-}
-
-.fx-flex-80 {
-  flex: 1 1 80%;
-  max-width: 80%;
-  box-sizing: border-box;
-}
-
-.fx-flex-90 {
-  flex: 1 1 90%;
-  max-width: 90%;
   box-sizing: border-box;
 }
