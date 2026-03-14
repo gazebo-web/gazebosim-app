@@ -137,31 +137,27 @@
           <mat-list fxFlex.gt-xs="60%" fxFlex.lt-sm="80%">
             @for (user of users; track user) {
               <mat-list-item class="list-divider">
-                <div
-                  fxLayout="row"
-                  fxLayoutAlign="start baseline"
-                  fxLayoutGap="10px"
-                  matLine
-                >
-                  <a routerLink="/{{ user.username }}">{{ user.username }}</a>
-                  <mat-chip-list>
-                    @if (user.orgRoles) {
-                      <mat-chip color="primary" selected>{{
-                        user.orgRoles[organization.name]
-                      }}</mat-chip>
-                    }
-                  </mat-chip-list>
-                </div>
+                <a routerLink="/{{ user.username }}">{{ user.username }}</a>
+                <mat-chip-list>
+                  @if (user.orgRoles) {
+                    <mat-chip color="primary" selected>{{
+                      user.orgRoles[organization.name]
+                    }}</mat-chip>
+                  }
+                </mat-chip-list>
+
                 @if (canDisplayRemoveButton(user)) {
-                  <button
-                    mat-button
-                    color="primary"
-                    (click)="removeUser(user)"
-                    [disabled]="disableRemoveButton(user)"
-                    [title]="getRemoveButtonTooltip(user)"
-                  >
-                    {{ getRemoveButtonLabel(user) }}
-                  </button>
+                  <div matListItemMeta>
+                    <button
+                      mat-button
+                      color="primary"
+                      (click)="removeUser(user)"
+                      [disabled]="disableRemoveButton(user)"
+                      [title]="getRemoveButtonTooltip(user)"
+                    >
+                      {{ getRemoveButtonLabel(user) }}
+                    </button>
+                  </div>
                 }
               </mat-list-item>
             }
