@@ -264,19 +264,21 @@
         <mat-tab label="World Files">
           @if (world?.files && world.files.length > 0) {
             <div class="list-container tab-body">
-              <mat-list dense>
+              <mat-list>
                 @for (file of world.files; track file) {
                   <mat-list-item class="list-divider">
-                    <mat-icon mat-list-icon>insert_drive_file</mat-icon>
-                    <h4 matLine>{{ file.name }}</h4>
-                    <span matLine>{{ file.displayPath }}</span>
-                    <button
-                      mat-icon-button
-                      title="Download {{ file.name }}"
-                      (click)="downloadIndividualFile(file)"
-                    >
-                      <mat-icon>file_download</mat-icon>
-                    </button>
+                    <mat-icon matListItemIcon>insert_drive_file</mat-icon>
+                    <div matListItemTitle>{{ file.name }}</div>
+                    <div matListItemLine>{{ file.displayPath }}</div>
+                    <div matListItemMeta>
+                      <button
+                        mat-icon-button
+                        title="Download {{ file.name }}"
+                        (click)="downloadIndividualFile(file)"
+                      >
+                        <mat-icon>file_download</mat-icon>
+                      </button>
+                    </div>
                   </mat-list-item>
                 }
               </mat-list>
