@@ -182,41 +182,42 @@
                 <mat-list>
                   @for (org of organizationList; track org) {
                     <mat-list-item class="list-divider">
-                      <h4 matLine>
-                        <a routerLink="/{{ org }}">
-                          {{ org }}
-                        </a>
-                      </h4>
-                      @if (!authService.isOwner(org)) {
-                        <button
-                          class="hover-display"
-                          mat-button
-                          color="accent"
-                          (click)="promptOrgLeave(org)"
-                        >
-                          Leave
-                        </button>
-                      } @else {
-                        <button
-                          class="hover-display"
-                          mat-button
-                          color="accent"
-                          disabled
-                          title="You can't leave this organization"
-                        >
-                          Leave
-                        </button>
-                      }
-                      @if (authService.isOwner(org)) {
-                        <button
-                          class="hover-display"
-                          mat-button
-                          color="accent"
-                          (click)="confirmationDeleteOrg(org)"
-                        >
-                          Delete
-                        </button>
-                      }
+                      <a routerLink="/{{ org }}">
+                        {{ org }}
+                      </a>
+
+                      <div matListItemMeta class="org-actions">
+                        @if (!authService.isOwner(org)) {
+                          <button
+                            class="hover-display"
+                            mat-button
+                            color="accent"
+                            (click)="promptOrgLeave(org)"
+                          >
+                            Leave
+                          </button>
+                        } @else {
+                          <button
+                            class="hover-display"
+                            mat-button
+                            color="accent"
+                            disabled
+                            title="You can't leave this organization"
+                          >
+                            Leave
+                          </button>
+                        }
+                        @if (authService.isOwner(org)) {
+                          <button
+                            class="hover-display"
+                            mat-button
+                            color="accent"
+                            (click)="confirmationDeleteOrg(org)"
+                          >
+                            Delete
+                          </button>
+                        }
+                      </div>
                     </mat-list-item>
                   }
                 </mat-list>
