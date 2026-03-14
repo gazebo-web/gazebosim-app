@@ -209,3 +209,17 @@
   max-width: 50%;
   box-sizing: border-box;
 }
+
+@media (min-width: 768px) {
+  .fx-layout-row-gt-sm {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 959px) {
+  .fx-layout-column-lt-md {
+    display: flex;
+    flex-direction: column;
+  }
+}
