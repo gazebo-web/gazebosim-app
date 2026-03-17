@@ -1,8 +1,8 @@
-<div class="page-content-inner" fxFlex fxLayoutAlign="center">
+<div class="page-content-inner fx-flex fx-layout-align-center">
   <div class="content mat-typography">
-    <div fxLayoutAlign="space-between">
-      <div fxLayout="row" fxAlign="start">
-        <div fxLayout="column">
+    <div class="fx-layout-align-space-between">
+      <div class="fx-layout-row">
+        <div class="fx-layout-column">
           <gz-page-title
             [title]="simulation.name || simulation.groupId"
             icon="computer"
@@ -15,13 +15,9 @@
       </div>
     </div>
 
-    <div fxLayout="row">
+    <div class="fx-layout-row">
       <div
-        class="status"
-        fxLayout="row"
-        fxLayoutAlign="left center"
-        fxLayoutGap="20px"
-        fxFill
+        class="status fx-layout-row fx-layout-align-left-center fx-fill gap-20"
       >
         <div class="statusTitle">{{ simulation.status }}</div>
 
@@ -42,32 +38,20 @@
         </div>
 
         @if (simulation.status == "Running") {
-          <div fxLayout="row" fxLayoutGap="20px">
-            <div
-              fxLayout="row"
-              fxLayoutGap="10px"
-              fxLayoutAlign="space-between"
-            >
+          <div class="fx-layout-row gap-20">
+            <div class="fx-layout-row fx-layout-align-space-between gap-10">
               <div class="statusTitle">Real Time</div>
               @if (realTime) {
                 <div class="statusData">{{ realTime | gzDuration }}</div>
               }
             </div>
-            <div
-              fxLayout="row"
-              fxLayoutGap="10px"
-              fxLayoutAlign="space-between"
-            >
+            <div class="fx-layout-row fx-layout-align-space-between gap-10">
               <div class="statusTitle">Simulation Time</div>
               @if (simTime) {
                 <div class="statusData">{{ simTime | gzDuration }}</div>
               }
             </div>
-            <div
-              fxLayout="row"
-              fxLayoutGap="10px"
-              fxLayoutAlign="space-between"
-            >
+            <div class="fx-layout-row fx-layout-align-space-between gap-10">
               <div class="statusTitle">Real Time Factor</div>
               @if (realTimeFactor) {
                 <div class="statusData">
@@ -80,8 +64,8 @@
       </div>
     </div>
 
-    <div fxLayout="row">
-      <div class="visualizer" fxFill>
+    <div class="fx-layout-row">
+      <div class="visualizer fx-fill">
         <div class="outer" #fullScreen>
           @if (following) {
             <a
@@ -102,8 +86,8 @@
           </div>
           -->
 
-          <div class="inner" fxLayoutAlign="center center">
-            <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="inner fx-layout-align-center-center">
+            <div class="fx-layout-row fx-layout-align-center-center">
               @if (!simulation.isRunning()) {
                 <span class="mat-typography font-x-large">
                   Visualization only available while the simulation is running.
@@ -114,7 +98,7 @@
                 <div id="gz-scene" (window:resize)="resize()"></div>
               }
               @if (models.length > 0) {
-                <div fxLayout="column" class="gz3d-side-panel">
+                <div class="fx-layout-column gz3d-side-panel">
                   <h2>Entities</h2>
                   <mat-list class="entity-list">
                     <div mat-subheader>Models</div>

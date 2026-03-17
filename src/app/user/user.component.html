@@ -1,14 +1,14 @@
-<div fxLayout="column" class="page-content-inner">
+<div class="fx-layout-column page-content-inner">
   <gz-page-title title="User: {{ user.username }}"></gz-page-title>
 
   <mat-tab-group
     dynamicHeight
-    fxFill
+    class="fx-fill"
     (selectedIndexChange)="setActiveTab($event)"
   >
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon svgIcon="gz-model"></mat-icon>
           <span>Models Created ({{ paginatedModels?.totalCount }})</span>
         </div>
@@ -21,7 +21,7 @@
           [disabled]="activeTab !== 'models'"
           [finished]="!paginatedModels?.hasNextPage()"
           (onLoadMore)="loadNextModelsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>
@@ -29,7 +29,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon svgIcon="gz-model"></mat-icon>
           <span>Models Liked ({{ paginatedLikedModels?.totalCount }})</span>
         </div>
@@ -42,7 +42,7 @@
           [disabled]="activeTab !== 'modelsLiked'"
           [finished]="!paginatedLikedModels?.hasNextPage()"
           (onLoadMore)="loadNextLikedModelsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>
@@ -50,7 +50,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon svgIcon="gz-world"></mat-icon>
           <span>Worlds Created ({{ paginatedWorlds?.totalCount }})</span>
         </div>
@@ -63,7 +63,7 @@
           [disabled]="activeTab !== 'worlds'"
           [finished]="!paginatedWorlds?.hasNextPage()"
           (onLoadMore)="loadNextWorldsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>
@@ -71,7 +71,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon svgIcon="gz-world"></mat-icon>
           <span>Worlds Liked ({{ paginatedLikedWorlds?.totalCount }})</span>
         </div>
@@ -84,7 +84,7 @@
           [disabled]="activeTab !== 'worldsLiked'"
           [finished]="!paginatedLikedWorlds?.hasNextPage()"
           (onLoadMore)="loadNextLikedWorldsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>
@@ -92,7 +92,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="fx-layout-row fx-layout-align-start-center">
           <mat-icon>collections</mat-icon>
           <span>Collections ({{ paginatedCollections?.totalCount }})</span>
         </div>
@@ -105,7 +105,7 @@
           [disabled]="activeTab !== 'collections'"
           [finished]="!paginatedCollections?.hasNextPage()"
           (onLoadMore)="loadNextCollectionsPage()"
-          fxFlex
+          class="fx-flex"
         >
         </gz-fuel-resource-list>
       </div>

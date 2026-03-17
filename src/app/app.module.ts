@@ -11,7 +11,6 @@ import {
 } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { FlexLayoutModule } from "@ngbracket/ngx-layout";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -218,7 +217,7 @@ import { WorldService } from "./world/world.service";
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
-    FlexLayoutModule,
+
     FormsModule,
     MarkdownModule.forRoot({
       markedOptions: {

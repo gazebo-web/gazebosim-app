@@ -1,9 +1,9 @@
 <div class="content mat-typography">
-  <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start start">
+  <div class="fx-layout-column fx-layout-align-start-start gap-20">
     <p>Connect to and visualize a running Gazebo simulation.</p>
 
-    <div fxLayoutAlign="start" fxLayoutGap="20px">
-      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start start">
+    <div class="fx-layout-align-start gap-20">
+      <div class="fx-layout-row fx-layout-align-start-start gap-20">
         <mat-form-field>
           <input matInput [(ngModel)]="wsUrl" placeholder="Websocket URL" />
         </mat-form-field>
@@ -28,8 +28,8 @@
   </div>
 </div>
 
-<div fxLayout="row">
-  <div class="visualizer" fxFill>
+<div class="fx-layout-row">
+  <div class="visualizer fx-fill">
     <div class="outer" #fullScreen>
       @if (following) {
         <a
@@ -55,11 +55,11 @@
         </div>
       }
 
-      <div class="inner" fxLayoutAlign="center center">
-        <div fxLayout="row" fxLayoutAlign="center center">
+      <div class="inner fx-layout-align-center-center">
+        <div class="fx-layout-row fx-layout-align-center-center">
           <div id="gz-scene" (window:resize)="resize()"></div>
           @if (models.length > 0) {
-            <div fxLayout="column" class="gz3d-side-panel">
+            <div class="fx-layout-column gz3d-side-panel">
               <h2>Entities</h2>
               <mat-list class="entity-list">
                 @for (model of models; track model) {
