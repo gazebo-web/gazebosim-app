@@ -19,6 +19,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { Observable, Subscription, of, throwError } from "rxjs";
 import { MarkdownModule } from "ngx-markdown";
 import * as FileSaver from "file-saver";
@@ -46,6 +47,8 @@ import { PageTitleComponent } from "../page-title";
 import { SdfViewerComponent } from "./sdfviewer/sdfviewer.component";
 import { TagsComponent } from "../tags/tags.component";
 import { MetadataComponent } from "../metadata/metadata.component";
+import { BibtexDialogComponent } from "./bibtex-dialog/bibtex-dialog.component";
+import { GalleryComponent } from "../gallery/gallery.component";
 
 describe("ModelComponent", () => {
   let fixture: ComponentFixture<ModelComponent>;
@@ -86,11 +89,13 @@ describe("ModelComponent", () => {
     TestBed.configureTestingModule({
       declarations: [
         AuthPipe,
+        BibtexDialogComponent,
         CategoriesComponent,
         CopyDialogComponent,
         DescriptionComponent,
         FileSizePipe,
         FuelResourceListComponent,
+        GalleryComponent,
         ItemCardComponent,
         MetadataComponent,
         ModelComponent,
@@ -112,6 +117,7 @@ describe("ModelComponent", () => {
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
+        MatTooltipModule,
         ReactiveFormsModule,
         RouterTestingModule,
       ],
@@ -488,7 +494,7 @@ describe("ModelComponent", () => {
     component.loadCollections();
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
       component.model,
-      {},
+      { page: 1, per_page: 8 },
     );
 
     spy.calls.reset();
@@ -496,7 +502,7 @@ describe("ModelComponent", () => {
     component.loadCollections();
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
       component.model,
-      {},
+      { page: 1, per_page: 8 },
     );
     expect(snackBar._openedSnackBarRef).toBeTruthy();
   });
@@ -522,8 +528,126 @@ describe("ModelComponent", () => {
 
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
       component.model,
-      {},
+      { page: 1, per_page: 8 },
     );
     expect(component.paginatedCollections).toBe(mockCollections);
+  });
+
+  it("should load a specific page of collections", () => {
+    const collectionService = TestBed.inject(CollectionService);
+    const paginatedCollections = new PaginatedCollection();
+    paginatedCollections.collections = [];
+
+    spyOn(collectionService, "getAssetCollections").and.returnValue(
+      of(paginatedCollections),
+    );
+
+    component.loadCollections(2);
+
+    expect(component.collectionPage).toBe(2);
+    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
+      component.model,
+      { page: 3, per_page: 8 },
+    );
+  });
+
+  it("should toggle the 3D viewer", () => {
+    expect(component.view3d).toBeFalsy();
+
+    component.toggle3D();
+    expect(component.view3d).toBe(true);
+
+    component.toggle3D();
+    expect(component.view3d).toBe(false);
+  });
+
+  it("should reset view3d to false when changing version", () => {
+    const location = TestBed.inject(Location);
+    spyOn(component, "getFiles");
+    spyOn(location, "go");
+
+    component.model = testModel;
+    component.view3d = true;
+    component.currentVersion = 2;
+    component.onVersion();
+
+    expect(component.view3d).toBe(false);
+    expect(component.getFiles).toHaveBeenCalled();
+  });
+
+  it("should open the BibTeX dialog", () => {
+    const dialog = TestBed.inject(MatDialog);
+    spyOn(dialog, "open");
+
+    component.bibTex = "@online{test}";
+    component.openBibtex();
+
+    expect(dialog.open).toHaveBeenCalledWith(BibtexDialogComponent, {
+      data: { bibtex: "@online{test}" },
+      autoFocus: false,
+    });
+  });
+
+  it("should copy the bibtex to clipboard and show a snackbar", () => {
+    const snackBar = component.snackBar;
+    spyOn(document, "execCommand");
+
+    component.bibTex = "@online{test}";
+    component.copyBibtex();
+
+    expect(document.execCommand).toHaveBeenCalledWith("copy");
+    expect(snackBar._openedSnackBarRef).toBeTruthy();
+  });
+
+  it("should copy the SDF include snippet to clipboard and show a snackbar", () => {
+    const snackBar = component.snackBar;
+    spyOn(document, "execCommand");
+
+    component.model = testModel;
+    component.copySdfInclude();
+
+    expect(document.execCommand).toHaveBeenCalledWith("copy");
+    expect(snackBar._openedSnackBarRef).toBeTruthy();
+  });
+
+  it("should return empty collectionPages when paginatedCollections is undefined", () => {
+    component.paginatedCollections = undefined;
+    expect(component.collectionPages).toEqual([]);
+  });
+
+  it("should return correct collectionPages based on totalCount", () => {
+    component.paginatedCollections = new PaginatedCollection();
+    component.paginatedCollections.totalCount = 20;
+    // 20 / 8 = 2.5, ceil = 3
+    expect(component.collectionPages).toEqual([0, 1, 2]);
+  });
+
+  it("should return a single page when totalCount is less than COLLECTIONS_PER_PAGE", () => {
+    component.paginatedCollections = new PaginatedCollection();
+    component.paginatedCollections.totalCount = 5;
+    expect(component.collectionPages).toEqual([0]);
+  });
+
+  it("should generate the bibtex on ngOnInit", () => {
+    spyOn(component, "getFiles");
+    spyOn(component, "loadCollections");
+
+    component.ngOnInit();
+
+    expect(component.bibTex).toBeDefined();
+    expect(component.bibTex).toContain("@online{GazeboFuel-");
+    expect(component.bibTex).toContain("test-model");
+    expect(component.bibTex).toContain("test-owner");
+  });
+
+  it("should set empty gallery images when model has no images", () => {
+    component.model = new Model({
+      name: "no-image-model",
+      owner: "test-owner",
+      images: [],
+    });
+
+    component.setupGallery();
+    expect(component.galleryImages).toEqual([]);
   });
 });
