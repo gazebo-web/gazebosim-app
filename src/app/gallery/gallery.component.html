@@ -1,26 +1,48 @@
 @if (images?.length > 0) {
-  <div class="gallery-container">
-    <div class="main-image">
+  <div class="gz-gallery-wrapper">
+    <div class="gz-main-area">
+      <img [src]="images[currentIndex]" class="gz-main-img" alt="Model image" />
+
       @if (images.length > 1) {
-        <button class="nav-button prev" (click)="prev()">&#10094;</button>
-      }
-      <img [src]="images[currentIndex]" />
-      @if (images.length > 1) {
-        <button class="nav-button next" (click)="next()">&#10095;</button>
+        <button
+          class="gz-nav-btn gz-nav-prev"
+          (click)="prev()"
+          aria-label="Previous image"
+        >
+          <span class="material-icons">navigate_before</span>
+        </button>
+        <button
+          class="gz-nav-btn gz-nav-next"
+          (click)="next()"
+          aria-label="Next image"
+        >
+          <span class="material-icons">navigate_next</span>
+        </button>
+
+        <div class="gz-dot-strip">
+          @for (img of images; track img; let i = $index) {
+            <span
+              class="gz-dot"
+              [class.active]="i === currentIndex"
+              (click)="selectImage(i)"
+            ></span>
+          }
+        </div>
       }
     </div>
-  </div>
-}
 
-@if (images?.length > 1) {
-  <div class="thumbs-container">
-    @for (img of images; track img; let i = $index) {
-      <div
-        class="thumb"
-        [class.active]="i === currentIndex"
-        (click)="selectImage(i)"
-      >
-        <img [src]="img" />
+    @if (images.length > 1) {
+      <div class="gz-thumbs-strip">
+        @for (img of images; track img; let i = $index) {
+          <div
+            class="gz-thumb"
+            [class.active]="i === currentIndex"
+            (click)="selectImage(i)"
+            [attr.aria-label]="'View image ' + (i + 1)"
+          >
+            <img [src]="img" alt="Thumbnail {{ i + 1 }}" />
+          </div>
+        }
       </div>
     }
   </div>

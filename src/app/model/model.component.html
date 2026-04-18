@@ -1,79 +1,88 @@
 <div class="page-content-inner fx-flex fx-layout-align-center">
   <div class="content mat-typography">
     <!-- Header -->
-    <div class="fx-layout-align-space-between">
-      <div class="fx-layout-row">
-        <!-- User Avatar coming in version 2-->
-        <!-- <div>
-        <img mat-card-avatar *ngIf="model?.ownerAvatar; else avatarIcon"
-          [src]='model?.ownerAvatar'>
-        <ng-template #avatarIcon>
-          <mat-icon class="material-icons avatar">account_circle</mat-icon>
-        </ng-template>
-      </div> -->
-
+    <div class="model-header">
+      <div class="fx-layout-row fx-layout-align-start-center">
         <div class="fx-layout-column">
           <gz-page-title
             [title]="model.name"
             svgIcon="gz-model"
           ></gz-page-title>
-          <h4>
+          <h4 class="owner-attribution">
             By
             <a class="color-link" routerLink="/{{ model?.owner }}">{{
               model?.owner
             }}</a>
           </h4>
         </div>
+        <span class="header-spacer"></span>
+        <span
+          class="visibility-badge"
+          [class.badge-private]="model.private"
+          [matTooltip]="
+            model.private ? 'This model is private' : 'This model is public'
+          "
+        >
+          {{ model.private ? "Private" : "Public" }}
+        </span>
+        <button
+          mat-icon-button
+          matTooltip="Report this model"
+          (click)="report()"
+          class="header-flag-btn"
+        >
+          <mat-icon>flag</mat-icon>
+        </button>
       </div>
     </div>
 
-    <!-- Gallery and Stats -->
-    <div class="fx-layout-row-gt-sm fx-layout-column-lt-md">
-      <div class="row-left padding">
+    <!-- Gallery (full-width) -->
+    <div class="gallery-section">
+      <div class="viewer-controls">
         @if (hasGzWeb && model?.files.length > 0) {
-          <div>
+          <a
+            mat-icon-button
+            [matTooltip]="view3d ? 'Back to gallery' : 'View in 3D'"
+            class="viewer-btn"
+            (click)="toggle3D()"
+          >
+            <mat-icon>{{ view3d ? "photo_library" : "3d_rotation" }}</mat-icon>
+          </a>
+          @if (view3d) {
             <a
               mat-icon-button
-              title="View in 3D"
-              class="button3d"
-              (click)="toggle3D()"
+              (click)="openFullscreen()"
+              matTooltip="Full screen"
+              class="viewer-btn"
+              ><mat-icon>fullscreen</mat-icon></a
             >
-              <mat-icon>3d_rotation</mat-icon>
-            </a>
-            @if (view3d) {
-              <a
-                mat-icon-button
-                (click)="openFullscreen()"
-                title="Full Screen"
-                class="buttonFullscreen"
-                ><mat-icon>fullscreen</mat-icon></a
-              >
-            }
-            @if (view3d) {
-              <a
-                mat-icon-button
-                (click)="resetView()"
-                title="Reset view"
-                class="buttonResetView"
-                ><mat-icon>home</mat-icon></a
-              >
-            }
-            @if (view3d) {
-              <div #fullScreen>
-                <gz-sdfviewer
-                  class="sdfviewer"
-                  [resource]="model"
-                  [currentVersion]="currentVersion"
-                >
-                </gz-sdfviewer>
-              </div>
-            }
-          </div>
+          }
+          @if (view3d) {
+            <a
+              mat-icon-button
+              (click)="resetView()"
+              matTooltip="Reset view"
+              class="viewer-btn"
+              ><mat-icon>home</mat-icon></a
+            >
+          }
         }
-        <div class="gallery-container-outer">
-          <div
-            class="gallery-container-inner fx-layout-column fx-layout-align-center-center"
-          >
+      </div>
+      <div class="gallery-container-outer">
+        <div
+          class="gallery-container-inner fx-layout-column fx-layout-align-center-center"
+        >
+          @if (view3d) {
+            <!-- 3D viewer fills the entire gallery panel -->
+            <div #fullScreen class="sdfviewer-container">
+              <gz-sdfviewer
+                class="sdfviewer"
+                [resource]="model"
+                [currentVersion]="currentVersion"
+              >
+              </gz-sdfviewer>
+            </div>
+          } @else {
             @if (!galleryImages) {
               <div class="fx-layout-column fx-layout-align-center-center">
                 @if (loading || !resources) {
@@ -94,50 +103,68 @@
             @if (galleryImages?.length > 0) {
               <gz-gallery [images]="galleryImages"></gz-gallery>
             }
-          </div>
+          }
         </div>
       </div>
+    </div>
 
-      <div class="row-right padding">
-        <div class="action-buttons">
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="action-bar-inner">
+        <div class="action-btn-row">
+          <!-- Download -->
           <button
-            mat-icon-button
-            [disabled]="!authService.isAuthenticated() || disableLike"
-            [title]="getLikeButtonTitle()"
-            [color]="model.isLiked ? 'accent' : 'none'"
-            (click)="likeClick()"
-          >
-            <mat-icon>favorite</mat-icon>
-          </button>
-
-          <button
-            mat-icon-button
-            title="Download this model"
+            class="action-item download-btn"
+            matTooltip="Download this model"
             (click)="downloadClick()"
           >
             <mat-icon>file_download</mat-icon>
+            <span class="action-label">Download</span>
           </button>
+          <div class="action-sep"></div>
+          <!-- Like -->
           <button
-            mat-icon-button
-            title="Copy SDF snippet to clipboard"
+            class="action-item"
+            [class.liked]="model.isLiked"
+            [disabled]="!authService.isAuthenticated() || disableLike"
+            [matTooltip]="getLikeButtonTitle()"
+            (click)="likeClick()"
+          >
+            <mat-icon>{{
+              model.isLiked ? "favorite" : "favorite_border"
+            }}</mat-icon>
+            <span class="action-label">Like</span>
+            <span class="action-count">{{ model?.likes }}</span>
+          </button>
+          <div class="action-sep"></div>
+          <!-- Copy SDF snippet -->
+          <button
+            class="action-item"
+            matTooltip="Copy SDF snippet to clipboard"
             (click)="copySdfInclude()"
           >
             <mat-icon>code</mat-icon>
+            <span class="action-label">SDF Snippet</span>
           </button>
+          <div class="action-sep"></div>
+          <!-- Copy model -->
           <button
-            mat-icon-button
+            class="action-item"
             [disabled]="
               !authService.isAuthenticated() || currentVersion != latestVersion
             "
-            [title]="getCopyButtonTitle()"
+            [matTooltip]="getCopyButtonTitle()"
             (click)="copyModel()"
           >
             <mat-icon>content_copy</mat-icon>
+            <span class="action-label">Clone</span>
           </button>
+          <div class="action-sep"></div>
+          <!-- Add to collection -->
           <button
-            mat-icon-button
+            class="action-item"
             [disabled]="!authService.isAuthenticated()"
-            [title]="
+            [matTooltip]="
               authService.isAuthenticated()
                 ? 'Add to a Collection'
                 : 'Log in to add this to a Collection'
@@ -145,195 +172,244 @@
             (click)="addToCollection()"
           >
             <mat-icon>collections</mat-icon>
+            <span class="action-label">Add to Collection</span>
           </button>
-          <button mat-icon-button title="Report this model" (click)="report()">
-            <mat-icon>flag</mat-icon>
+          <div class="action-sep"></div>
+          <!-- Cite / BibTeX -->
+          <button
+            class="action-item"
+            matTooltip="View BibTeX citation"
+            (click)="openBibtex()"
+          >
+            <mat-icon>format_quote</mat-icon>
+            <span class="action-label">Cite</span>
           </button>
+          <div class="action-sep"></div>
+          <!-- Version -->
+          <div
+            class="action-item action-version-item"
+            matTooltip="Display another version"
+          >
+            <mat-icon>tag</mat-icon>
+            <span class="action-label">Version&nbsp;</span>
+            <mat-select
+              [(ngModel)]="currentVersion"
+              (ngModelChange)="onVersion()"
+              class="action-version-select"
+              name="versions"
+              placeholder="–"
+              required
+            >
+              @for (version of model.versions; track version) {
+                <mat-option [value]="version">{{ version }}</mat-option>
+              }
+            </mat-select>
+          </div>
           @if (canEdit) {
+            <div class="action-sep"></div>
             <button
-              mat-icon-button
-              title="Edit model"
+              class="action-item"
+              matTooltip="Edit model"
               routerLink="/{{ model?.owner }}/models/{{ model?.name }}/edit"
             >
               <mat-icon>mode_edit</mat-icon>
+              <span class="action-label">Edit</span>
             </button>
           }
         </div>
 
-        <mat-list>
-          <mat-list-item>
-            <div class="stat-item">
-              <span class="stat-field">Liked</span>
-              <span class="stat-value">{{ model?.likes }}</span>
-            </div>
-          </mat-list-item>
-          <mat-list-item>
-            <div class="stat-item">
-              <span class="stat-field">Downloaded</span>
-              <span class="stat-value">{{ model?.downloads }}</span>
-            </div>
-          </mat-list-item>
-          <mat-list-item>
-            <div class="stat-item">
-              <span>File size</span>
-              <span>{{ model?.filesize | gzFileSize }}</span>
-            </div>
-          </mat-list-item>
-          <mat-list-item>
-            <div class="stat-item">
-              <span class="stat-field">Upload date</span>
-              <div class="stat-value">{{ model?.uploadDate | date }}</div>
-            </div>
-          </mat-list-item>
-          <mat-list-item>
-            <div class="stat-item">
-              <span class="stat-field">Last modified</span><br />
-              <span class="stat-value">{{ model?.modifyDate | date }}</span>
-            </div>
-          </mat-list-item>
-          <mat-list-item>
-            <div class="stat-item">
-              <span class="stat-field">Version</span><br />
-              <mat-select
-                [(ngModel)]="currentVersion"
-                (ngModelChange)="onVersion()"
-                class="header-dropdown"
-                name="versions"
-                title="Display another version"
-                placeholder="Version"
-                required
-              >
-                @for (version of model.versions; track version) {
-                  <mat-option [value]="version">
-                    {{ version }}
-                  </mat-option>
-                }
-              </mat-select>
-            </div>
-          </mat-list-item>
-        </mat-list>
-
-        <!-- Disable because it doesn' work with Gazebo
-      <a [href]="getDragUrl()" class="drag-button">
-        <mat-icon _ngcontent-c20="" class="mat-icon material-icons" role="img" aria-hidden="true">mouse</mat-icon>
-        Drag me!
-      </a>
-      --></div>
+        <div class="action-meta">
+          <span class="meta-item" matTooltip="Downloads">
+            <mat-icon class="meta-icon">file_download</mat-icon>
+            {{ model?.downloads }}
+          </span>
+          <span class="meta-item" matTooltip="Model size">
+            <mat-icon class="meta-icon">straighten</mat-icon>
+            {{ model?.filesize | gzFileSize }}
+          </span>
+          <span class="meta-item">
+            <mat-icon class="meta-icon">schedule</mat-icon>
+            Last modified {{ model?.modifyDate | date }}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- Description, Files and Tags -->
-    <div class="bottom-row-container fx-layout-row">
-      <mat-tab-group dynamicHeight class="fx-flex tab-container" color="accent">
-        <mat-tab label="Model Description">
-          <div class="fx-layout-column tab-body gap-20">
-            <gz-description [description]="model.description"></gz-description>
+    <!-- Disable because it doesn' work with Gazebo
+    <a [href]="getDragUrl()" class="drag-button">
+      <mat-icon _ngcontent-c20="" class="mat-icon material-icons" role="img" aria-hidden="true">mouse</mat-icon>
+      Drag me!
+    </a>
+    -->
 
-            <gz-categories [categories]="model.categories"></gz-categories>
-
-            <gz-tags [tags]="model.tags"></gz-tags>
-
-            <div class="fx-layout-row fx-layout-align-start-center gap-10">
-              <mat-icon class="material-icons">{{
-                model.private ? "visibility_off" : "visibility"
-              }}</mat-icon>
-              <span
-                >This model is {{ model.private ? "private" : "public" }}.</span
-              >
+    <!-- Description, Files, Tags and Side Info -->
+    <div class="bottom-row-container">
+      <!-- Left pane: tab group (2/3 width) -->
+      <div class="bottom-left-pane">
+        <mat-tab-group class="fx-flex tab-container" color="accent">
+          <mat-tab label="Model Description">
+            <div class="fx-layout-column tab-body gap-20">
+              <gz-description
+                [description]="model.description"
+              ></gz-description>
             </div>
+          </mat-tab>
 
-            <div class="fx-layout-row fx-layout-align-start-center gap-10">
-              <a
-                class="color-link"
-                rel="license"
-                href="{{ model?.license.url }}"
-                title="{{ model?.license.name }}"
-                target="_blank"
-              >
-                <img
-                  alt="{{ model?.license.name }}"
-                  src="{{ model?.license.image }}"
-                />
-              </a>
-
-              <a
-                class="color-link"
-                rel="license"
-                href="{{ model?.license.url }}"
-                title="{{ model?.license.name }}"
-                target="_blank"
-              >
-                <span>
-                  This model is licensed under {{ model?.license.name }}
-                </span>
-              </a>
-            </div>
-            <div class="fx-layout-row fx-layout-align-start-start gap-10">
-              <mat-icon title="Bibtex">library_books</mat-icon>
-              <pre
-                (click)="copyBibtex()"
-                class="bibtex"
-                title="Copy Bibtex to clipboard"
-              ><code>{{bibTex}}</code></pre>
-            </div>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="Model Files">
-          @if (model?.files && model.files.length > 0) {
-            <div class="list-container tab-body">
-              <mat-list dense>
-                @for (file of model.files; track file) {
-                  <mat-list-item class="list-divider">
-                    <mat-icon mat-list-icon>insert_drive_file</mat-icon>
-                    <h4 matLine>{{ file.name }}</h4>
-                    <span matLine>{{ file.displayPath }}</span>
-                    <button
-                      mat-icon-button
-                      title="Download {{ file.name }}"
-                      (click)="downloadIndividualFile(file)"
+          <mat-tab label="Model Files">
+            @if (model?.files && model.files.length > 0) {
+              <div class="list-container tab-body">
+                <mat-list dense>
+                  @for (file of model.files; track file) {
+                    <mat-list-item
+                      class="list-divider file-item"
+                      [matTooltip]="file.displayPath"
                     >
-                      <mat-icon>file_download</mat-icon>
-                    </button>
-                  </mat-list-item>
-                }
-              </mat-list>
-            </div>
-          } @else {
-            <div class="tab-body">
-              <span>There was a problem getting the files of this model.</span>
-            </div>
-          }
-        </mat-tab>
+                      <mat-icon matListItemIcon>insert_drive_file</mat-icon>
+                      <span matListItemTitle>{{ file.name }}</span>
+                      <button
+                        matListItemMeta
+                        mat-icon-button
+                        [matTooltip]="'Download ' + file.name"
+                        (click)="downloadIndividualFile(file)"
+                      >
+                        <mat-icon>file_download</mat-icon>
+                      </button>
+                    </mat-list-item>
+                  }
+                </mat-list>
+              </div>
+            } @else {
+              <div class="tab-body">
+                <span
+                  >There was a problem getting the files of this model.</span
+                >
+              </div>
+            }
+          </mat-tab>
 
-        <mat-tab label="Collections">
-          @if (collections && collections.length > 0) {
-            <div class="tab-body">
-              <gz-fuel-resource-list
-                class="fx-flex"
-                resourceType="collections"
-                [resources]="collections"
-                [length]="paginatedCollections.totalCount"
-                [finished]="!paginatedCollections.hasNextPage()"
-                (pageChange)="loadCollections($event)"
-              >
-              </gz-fuel-resource-list>
-            </div>
-          } @else {
-            <div class="tab-body">
-              <span>This model doesn't belong to any collection yet.</span>
-            </div>
-          }
-        </mat-tab>
+          <mat-tab label="Collections">
+            @if (collections && collections.length > 0) {
+              <div class="tab-body collections-tab-body">
+                <div
+                  class="collection-cards-grid fx-layout-row-wrap fx-layout-align-center-start"
+                >
+                  @for (col of collections; track col) {
+                    <gz-item-card
+                      class="collection-card fx-flex fx-flex-xs-100 fx-flex-sm-50 fx-flex-md-25"
+                      resourceType="collections"
+                      [resource]="col"
+                      type="collections"
+                    ></gz-item-card>
+                  }
+                </div>
 
-        <mat-tab label="Metadata">
-          <gz-metadata
-            [metadata]="model.metadata"
-            [edit]="false"
-            class="fx-fill"
-          >
-          </gz-metadata>
-        </mat-tab>
-      </mat-tab-group>
+                <div
+                  class="collections-page-nav"
+                  [style.visibility]="
+                    paginatedCollections &&
+                    paginatedCollections.totalCount > COLLECTIONS_PER_PAGE
+                      ? 'visible'
+                      : 'hidden'
+                  "
+                >
+                  <button
+                    class="col-nav-btn"
+                    [disabled]="collectionPage === 0"
+                    [class.disabled]="collectionPage === 0"
+                    (click)="loadCollections(collectionPage - 1)"
+                    aria-label="Previous page"
+                  >
+                    <span class="material-icons">navigate_before</span>
+                  </button>
+
+                  <div class="col-dot-strip">
+                    @for (p of collectionPages; track p; let i = $index) {
+                      <span
+                        class="col-dot"
+                        [class.active]="i === collectionPage"
+                        (click)="loadCollections(i)"
+                      ></span>
+                    }
+                  </div>
+
+                  <button
+                    class="col-nav-btn"
+                    [disabled]="!paginatedCollections.hasNextPage()"
+                    [class.disabled]="!paginatedCollections.hasNextPage()"
+                    (click)="loadCollections(collectionPage + 1)"
+                    aria-label="Next page"
+                  >
+                    <span class="material-icons">navigate_next</span>
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <div class="tab-body">
+                <span>This model doesn't belong to any collection yet.</span>
+              </div>
+            }
+          </mat-tab>
+
+          <mat-tab label="Metadata">
+            <gz-metadata
+              [metadata]="model.metadata"
+              [edit]="false"
+              class="fx-fill"
+            >
+            </gz-metadata>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
+      <!-- Right pane: stacked info panes (1/3 width) -->
+      <div class="bottom-right-pane">
+        <!-- Copyright / License pane -->
+        <div class="side-pane">
+          <div class="side-pane-title">License</div>
+          <div class="info-row">
+            <a
+              class="color-link license-link"
+              rel="license"
+              href="{{ model?.license.url }}"
+              [matTooltip]="model?.license.name"
+              target="_blank"
+            >
+              <img
+                alt="{{ model?.license.name }}"
+                src="{{ model?.license.image }}"
+              />
+            </a>
+
+            <a
+              class="color-link license-link"
+              rel="license"
+              href="{{ model?.license.url }}"
+              [matTooltip]="model?.license.name"
+              target="_blank"
+            >
+              <span>Licensed under {{ model?.license.name }}</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Categories pane -->
+        <div class="side-pane side-pane-inline">
+          <div class="side-pane-title">
+            <mat-icon class="side-pane-title-icon">category</mat-icon>
+            Categories
+          </div>
+          <gz-categories [categories]="model.categories"></gz-categories>
+        </div>
+
+        <!-- Tags pane -->
+        <div class="side-pane side-pane-inline">
+          <div class="side-pane-title">
+            <mat-icon class="side-pane-title-icon">sell</mat-icon>
+            Tags
+          </div>
+          <gz-tags [tags]="model.tags"></gz-tags>
+        </div>
+      </div>
     </div>
   </div>
 </div>

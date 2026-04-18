@@ -25,10 +25,10 @@ import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.co
 import { Model } from "./model";
 import { ModelService } from "./model.service";
 import { ReportDialogComponent } from "../fuel-resource/report-dialog/report-dialog.component";
+import { BibtexDialogComponent } from "./bibtex-dialog/bibtex-dialog.component";
 import { SdfViewerComponent } from "./sdfviewer/sdfviewer.component";
 
 import * as FileSaver from "file-saver";
-import { PageEvent } from "@angular/material/paginator";
 
 @Component({
   selector: "gz-model",
@@ -93,6 +93,29 @@ export class ModelComponent implements OnInit, OnDestroy {
    * The paginated Collections returned from the Server, required by the resource list component.
    */
   public paginatedCollections: PaginatedCollection;
+
+  /**
+   * Items per page for the Collections tab.
+   */
+  public readonly COLLECTIONS_PER_PAGE = 8;
+
+  /**
+   * Current page index (0-based) for the Collections tab.
+   */
+  public collectionPage: number = 0;
+
+  /**
+   * Array of page indices used to render dot indicators in the Collections tab.
+   */
+  public get collectionPages(): number[] {
+    if (!this.paginatedCollections) {
+      return [];
+    }
+    const total = Math.ceil(
+      this.paginatedCollections.totalCount / this.COLLECTIONS_PER_PAGE,
+    );
+    return Array.from({ length: total }, (_, i) => i);
+  }
 
   /**
    * Subscription to the Collection Dialog. Used to see the result of it.
@@ -604,18 +627,16 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * Load the collections that have this Model.
    *
-   * @param event Optional. The page event that contains the pagination data of collections to load.
+   * @param pageIndex Zero-based page index to load.
    */
-  public loadCollections(event?: PageEvent): void {
-    const params = event
-      ? {
-          page: event.pageIndex + 1,
-          per_page: event.pageSize,
-        }
-      : {};
+  public loadCollections(pageIndex: number = 0): void {
+    this.collectionPage = pageIndex;
+    const params = {
+      page: pageIndex + 1,
+      per_page: this.COLLECTIONS_PER_PAGE,
+    };
     this.collectionService.getAssetCollections(this.model, params).subscribe({
       next: (response) => {
-        // DEVNOTE: This change is not reflected in the Client URL.
         this.paginatedCollections = response;
         this.collections = response.collections;
       },
@@ -679,6 +700,16 @@ export class ModelComponent implements OnInit, OnDestroy {
    */
   public resetView(): void {
     this.sdfViewer.resetCameraPose();
+  }
+
+  /**
+   * Opens a dialog showing the BibTeX citation for this model.
+   */
+  public openBibtex(): void {
+    this.dialog.open(BibtexDialogComponent, {
+      data: { bibtex: this.bibTex },
+      autoFocus: false,
+    });
   }
 
   /**

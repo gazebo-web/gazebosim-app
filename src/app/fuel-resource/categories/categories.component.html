@@ -22,18 +22,13 @@
     </mat-form-field>
   </div>
 } @else {
-  <div class="fx-layout-row fx-fill gap-10">
-    <mat-icon class="margin-align" title="Categories">category</mat-icon>
-    @if (categories && categories.length > 0) {
-      <div class="fx-layout-align-start-center category-list">
-        <span>{{ selectedCategories }}</span>
-      </div>
-    } @else {
-      <div
-        class="margin-align fx-layout-row fx-layout-align-start-center category-list"
-      >
-        <span>No categories.</span>
-      </div>
-    }
-  </div>
+  @if (categories && categories.length > 0) {
+    <mat-chip-list>
+      @for (category of categories; track category) {
+        <mat-chip>{{ category }}</mat-chip>
+      }
+    </mat-chip-list>
+  } @else {
+    <span>-</span>
+  }
 }

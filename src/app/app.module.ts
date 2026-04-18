@@ -33,6 +33,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import {
   OverlayContainer,
@@ -49,6 +50,7 @@ import { NgxStripeModule } from "ngx-stripe";
  * Local elements.
  */
 import { AccessTokenDialogComponent } from "./settings/access-token-dialog.component";
+import { BibtexDialogComponent } from "./model/bibtex-dialog/bibtex-dialog.component";
 import { AdminCloudsimComponent } from "./admin/cloudsim/admin-cloudsim.component";
 import { AdminComponent } from "./admin";
 import { AdminElasticsearchComponent } from "./admin/elasticsearch";
@@ -153,6 +155,7 @@ import { WorldService } from "./world/world.service";
    */
   declarations: [
     AccessTokenDialogComponent,
+    BibtexDialogComponent,
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
@@ -251,6 +254,7 @@ import { WorldService } from "./world/world.service";
     MatStepperModule,
     MatTableModule,
     MatTabsModule,
+    MatTooltipModule,
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title class="bibtex-dialog-title">
+  <mat-icon class="title-icon">format_quote</mat-icon>
+  BibTeX Citation
+</h2>
+
+<mat-dialog-content>
+  <pre class="bibtex-pre"><code>{{ data.bibtex }}</code></pre>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="copy()">
+    <mat-icon>content_copy</mat-icon>
+    Copy
+  </button>
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>

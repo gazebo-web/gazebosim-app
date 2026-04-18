@@ -1,0 +1,26 @@
+.bibtex-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .title-icon {
+    opacity: 0.7;
+  }
+}
+
+.bibtex-pre {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+  min-width: 480px;
+  cursor: pointer;
+
+  code {
+    font-family: "Roboto Mono", "Courier New", monospace;
+  }
+}
