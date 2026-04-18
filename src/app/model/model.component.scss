@@ -274,7 +274,7 @@ gz-gallery {
   position: relative;
   margin-bottom: 2em;
   width: 100%;
-  height: 620px;
+  min-height: 620px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -509,6 +509,8 @@ gz-gallery {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  border: none;
+  padding: 0;
   background: rgba(0, 0, 0, 0.18);
   cursor: pointer;
   transition:

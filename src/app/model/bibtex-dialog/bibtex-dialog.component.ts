@@ -20,18 +20,9 @@ export class BibtexDialogComponent {
   ) {}
 
   public copy(): void {
-    const selBox = document.createElement("textarea");
-    selBox.style.position = "fixed";
-    selBox.style.left = "0";
-    selBox.style.top = "0";
-    selBox.style.opacity = "0";
-    selBox.value = this.data.bibtex;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(selBox);
-    this.snackBar.open("BibTeX copied to clipboard.", "", { duration: 2000 });
+    navigator.clipboard.writeText(this.data.bibtex).then(() => {
+      this.snackBar.open("BibTeX copied to clipboard.", "", { duration: 2000 });
+    });
   }
 
   public close(): void {

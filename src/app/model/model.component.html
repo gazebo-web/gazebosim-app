@@ -322,13 +322,20 @@
                     <span class="material-icons">navigate_before</span>
                   </button>
 
-                  <div class="col-dot-strip">
+                  <div
+                    class="col-dot-strip"
+                    role="tablist"
+                    aria-label="Collection page navigation"
+                  >
                     @for (p of collectionPages; track p; let i = $index) {
-                      <span
+                      <button
                         class="col-dot"
                         [class.active]="i === collectionPage"
                         (click)="loadCollections(i)"
-                      ></span>
+                        [attr.aria-label]="'Page ' + (i + 1)"
+                        [attr.aria-selected]="i === collectionPage"
+                        role="tab"
+                      ></button>
                     }
                   </div>
 

@@ -19,13 +19,16 @@
           <span class="material-icons">navigate_next</span>
         </button>
 
-        <div class="gz-dot-strip">
+        <div class="gz-dot-strip" role="tablist" aria-label="Image navigation">
           @for (img of images; track img; let i = $index) {
-            <span
+            <button
               class="gz-dot"
               [class.active]="i === currentIndex"
               (click)="selectImage(i)"
-            ></span>
+              [attr.aria-label]="'View image ' + (i + 1)"
+              [attr.aria-selected]="i === currentIndex"
+              role="tab"
+            ></button>
           }
         </div>
       }

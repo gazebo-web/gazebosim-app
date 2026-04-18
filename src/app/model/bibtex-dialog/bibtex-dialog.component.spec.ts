@@ -61,14 +61,15 @@ describe("BibtexDialogComponent", () => {
     expect(component.data.bibtex).toBe(testBibtex);
   });
 
-  it("should copy the bibtex to the clipboard and show a snackbar", () => {
+  it("should copy the bibtex to the clipboard and show a snackbar", async () => {
     const snackBar = TestBed.inject(MatSnackBar);
     spyOn(snackBar, "open");
-    spyOn(document, "execCommand");
+    spyOn(navigator.clipboard, "writeText").and.returnValue(Promise.resolve());
 
     component.copy();
+    await fixture.whenStable();
 
-    expect(document.execCommand).toHaveBeenCalledWith("copy");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(testBibtex);
     expect(snackBar.open).toHaveBeenCalledWith(
       "BibTeX copied to clipboard.",
       "",

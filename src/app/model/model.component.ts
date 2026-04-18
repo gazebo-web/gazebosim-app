@@ -107,15 +107,7 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * Array of page indices used to render dot indicators in the Collections tab.
    */
-  public get collectionPages(): number[] {
-    if (!this.paginatedCollections) {
-      return [];
-    }
-    const total = Math.ceil(
-      this.paginatedCollections.totalCount / this.COLLECTIONS_PER_PAGE,
-    );
-    return Array.from({ length: total }, (_, i) => i);
-  }
+  public collectionPages: number[] = [];
 
   /**
    * Subscription to the Collection Dialog. Used to see the result of it.
@@ -244,7 +236,7 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\torganization={Open Robotics},`;
     this.bibTex += `\n\tdate={${date.getFullYear()}},`;
     this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
-    this.bibTex += `\n\tday={${date.getDay()}},`;
+    this.bibTex += `\n\tday={${date.getDate()}},`;
     this.bibTex += `\n\tauthor={${this.model.owner}},`;
     this.bibTex += `\n\turl={${url}},\n}`;
 
@@ -315,22 +307,14 @@ export class ModelComponent implements OnInit, OnDestroy {
    * Callback for the link button. Copies the current URL to the clipboard.
    */
   public copySdfInclude(): void {
-    const selBox = document.createElement("textarea");
     const url = decodeURIComponent(
       this.modelService.getBaseUrl(this.model.owner, this.model.name),
     );
-    selBox.style.position = "fixed";
-    selBox.style.left = "0";
-    selBox.style.top = "0";
-    selBox.style.opacity = "0";
-    selBox.value = `<include>\n<uri>\n${url}\n</uri>\n</include>`;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(selBox);
-    this.snackBar.open("SDF include snippet copied to clipboard.", "", {
-      duration: 2000,
+    const snippet = `<include>\n<uri>\n${url}\n</uri>\n</include>`;
+    navigator.clipboard.writeText(snippet).then(() => {
+      this.snackBar.open("SDF include snippet copied to clipboard.", "", {
+        duration: 2000,
+      });
     });
   }
 
@@ -467,6 +451,8 @@ export class ModelComponent implements OnInit, OnDestroy {
    */
   public addToCollection(): void {
     const dialogOps = {
+      width: "380px",
+      maxWidth: "90vw",
       data: {
         ownerList: [
           this.authService.userProfile.username,
@@ -639,6 +625,10 @@ export class ModelComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.paginatedCollections = response;
         this.collections = response.collections;
+        const total = Math.ceil(
+          response.totalCount / this.COLLECTIONS_PER_PAGE,
+        );
+        this.collectionPages = Array.from({ length: total }, (_, i) => i);
       },
       error: (error) => {
         this.snackBar.open(error.message, "Got it");
@@ -709,26 +699,6 @@ export class ModelComponent implements OnInit, OnDestroy {
     this.dialog.open(BibtexDialogComponent, {
       data: { bibtex: this.bibTex },
       autoFocus: false,
-    });
-  }
-
-  /**
-   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
-   */
-  public copyBibtex(): void {
-    const selBox = document.createElement("textarea");
-    selBox.style.position = "fixed";
-    selBox.style.left = "0";
-    selBox.style.top = "0";
-    selBox.style.opacity = "0";
-    selBox.value = this.bibTex;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(selBox);
-    this.snackBar.open("Bibtex copied to clipboard.", "", {
-      duration: 2000,
     });
   }
 

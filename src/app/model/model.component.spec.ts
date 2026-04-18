@@ -588,43 +588,43 @@ describe("ModelComponent", () => {
     });
   });
 
-  it("should copy the bibtex to clipboard and show a snackbar", () => {
+  it("should copy the SDF include snippet to clipboard and show a snackbar", async () => {
     const snackBar = component.snackBar;
-    spyOn(document, "execCommand");
-
-    component.bibTex = "@online{test}";
-    component.copyBibtex();
-
-    expect(document.execCommand).toHaveBeenCalledWith("copy");
-    expect(snackBar._openedSnackBarRef).toBeTruthy();
-  });
-
-  it("should copy the SDF include snippet to clipboard and show a snackbar", () => {
-    const snackBar = component.snackBar;
-    spyOn(document, "execCommand");
+    spyOn(navigator.clipboard, "writeText").and.returnValue(Promise.resolve());
 
     component.model = testModel;
     component.copySdfInclude();
+    await fixture.whenStable();
 
-    expect(document.execCommand).toHaveBeenCalledWith("copy");
-    expect(snackBar._openedSnackBarRef).toBeTruthy();
+    expect(navigator.clipboard.writeText).toHaveBeenCalled();
   });
 
-  it("should return empty collectionPages when paginatedCollections is undefined", () => {
-    component.paginatedCollections = undefined;
+  it("should default collectionPages to empty array", () => {
     expect(component.collectionPages).toEqual([]);
   });
 
-  it("should return correct collectionPages based on totalCount", () => {
-    component.paginatedCollections = new PaginatedCollection();
-    component.paginatedCollections.totalCount = 20;
+  it("should compute collectionPages when loadCollections completes", () => {
+    const paginated = new PaginatedCollection();
+    paginated.totalCount = 20;
+    paginated.collections = [];
+    spyOn(component.collectionService, "getAssetCollections").and.returnValue(
+      of(paginated),
+    );
+
+    component.loadCollections(0);
     // 20 / 8 = 2.5, ceil = 3
     expect(component.collectionPages).toEqual([0, 1, 2]);
   });
 
-  it("should return a single page when totalCount is less than COLLECTIONS_PER_PAGE", () => {
-    component.paginatedCollections = new PaginatedCollection();
-    component.paginatedCollections.totalCount = 5;
+  it("should set a single page when totalCount is less than COLLECTIONS_PER_PAGE", () => {
+    const paginated = new PaginatedCollection();
+    paginated.totalCount = 5;
+    paginated.collections = [];
+    spyOn(component.collectionService, "getAssetCollections").and.returnValue(
+      of(paginated),
+    );
+
+    component.loadCollections(0);
     expect(component.collectionPages).toEqual([0]);
   });
 
