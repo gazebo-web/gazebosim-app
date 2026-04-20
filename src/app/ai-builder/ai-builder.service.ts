@@ -13,6 +13,8 @@ export interface AiBuilderProject {
   sdf_version: string;
   ros2_distro: string;
   github_repo?: string;
+  gazebo_ws_url?: string;
+  gazebo_ws_key?: string;
   created_at: string;
   updated_at: string;
 }
@@ -169,6 +171,27 @@ export class AiBuilderService {
 
   listProviders(): Observable<{ providers: string[] }> {
     return this.http.get<{ providers: string[] }>(`${this.apiBase}/providers`);
+  }
+
+  // --- Export ---
+
+  exportZipURL(projectId: string): string {
+    return `${this.apiBase}/projects/${projectId}/export/zip`;
+  }
+
+  exportToGitHub(
+    projectId: string,
+    body: {
+      repo: string;
+      branch?: string;
+      commit_message?: string;
+      token: string;
+    },
+  ): Observable<{ repo: string; branch: string; paths: string[] }> {
+    return this.http.post<{ repo: string; branch: string; paths: string[] }>(
+      `${this.apiBase}/projects/${projectId}/export/github`,
+      body,
+    );
   }
 
   /**

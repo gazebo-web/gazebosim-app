@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Gazebo Connection</h2>
+<mat-dialog-content>
+  <p class="hint">
+    Enter the WebSocket URL of the Gazebo instance you want the AI Builder to
+    drive. This can be local (<code>ws://localhost:9002</code>) or a remote
+    server. Leave blank for no live connection — the viewport will still show
+    static SDF previews.
+  </p>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>WebSocket URL</mat-label>
+    <input matInput [(ngModel)]="url" placeholder="ws://localhost:9002" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Auth token (optional)</mat-label>
+    <input matInput [(ngModel)]="key" type="password" />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button color="warn" (click)="disconnect()" *ngIf="url">
+    Disconnect
+  </button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>

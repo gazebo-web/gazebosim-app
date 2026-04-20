@@ -40,11 +40,37 @@
   min-height: 0;
 }
 
-.chat-panel {
+.left-column {
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   min-height: 0;
+}
+
+.history {
+  max-height: 280px;
+  overflow-y: auto;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.gz-btn {
+  max-width: 280px;
+}
+
+.gz-label {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
 }
 
 .messages {

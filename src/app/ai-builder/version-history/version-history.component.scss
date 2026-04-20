@@ -1,0 +1,52 @@
+.version-history {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.date {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+}
+
+.message {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  margin: 2px 0 6px;
+}
+
+.loading,
+.empty {
+  padding: 12px 0;
+  color: rgba(0, 0, 0, 0.6);
+}

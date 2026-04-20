@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { Subject, takeUntil } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
@@ -8,7 +10,16 @@ import {
   AiBuilderService,
   ChatEvent,
   ChatMessage,
+  ProjectVersion,
 } from "./ai-builder.service";
+import {
+  GazeboConnectionDialogComponent,
+  GazeboConnectionDialogData,
+} from "./gazebo-connection-dialog/gazebo-connection-dialog.component";
+import {
+  GitHubExportDialogComponent,
+  GitHubExportResult,
+} from "./github-export-dialog/github-export-dialog.component";
 
 interface ChatLogEntry {
   role: "user" | "assistant" | "tool";
@@ -32,11 +43,14 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
   worldSDF = "";
   error = "";
   showSDF = false;
+  showHistory = false;
 
   constructor(
     private route: ActivatedRoute,
     private service: AiBuilderService,
     private auth: AuthService,
+    private dialog: MatDialog,
+    private snack: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -136,7 +150,6 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
         });
         break;
       case "tool_result":
-        // Keep tool results brief in the log.
         this.log.push({
           role: "tool",
           text: `← ${ev.tool} returned`,
@@ -156,6 +169,10 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
     this.showSDF = !this.showSDF;
   }
 
+  toggleHistory(): void {
+    this.showHistory = !this.showHistory;
+  }
+
   saveVersion(): void {
     if (!this.project || !this.worldSDF) return;
     const msg = prompt("Commit message:", "snapshot");
@@ -163,7 +180,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
     this.service
       .createVersion(this.project.id, this.worldSDF, msg || "")
       .subscribe({
-        next: () => alert("Saved."),
+        next: () => this.snack.open("Saved.", "Dismiss", { duration: 2000 }),
         error: (err) => (this.error = err?.message || "save failed"),
       });
   }
@@ -174,5 +191,86 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
     this.service.clearChatHistory(this.project.id).subscribe(() => {
       this.log = [];
     });
+  }
+
+  restoreVersion(v: ProjectVersion): void {
+    this.worldSDF = v.world_sdf;
+    this.snack.open(
+      `Restored v${v.version} into editor. Save to lock it in as a new version.`,
+      "Dismiss",
+      { duration: 4000 },
+    );
+  }
+
+  configureGazebo(): void {
+    if (!this.project) return;
+    const ref = this.dialog.open<
+      GazeboConnectionDialogComponent,
+      GazeboConnectionDialogData,
+      GazeboConnectionDialogData | null
+    >(GazeboConnectionDialogComponent, {
+      width: "520px",
+      data: {
+        url: this.project.gazebo_ws_url || "",
+        key: this.project.gazebo_ws_key || "",
+      },
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result === null || !this.project) return;
+      this.service
+        .updateProject(this.project.id, {
+          gazebo_ws_url: result.url,
+          gazebo_ws_key: result.key,
+        })
+        .subscribe({
+          next: (p) => {
+            this.project = p;
+            this.snack.open(
+              result.url ? "Gazebo connection saved." : "Disconnected.",
+              "Dismiss",
+              { duration: 2000 },
+            );
+          },
+          error: (err) => (this.error = err?.message || "save failed"),
+        });
+    });
+  }
+
+  downloadZip(): void {
+    if (!this.project) return;
+    window.open(this.service.exportZipURL(this.project.id), "_blank");
+  }
+
+  pushToGitHub(): void {
+    if (!this.project) return;
+    const ref = this.dialog.open(GitHubExportDialogComponent, {
+      width: "520px",
+      data: { defaultRepo: this.project.github_repo || "" },
+    });
+    ref.afterClosed().subscribe((result: GitHubExportResult | null) => {
+      if (!result || !this.project) return;
+      this.service.exportToGitHub(this.project.id, result).subscribe({
+        next: (resp) => {
+          this.snack.open(
+            `Pushed ${resp.paths.length} files to ${resp.repo}.`,
+            "Dismiss",
+            { duration: 4000 },
+          );
+          // Remember the repo for next time.
+          if (this.project) {
+            this.service
+              .updateProject(this.project.id, { github_repo: result.repo })
+              .subscribe((p) => (this.project = p));
+          }
+        },
+        error: (err) =>
+          (this.error = err?.error?.error || err?.message || "push failed"),
+      });
+    });
+  }
+
+  get gazeboStatusLabel(): string {
+    if (!this.project?.gazebo_ws_url) return "Not connected";
+    return this.project.gazebo_ws_url;
   }
 }

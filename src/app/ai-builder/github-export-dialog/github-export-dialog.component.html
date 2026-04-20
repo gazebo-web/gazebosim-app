@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Push to GitHub</h2>
+<mat-dialog-content>
+  <p class="hint">
+    Pushes the generated ROS 2 packages from the latest saved version to the
+    target repository using the GitHub contents API. The token is used only for
+    this request and is not stored.
+  </p>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Repository (owner/name)</mat-label>
+    <input matInput [(ngModel)]="repo" placeholder="alice/my-sim-project" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Branch (optional)</mat-label>
+    <input matInput [(ngModel)]="branch" placeholder="main" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Commit message</mat-label>
+    <input
+      matInput
+      [(ngModel)]="commitMessage"
+      placeholder="AI Builder export"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>GitHub token</mat-label>
+    <input matInput type="password" [(ngModel)]="token" placeholder="ghp_..." />
+    <mat-hint>Needs contents:write scope on the target repo.</mat-hint>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="submit()"
+    [disabled]="!repo || !token"
+  >
+    Push
+  </button>
+</mat-dialog-actions>

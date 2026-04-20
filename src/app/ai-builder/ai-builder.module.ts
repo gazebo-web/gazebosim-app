@@ -7,22 +7,30 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
 import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { RouterModule } from "@angular/router";
 
 import { AiBuilderRoutingModule } from "./ai-builder-routing.module";
 import { AiBuilderComponent } from "./ai-builder.component";
 import { AiBuilderProjectListComponent } from "./project-list/ai-builder-project-list.component";
 import { AiBuilderViewportComponent } from "./viewport/ai-builder-viewport.component";
+import { GazeboConnectionDialogComponent } from "./gazebo-connection-dialog/gazebo-connection-dialog.component";
+import { GitHubExportDialogComponent } from "./github-export-dialog/github-export-dialog.component";
 import { LlmSettingsModule } from "./llm-settings/llm-settings.module";
 import { NewProjectDialogComponent } from "./new-project-dialog/new-project-dialog.component";
+import { VersionHistoryComponent } from "./version-history/version-history.component";
 
 @NgModule({
   declarations: [
     AiBuilderComponent,
     AiBuilderProjectListComponent,
     AiBuilderViewportComponent,
+    GazeboConnectionDialogComponent,
+    GitHubExportDialogComponent,
     NewProjectDialogComponent,
+    VersionHistoryComponent,
   ],
   imports: [
     AiBuilderRoutingModule,
@@ -35,7 +43,9 @@ import { NewProjectDialogComponent } from "./new-project-dialog/new-project-dial
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatMenuModule,
     MatSelectModule,
+    MatSnackBarModule,
     RouterModule,
   ],
 })
