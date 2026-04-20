@@ -67,6 +67,15 @@ export interface ChatEvent {
   error?: string;
 }
 
+export interface ExecutionEvent {
+  type: "stdout" | "stderr" | "status";
+  line?: string;
+  status?: "started" | "exited" | "error";
+  code?: number;
+  error?: string;
+  time: string;
+}
+
 /**
  * Client for the AI Builder backend service.
  */
@@ -192,6 +201,82 @@ export class AiBuilderService {
       `${this.apiBase}/projects/${projectId}/export/github`,
       body,
     );
+  }
+
+  // --- Code execution (Phase 3) ---
+
+  startExecution(
+    projectId: string,
+    body: {
+      entry_command: string[];
+      language?: string;
+      timeout_secs?: number;
+      memory_mb?: number;
+      cpus?: number;
+    },
+  ): Observable<{ execution_id: string }> {
+    return this.http.post<{ execution_id: string }>(
+      `${this.apiBase}/projects/${projectId}/execute`,
+      body,
+    );
+  }
+
+  stopExecution(projectId: string, runId: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.apiBase}/projects/${projectId}/execute/${runId}/stop`,
+      {},
+    );
+  }
+
+  async *streamExecution(
+    projectId: string,
+    runId: string,
+    authToken: string,
+  ): AsyncGenerator<ExecutionEvent> {
+    const resp = await fetch(
+      `${this.apiBase}/projects/${projectId}/execute/${runId}`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${authToken}` },
+      },
+    );
+    if (!resp.ok || !resp.body) {
+      yield {
+        type: "status",
+        status: "error",
+        error: `HTTP ${resp.status}`,
+        time: new Date().toISOString(),
+      };
+      return;
+    }
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const events = buffer.split(/\n\n/);
+      buffer = events.pop() || "";
+      for (const rawEvent of events) {
+        const dataLine = rawEvent
+          .split("\n")
+          .find((l) => l.startsWith("data:"));
+        if (!dataLine) continue;
+        try {
+          const data = JSON.parse(dataLine.slice(5).trim());
+          yield data as ExecutionEvent;
+          if (
+            data.type === "status" &&
+            (data.status === "exited" || data.status === "error")
+          ) {
+            return;
+          }
+        } catch {
+          // ignore malformed lines
+        }
+      }
+    }
   }
 
   /**

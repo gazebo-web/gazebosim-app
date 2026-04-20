@@ -1,0 +1,38 @@
+<div class="execution-panel">
+  <div class="toolbar">
+    <span class="label">Entry:</span>
+    <input
+      [(ngModel)]="entryCommand"
+      class="entry"
+      placeholder="ros2 run my_pkg velocity_controller"
+      [disabled]="running"
+    />
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="run()"
+      [disabled]="running || !entryCommand.trim()"
+    >
+      <mat-icon>play_arrow</mat-icon> Run
+    </button>
+    <button mat-button color="warn" (click)="stop()" [disabled]="!running">
+      <mat-icon>stop</mat-icon> Stop
+    </button>
+    <span class="exit" *ngIf="exitCode !== null">exit {{ exitCode }}</span>
+  </div>
+  <div class="output">
+    <div
+      *ngFor="let line of log"
+      class="line"
+      [class.stdout]="line.kind === 'stdout'"
+      [class.stderr]="line.kind === 'stderr'"
+      [class.status]="line.kind === 'status'"
+    >
+      {{ line.text }}
+    </div>
+    <div *ngIf="log.length === 0" class="empty">
+      Output will appear here. Save a version first so there are packages to
+      run.
+    </div>
+  </div>
+</div>

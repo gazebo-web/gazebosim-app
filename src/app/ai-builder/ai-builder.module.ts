@@ -16,6 +16,7 @@ import { AiBuilderRoutingModule } from "./ai-builder-routing.module";
 import { AiBuilderComponent } from "./ai-builder.component";
 import { AiBuilderProjectListComponent } from "./project-list/ai-builder-project-list.component";
 import { AiBuilderViewportComponent } from "./viewport/ai-builder-viewport.component";
+import { ExecutionPanelComponent } from "./execution-panel/execution-panel.component";
 import { GazeboConnectionDialogComponent } from "./gazebo-connection-dialog/gazebo-connection-dialog.component";
 import { GitHubExportDialogComponent } from "./github-export-dialog/github-export-dialog.component";
 import { LlmSettingsModule } from "./llm-settings/llm-settings.module";
@@ -27,6 +28,7 @@ import { VersionHistoryComponent } from "./version-history/version-history.compo
     AiBuilderComponent,
     AiBuilderProjectListComponent,
     AiBuilderViewportComponent,
+    ExecutionPanelComponent,
     GazeboConnectionDialogComponent,
     GitHubExportDialogComponent,
     NewProjectDialogComponent,

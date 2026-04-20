@@ -44,6 +44,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
   error = "";
   showSDF = false;
   showHistory = false;
+  showExecution = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -171,6 +172,10 @@ export class AiBuilderComponent implements OnInit, OnDestroy {
 
   toggleHistory(): void {
     this.showHistory = !this.showHistory;
+  }
+
+  toggleExecution(): void {
+    this.showExecution = !this.showExecution;
   }
 
   saveVersion(): void {

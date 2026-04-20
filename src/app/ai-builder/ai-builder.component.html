@@ -17,6 +17,10 @@
     <button mat-button (click)="toggleSDF()">
       <mat-icon>code</mat-icon> {{ showSDF ? "Hide SDF" : "Show SDF" }}
     </button>
+    <button mat-button (click)="toggleExecution()">
+      <mat-icon>terminal</mat-icon>
+      {{ showExecution ? "Hide run" : "Run code" }}
+    </button>
     <button mat-button (click)="saveVersion()" [disabled]="!worldSDF">
       <mat-icon>save</mat-icon> Save
     </button>
@@ -97,6 +101,12 @@
           placeholder="Generated SDF will appear here."
         ></textarea>
       </div>
+
+      <ai-builder-execution-panel
+        *ngIf="showExecution"
+        class="exec-panel"
+        [projectId]="project.id"
+      ></ai-builder-execution-panel>
     </div>
   </div>
 </div>

@@ -142,7 +142,13 @@
 
 .sdf-panel {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  height: 40%;
+  height: 30%;
+}
+
+.exec-panel {
+  display: block;
+  height: 30%;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .sdf-editor {
