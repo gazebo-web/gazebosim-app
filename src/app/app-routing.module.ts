@@ -179,6 +179,17 @@ const routes: Routes = [
     },
   },
   {
+    path: "ai-builder",
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import("./ai-builder/ai-builder.module").then((m) => m.AiBuilderModule),
+    data: {
+      titlebarTitle: "AI Builder",
+      titlebarSubtitle: "",
+      title: "AI Builder",
+    },
+  },
+  {
     path: "search",
     component: SearchComponent,
     pathMatch: "full",

@@ -1,0 +1,35 @@
+.llm-settings {
+  max-width: 640px;
+  margin: 16px 0;
+}
+
+.full {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.telemetry {
+  margin-top: 12px;
+}
+
+.telemetry label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hint {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.error {
+  color: #c00;
+  margin-top: 8px;
+}
+
+.success {
+  color: #090;
+  margin-top: 8px;
+}

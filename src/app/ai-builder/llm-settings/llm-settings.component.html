@@ -1,0 +1,88 @@
+<mat-card class="llm-settings">
+  <mat-card-header>
+    <mat-card-title>AI Builder · LLM Provider</mat-card-title>
+    <mat-card-subtitle>
+      Your API key is encrypted on the server and only used to proxy AI Builder
+      requests.
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content *ngIf="!loading">
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Provider</mat-label>
+      <mat-select [(ngModel)]="provider" (selectionChange)="onProviderChange()">
+        <mat-option value="anthropic">Anthropic</mat-option>
+        <mat-option value="openai">OpenAI</mat-option>
+        <mat-option value="gemini">Google Gemini</mat-option>
+        <mat-option value="ollama">Ollama (local)</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Model</mat-label>
+      <mat-select [(ngModel)]="model">
+        <mat-option
+          *ngFor="let preset of modelPresets | slice: 0"
+          [value]="preset.model"
+          [hidden]="preset.provider !== provider"
+        >
+          {{ preset.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      class="full"
+      *ngIf="provider !== 'ollama'"
+    >
+      <mat-label>API key</mat-label>
+      <input
+        matInput
+        type="password"
+        [(ngModel)]="apiKey"
+        [placeholder]="maskedKey || 'paste your key'"
+      />
+      <mat-hint *ngIf="maskedKey"
+        >Current: {{ maskedKey }} — leave blank to keep.</mat-hint
+      >
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      class="full"
+      *ngIf="provider === 'ollama'"
+    >
+      <mat-label>Ollama endpoint</mat-label>
+      <input
+        matInput
+        [(ngModel)]="endpoint"
+        placeholder="http://localhost:11434"
+      />
+    </mat-form-field>
+
+    <div class="telemetry">
+      <label>
+        <input type="checkbox" [(ngModel)]="telemetryOptIn" />
+        Help improve AI Builder by sharing anonymized usage.
+      </label>
+      <p class="hint">
+        Opt-in. We log prompts, tool calls, and validation failures to refine
+        the system prompt and tools. Never shared with third parties.
+      </p>
+    </div>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="saved" class="success">Saved.</div>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button (click)="remove()" *ngIf="maskedKey">Remove</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+      [disabled]="saving"
+    >
+      {{ saving ? "Saving…" : "Save" }}
+    </button>
+  </mat-card-actions>
+</mat-card>

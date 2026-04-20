@@ -18,6 +18,8 @@ export const environment = {
   CLOUDSIM_HOST:
     process.env.CLOUDSIM_HOST || "https://staging-cloudsim.gazebosim.org",
   CLOUDSIM_VERSION: process.env.CLOUDSIM_VERSION || "1.0",
+  AI_BUILDER_HOST:
+    process.env.AI_BUILDER_HOST || "https://staging-ai-builder.gazebosim.org",
   CREDITS_REDIRECT: process.env.CREDITS_REDIRECT || "",
   // Other
   AWS_GZ_LOGS_BUCKET:

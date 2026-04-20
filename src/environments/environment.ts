@@ -23,6 +23,7 @@ export const environment = {
   API_VERSION: process.env.API_VERSION || "1.0",
   CLOUDSIM_HOST: process.env.CLOUDSIM_HOST || "http://localhost:8001",
   CLOUDSIM_VERSION: process.env.CLOUDSIM_VERSION || "1.0",
+  AI_BUILDER_HOST: process.env.AI_BUILDER_HOST || "http://localhost:8010",
   CREDITS_REDIRECT: process.env.CREDITS_REDIRECT || "",
   // Other
   AWS_GZ_LOGS_BUCKET: process.env.AWS_GZ_LOGS_BUCKET || "",

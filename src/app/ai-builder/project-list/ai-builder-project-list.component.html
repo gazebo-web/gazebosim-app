@@ -1,0 +1,52 @@
+<div class="project-list-page">
+  <div class="header">
+    <h1>AI Builder Projects</h1>
+    <button mat-raised-button color="primary" (click)="newProject()">
+      <mat-icon>add</mat-icon> New Project
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading…</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && projects.length === 0" class="empty">
+    <p>
+      You don't have any AI Builder projects yet. Create one to start building a
+      simulation with natural language.
+    </p>
+    <p>
+      First-time users: make sure you've set your LLM API key in
+      <a routerLink="/settings">Settings</a>.
+    </p>
+  </div>
+
+  <div class="grid" *ngIf="!loading && projects.length > 0">
+    <mat-card
+      *ngFor="let p of projects"
+      class="project-card"
+      (click)="open(p)"
+      tabindex="0"
+    >
+      <mat-card-header>
+        <mat-card-title>{{ p.name }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ p.gazebo_version }} · SDF {{ p.sdf_version }} · ROS 2
+          {{ p.ros2_distro }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="p.description">{{ p.description }}</p>
+        <p class="meta">Updated {{ p.updated_at | date: "medium" }}</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button
+          mat-icon-button
+          (click)="delete(p, $event)"
+          aria-label="Delete project"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

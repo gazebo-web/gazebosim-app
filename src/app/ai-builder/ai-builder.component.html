@@ -1,0 +1,74 @@
+<div class="ai-builder" *ngIf="project">
+  <div class="header">
+    <h2>{{ project.name }}</h2>
+    <div class="meta">
+      {{ project.gazebo_version }} · SDF {{ project.sdf_version }} · ROS 2
+      {{ project.ros2_distro }}
+    </div>
+    <div class="spacer"></div>
+    <button mat-button (click)="toggleSDF()">
+      <mat-icon>code</mat-icon> {{ showSDF ? "Hide SDF" : "Show SDF" }}
+    </button>
+    <button mat-button (click)="saveVersion()" [disabled]="!worldSDF">
+      <mat-icon>save</mat-icon> Save version
+    </button>
+    <button mat-button (click)="clearChat()">
+      <mat-icon>delete_sweep</mat-icon> Clear chat
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="layout">
+    <!-- Chat panel -->
+    <div class="chat-panel">
+      <div class="messages">
+        <div
+          *ngFor="let entry of log"
+          class="message"
+          [class.user]="entry.role === 'user'"
+          [class.assistant]="entry.role === 'assistant'"
+          [class.tool]="entry.role === 'tool'"
+        >
+          <div class="role">{{ entry.role }}</div>
+          <div class="content">{{ entry.text }}</div>
+        </div>
+        <div *ngIf="currentAssistant" class="message assistant streaming">
+          <div class="role">assistant</div>
+          <div class="content">{{ currentAssistant }}</div>
+        </div>
+      </div>
+      <div class="input">
+        <textarea
+          [(ngModel)]="draftMessage"
+          rows="3"
+          placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'…"
+          (keydown.control.enter)="sendMessage()"
+          [disabled]="sending"
+        ></textarea>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="sendMessage()"
+          [disabled]="sending || !draftMessage.trim()"
+        >
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right column: viewport + optional SDF panel -->
+    <div class="right-column">
+      <ai-builder-viewport [sdf]="worldSDF"></ai-builder-viewport>
+
+      <div class="sdf-panel" *ngIf="showSDF">
+        <textarea
+          [(ngModel)]="worldSDF"
+          class="sdf-editor"
+          spellcheck="false"
+          placeholder="Generated SDF will appear here."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</div>

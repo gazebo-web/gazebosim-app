@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>New AI Builder Project</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Project name</mat-label>
+    <input matInput [(ngModel)]="name" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="3" [(ngModel)]="description"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Gazebo release</mat-label>
+    <mat-select [(ngModel)]="gazeboVersion">
+      <mat-option *ngFor="let g of gazeboOptions" [value]="g">{{
+        g
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <p class="hint">
+    SDF {{ sdfVersion }} · ROS 2 {{ ros2Distro }} will be used.
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="create()"
+    [disabled]="!name.trim()"
+  >
+    Create
+  </button>
+</mat-dialog-actions>

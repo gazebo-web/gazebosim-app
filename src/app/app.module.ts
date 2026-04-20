@@ -84,6 +84,7 @@ import { EditModelComponent } from "./model/edit/edit-model.component";
 import { EditWorldComponent } from "./world/edit/edit-world.component";
 import { ElasticsearchConfigDialogComponent } from "./admin/elasticsearch/config-dialog/config-dialog.component";
 import { environment } from "../environments/environment";
+import { LlmSettingsModule } from "./ai-builder/llm-settings/llm-settings.module";
 import { ExtraDialogComponent } from "./cloudsim/extra-dialog/extra-dialog.component";
 import { FileSizePipe } from "./file-size/file-size.pipe";
 import { FileUploadComponent } from "./file-upload";
@@ -219,6 +220,7 @@ import { WorldService } from "./world/world.service";
     BrowserModule,
 
     FormsModule,
+    LlmSettingsModule,
     MarkdownModule.forRoot({
       markedOptions: {
         provide: MARKED_OPTIONS,
