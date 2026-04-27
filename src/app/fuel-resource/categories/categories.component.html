@@ -22,13 +22,11 @@
     </mat-form-field>
   </div>
 } @else {
-  @if (categories && categories.length > 0) {
-    <mat-chip-list>
-      @for (category of categories; track category) {
-        <mat-chip>{{ category }}</mat-chip>
-      }
-    </mat-chip-list>
-  } @else {
-    <span>-</span>
-  }
+  <mat-chip-list>
+    @for (category of categories; track category) {
+      <mat-chip>{{ category }}</mat-chip>
+    } @empty {
+      <span>-</span>
+    }
+  </mat-chip-list>
 }

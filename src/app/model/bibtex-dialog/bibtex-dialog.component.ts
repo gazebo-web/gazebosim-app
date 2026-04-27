@@ -20,9 +20,16 @@ export class BibtexDialogComponent {
   ) {}
 
   public copy(): void {
-    navigator.clipboard.writeText(this.data.bibtex).then(() => {
-      this.snackBar.open("BibTeX copied to clipboard.", "", { duration: 2000 });
-    });
+    navigator.clipboard
+      .writeText(this.data.bibtex)
+      .then(() => {
+        this.snackBar.open("BibTeX copied to clipboard.", "", {
+          duration: 2000,
+        });
+      })
+      .catch(() => {
+        this.snackBar.open("Failed to copy BibTeX.", "Got it");
+      });
   }
 
   public close(): void {
