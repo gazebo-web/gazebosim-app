@@ -9,3 +9,30 @@ mat-form-field {
 .tab-body {
   padding: 10px;
 }
+
+/* Header cells — bold and clearly distinguished */
+.tab-body mat-header-row {
+  background: #f5f7fa;
+  border-bottom: 2px solid #dde3ea;
+}
+
+.tab-body mat-header-cell {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555;
+}
+
+/* Data rows */
+.tab-body mat-row {
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #f8f9fa;
+  }
+}

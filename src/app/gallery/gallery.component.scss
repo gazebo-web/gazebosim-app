@@ -1,72 +1,181 @@
-.gallery-container {
-  position: relative;
+/* ===================================================
+   Gallery Component — Full-fill image viewer
+   =================================================== */
+
+gz-gallery {
+  display: flex;
   width: 100%;
+  height: 100%;
+}
+
+.gz-gallery-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+  border-radius: inherit;
   overflow: hidden;
 }
 
-.main-image {
+/* --- Main image area --- */
+.gz-main-area {
   position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  img {
-    max-width: 100%;
-    max-height: 400px;
-    object-fit: contain;
+  /* Reveal nav buttons on hover */
+  &:hover .gz-nav-btn {
+    opacity: 1;
   }
 }
 
-.nav-button {
+.gz-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Subtle fade between images */
+  transition: opacity 0.15s ease;
+}
+
+/* --- Navigation buttons --- */
+.gz-nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: none;
-  padding: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
   cursor: pointer;
-  font-size: 18px;
-  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    transform 0.15s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 
-  &.prev {
-    left: 0;
-  }
-
-  &.next {
-    right: 0;
+  .material-icons {
+    font-size: 28px;
+    line-height: 1;
   }
 
   &:hover {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.72);
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  &.gz-nav-prev {
+    left: 14px;
+  }
+
+  &.gz-nav-next {
+    right: 14px;
   }
 }
 
-.thumbs-container {
+/* --- Dot indicators (shown inside the main area) --- */
+.gz-dot-strip {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 4px;
-  margin-top: 8px;
-  overflow-x: auto;
+  gap: 6px;
+  z-index: 10;
 }
 
-.thumb {
+.gz-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &.active {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.25);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* --- Thumbnails strip --- */
+.gz-thumbs-strip {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  background: #e8e8e8;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+}
+
+.gz-thumb {
   flex-shrink: 0;
   cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+  border-radius: 6px;
+  overflow: hidden;
   border: 2px solid transparent;
+  opacity: 0.55;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 
   &.active {
     opacity: 1;
-    border-color: #1976d2;
+    border-color: #f58113;
+    transform: scale(1.04);
   }
 
-  &:hover {
-    opacity: 1;
+  &:hover:not(.active) {
+    opacity: 0.9;
+    transform: scale(1.04);
   }
 
   img {
-    height: 60px;
+    width: 80px;
+    height: 56px;
     object-fit: cover;
+    display: block;
   }
 }

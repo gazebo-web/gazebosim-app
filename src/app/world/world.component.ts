@@ -457,6 +457,8 @@ export class WorldComponent implements OnInit, OnDestroy {
    */
   public addToCollection(): void {
     const dialogOps = {
+      width: "380px",
+      maxWidth: "90vw",
       data: {
         ownerList: [
           this.authService.userProfile.username,
