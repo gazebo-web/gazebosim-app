@@ -131,7 +131,7 @@
               <mat-list-item class="list-divider">
                 <div
                   class="fx-layout-row fx-layout-align-start-baseline gap-10"
-                  matLine
+                  matListItemTitle
                 >
                   <a routerLink="/{{ user.username }}">{{ user.username }}</a>
                   <mat-chip-list>
@@ -143,15 +143,17 @@
                   </mat-chip-list>
                 </div>
                 @if (canDisplayRemoveButton(user)) {
-                  <button
-                    mat-button
-                    color="primary"
-                    (click)="removeUser(user)"
-                    [disabled]="disableRemoveButton(user)"
-                    [title]="getRemoveButtonTooltip(user)"
-                  >
-                    {{ getRemoveButtonLabel(user) }}
-                  </button>
+                  <div matListItemMeta>
+                    <button
+                      mat-button
+                      color="primary"
+                      (click)="removeUser(user)"
+                      [disabled]="disableRemoveButton(user)"
+                      [title]="getRemoveButtonTooltip(user)"
+                    >
+                      {{ getRemoveButtonLabel(user) }}
+                    </button>
+                  </div>
                 }
               </mat-list-item>
             }
