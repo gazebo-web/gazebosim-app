@@ -11,13 +11,12 @@ import {
 } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatDialogModule } from "@angular/material/dialog";
-import { MatExpansionModule } from "@angular/material/expansion";
+import { MatDividerModule } from "@angular/material/divider";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
@@ -33,6 +32,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import {
   OverlayContainer,
@@ -49,6 +49,7 @@ import { NgxStripeModule } from "ngx-stripe";
  * Local elements.
  */
 import { AccessTokenDialogComponent } from "./settings/access-token-dialog.component";
+import { BibtexDialogComponent } from "./model/bibtex-dialog/bibtex-dialog.component";
 import { AdminCloudsimComponent } from "./admin/cloudsim/admin-cloudsim.component";
 import { AdminComponent } from "./admin";
 import { AdminElasticsearchComponent } from "./admin/elasticsearch";
@@ -153,6 +154,7 @@ import { WorldService } from "./world/world.service";
    */
   declarations: [
     AccessTokenDialogComponent,
+    BibtexDialogComponent,
     AdminCloudsimComponent,
     AdminComponent,
     AdminElasticsearchComponent,
@@ -229,13 +231,12 @@ import { WorldService } from "./world/world.service";
         },
       },
     }),
-    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
-    MatExpansionModule,
+    MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -251,6 +252,7 @@ import { WorldService } from "./world/world.service";
     MatStepperModule,
     MatTableModule,
     MatTabsModule,
+    MatTooltipModule,
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
     ReactiveFormsModule,

@@ -1,10 +1,14 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { MatRadioButton, MatRadioGroup } from "@angular/material/radio";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { map, switchMap, debounceTime } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 import { Collection } from "../collection";
 import { CollectionService } from "../collection.service";
@@ -19,18 +23,13 @@ import { FuelResource } from "../../fuel-resource";
 })
 
 /**
- * Dialog used to add a resource into an existing Collection, or create one.
+ * Quick-picker dialog to add a resource into an existing or new Collection.
  */
 export class CollectionDialogComponent implements OnInit {
   /**
    * The Fuel resource to add into a collection.
    */
   public resource: FuelResource;
-
-  /**
-   * Collection description to use in the form element.
-   */
-  public collectionDescription: string;
 
   /**
    * Input form for the new Collection Name.
@@ -46,44 +45,50 @@ export class CollectionDialogComponent implements OnInit {
   public collectionOwnerList: string[];
 
   /**
-   * Index of the selected owner from the list. By default, it's the logged user.
+   * All collections the user can extend.
    */
-  public owner: number = 0;
+  public extensibleCollections: Collection[] = [];
 
   /**
-   * Input form that handles the collection Name, to add a resource into it.
+   * Filtered collections based on search text.
    */
-  public collectionAddInputForm = new FormControl("", { updateOn: "change" });
+  public filteredCollections: Collection[] = [];
 
   /**
-   * List of potential Collections to add a resource into. It is an Observable,
-   * the HTML subscribes to it using the "async" pipe.
+   * The current search text.
    */
-  public collectionList: Observable<Collection[]>;
+  public searchText: string = "";
 
   /**
-   * Form Input for the Model Privacy.
+   * Whether the collection list is still loading.
    */
-  public privacyInputForm = new FormControl();
+  public loadingCollections: boolean = true;
 
   /**
-   * Which option (add or create).
+   * The currently selected existing collection.
    */
-  public option = 0;
+  public selectedCollection: Collection | null = null;
 
   /**
-   * The set of available options.
+   * Whether the user is creating a new collection.
    */
-  public options = ["Add", "Create"];
+  public creatingNew: boolean = false;
 
   /**
-   * @param collectionService Service used to handle collection-related requests to the Server.
-   * @param dialog Reference to the opened dialog.
-   * @param snackBar Snackbar used to display notifications.
-   * @param data Data for the dialog. Fields:
-   *        - ownerList (string[]) Array of potential owners the collection could have.
-   *        - resource (FuelResource) The resource that could be added to the collection.
+   * Whether the new collection should be private.
    */
+  public isPrivate: boolean = false;
+
+  /**
+   * Whether an operation is in progress.
+   */
+  public busy: boolean = false;
+
+  /**
+   * Reference to the new collection name input for auto-focus.
+   */
+  @ViewChild("newNameInput") newNameInput: ElementRef;
+
   constructor(
     public collectionService: CollectionService,
     public dialog: MatDialogRef<CollectionDialogComponent>,
@@ -94,63 +99,112 @@ export class CollectionDialogComponent implements OnInit {
     this.resource = data.resource;
   }
 
-  /**
-   * On Init lifecycle hook.
-   */
   public ngOnInit(): void {
-    // Prepare the collection list filter by input.
-    this.collectionList = this.collectionAddInputForm.valueChanges.pipe(
-      debounceTime(300),
-      switchMap((value, index) => {
-        // Value is a string until a collection is selected.
-        // Once selected, the value is a Collection instead of a string. A collection is useful
-        // because we need both name and owner, but we need a string to pass to the search query.
-        if (typeof value !== "string") {
-          value = (value as Collection).name;
-        }
-        return this.collectionService
-          .getCollectionExtensibleList({ search: value })
-          .pipe(
-            map((paginatedCollections) => {
-              return paginatedCollections.collections;
-            }),
-          );
-      }),
+    this.collectionService
+      .getCollectionExtensibleList({})
+      .pipe(map((paginated) => paginated.collections))
+      .subscribe({
+        next: (collections) => {
+          this.extensibleCollections = collections;
+          this.filteredCollections = collections;
+          this.loadingCollections = false;
+        },
+        error: () => {
+          this.loadingCollections = false;
+        },
+      });
+  }
+
+  /**
+   * Filter the collection list by search text.
+   */
+  public filterCollections(text: string): void {
+    const query = text.toLowerCase();
+    this.filteredCollections = this.extensibleCollections.filter(
+      (col) =>
+        col.name.toLowerCase().includes(query) ||
+        col.owner.toLowerCase().includes(query),
     );
   }
 
   /**
-   * Callback of the add button. Adds the given Fuel resource to a new collection.
+   * Select an existing collection.
    */
-  public add(): void {
-    // Verify the input field contains a collection. If none was selected, it is only
-    // a string.
-    if (
-      !this.collectionAddInputForm.value ||
-      typeof this.collectionAddInputForm.value === "string"
-    ) {
+  public selectCollection(collection: Collection): void {
+    this.selectedCollection = collection;
+    this.creatingNew = false;
+  }
+
+  /**
+   * Activate the create-new inline input.
+   */
+  public activateCreate(): void {
+    this.creatingNew = true;
+    this.selectedCollection = null;
+    setTimeout(() => {
+      if (this.newNameInput) {
+        this.newNameInput.nativeElement.focus();
+      }
+    });
+  }
+
+  /**
+   * Toggle the privacy setting for a new collection.
+   */
+  public togglePrivacy(): void {
+    this.isPrivate = !this.isPrivate;
+  }
+
+  /**
+   * Whether the Add button should be enabled.
+   */
+  public canSubmit(): boolean {
+    if (this.creatingNew) {
+      return (
+        this.collectionNameInputForm.valid &&
+        this.collectionNameInputForm.value.trim() !== ""
+      );
+    }
+    return this.selectedCollection !== null;
+  }
+
+  /**
+   * Handle the Add button: either add to selected or create-then-add.
+   */
+  public submit(): void {
+    if (this.busy) {
       return;
     }
+    if (this.creatingNew) {
+      this.create();
+    } else if (this.selectedCollection) {
+      this.add();
+    }
+  }
 
-    const selectedName = (this.collectionAddInputForm.value as Collection).name;
-    const selectedOwner = (this.collectionAddInputForm.value as Collection)
-      .owner;
+  /**
+   * Add the resource to the selected existing collection.
+   */
+  private add(): void {
+    this.busy = true;
+    const col = this.selectedCollection;
 
     this.collectionService
-      .addAsset(selectedOwner, selectedName, this.resource)
+      .addAsset(col.owner, col.name, this.resource)
       .subscribe(
         (response) => {
           this.dialog.close(true);
           this.snackBar.open(
-            `${this.resource.name} added to ${selectedName}`,
+            `${this.resource.name} added to ${col.name}`,
             "Got it",
             { duration: 2750 },
           );
         },
         (error) => {
+          this.busy = false;
           if (error.code === ErrMsg.ErrorResourceExists) {
             this.snackBar.open(
-              `${this.resource.name} is already part of ${selectedName}`,
+              `${this.resource.name} is already part of ${col.name}`,
               "Got it",
               { duration: 2750 },
             );
@@ -162,17 +216,14 @@ export class CollectionDialogComponent implements OnInit {
   }
 
   /**
-   * Create a new collection.
+   * Create a new collection and add the resource to it.
    */
-  public create(): void {
-    // Validate the input fields.
-    // Note: The required validator doesn't trim the value of the input.
+  private create(): void {
     this.collectionNameInputForm.setValue(
       this.collectionNameInputForm.value.trim(),
     );
     this.collectionNameInputForm.updateValueAndValidity();
 
-    // Shouldn't create a collection without a name.
     if (
       this.collectionNameInputForm.value === undefined ||
       this.collectionNameInputForm.value === ""
@@ -180,17 +231,17 @@ export class CollectionDialogComponent implements OnInit {
       return;
     }
 
+    this.busy = true;
+
     const data = {
       name: this.collectionNameInputForm.value,
-      owner: this.collectionOwnerList[this.owner],
-      description: this.collectionDescription,
-      private: !!this.privacyInputForm.value,
+      owner: this.collectionOwnerList[0],
+      description: "",
+      private: this.isPrivate,
     };
 
-    // Create the Collection.
     this.collectionService.createCollection(data).subscribe(
       (collection) => {
-        // Add the resource into the new collection.
         this.collectionService
           .addAsset(collection.owner, collection.name, this.resource)
           .subscribe(
@@ -203,11 +254,13 @@ export class CollectionDialogComponent implements OnInit {
               );
             },
             (error) => {
+              this.busy = false;
               this.snackBar.open(error.message, "Got it");
             },
           );
       },
       (error) => {
+        this.busy = false;
         if (error.code === ErrMsg.ErrorResourceExists) {
           this.collectionNameInputForm.setErrors({
             duplicated: true,
@@ -218,50 +271,17 @@ export class CollectionDialogComponent implements OnInit {
   }
 
   /**
-   * Used by the Material Autoselect, to display the selected collection's name.
-   *
-   * @param collection The selected collection.
-   * @returns The name of the selected collection.
-   */
-  public getCollectionName(collection?: Collection): string | null {
-    return collection ? collection.name : null;
-  }
-
-  /**
    * Error message of the Collection Name input field.
-   *
-   * @returns A string describing the error, or an empty string if there is no error.
    */
   public getCollectionNameError(): string {
-    // Empty collection name.
     if (this.collectionNameInputForm.hasError("required")) {
       return "This field is required";
     }
 
-    // Duplicated collection name.
     if (this.collectionNameInputForm.hasError("duplicated")) {
       return "This collection already exists. Please use a different name.";
     }
 
-    // No error.
     return "";
-  }
-
-  /**
-   * Handle form submission.
-   */
-  public submit(): void {
-    if (this.option === 0) {
-      this.add();
-    } else {
-      this.create();
-    }
-  }
-
-  /**
-   * Set the option
-   */
-  public openOption(index: number): void {
-    this.option = index;
   }
 }
