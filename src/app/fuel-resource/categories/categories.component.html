@@ -1,6 +1,6 @@
 @if (edit) {
   <div>
-    <mat-form-field hintLabel="Select up to two categories." fxFill>
+    <mat-form-field hintLabel="Select up to two categories." class="fx-fill">
       <mat-select
         placeholder="Categories"
         [formControl]="categorySelectionForm"
@@ -22,21 +22,11 @@
     </mat-form-field>
   </div>
 } @else {
-  <div fxLayout="row" fxLayoutGap="10px" fxFill>
-    <mat-icon class="margin-align" title="Categories">category</mat-icon>
-    @if (categories && categories.length > 0) {
-      <div fxLayoutAlign="start center" class="category-list">
-        <span>{{ selectedCategories }}</span>
-      </div>
-    } @else {
-      <div
-        class="margin-align"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-        class="category-list"
-      >
-        <span>No categories.</span>
-      </div>
+  <mat-chip-list>
+    @for (category of categories; track category) {
+      <mat-chip>{{ category }}</mat-chip>
+    } @empty {
+      <span>-</span>
     }
-  </div>
+  </mat-chip-list>
 }

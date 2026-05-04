@@ -122,4 +122,20 @@ describe("WorldListComponent", () => {
     expect(component.paginatedWorlds).toEqual(nextPaginatedWorlds);
     expect(component.worlds).toEqual(nextWorlds);
   });
+
+  it("should pass sort parameter to the service when a filter is set", () => {
+    const worldService = TestBed.inject(WorldService);
+    const spy = spyOn(worldService, "getList").and.returnValue(
+      of(nextPaginatedWorlds),
+    );
+    component.worlds = testWorlds;
+    component.paginatedWorlds = paginatedWorlds;
+    component.currentFilter = "most_liked";
+
+    const mockEvent = { pageIndex: 0, pageSize: 12, length: 0 };
+    component.getWorlds(mockEvent);
+    expect(spy).toHaveBeenCalledWith(
+      jasmine.objectContaining({ sort: "most_liked" }),
+    );
+  });
 });

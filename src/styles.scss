@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@import "styles/flex-layout.scss";
 
 // choose from https://material.io/guidelines/style/color.html#color-color-palette
 $custom-theme-primary: mat.m2-define-palette(mat.$m2-light-blue-palette, 500);
@@ -82,7 +83,7 @@ a.color-link {
 
 // The following is from: https://materialdesignicons.com/getting-started
 button.mat-menu-item {
-  line-height: 24px !important;
+  line-height: 24px;
 }
 
 a.mat-menu-item > mat-icon {
@@ -108,7 +109,7 @@ mat-sidenav {
   .mat-mdc-list-item,
   .mat-mdc-list-item span,
   mat-icon {
-    color: #fefefe !important;
+    color: #fefefe;
   }
 
   // Vertically center icon and text within each sidebar list item

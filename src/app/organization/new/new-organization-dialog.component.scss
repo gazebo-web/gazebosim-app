@@ -14,3 +14,13 @@ form {
 mat-radio-button {
   padding-left: 1em;
 }
+
+.gap-half-em {
+  gap: 0.5em;
+}
+
+@media (max-width: 599px) {
+  .gap-lt-sm-dialog {
+    gap: 2.5em;
+  }
+}

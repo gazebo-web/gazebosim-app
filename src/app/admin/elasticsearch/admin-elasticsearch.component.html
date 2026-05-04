@@ -1,20 +1,12 @@
 <div
-  class="mat-typography"
-  fxLayout="row"
-  fxLayoutAlign="start start"
-  fxLayoutGap="20px"
-  fxFill
+  class="mat-typography fx-layout-row fx-layout-align-start-start fx-fill gap-20"
 >
   <div
-    class="padding"
-    fxLayout="column"
-    fxLayoutAlign="start start"
-    fxLayoutGap="20px"
-    fxFill
+    class="padding fx-layout-column fx-layout-align-start-start fx-fill gap-20"
   >
     <h2>Configurations</h2>
 
-    <mat-table [dataSource]="dataSource" fxFill>
+    <mat-table [dataSource]="dataSource" class="fx-fill">
       <!-- Id Column -->
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
@@ -39,12 +31,9 @@
 
         <mat-cell *matCellDef="let element"
           >{{ hide ? "*".repeat(element.password.length) : element.password }}
-          <mat-icon
-            matSuffix
-            (click)="hide = !hide"
-            style="vertical-align: bottom"
-            >{{ hide ? "visibility_off" : "visibility" }}</mat-icon
-          ></mat-cell
+          <mat-icon matSuffix (click)="hide = !hide" class="valign-bottom">{{
+            hide ? "visibility_off" : "visibility"
+          }}</mat-icon></mat-cell
         >
       </ng-container>
 
@@ -61,10 +50,10 @@
 
       <!-- Buttons Column -->
       <ng-container matColumnDef="controlButtons">
-        <mat-header-cell *matHeaderCellDef style="text-align: center">
+        <mat-header-cell *matHeaderCellDef class="text-center">
           Control
         </mat-header-cell>
-        <mat-cell *matCellDef="let element" style="text-align: center">
+        <mat-cell *matCellDef="let element" class="text-center">
           <button mat-icon-button [matMenuTriggerFor]="controlMenu">
             <mat-icon>more_horiz</mat-icon>
           </button>

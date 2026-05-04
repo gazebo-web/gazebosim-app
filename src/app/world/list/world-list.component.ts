@@ -68,9 +68,6 @@ export class WorldListComponent implements OnInit {
       this.currentFilter = "";
     }
 
-    // Sort worlds locally as a fallback for backend sorting.
-    this.sortWorlds();
-
     // Evaluates the route's title.
     this.title = this.activatedRoute.snapshot.data["title"](
       this.activatedRoute,
@@ -94,9 +91,6 @@ export class WorldListComponent implements OnInit {
     this.worldService.getList(params).subscribe((worlds) => {
       this.paginatedWorlds = worlds;
       this.worlds = this.paginatedWorlds.resources;
-
-      // Sort worlds locally as a fallback for backend sorting.
-      this.sortWorlds();
 
       // Navigate to the Worlds List page.
       // Note that this does not recreate the component, since the navigation is to the same page.
@@ -122,30 +116,5 @@ export class WorldListComponent implements OnInit {
       pageSize: 12,
       length: this.paginatedWorlds.totalCount,
     } as PageEvent);
-  }
-
-  /**
-   * Sorts the current list of worlds based on the current filter.
-   */
-  private sortWorlds(): void {
-    if (!this.worlds || !this.currentFilter) {
-      return;
-    }
-
-    if (this.currentFilter === "most_liked") {
-      this.worlds.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-    } else if (this.currentFilter === "recent") {
-      this.worlds.sort((a, b) => {
-        const dateA = a.modifyDate ? new Date(a.modifyDate).getTime() : 0;
-        const dateB = b.modifyDate ? new Date(b.modifyDate).getTime() : 0;
-        return dateB - dateA;
-      });
-    } else if (this.currentFilter === "name") {
-      this.worlds.sort((a, b) => {
-        const nameA = (a.name || "").toLowerCase();
-        const nameB = (b.name || "").toLowerCase();
-        return nameA.localeCompare(nameB);
-      });
-    }
   }
 }

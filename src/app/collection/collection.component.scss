@@ -5,6 +5,7 @@ div ::ng-deep .mat-tab-header {
   @media screen and (min-width: 600px) {
     width: 60%;
   }
+
   @media screen and (max-width: 599px) {
     width: 80%;
   }
@@ -40,6 +41,7 @@ div ::ng-deep .mat-tab-label {
 
 .buttons {
   margin-top: 10px;
+
   button:not(:last-child) {
     margin-right: 10px;
   }
@@ -48,6 +50,7 @@ div ::ng-deep .mat-tab-label {
 .banner {
   height: 320px;
   width: 100%;
+
   img {
     width: 100%;
     height: 100%;
@@ -83,28 +86,47 @@ input.search {
 .download-link {
   padding: 10px;
 }
+
 .download-link h1 {
   font-size: 14px;
   font-weight: 500;
 }
+
 .download-link h3 {
   font-size: 14px;
   font-weight: 200;
   margin-bottom: 4px;
 }
+
 .download-link a {
   color: #03a9f4;
   padding: 10px;
 }
+
 .download-link a:hover {
   text-decoration: underline;
 }
+
 .download-link .command {
   padding: 10px;
   margin: 4px;
   background: rgb(246, 248, 250);
 }
+
 .download-link .command pre {
-  white-space: pre-wrap; /* css-3 */
+  white-space: pre-wrap;
+  /* css-3 */
   font-size: 12px;
+}
+
+.fx-flex-30 {
+  flex: 1 1 30%;
+  max-width: 30%;
+  box-sizing: border-box;
+}
+
+.fx-flex-40 {
+  flex: 1 1 40%;
+  max-width: 40%;
+  box-sizing: border-box;
 }

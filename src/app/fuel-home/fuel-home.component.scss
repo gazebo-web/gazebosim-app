@@ -25,3 +25,9 @@
 .more-button {
   margin-top: 16px;
 }
+
+.fx-flex-90 {
+  flex: 1 1 90%;
+  max-width: 90%;
+  box-sizing: border-box;
+}

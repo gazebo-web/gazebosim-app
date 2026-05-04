@@ -6,7 +6,7 @@
     image of your robots.
   </p>
 
-  <form fxLayout="column">
+  <form class="fx-layout-column">
     <mat-form-field>
       <input matInput placeholder="Name" [formControl]="simName" required />
       @if (simName.hasError("required")) {
@@ -50,7 +50,7 @@
     }
 
     @if (types && types.length > 0) {
-      <form fxLayout="column" (ngSubmit)="addRobot()">
+      <form class="fx-layout-column" (ngSubmit)="addRobot()">
         <mat-form-field>
           <input
             matInput
@@ -143,7 +143,7 @@
             }
           </mat-form-field>
         }
-        <div fxLayoutAlign="end center">
+        <div class="fx-layout-align-end-center">
           <button mat-raised-button type="submit">Add</button>
         </div>
       </form>

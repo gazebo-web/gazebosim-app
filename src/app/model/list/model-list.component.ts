@@ -68,9 +68,6 @@ export class ModelListComponent implements OnInit {
       this.currentFilter = "";
     }
 
-    // Sort models locally as a fallback for backend sorting.
-    this.sortModels();
-
     // Evaluates the route's title.
     this.title = this.activatedRoute.snapshot.data["title"](
       this.activatedRoute,
@@ -94,9 +91,6 @@ export class ModelListComponent implements OnInit {
     this.modelService.getList(params).subscribe((models) => {
       this.paginatedModels = models;
       this.models = this.paginatedModels.resources;
-
-      // Sort models locally as a fallback for backend sorting.
-      this.sortModels();
 
       // Navigate to the Model List page.
       // Note that this does not recreate the component, since the navigation is to the same page.
@@ -122,30 +116,5 @@ export class ModelListComponent implements OnInit {
       pageSize: 12,
       length: this.paginatedModels.totalCount,
     } as PageEvent);
-  }
-
-  /**
-   * Sorts the current list of models based on the current filter.
-   */
-  private sortModels(): void {
-    if (!this.models || !this.currentFilter) {
-      return;
-    }
-
-    if (this.currentFilter === "most_liked") {
-      this.models.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-    } else if (this.currentFilter === "recent") {
-      this.models.sort((a, b) => {
-        const dateA = a.modifyDate ? new Date(a.modifyDate).getTime() : 0;
-        const dateB = b.modifyDate ? new Date(b.modifyDate).getTime() : 0;
-        return dateB - dateA;
-      });
-    } else if (this.currentFilter === "name") {
-      this.models.sort((a, b) => {
-        const nameA = (a.name || "").toLowerCase();
-        const nameB = (b.name || "").toLowerCase();
-        return nameA.localeCompare(nameB);
-      });
-    }
   }
 }

@@ -1,0 +1,225 @@
+/* 
+ * Flex Layout utility classes to replace @angular/flex-layout
+ */
+
+.fx-layout-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.fx-layout-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.fx-layout-row-wrap {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* Alignments */
+.fx-layout-align-start-center {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.fx-layout-align-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fx-layout-align-space-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fx-layout-align-space-between-start {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.fx-layout-align-start-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.fx-layout-align-center-start {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Flex sizing */
+.fx-flex {
+  flex: 1 1 0%;
+  box-sizing: border-box;
+}
+
+.fx-fill {
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+/* Breakpoints */
+@media (max-width: 599px) {
+  /* xs, lt-sm */
+  .fx-layout-column-xs {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 600px) {
+  /* gt-xs, sm and up */
+  .fx-layout-row-gt-xs {
+    flex-direction: row;
+  }
+
+  .fx-flex-gt-xs-50 {
+    flex: 1 1 50%;
+    max-width: 50%;
+    box-sizing: border-box;
+  }
+
+  .fx-flex-gt-xs-60 {
+    flex: 1 1 60%;
+    max-width: 60%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 599px) {
+  /* xs, lt-sm */
+  .fx-flex-lt-sm-80 {
+    flex: 1 1 80%;
+    max-width: 80%;
+    box-sizing: border-box;
+  }
+
+  .fx-flex-lt-sm-100 {
+    flex: 1 1 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 768px) {
+  /* gt-sm */
+  .fx-flex-gt-sm-80 {
+    flex: 1 1 80%;
+    max-width: 80%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 959px) {
+  /* lt-md */
+  .fx-layout-align-lt-md-space-between {
+    justify-content: space-between;
+  }
+
+  .fx-layout-gap-lt-md-0 {
+    gap: 0;
+  }
+
+  .fx-flex-lt-md-100 {
+    flex: 1 1 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Responsive Flex Sizing */
+.fx-flex-xs-100 {
+  flex: 1 1 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 600px) {
+  .fx-flex-sm-50 {
+    flex: 1 1 50%;
+    max-width: 50%;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 960px) {
+  .fx-flex-md-25 {
+    flex: 1 1 25%;
+    max-width: 25%;
+    box-sizing: border-box;
+  }
+
+  /* gt-md (greater than md, i.e. lg and up) */
+  .fx-flex-gt-md-25 {
+    flex: 1 1 25%;
+    max-width: 25%;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 1280px) {
+  .fx-flex-lg-20 {
+    flex: 1 1 20%;
+    max-width: 20%;
+    box-sizing: border-box;
+  }
+}
+
+/* Utility classes — gap */
+.gap-10 {
+  gap: 10px;
+}
+
+.gap-20 {
+  gap: 20px;
+}
+
+.gap-40 {
+  gap: 40px;
+}
+
+/* Utility classes — text alignment */
+.text-center {
+  text-align: center;
+}
+
+/* Utility classes — vertical alignment */
+.valign-bottom {
+  vertical-align: bottom;
+}
+
+/* Utility classes — flex sizing */
+.fx-flex-5 {
+  flex: 1 1 5%;
+  max-width: 5%;
+  box-sizing: border-box;
+}
+
+.fx-flex-50 {
+  flex: 1 1 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .fx-layout-row-gt-sm {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 959px) {
+  .fx-layout-column-lt-md {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -6,7 +6,7 @@
   <div>
     <div mat-dialog-content class="mat-typography">
       <div [innerHtml]="data.message"></div>
-      <form fxLayout="column">
+      <form class="fx-layout-column">
         <mat-form-field>
           <input
             matInput
@@ -36,7 +36,7 @@
     </div>
   </div>
 } @else {
-  <div fxLayout="column" fxLayoutAlign="center center">
+  <div class="fx-layout-column fx-layout-align-center-center">
     <div id="html-spinner"></div>
     @if (!data.busyMessage) {
       <p class="mat-typography">Please wait...</p>

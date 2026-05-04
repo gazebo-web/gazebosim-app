@@ -11,12 +11,13 @@ export const environment = {
   production: false,
   // Auth0
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || "https://fuel.gazebosim.org",
-  AUTH0_CLIENT_DOMAIN: process.env.AUTH0_CLIENT_DOMAIN || "gazebo.auth0.com",
+  AUTH0_CLIENT_DOMAIN:
+    process.env.AUTH0_CLIENT_DOMAIN || "placeholder.us.auth0.com",
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || "placeholder-client-id",
   AUTH0_REDIRECT:
-    process.env.AUTH0_REDIRECT || "http://localhost:4200/callback",
+    process.env.AUTH0_REDIRECT || "http://localhost:3001/callback",
   AUTH0_LOGOUT_REDIRECT:
-    process.env.AUTH0_LOGOUT_REDIRECT || "http://localhost:4200",
+    process.env.AUTH0_LOGOUT_REDIRECT || "http://localhost:3001",
   AUTH0_SCOPE: process.env.AUTH0_SCOPE || "openid profile email",
   // Backend
   API_HOST: process.env.API_HOST || "http://localhost:8000",
