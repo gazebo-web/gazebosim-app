@@ -13,7 +13,7 @@ import { PaginatedWorlds } from "../world/paginated-worlds";
 import { WorldService } from "../world/world.service";
 import { ConfirmationDialogComponent } from "../confirmation-dialog/confirmation-dialog.component";
 import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.component";
-import { PageEvent } from "@angular/material/paginator";
+import { BibtexDialogComponent } from "../model/bibtex-dialog/bibtex-dialog.component";
 
 @Component({
   selector: "gz-collection",
@@ -47,9 +47,29 @@ export class CollectionComponent implements OnInit {
   public canEdit: boolean = false;
 
   /**
-   * Active tab in the tab group.
+   * Number of models/worlds shown per page.
    */
-  public activeTab: "models" | "worlds" = "models";
+  public readonly RESOURCES_PER_PAGE = 10;
+
+  /**
+   * Current page (1-based) of the collection's models.
+   */
+  public modelPage: number = 1;
+
+  /**
+   * Current page (1-based) of the collection's worlds.
+   */
+  public worldPage: number = 1;
+
+  /**
+   * Page numbers used to render the models pagination dots.
+   */
+  public modelPages: number[] = [];
+
+  /**
+   * Page numbers used to render the worlds pagination dots.
+   */
+  public worldPages: number[] = [];
 
   /**
    * Download command for this collection.
@@ -103,31 +123,9 @@ export class CollectionComponent implements OnInit {
       this.collection = this.activatedRoute.snapshot.data["resolvedData"];
     }
 
-    // Get the collection's models.
-    this.collectionService
-      .getCollectionModels(this.collection.owner, this.collection.name)
-      .subscribe(
-        (response) => {
-          this.paginatedModels = response;
-          this.collection.models = response.resources;
-        },
-        (error) => {
-          this.snackBar.open(error.message, "Got it");
-        },
-      );
-
-    // Get the collection's worlds.
-    this.collectionService
-      .getCollectionWorlds(this.collection.owner, this.collection.name)
-      .subscribe(
-        (response) => {
-          this.paginatedWorlds = response;
-          this.collection.worlds = response.resources;
-        },
-        (error) => {
-          this.snackBar.open(error.message, "Got it");
-        },
-      );
+    // Get the collection's models and worlds (first page).
+    this.loadModels();
+    this.loadWorlds();
 
     // Determine whether the logged user can edit this collection.
     // TODO(german-mas): Avoid duplicated code by having a "canEditResource" method in the User
@@ -272,39 +270,122 @@ export class CollectionComponent implements OnInit {
   }
 
   /**
-   * Loads the next page of models.
+   * Builds the 1-based array of page numbers for a given total count.
    *
-   * @param event The page event that contains the pagination data of models to load.
+   * @param totalCount The total number of resources.
+   * @returns An array like [1, 2, 3] used to render pagination dots.
    */
-  public loadModels(event: PageEvent): void {
+  private pageArray(totalCount: number): number[] {
+    const total = Math.ceil((totalCount || 0) / this.RESOURCES_PER_PAGE);
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  /**
+   * Loads a page of the collection's models.
+   *
+   * @param page The 1-based page number to load.
+   */
+  public loadModels(page: number = 1): void {
+    this.modelPage = page;
     this.collectionService
       .getCollectionModels(this.collection.owner, this.collection.name, {
-        page: event.pageIndex + 1,
-        per_page: event.pageSize,
+        page,
+        per_page: this.RESOURCES_PER_PAGE,
       })
-      .subscribe((paginatedModels) => {
-        // DEVNOTE: This change is not reflected in the Client URL.
-        this.paginatedModels = paginatedModels;
-        this.collection.models = paginatedModels.resources;
-      });
+      .subscribe(
+        (response) => {
+          // DEVNOTE: This change is not reflected in the Client URL.
+          this.paginatedModels = response;
+          this.collection.models = response.resources;
+          this.modelPages = this.pageArray(response.totalCount);
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+  }
+
+  /**
+   * Loads a page of the collection's worlds.
+   *
+   * @param page The 1-based page number to load.
+   */
+  public loadWorlds(page: number = 1): void {
+    this.worldPage = page;
+    this.collectionService
+      .getCollectionWorlds(this.collection.owner, this.collection.name, {
+        page,
+        per_page: this.RESOURCES_PER_PAGE,
+      })
+      .subscribe(
+        (response) => {
+          // DEVNOTE: This change is not reflected in the Client URL.
+          this.paginatedWorlds = response;
+          this.collection.worlds = response.resources;
+          this.worldPages = this.pageArray(response.totalCount);
+        },
+        (error) => {
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+  }
+
+  /**
+   * Navigates to a specific page of models.
+   *
+   * @param page The 1-based page number to load.
+   */
+  public goToModelPage(page: number): void {
+    if (page !== this.modelPage) {
+      this.loadModels(page);
+    }
+  }
+
+  /**
+   * Loads the previous page of models.
+   */
+  public prevModelPage(): void {
+    if (this.modelPage > 1) {
+      this.loadModels(this.modelPage - 1);
+    }
+  }
+
+  /**
+   * Loads the next page of models.
+   */
+  public nextModelPage(): void {
+    if (this.modelPage < this.modelPages.length) {
+      this.loadModels(this.modelPage + 1);
+    }
+  }
+
+  /**
+   * Navigates to a specific page of worlds.
+   *
+   * @param page The 1-based page number to load.
+   */
+  public goToWorldPage(page: number): void {
+    if (page !== this.worldPage) {
+      this.loadWorlds(page);
+    }
+  }
+
+  /**
+   * Loads the previous page of worlds.
+   */
+  public prevWorldPage(): void {
+    if (this.worldPage > 1) {
+      this.loadWorlds(this.worldPage - 1);
+    }
   }
 
   /**
    * Loads the next page of worlds.
-   *
-   * @param event The page event that contains the pagination data of worlds to load.
    */
-  public loadWorlds(event: PageEvent): void {
-    this.worldService
-      .getList({
-        page: event.pageIndex + 1,
-        per_page: event.pageSize,
-      })
-      .subscribe((paginatedWorlds) => {
-        // DEVNOTE: This change is not reflected in the Client URL.
-        this.paginatedWorlds = paginatedWorlds;
-        this.collection.worlds = paginatedWorlds.resources;
-      });
+  public nextWorldPage(): void {
+    if (this.worldPage < this.worldPages.length) {
+      this.loadWorlds(this.worldPage + 1);
+    }
   }
 
   /**
@@ -347,10 +428,12 @@ export class CollectionComponent implements OnInit {
             if (event.type === "models") {
               resourceList = this.collection.models;
               this.paginatedModels.totalCount--;
+              this.modelPages = this.pageArray(this.paginatedModels.totalCount);
             }
             if (event.type === "worlds") {
               resourceList = this.collection.worlds;
               this.paginatedWorlds.totalCount--;
+              this.worldPages = this.pageArray(this.paginatedWorlds.totalCount);
             }
 
             const index = resourceList.indexOf(resource);
@@ -366,22 +449,6 @@ export class CollectionComponent implements OnInit {
           },
         );
     });
-  }
-
-  /**
-   * Callback when the tab is changed. Determines the current active tab.
-   */
-  public setActiveTab(event: number): void {
-    switch (event) {
-      case 0: {
-        this.activeTab = "models";
-        break;
-      }
-      case 1: {
-        this.activeTab = "worlds";
-        break;
-      }
-    }
   }
 
   /**
@@ -406,6 +473,8 @@ export class CollectionComponent implements OnInit {
         if (models !== undefined) {
           this.paginatedModels = models;
           this.collection.models = models.resources;
+          this.modelPage = 1;
+          this.modelPages = this.pageArray(models.totalCount);
         }
       },
       (error) => {
@@ -420,6 +489,8 @@ export class CollectionComponent implements OnInit {
         if (worlds !== undefined) {
           this.paginatedWorlds = worlds;
           this.collection.worlds = worlds.resources;
+          this.worldPage = 1;
+          this.worldPages = this.pageArray(worlds.totalCount);
         }
       },
       (error) => {
@@ -430,22 +501,12 @@ export class CollectionComponent implements OnInit {
   }
 
   /**
-   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   * Opens a dialog showing the BibTeX citation for this collection.
    */
-  public copyBibtex(): void {
-    const selBox = document.createElement("textarea");
-    selBox.style.position = "fixed";
-    selBox.style.left = "0";
-    selBox.style.top = "0";
-    selBox.style.opacity = "0";
-    selBox.value = this.bibTex;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(selBox);
-    this.snackBar.open("Bibtex copied to clipboard.", "", {
-      duration: 2000,
+  public openBibtex(): void {
+    this.dialog.open(BibtexDialogComponent, {
+      data: { bibtex: this.bibTex },
+      autoFocus: false,
     });
   }
 
