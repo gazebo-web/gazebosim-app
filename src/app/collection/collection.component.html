@@ -1,7 +1,7 @@
-<div class="page-content-inner fx-flex fx-layout-align-center">
+<div class="detail-page page-content-inner fx-flex fx-layout-align-center">
   <div class="content mat-typography">
     <!-- Header -->
-    <div class="collection-header">
+    <div class="detail-header">
       <div class="fx-layout-row fx-layout-align-start-center">
         <div class="fx-layout-column">
           <gz-page-title
@@ -32,25 +32,21 @@
 
     <!-- Banner (full-width 16:9) -->
     <div class="gallery-section">
-      <div class="gallery-container-outer">
-        <div
-          class="gallery-container-inner fx-layout-column fx-layout-align-center-center"
-        >
-          @if (collection?.hasThumbnail()) {
-            @if (
-              collection?.getThumbnail().url | gzAuthHeader | async;
-              as result
-            ) {
-              <img class="banner-img" [src]="result" alt="Collection Banner" />
-            }
-          } @else {
-            <div class="fx-layout-row fx-layout-align-center-center">
-              <span class="mat-typography font-x-large"
-                >This collection has no thumbnail.</span
-              >
-            </div>
+      <div class="gallery-box">
+        @if (collection?.hasThumbnail()) {
+          @if (
+            collection?.getThumbnail().url | gzAuthHeader | async;
+            as result
+          ) {
+            <img class="banner-img" [src]="result" alt="Collection Banner" />
           }
-        </div>
+        } @else {
+          <div class="fx-layout-row fx-layout-align-center-center">
+            <span class="mat-typography font-x-large"
+              >This collection has no thumbnail.</span
+            >
+          </div>
+        }
       </div>
     </div>
 
@@ -156,8 +152,8 @@
 
     <!-- Collection Description -->
     <div class="description-box">
-      <div class="box-title">
-        <mat-icon class="box-title-icon">description</mat-icon>
+      <div class="side-pane-title">
+        <mat-icon class="side-pane-title-icon">description</mat-icon>
         Description
       </div>
       <gz-description [description]="collection?.description"></gz-description>
@@ -181,7 +177,7 @@
       <div class="resources-columns">
         <!-- Models (left) -->
         <div class="resources-column">
-          <div class="box-title">
+          <div class="side-pane-title">
             Models ({{ paginatedModels?.totalCount }})
           </div>
 
@@ -241,7 +237,7 @@
 
         <!-- Worlds (right) -->
         <div class="resources-column">
-          <div class="box-title">
+          <div class="side-pane-title">
             Worlds ({{ paginatedWorlds?.totalCount }})
           </div>
 
