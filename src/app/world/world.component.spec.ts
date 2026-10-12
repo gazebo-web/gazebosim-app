@@ -19,12 +19,15 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MarkdownModule } from "ngx-markdown";
 import { Subscription, of, throwError } from "rxjs";
 import * as FileSaver from "file-saver";
 
 import { AuthPipe } from "../auth/auth.pipe";
 import { AuthService } from "../auth/auth.service";
+import { CategoriesComponent } from "../fuel-resource/categories/categories.component";
+import { CategoryService } from "../fuel-resource/categories/category.service";
 import {
   CollectionService,
   PaginatedCollection,
@@ -41,6 +44,8 @@ import { MetadataComponent } from "../metadata/metadata.component";
 import { PageTitleComponent } from "../page-title";
 import { SdfViewerComponent } from "../model/sdfviewer/sdfviewer.component";
 import { TagsComponent } from "../tags/tags.component";
+import { BibtexDialogComponent } from "../model/bibtex-dialog/bibtex-dialog.component";
+import { GalleryComponent } from "../gallery/gallery.component";
 import { World } from "./world";
 import { WorldComponent } from "./world.component";
 import { WorldService } from "./world.service";
@@ -84,10 +89,13 @@ describe("WorldComponent", () => {
     TestBed.configureTestingModule({
       declarations: [
         AuthPipe,
+        BibtexDialogComponent,
+        CategoriesComponent,
         CopyDialogComponent,
         DescriptionComponent,
         FileSizePipe,
         FuelResourceListComponent,
+        GalleryComponent,
         ItemCardComponent,
         MetadataComponent,
         PageTitleComponent,
@@ -109,11 +117,13 @@ describe("WorldComponent", () => {
         MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
+        MatTooltipModule,
         ReactiveFormsModule,
         RouterTestingModule,
       ],
       providers: [
         AuthService,
+        CategoryService,
         CollectionService,
         JsonClassFactoryService,
         WorldService,
@@ -466,7 +476,7 @@ describe("WorldComponent", () => {
     component.loadCollections();
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
       component.world,
-      {},
+      { page: 1, per_page: 8 },
     );
 
     spy.calls.reset();
@@ -474,7 +484,7 @@ describe("WorldComponent", () => {
     component.loadCollections();
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
       component.world,
-      {},
+      { page: 1, per_page: 8 },
     );
     expect(snackBar._openedSnackBarRef).toBeTruthy();
   });
@@ -500,8 +510,157 @@ describe("WorldComponent", () => {
 
     expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
       component.world,
-      {},
+      { page: 1, per_page: 8 },
     );
     expect(component.paginatedCollections).toBe(mockCollections);
+  });
+
+  it("should load a specific page of collections", () => {
+    const collectionService = TestBed.inject(CollectionService);
+    const paginatedCollections = new PaginatedCollection();
+    paginatedCollections.collections = [];
+
+    spyOn(collectionService, "getAssetCollections").and.returnValue(
+      of(paginatedCollections),
+    );
+
+    component.loadCollections(2);
+
+    expect(component.collectionPage).toBe(2);
+    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
+      component.world,
+      { page: 3, per_page: 8 },
+    );
+  });
+
+  it("should keep the current collection page if loading a page fails", () => {
+    const collectionService = TestBed.inject(CollectionService);
+    spyOn(collectionService, "getAssetCollections").and.returnValue(
+      throwError(() => new Error("Network error")),
+    );
+
+    component.collectionPage = 1;
+    component.loadCollections(2);
+
+    expect(component.collectionPage).toBe(1);
+  });
+
+  it("should toggle the 3D viewer", () => {
+    expect(component.view3d).toBeFalsy();
+
+    component.toggle3D();
+    expect(component.view3d).toBe(true);
+
+    component.toggle3D();
+    expect(component.view3d).toBe(false);
+  });
+
+  it("should reset view3d to false when changing version", () => {
+    const location = TestBed.inject(Location);
+    spyOn(component, "getFiles");
+    spyOn(location, "go");
+
+    component.world = testWorld;
+    component.view3d = true;
+    component.currentVersion = 2;
+    component.onVersion();
+
+    expect(component.view3d).toBe(false);
+    expect(component.getFiles).toHaveBeenCalled();
+  });
+
+  it("should open the BibTeX dialog", () => {
+    const dialog = TestBed.inject(MatDialog);
+    spyOn(dialog, "open");
+
+    component.bibTex = "@online{test}";
+    component.openBibtex();
+
+    expect(dialog.open).toHaveBeenCalledWith(BibtexDialogComponent, {
+      data: { bibtex: "@online{test}" },
+      autoFocus: false,
+    });
+  });
+
+  it("should copy the SDF include snippet to clipboard and show a snackbar", async () => {
+    spyOn(navigator.clipboard, "writeText").and.returnValue(Promise.resolve());
+    spyOn(component.snackBar, "open");
+
+    component.world = testWorld;
+    await component.copySdfInclude();
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalled();
+    expect(component.snackBar.open).toHaveBeenCalledWith(
+      "SDF include snippet copied to clipboard.",
+      "",
+      { duration: 2000 },
+    );
+  });
+
+  it("should show an error snackbar if copying the SDF snippet fails", async () => {
+    spyOn(navigator.clipboard, "writeText").and.returnValue(
+      Promise.reject(new Error("Not allowed")),
+    );
+    spyOn(component.snackBar, "open");
+
+    component.world = testWorld;
+    await component.copySdfInclude();
+
+    expect(component.snackBar.open).toHaveBeenCalledWith(
+      "Failed to copy SDF snippet to clipboard.",
+      "Got it",
+    );
+  });
+
+  it("should default collectionPages to empty array", () => {
+    expect(component.collectionPages).toEqual([]);
+  });
+
+  it("should compute collectionPages when loadCollections completes", () => {
+    const paginated = new PaginatedCollection();
+    paginated.totalCount = 20;
+    paginated.collections = [];
+    spyOn(component.collectionService, "getAssetCollections").and.returnValue(
+      of(paginated),
+    );
+
+    component.loadCollections(0);
+    // 20 / 8 = 2.5, ceil = 3
+    expect(component.collectionPages).toEqual([0, 1, 2]);
+  });
+
+  it("should set a single page when totalCount is less than COLLECTIONS_PER_PAGE", () => {
+    const paginated = new PaginatedCollection();
+    paginated.totalCount = 5;
+    paginated.collections = [];
+    spyOn(component.collectionService, "getAssetCollections").and.returnValue(
+      of(paginated),
+    );
+
+    component.loadCollections(0);
+    expect(component.collectionPages).toEqual([0]);
+  });
+
+  it("should generate the bibtex on ngOnInit", () => {
+    spyOn(component, "getFiles");
+    spyOn(component, "loadCollections");
+
+    component.ngOnInit();
+
+    expect(component.bibTex).toBeDefined();
+    expect(component.bibTex).toContain("@online{GazeboFuel-");
+    expect(component.bibTex).toContain("test-world");
+    expect(component.bibTex).toContain("test-owner");
+  });
+
+  it("should set empty gallery images when world has no images", () => {
+    component.world = new World({
+      name: "no-image-world",
+      owner: "test-owner",
+      images: [],
+    });
+
+    component.setupGallery();
+    expect(component.galleryImages).toEqual([]);
   });
 });
