@@ -15,11 +15,7 @@ import { Subscription, forkJoin } from "rxjs";
 import { finalize, switchMap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
-import {
-  Collection,
-  CollectionService,
-  PaginatedCollection,
-} from "../collection";
+import { Collection, CollectionService } from "../collection";
 import { CollectionDialogComponent } from "../collection/dialog/collection-dialog.component";
 import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.component";
 import { Model } from "./model";
@@ -89,24 +85,19 @@ export class ModelComponent implements OnInit, OnDestroy {
   public collections: Collection[];
 
   /**
-   * The paginated Collections returned from the Server, required by the resource list component.
-   */
-  public paginatedCollections: PaginatedCollection;
-
-  /**
    * Items per page for the Collections tab.
    */
   public readonly COLLECTIONS_PER_PAGE = 8;
 
   /**
-   * Current page index (0-based) for the Collections tab.
+   * Current page (starting at 1) for the Collections tab.
    */
-  public collectionPage: number = 0;
+  public collectionPage: number = 1;
 
   /**
-   * Array of page indices used to render dot indicators in the Collections tab.
+   * Number of pages of collections in the Collections tab.
    */
-  public collectionPages: number[] = [];
+  public collectionPageCount: number = 0;
 
   /**
    * Subscription to the Collection Dialog. Used to see the result of it.
@@ -615,22 +606,20 @@ export class ModelComponent implements OnInit, OnDestroy {
   /**
    * Load the collections that have this Model.
    *
-   * @param pageIndex Zero-based page index to load.
+   * @param page The page to load, starting at 1.
    */
-  public loadCollections(pageIndex: number = 0): void {
+  public loadCollections(page: number = 1): void {
     const params = {
-      page: pageIndex + 1,
+      page,
       per_page: this.COLLECTIONS_PER_PAGE,
     };
     this.collectionService.getAssetCollections(this.model, params).subscribe({
       next: (response) => {
-        this.collectionPage = pageIndex;
-        this.paginatedCollections = response;
+        this.collectionPage = page;
         this.collections = response.collections;
-        const total = Math.ceil(
+        this.collectionPageCount = Math.ceil(
           response.totalCount / this.COLLECTIONS_PER_PAGE,
         );
-        this.collectionPages = Array.from({ length: total }, (_, i) => i);
       },
       error: (error) => {
         this.snackBar.open(error.message, "Got it");
