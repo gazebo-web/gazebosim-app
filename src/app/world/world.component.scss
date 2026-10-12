@@ -1,190 +1,190 @@
-gz-gallery {
-  width: 100%;
-  height: 100%;
-}
+/* ===================================================
+   World Detail Page — page-specific styles.
+   Shared layout (header, gallery, action bar, panes) lives in
+   src/styles/_detail-page.scss.
+   =================================================== */
 
-.content {
-  width: 100%;
-}
+@use "../../styles/tokens";
 
-.row-left {
-  flex: 0 1 80%;
+/* --- Collections tab --- */
+.collections-tab-body {
   position: relative;
+  padding: 8px 12px 80px; // bottom padding reserves space for the absolutely-positioned nav
+
+  // Shrink card internals so 2 rows of 4 fit inside the tab box (~572px available)
+  ::ng-deep gz-item-card {
+    // Tight card margin
+    mat-card.mat-mdc-card {
+      margin: 4px;
+    }
+
+    // Compact header: less padding, smaller text
+    mat-card-header {
+      padding: 8px 8px 0 8px;
+    }
+
+    mat-card-title,
+    mat-card-subtitle {
+      font-size: 12px;
+    }
+
+    // Tighten subtitle bottom gap
+    mat-card-subtitle {
+      margin-bottom: 4px;
+    }
+
+    // Taller crop ratio keeps image visible but shorter overall
+    .thumbnail-container {
+      aspect-ratio: 4 / 3;
+    }
+
+    .thumbnail {
+      aspect-ratio: 4 / 3;
+    }
+
+    // Hide the empty actions bar
+    mat-card-actions {
+      display: none;
+    }
+  }
 }
 
-.row-right {
-  display: block;
-  flex: 0 0 20%;
-  min-width: 15em;
-}
-
-.padding {
-  padding: 0.5em;
+.collection-card {
+  min-width: 0;
   box-sizing: border-box;
 }
 
-.avatar {
-  width: 64px;
-  height: 64px;
-  font-size: 64px;
-  padding-right: 10px;
+/* --- Collections prev/next nav (gallery style) — pinned to bottom --- */
+.collections-page-nav {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
-.world-name {
-  color: #03a9f4;
+.collection-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: tokens.$surface;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  .material-icons {
+    font-size: 26px;
+    color: #333;
+    line-height: 1;
+  }
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.06);
+  }
+
+  &:disabled {
+    background: tokens.$border-light;
+    cursor: default;
+    box-shadow: none;
+
+    .material-icons {
+      color: #bbb;
+    }
+  }
 }
 
-.world-name h1 {
-  margin: 10px 0 !important;
-  text-align: left;
+.collection-dot-strip {
+  display: flex;
+  gap: 7px;
+  align-items: center;
 }
 
-.header-dropdown {
-  max-width: 30%;
+.collection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &.active {
+    background: #1976d2;
+    transform: scale(1.3);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* --- File List --- */
+.list-container {
+  // Small, muted file icon
+  --mat-list-list-item-leading-icon-size: 16px;
+  --mat-list-list-item-leading-icon-color: #aaa;
+  --mat-list-list-item-leading-icon-start-space: 8px;
+  --mat-list-list-item-leading-icon-end-space: 8px;
+
+  // Remove Material's default top/bottom padding on the list
+  ::ng-deep .mat-mdc-list-base {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  // Material hard-codes a 56px height on one-line items with a leading icon,
+  // and there is no token for it.
+  .file-item {
+    height: 36px;
+    padding-right: 8px;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+  }
+
+  // Shrink the download icon button. Material defines the size token on the
+  // button itself, so it has to be overridden at the same level.
+  [matListItemMeta] {
+    --mat-icon-button-state-layer-size: 28px;
+    padding: 6px;
+
+    mat-icon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+    }
+  }
+
+  [matListItemTitle] {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .list-divider {
-  border-bottom: 1px solid #dedede;
+  border-bottom: 1px solid tokens.$border-light;
 }
 
 .list-divider:last-child {
   border: none;
-}
-
-/* This styles the first chip. Taken from the Angular Material repository. */
-.mat-chip {
-  margin-left: 8px;
-  margin-bottom: 8px;
-}
-
-/* To style subsequent chips. Taken from the Angular Material repository. */
-.mat-chip:not(.mat-basic-chip) + .mat-chip:not(.mat-basic-chip) {
-  margin-bottom: 8px;
-}
-
-/* Statistics related */
-.action-buttons {
-  display: flex;
-  justify-content: space-around;
-  padding-bottom: 0.5em;
-}
-
-.stat-item {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.stat-field {
-  white-space: initial;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.stat-value {
-  white-space: initial;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  text-align: right;
-}
-
-.font-x-large {
-  font-size: x-large;
-  text-align: center;
-}
-
-.bottom-row-container {
-  position: relative;
-  margin-bottom: 2em;
-  width: 100%;
-}
-
-/* Media query to position Tags outside the Flex flow. */
-@media screen and (min-width: 960px) {
-  .tags-container {
-    width: 30%;
-    position: absolute;
-    right: 0;
-  }
-
-  .bottom-left-section {
-    width: 70%;
-  }
-}
-
-/* Classes that make the gallery keep an aspect ratio. */
-.gallery-container-outer {
-  height: 0;
-  width: 100%;
-  /* Aspect Ratio: 16:9. 9/16 = 0.5625 */
-  padding-top: 56.25%;
-  position: relative;
-  overflow: hidden;
-}
-
-.gallery-container-inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.sdfviewer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1001;
-}
-
-.button3d {
-  top: 2em;
-  right: 2em;
-  position: absolute;
-  z-index: 1002;
-  color: #dd2c00;
-}
-
-.buttonFullscreen {
-  top: 2em;
-  right: 6em;
-  position: absolute;
-  z-index: 1002;
-  color: #dd2c00;
-}
-
-.buttonResetView {
-  top: 2em;
-  right: 10em;
-  position: absolute;
-  z-index: 1002;
-  color: #dd2c00;
-}
-
-/* Media query to increase the size of the gallery in mobile views.
-   Otherwise, the gallery images are too small. */
-@media screen and (max-width: 599px) {
-  .gallery-container-outer {
-    padding-top: calc(56.25% + 5em);
-  }
-}
-
-.tab-container {
-  min-height: 10em;
-  width: 100%;
-}
-
-.tab-body {
-  padding: 10px;
-}
-
-pre.bibtex {
-  margin: 0px;
-}
-
-.bibtex:hover {
-  cursor: pointer;
-  color: #03a9f4;
 }
