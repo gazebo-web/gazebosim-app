@@ -199,38 +199,13 @@
               }
             </div>
 
-            @if (modelPages.length > 1) {
-              <div class="pagination-container">
-                <button
-                  mat-mini-fab
-                  color="white"
-                  (click)="prevModelPage()"
-                  [disabled]="modelPage === 1"
-                  aria-label="Previous page"
-                >
-                  <mat-icon>chevron_left</mat-icon>
-                </button>
-
-                <div class="pagination-dots">
-                  @for (p of modelPages; track p) {
-                    <span
-                      class="dot"
-                      [class.active]="modelPage === p"
-                      (click)="goToModelPage(p)"
-                    ></span>
-                  }
-                </div>
-
-                <button
-                  mat-mini-fab
-                  color="white"
-                  (click)="nextModelPage()"
-                  [disabled]="modelPage === modelPages.length"
-                  aria-label="Next page"
-                >
-                  <mat-icon>chevron_right</mat-icon>
-                </button>
-              </div>
+            @if (modelPageCount > 1) {
+              <gz-pager
+                class="resources-pager"
+                [page]="modelPage"
+                [pageCount]="modelPageCount"
+                (pageChange)="loadModels($event)"
+              ></gz-pager>
             }
           }
         </div>
@@ -259,38 +234,13 @@
               }
             </div>
 
-            @if (worldPages.length > 1) {
-              <div class="pagination-container">
-                <button
-                  mat-mini-fab
-                  color="white"
-                  (click)="prevWorldPage()"
-                  [disabled]="worldPage === 1"
-                  aria-label="Previous page"
-                >
-                  <mat-icon>chevron_left</mat-icon>
-                </button>
-
-                <div class="pagination-dots">
-                  @for (p of worldPages; track p) {
-                    <span
-                      class="dot"
-                      [class.active]="worldPage === p"
-                      (click)="goToWorldPage(p)"
-                    ></span>
-                  }
-                </div>
-
-                <button
-                  mat-mini-fab
-                  color="white"
-                  (click)="nextWorldPage()"
-                  [disabled]="worldPage === worldPages.length"
-                  aria-label="Next page"
-                >
-                  <mat-icon>chevron_right</mat-icon>
-                </button>
-              </div>
+            @if (worldPageCount > 1) {
+              <gz-pager
+                class="resources-pager"
+                [page]="worldPage"
+                [pageCount]="worldPageCount"
+                (pageChange)="loadWorlds($event)"
+              ></gz-pager>
             }
           }
         </div>

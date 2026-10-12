@@ -1,0 +1,33 @@
+<button
+  class="pager-btn"
+  [disabled]="page <= 1"
+  (click)="goToPage(page - 1)"
+  aria-label="Previous page"
+>
+  <mat-icon>chevron_left</mat-icon>
+</button>
+
+<div class="pager-dots">
+  @for (dot of dots; track dot) {
+    <button
+      class="pager-dot"
+      [class.active]="dot === page"
+      [attr.aria-current]="dot === page ? 'page' : null"
+      [attr.aria-label]="'Page ' + dot"
+      (click)="goToPage(dot)"
+    ></button>
+  }
+</div>
+
+@if (pageCount > maxDots) {
+  <span class="pager-label">{{ page }} / {{ pageCount }}</span>
+}
+
+<button
+  class="pager-btn"
+  [disabled]="page >= pageCount"
+  (click)="goToPage(page + 1)"
+  aria-label="Next page"
+>
+  <mat-icon>chevron_right</mat-icon>
+</button>

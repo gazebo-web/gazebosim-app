@@ -496,8 +496,6 @@ describe("WorldComponent", () => {
       owner: "testOwner",
     });
     component.collections = [collection];
-    component.paginatedCollections = new PaginatedCollection();
-    component.paginatedCollections.collections = [collection];
 
     const mockCollections = new PaginatedCollection();
     mockCollections.collections = [collection];
@@ -512,7 +510,7 @@ describe("WorldComponent", () => {
       component.world,
       { page: 1, per_page: 8 },
     );
-    expect(component.paginatedCollections).toBe(mockCollections);
+    expect(component.collections).toBe(mockCollections.collections);
   });
 
   it("should load a specific page of collections", () => {
@@ -612,11 +610,11 @@ describe("WorldComponent", () => {
     );
   });
 
-  it("should default collectionPages to empty array", () => {
-    expect(component.collectionPages).toEqual([]);
+  it("should default collectionPageCount to 0", () => {
+    expect(component.collectionPageCount).toBe(0);
   });
 
-  it("should compute collectionPages when loadCollections completes", () => {
+  it("should compute collectionPageCount when loadCollections completes", () => {
     const paginated = new PaginatedCollection();
     paginated.totalCount = 20;
     paginated.collections = [];
@@ -626,7 +624,7 @@ describe("WorldComponent", () => {
 
     component.loadCollections(0);
     // 20 / 8 = 2.5, ceil = 3
-    expect(component.collectionPages).toEqual([0, 1, 2]);
+    expect(component.collectionPageCount).toBe(3);
   });
 
   it("should set a single page when totalCount is less than COLLECTIONS_PER_PAGE", () => {
@@ -638,7 +636,7 @@ describe("WorldComponent", () => {
     );
 
     component.loadCollections(0);
-    expect(component.collectionPages).toEqual([0]);
+    expect(component.collectionPageCount).toBe(1);
   });
 
   it("should generate the bibtex on ngOnInit", () => {

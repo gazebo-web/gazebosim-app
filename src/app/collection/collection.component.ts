@@ -62,14 +62,14 @@ export class CollectionComponent implements OnInit {
   public worldPage: number = 1;
 
   /**
-   * Page numbers used to render the models pagination dots.
+   * Number of pages of the collection's models.
    */
-  public modelPages: number[] = [];
+  public modelPageCount: number = 0;
 
   /**
-   * Page numbers used to render the worlds pagination dots.
+   * Number of pages of the collection's worlds.
    */
-  public worldPages: number[] = [];
+  public worldPageCount: number = 0;
 
   /**
    * Download command for this collection.
@@ -270,14 +270,13 @@ export class CollectionComponent implements OnInit {
   }
 
   /**
-   * Builds the 1-based array of page numbers for a given total count.
+   * Computes the number of pages for a given total count.
    *
    * @param totalCount The total number of resources.
-   * @returns An array like [1, 2, 3] used to render pagination dots.
+   * @returns The number of pages.
    */
-  private pageArray(totalCount: number): number[] {
-    const total = Math.ceil((totalCount || 0) / this.RESOURCES_PER_PAGE);
-    return Array.from({ length: total }, (_, i) => i + 1);
+  private pageCount(totalCount: number): number {
+    return Math.ceil((totalCount || 0) / this.RESOURCES_PER_PAGE);
   }
 
   /**
@@ -286,7 +285,6 @@ export class CollectionComponent implements OnInit {
    * @param page The 1-based page number to load.
    */
   public loadModels(page: number = 1): void {
-    this.modelPage = page;
     this.collectionService
       .getCollectionModels(this.collection.owner, this.collection.name, {
         page,
@@ -295,9 +293,10 @@ export class CollectionComponent implements OnInit {
       .subscribe(
         (response) => {
           // DEVNOTE: This change is not reflected in the Client URL.
+          this.modelPage = page;
           this.paginatedModels = response;
           this.collection.models = response.resources;
-          this.modelPages = this.pageArray(response.totalCount);
+          this.modelPageCount = this.pageCount(response.totalCount);
         },
         (error) => {
           this.snackBar.open(error.message, "Got it");
@@ -311,7 +310,6 @@ export class CollectionComponent implements OnInit {
    * @param page The 1-based page number to load.
    */
   public loadWorlds(page: number = 1): void {
-    this.worldPage = page;
     this.collectionService
       .getCollectionWorlds(this.collection.owner, this.collection.name, {
         page,
@@ -320,72 +318,15 @@ export class CollectionComponent implements OnInit {
       .subscribe(
         (response) => {
           // DEVNOTE: This change is not reflected in the Client URL.
+          this.worldPage = page;
           this.paginatedWorlds = response;
           this.collection.worlds = response.resources;
-          this.worldPages = this.pageArray(response.totalCount);
+          this.worldPageCount = this.pageCount(response.totalCount);
         },
         (error) => {
           this.snackBar.open(error.message, "Got it");
         },
       );
-  }
-
-  /**
-   * Navigates to a specific page of models.
-   *
-   * @param page The 1-based page number to load.
-   */
-  public goToModelPage(page: number): void {
-    if (page !== this.modelPage) {
-      this.loadModels(page);
-    }
-  }
-
-  /**
-   * Loads the previous page of models.
-   */
-  public prevModelPage(): void {
-    if (this.modelPage > 1) {
-      this.loadModels(this.modelPage - 1);
-    }
-  }
-
-  /**
-   * Loads the next page of models.
-   */
-  public nextModelPage(): void {
-    if (this.modelPage < this.modelPages.length) {
-      this.loadModels(this.modelPage + 1);
-    }
-  }
-
-  /**
-   * Navigates to a specific page of worlds.
-   *
-   * @param page The 1-based page number to load.
-   */
-  public goToWorldPage(page: number): void {
-    if (page !== this.worldPage) {
-      this.loadWorlds(page);
-    }
-  }
-
-  /**
-   * Loads the previous page of worlds.
-   */
-  public prevWorldPage(): void {
-    if (this.worldPage > 1) {
-      this.loadWorlds(this.worldPage - 1);
-    }
-  }
-
-  /**
-   * Loads the next page of worlds.
-   */
-  public nextWorldPage(): void {
-    if (this.worldPage < this.worldPages.length) {
-      this.loadWorlds(this.worldPage + 1);
-    }
   }
 
   /**
@@ -428,12 +369,16 @@ export class CollectionComponent implements OnInit {
             if (event.type === "models") {
               resourceList = this.collection.models;
               this.paginatedModels.totalCount--;
-              this.modelPages = this.pageArray(this.paginatedModels.totalCount);
+              this.modelPageCount = this.pageCount(
+                this.paginatedModels.totalCount,
+              );
             }
             if (event.type === "worlds") {
               resourceList = this.collection.worlds;
               this.paginatedWorlds.totalCount--;
-              this.worldPages = this.pageArray(this.paginatedWorlds.totalCount);
+              this.worldPageCount = this.pageCount(
+                this.paginatedWorlds.totalCount,
+              );
             }
 
             const index = resourceList.indexOf(resource);
@@ -474,7 +419,7 @@ export class CollectionComponent implements OnInit {
           this.paginatedModels = models;
           this.collection.models = models.resources;
           this.modelPage = 1;
-          this.modelPages = this.pageArray(models.totalCount);
+          this.modelPageCount = this.pageCount(models.totalCount);
         }
       },
       (error) => {
@@ -490,7 +435,7 @@ export class CollectionComponent implements OnInit {
           this.paginatedWorlds = worlds;
           this.collection.worlds = worlds.resources;
           this.worldPage = 1;
-          this.worldPages = this.pageArray(worlds.totalCount);
+          this.worldPageCount = this.pageCount(worlds.totalCount);
         }
       },
       (error) => {
