@@ -40,31 +40,33 @@
     <div class="gallery-section">
       <div class="viewer-controls">
         @if (hasGzWeb && world?.files.length > 0) {
-          <a
+          <button
             mat-icon-button
             [matTooltip]="view3d ? 'Back to gallery' : 'View in 3D'"
             class="viewer-btn"
             (click)="toggle3D()"
           >
             <mat-icon>{{ view3d ? "photo_library" : "3d_rotation" }}</mat-icon>
-          </a>
+          </button>
           @if (view3d) {
-            <a
+            <button
               mat-icon-button
               (click)="openFullscreen()"
               matTooltip="Full screen"
               class="viewer-btn"
-              ><mat-icon>fullscreen</mat-icon></a
             >
+              <mat-icon>fullscreen</mat-icon>
+            </button>
           }
           @if (view3d) {
-            <a
+            <button
               mat-icon-button
               (click)="resetView()"
               matTooltip="Reset view"
               class="viewer-btn"
-              ><mat-icon>home</mat-icon></a
             >
+              <mat-icon>home</mat-icon>
+            </button>
           }
         }
       </div>
@@ -308,7 +310,6 @@
                   <button
                     class="collection-nav-btn"
                     [disabled]="collectionPage === 0"
-                    [class.disabled]="collectionPage === 0"
                     (click)="loadCollections(collectionPage - 1)"
                     aria-label="Previous page"
                   >
@@ -335,7 +336,6 @@
                   <button
                     class="collection-nav-btn"
                     [disabled]="!paginatedCollections.hasNextPage()"
-                    [class.disabled]="!paginatedCollections.hasNextPage()"
                     (click)="loadCollections(collectionPage + 1)"
                     aria-label="Next page"
                   >

@@ -455,13 +455,12 @@ gz-gallery {
     line-height: 1;
   }
 
-  &:hover:not(:disabled):not(.disabled) {
+  &:hover:not(:disabled) {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transform: scale(1.06);
   }
 
-  &:disabled,
-  &.disabled {
+  &:disabled {
     background: #f0f0f0;
     cursor: default;
     box-shadow: none;
@@ -514,11 +513,16 @@ gz-gallery {
     padding-bottom: 0;
   }
 
-  // Material sets a fixed 56px height on one-line items with a leading icon,
-  // so the height token alone is not enough.
+  // Material hard-codes a 56px height on one-line items with a leading icon,
+  // and there is no token for it.
   .file-item {
     height: 36px;
     padding-right: 8px;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: #f8f9fa;
+    }
   }
 
   // Shrink the download icon button. Material defines the size token on the
@@ -550,14 +554,6 @@ gz-gallery {
 
 .list-divider:last-child {
   border: none;
-}
-
-.file-item {
-  transition: background 0.15s ease;
-
-  &:hover {
-    background: #f8f9fa;
-  }
 }
 
 /* --- License & visibility --- */
