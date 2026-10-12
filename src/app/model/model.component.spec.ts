@@ -551,6 +551,18 @@ describe("ModelComponent", () => {
     );
   });
 
+  it("should keep the current collection page if loading a page fails", () => {
+    const collectionService = TestBed.inject(CollectionService);
+    spyOn(collectionService, "getAssetCollections").and.returnValue(
+      throwError(() => new Error("Network error")),
+    );
+
+    component.collectionPage = 1;
+    component.loadCollections(2);
+
+    expect(component.collectionPage).toBe(1);
+  });
+
   it("should toggle the 3D viewer", () => {
     expect(component.view3d).toBeFalsy();
 
@@ -589,14 +601,33 @@ describe("ModelComponent", () => {
   });
 
   it("should copy the SDF include snippet to clipboard and show a snackbar", async () => {
-    const snackBar = component.snackBar;
     spyOn(navigator.clipboard, "writeText").and.returnValue(Promise.resolve());
+    spyOn(component.snackBar, "open");
 
     component.model = testModel;
-    component.copySdfInclude();
-    await fixture.whenStable();
+    await component.copySdfInclude();
 
     expect(navigator.clipboard.writeText).toHaveBeenCalled();
+    expect(component.snackBar.open).toHaveBeenCalledWith(
+      "SDF include snippet copied to clipboard.",
+      "",
+      { duration: 2000 },
+    );
+  });
+
+  it("should show an error snackbar if copying the SDF snippet fails", async () => {
+    spyOn(navigator.clipboard, "writeText").and.returnValue(
+      Promise.reject(new Error("Not allowed")),
+    );
+    spyOn(component.snackBar, "open");
+
+    component.model = testModel;
+    await component.copySdfInclude();
+
+    expect(component.snackBar.open).toHaveBeenCalledWith(
+      "Failed to copy SDF snippet to clipboard.",
+      "Got it",
+    );
   });
 
   it("should default collectionPages to empty array", () => {
