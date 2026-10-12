@@ -15,11 +15,7 @@ import { Subscription, forkJoin } from "rxjs";
 import { finalize, switchMap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
-import {
-  Collection,
-  CollectionService,
-  PaginatedCollection,
-} from "../collection";
+import { Collection, CollectionService } from "../collection";
 import { CollectionDialogComponent } from "../collection/dialog/collection-dialog.component";
 import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.component";
 import { ReportDialogComponent } from "../fuel-resource/report-dialog/report-dialog.component";
@@ -79,11 +75,6 @@ export class WorldComponent implements OnInit, OnDestroy {
   public collections: Collection[];
 
   /**
-   * The paginated Collections returned from the Server, required by the resource list component.
-   */
-  public paginatedCollections: PaginatedCollection;
-
-  /**
    * Items per page for the Collections tab.
    */
   public readonly COLLECTIONS_PER_PAGE = 8;
@@ -94,9 +85,9 @@ export class WorldComponent implements OnInit, OnDestroy {
   public collectionPage: number = 0;
 
   /**
-   * Array of page indices used to render dot indicators in the Collections tab.
+   * Number of pages of collections in the Collections tab.
    */
-  public collectionPages: number[] = [];
+  public collectionPageCount: number = 0;
 
   /**
    * Subscription to the Collection Dialog. Used to see the result of it.
@@ -588,12 +579,10 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.collectionService.getAssetCollections(this.world, params).subscribe({
       next: (response) => {
         this.collectionPage = pageIndex;
-        this.paginatedCollections = response;
         this.collections = response.collections;
-        const total = Math.ceil(
+        this.collectionPageCount = Math.ceil(
           response.totalCount / this.COLLECTIONS_PER_PAGE,
         );
-        this.collectionPages = Array.from({ length: total }, (_, i) => i);
       },
       error: (error) => {
         this.snackBar.open(error.message, "Got it");
