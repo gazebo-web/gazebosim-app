@@ -187,10 +187,12 @@
           <div
             class="action-item action-version-item"
             matTooltip="Display another version"
+            (click)="versionSelect.open()"
           >
             <mat-icon>tag</mat-icon>
             <span class="action-label">Version&nbsp;</span>
             <mat-select
+              #versionSelect
               [(ngModel)]="currentVersion"
               (ngModelChange)="onVersion()"
               class="action-version-select"
@@ -304,7 +306,7 @@
                   "
                 >
                   <button
-                    class="col-nav-btn"
+                    class="collection-nav-btn"
                     [disabled]="collectionPage === 0"
                     [class.disabled]="collectionPage === 0"
                     (click)="loadCollections(collectionPage - 1)"
@@ -314,13 +316,13 @@
                   </button>
 
                   <div
-                    class="col-dot-strip"
+                    class="collection-dot-strip"
                     role="tablist"
                     aria-label="Collection page navigation"
                   >
                     @for (p of collectionPages; track p; let i = $index) {
                       <button
-                        class="col-dot"
+                        class="collection-dot"
                         [class.active]="i === collectionPage"
                         (click)="loadCollections(i)"
                         [attr.aria-label]="'Page ' + (i + 1)"
@@ -331,7 +333,7 @@
                   </div>
 
                   <button
-                    class="col-nav-btn"
+                    class="collection-nav-btn"
                     [disabled]="!paginatedCollections.hasNextPage()"
                     [class.disabled]="!paginatedCollections.hasNextPage()"
                     (click)="loadCollections(collectionPage + 1)"

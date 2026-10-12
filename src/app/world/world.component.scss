@@ -49,7 +49,6 @@
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  box-shadow: none;
   background: #f5f5f5;
 }
 
@@ -77,27 +76,11 @@ gz-gallery {
 }
 
 .viewer-btn {
-  color: #000 !important;
-  background: transparent !important;
-  border: none !important;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
+  color: #000;
+  transition: color 0.2s ease;
 
   &:hover {
-    color: #f58113 !important;
-
-    background: transparent !important;
-  }
-
-  /* Remove Material hover overlay and ripple */
-  .mat-mdc-button-persistent-ripple,
-  .mat-ripple {
-    display: none !important;
-  }
-
-  &::before {
-    display: none !important;
+    color: #f58113;
   }
 }
 
@@ -218,14 +201,6 @@ gz-gallery {
   flex-shrink: 0;
 }
 
-.action-version-item {
-  cursor: default;
-
-  &:hover {
-    background: transparent !important;
-  }
-}
-
 .action-version-select {
   font-size: 13px;
   flex: 1;
@@ -256,10 +231,10 @@ gz-gallery {
 }
 
 .meta-icon {
-  font-size: 14px !important;
-  height: 14px !important;
-  width: 14px !important;
-  line-height: 14px !important;
+  font-size: 14px;
+  height: 14px;
+  width: 14px;
+  line-height: 14px;
 }
 
 @media screen and (max-width: 599px) {
@@ -288,7 +263,6 @@ gz-gallery {
   flex-direction: column;
   background: #fff;
   border-radius: 12px;
-  box-shadow: none;
   overflow: hidden;
 }
 
@@ -305,7 +279,6 @@ gz-gallery {
   padding: 16px 18px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: none;
   flex-shrink: 0;
 }
 
@@ -419,12 +392,12 @@ gz-gallery {
 
     mat-card-title,
     mat-card-subtitle {
-      font-size: 12px !important;
+      font-size: 12px;
     }
 
     // Tighten subtitle bottom gap
     mat-card-subtitle {
-      margin-bottom: 4px !important;
+      margin-bottom: 4px;
     }
 
     // Taller crop ratio keeps image visible but shorter overall
@@ -460,7 +433,7 @@ gz-gallery {
   gap: 20px;
 }
 
-.col-nav-btn {
+.collection-nav-btn {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -499,13 +472,13 @@ gz-gallery {
   }
 }
 
-.col-dot-strip {
+.collection-dot-strip {
   display: flex;
   gap: 7px;
   align-items: center;
 }
 
-.col-dot {
+.collection-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -529,39 +502,36 @@ gz-gallery {
 
 /* --- File List --- */
 .list-container {
+  // Small, muted file icon
+  --mat-list-list-item-leading-icon-size: 16px;
+  --mat-list-list-item-leading-icon-color: #aaa;
+  --mat-list-list-item-leading-icon-start-space: 8px;
+  --mat-list-list-item-leading-icon-end-space: 8px;
+
   // Remove Material's default top/bottom padding on the list
   ::ng-deep .mat-mdc-list-base {
     padding-top: 0;
     padding-bottom: 0;
   }
 
-  // Collapse each item to a single tight row
-  ::ng-deep .mat-mdc-list-item {
-    height: 36px !important;
-    min-height: 36px !important;
-    padding: 0 8px !important;
+  // Material sets a fixed 56px height on one-line items with a leading icon,
+  // so the height token alone is not enough.
+  .file-item {
+    height: 36px;
+    padding-right: 8px;
   }
 
-  // Vertically center all content (icon + text + meta) within the row
-  ::ng-deep .mdc-list-item__content {
-    display: flex !important;
-    align-items: center !important;
-    flex-direction: row !important;
-  }
+  // Shrink the download icon button. Material defines the size token on the
+  // button itself, so it has to be overridden at the same level.
+  [matListItemMeta] {
+    --mat-icon-button-state-layer-size: 28px;
+    padding: 6px;
 
-  // File icon — smaller and muted
-  [matListItemIcon] {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 16px !important;
-    height: 16px !important;
-    width: 16px !important;
-    line-height: 1 !important;
-    color: #aaa;
-    margin-right: 8px;
-    flex-shrink: 0;
-    align-self: center;
+    mat-icon {
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
+    }
   }
 
   [matListItemTitle] {
@@ -571,21 +541,6 @@ gz-gallery {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  // Shrink the download icon button
-  ::ng-deep [matListItemMeta] {
-    min-width: 0 !important;
-    width: 28px !important;
-    height: 28px !important;
-    line-height: 28px !important;
-    padding: 0 !important;
-
-    mat-icon {
-      font-size: 16px !important;
-      height: 16px !important;
-      width: 16px !important;
-    }
   }
 }
 
@@ -605,17 +560,7 @@ gz-gallery {
   }
 }
 
-/* --- Info Panel (license & visibility) --- */
-.info-panel {
-  background: #f8f9fa;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
+/* --- License & visibility --- */
 .info-row {
   display: flex;
   align-items: center;
@@ -643,58 +588,8 @@ gz-gallery {
   gap: 8px;
 }
 
-/* --- Bibtex Section --- */
-.bibtex-section {
-  margin-top: 4px;
-}
-
-.bibtex-label {
-  font-weight: 500;
-  font-size: 0.95em;
-  color: #555;
-}
-
-pre.bibtex {
-  margin: 8px 0 0 0;
-  padding: 14px 16px;
-  background: #f5f5f5;
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.5;
-  overflow-x: auto;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    border-color: #ccc;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-    color: #03a9f4;
-  }
-}
-
 /* --- Misc --- */
 .font-x-large {
   font-size: x-large;
   text-align: center;
-}
-
-/* Chip styles */
-.mat-chip {
-  margin-left: 8px;
-  margin-bottom: 8px;
-}
-
-.mat-chip:not(.mat-basic-chip) + .mat-chip:not(.mat-basic-chip) {
-  margin-bottom: 8px;
-}
-
-/* Legacy classes (kept for any remaining references) */
-.avatar {
-  width: 64px;
-  height: 64px;
-  font-size: 64px;
-  padding-right: 10px;
 }
