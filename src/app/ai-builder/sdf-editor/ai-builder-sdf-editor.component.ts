@@ -10,9 +10,27 @@ import {
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
-import { Subject, debounceTime, takeUntil } from "rxjs";
+import {
+  Subject,
+  catchError,
+  debounce,
+  of,
+  switchMap,
+  takeUntil,
+  timer,
+} from "rxjs";
 
-import { SDFError, validateSDF } from "./sdf-validator";
+import {
+  AiBuilderService,
+  SDFIssue,
+  SDFValidation,
+} from "../ai-builder.service";
+
+/** A validation problem shown in the gutter (1-indexed line). */
+interface SDFError {
+  line: number;
+  message: string;
+}
 
 interface Match {
   start: number;
@@ -22,11 +40,12 @@ interface Match {
 /**
  * Lightweight SDF text editor for the AI Builder right column.
  *
- * Two-way binds via the `[(value)]` banana-in-box convention so the
- * parent's `worldSDF` flows in and edits flow out unchanged. The
- * existing viewport binding (`[sdf]="worldSDF"`) means every keystroke
- * re-renders the 3D scene; this component is intentionally pass-through
- * on edits so we don't insert debounce surprises here.
+ * Binds `[value]` in and `(valueChange)` out so the parent's `worldSDF`
+ * flows in and edits flow out unchanged. The viewport binding
+ * (`[sdf]="worldSDF"`) means every keystroke re-renders the 3D scene;
+ * this component is intentionally pass-through on edits.
+ *
+ * Errors and warnings in the gutter come from fuel-server's validator.
  *
  * Features:
  *   - line-number gutter on the left, scroll-synced with the textarea
@@ -61,32 +80,41 @@ export class AiBuilderSDFEditorComponent
   // tooltip text to show on hover. Built once per validate run so the
   // template's *ngFor doesn't pay for an array scan per gutter row.
   private errorByLine = new Map<number, string[]>();
-  private validate$ = new Subject<string>();
+  private validate$ = new Subject<{ text: string; immediate: boolean }>();
   private destroy$ = new Subject<void>();
 
-  constructor() {
-    // Debounce: validation parses XML, which is cheap-but-not-free for
-    // multi-KB worlds. 200ms keeps it interactive while skipping work
-    // mid-keystroke.
+  constructor(private service: AiBuilderService) {
+    // Validation runs on fuel-server, the same validator the agent's
+    // writes go through. Typing is debounced; switchMap drops responses
+    // for text that has since changed.
     this.validate$
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
-      .subscribe((text) => this.runValidation(text));
+      .pipe(
+        debounce(({ immediate }) => timer(immediate ? 0 : 400)),
+        switchMap(({ text }) =>
+          text.trim()
+            ? this.service.validateSDF(text).pipe(catchError(() => of(null)))
+            : of<SDFValidation>({ valid: true }),
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((result) => {
+        if (result) this.setIssues(result.errors || [], result.warnings || []);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["value"]) {
       this.recomputeLines();
       this.runSearch();
-      // External value updates (chat-engine sdf_update events,
-      // restoring a version) should validate immediately rather than
-      // waiting on the debounce — there's no typing burst to coalesce.
-      this.runValidation(this.value);
+      // External value updates (agent edits, restoring a version)
+      // validate immediately; there's no typing burst to coalesce.
+      this.validate$.next({ text: this.value, immediate: true });
     }
   }
 
   ngAfterViewInit(): void {
     this.recomputeLines();
-    this.runValidation(this.value);
+    this.validate$.next({ text: this.value, immediate: true });
   }
 
   ngOnDestroy(): void {
@@ -100,7 +128,7 @@ export class AiBuilderSDFEditorComponent
     this.recomputeLines();
     // Live search: update match positions/count as the user types.
     this.runSearch({ keepCursor: true });
-    this.validate$.next(next);
+    this.validate$.next({ text: next, immediate: false });
   }
 
   /** Total errors. Used by the badge in the search bar. */
@@ -120,10 +148,19 @@ export class AiBuilderSDFEditorComponent
     return (this.errorByLine.get(line) || []).join("\n");
   }
 
-  private runValidation(text: string): void {
-    this.errors = validateSDF(text);
+  private setIssues(errors: SDFIssue[], warnings: SDFIssue[]): void {
+    // Issues without a line (document-level) mark line 1 so they still
+    // show in the gutter. The badge counts errors; the gutter shows both.
+    const toLine = (i: SDFIssue, prefix = ""): SDFError => ({
+      line: i.line || 1,
+      message: prefix + i.message,
+    });
+    this.errors = errors.map((i) => toLine(i));
     const map = new Map<number, string[]>();
-    for (const e of this.errors) {
+    for (const e of [
+      ...this.errors,
+      ...warnings.map((w) => toLine(w, "warning: ")),
+    ]) {
       const list = map.get(e.line) || [];
       list.push(e.message);
       map.set(e.line, list);

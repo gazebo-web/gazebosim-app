@@ -52,9 +52,9 @@ interface InternalAssetViewer {
  * Renders SDF via gzweb's AssetViewer, which uses Three.js + OrbitControls
  * under the hood — mouse drag rotates, right-drag pans, wheel zooms.
  *
- * Auto-update model: the chat engine re-emits `sdf_update` SSE events
- * every time it produces a new world SDF, the parent component pushes
- * that string into `[sdf]`, and Angular triggers ngOnChanges here. We
+ * Auto-update model: when world.sdf changes (a `project_changed` chat
+ * event, a newer head found by polling, or editor typing), the parent
+ * pushes the new text into `[sdf]` and Angular triggers ngOnChanges here. We
  * keep the same AssetViewer instance across updates and swap just the
  * resource object, so the camera / grid / lighting survive and we don't
  * burn a WebGL context per auto-save.

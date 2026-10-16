@@ -3,11 +3,6 @@ import { Injectable } from "@angular/core";
 import { Observable, catchError, map, of } from "rxjs";
 
 import { environment } from "../../environments/environment";
-import {
-  buildCallToolRequest,
-  MCPRPCEnvelope,
-  unwrapToolResult,
-} from "./mcp-response";
 
 /**
  * AiBuilderProject mirrors the fuel-server Project resource. The
@@ -21,6 +16,9 @@ export interface AiBuilderProject {
   id: string; // alias for name; populated client-side
   name: string;
   owner: string;
+  uuid?: string;
+  /** Commit hash at HEAD when fetched; changes whenever any file does. */
+  head_rev?: string;
   description?: string;
   gazebo_version?: string;
   sdf_version?: string;
@@ -84,14 +82,44 @@ export interface ModelInfo {
 }
 
 export interface ChatEvent {
-  type: "text" | "tool_call" | "tool_result" | "sdf_update" | "done" | "error";
+  type:
+    | "text"
+    | "tool_call"
+    | "tool_result"
+    | "project_changed"
+    | "done"
+    | "error";
   text?: string;
   tool?: string;
   tool_call_id?: string;
   input?: unknown;
   result?: unknown;
-  sdf?: string;
   error?: string;
+  /** project_changed: the file written and the new revision. */
+  path?: string;
+  rev?: string;
+  validation?: { valid: boolean; errors: number; warnings: number };
+}
+
+/** The commit a project write produced (fuel-server WriteResult). */
+export interface WriteResult {
+  version: number;
+  rev: string;
+  /** Auto-saves folded into a labeled save. */
+  squashed?: number;
+}
+
+/** One problem from fuel-server's SDF validator. */
+export interface SDFIssue {
+  message: string;
+  line?: number;
+  path?: string;
+}
+
+export interface SDFValidation {
+  valid: boolean;
+  errors?: SDFIssue[];
+  warnings?: SDFIssue[];
 }
 
 export interface ExecutionEvent {
@@ -107,8 +135,8 @@ export interface ExecutionEvent {
  * Client for the AI Builder frontend.
  *
  * Two backends are involved:
- *   - fuel-server (API_HOST/1.0) — authoritative for projects, versions,
- *     MCP tool invocation, personal access tokens, and publish.
+ *   - fuel-server (API_HOST/1.0) — authoritative for projects, files,
+ *     versions, SDF validation, and personal access tokens.
  *   - ai-builder-service (AI_BUILDER_HOST/1.0/ai-builder) — chat engine,
  *     chat history, LLM key vault, code execution, provider/model listing.
  *
@@ -203,64 +231,57 @@ export class AiBuilderService {
     return { ...p, id: p.id || p.name };
   }
 
-  // --- MCP bridge (fuel-server) ---
+  // --- Project files (fuel-server) ---
 
   /**
-   * callMCPTool dispatches one MCP tool call to fuel-server's
-   * /1.0/mcp endpoint. The auth interceptor forwards the Auth0 JWT the
-   * user already carries, so the caller just passes the tool name and
-   * arguments. Delegates response parsing to the shared `mcp-response`
-   * helper so the Go remote-client and this caller agree on semantics.
+   * Write one project file. With `baseRev`, fuel-server answers 409 if
+   * the file changed since that revision (e.g. the agent edited it). An
+   * empty message records an automatic save.
    */
-  callMCPTool<T = unknown>(
-    name: string,
-    args: Record<string, unknown> = {},
-  ): Observable<T> {
-    const url = `${this.fuelBase}/mcp`;
-    return this.http
-      .post<MCPRPCEnvelope>(url, buildCallToolRequest(name, args))
-      .pipe(map((env) => unwrapToolResult<T>(env, name) as T));
+  writeProjectFile(
+    nameOrId: string,
+    path: string,
+    content: string,
+    opts: { baseRev?: string; message?: string } = {},
+  ): Observable<WriteResult> {
+    const url = `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/files/${path
+      .split("/")
+      .map((p) => encodeURIComponent(p))
+      .join("/")}`;
+    return this.http.put<WriteResult>(url, {
+      content,
+      base_rev: opts.baseRev || undefined,
+      message: opts.message || undefined,
+    });
   }
 
   /**
-   * Save a project's world SDF as a labeled commit via the
-   * project_save_world_sdf MCP tool. By default passes
-   * `squash_autosaves: true` — the manual Save button is the user
-   * saying "this is the canonical state", so the server collapses any
-   * preceding run of chat-engine auto-saves into this one labeled
-   * snapshot (journal Q-MCP-14). Auto-saves from the chat engine use
-   * the tool directly with squash_autosaves=false.
+   * Save a labeled version: fuel-server folds the automatic saves since
+   * the last labeled version into it.
    */
-  saveProjectWorld(
-    nameOrId: string,
-    sdf: string,
-    commitMessage: string,
-    opts: { squashAutoSaves?: boolean } = { squashAutoSaves: true },
-  ): Observable<{
-    version: number;
-    commit_message: string;
-    squashed?: boolean;
-  }> {
-    return this.callMCPTool("project_save_world_sdf", {
-      name: nameOrId,
+  checkpoint(nameOrId: string, message: string): Observable<WriteResult> {
+    return this.http.post<WriteResult>(
+      `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/checkpoint`,
+      { message },
+    );
+  }
+
+  /** Validate SDF with fuel-server's validator (the one the agent uses). */
+  validateSDF(sdf: string): Observable<SDFValidation> {
+    return this.http.post<SDFValidation>(`${this.fuelBase}/sdf/validate`, {
       sdf,
-      commit_message: commitMessage,
-      squash_autosaves: opts.squashAutoSaves ?? true,
     });
   }
 
   /**
    * Upload a thumbnail image for a project. The body is the raw image
-   * bytes; fuel-server stores it in the git repo as thumbnail.png and
-   * auto-versions it. Used by the project editor after a save (manual or
-   * auto) so cards on the project list reflect the current world.
+   * bytes; fuel-server stores it as thumbnail.png, amended into the
+   * current version (no new history entry). Called after saves so cards
+   * on the project list reflect the current world.
    */
-  uploadThumbnail(
-    nameOrId: string,
-    blob: Blob,
-  ): Observable<{ version: number }> {
+  uploadThumbnail(nameOrId: string, blob: Blob): Observable<WriteResult> {
     const url = `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/thumbnail`;
-    return this.http.post<{ version: number }>(url, blob, {
+    return this.http.post<WriteResult>(url, blob, {
       headers: { "Content-Type": blob.type || "image/jpeg" },
     });
   }

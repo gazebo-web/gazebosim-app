@@ -205,7 +205,10 @@
           sdfPanelHeightPx ? '0 0 ' + sdfPanelHeightPx + 'px' : null
         "
       >
-        <ai-builder-sdf-editor [(value)]="worldSDF"></ai-builder-sdf-editor>
+        <ai-builder-sdf-editor
+          [value]="worldSDF"
+          (valueChange)="onEditorChange($event)"
+        ></ai-builder-sdf-editor>
       </div>
 
       <ai-builder-execution-panel

@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Subject, takeUntil } from "rxjs";
+import { Observable, Subject, interval, of, switchMap, takeUntil } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
 import {
@@ -93,11 +93,16 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   showHistory = false;
   showExecution = false;
 
-  // Auto-save state. When the chat engine emits an sdf_update event we
-  // snapshot the world through project_save_world_sdf; lastSavedAt is
-  // used to render "saved X seconds ago" in the header.
+  // world.sdf state. worldRev is the revision the editor's text is based
+  // on (sent as base_rev on save, so fuel-server rejects a save that would
+  // overwrite an agent's newer edit). worldDirty means the editor holds
+  // edits not yet written. lastSavedAt drives the "Saved Xs ago" chip.
+  private worldRev = "";
+  worldDirty = false;
   lastSavedAt: number | null = null;
-  autoSaving = false;
+  // Set when the agent changed the project during a turn; the thumbnail
+  // is refreshed once when the turn ends rather than after every edit.
+  private projectChangedThisTurn = false;
 
   // AbortController for the in-flight chat fetch. Set when sendMessage
   // dispatches; cleared in the finally block when the turn ends. The
@@ -125,6 +130,12 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
       const id = params.get("projectId");
       if (id) this.loadProject(id);
     });
+    // Notice edits made outside this page (an external agent working
+    // through MCP, another tab). During a chat turn project_changed
+    // events cover it instead.
+    interval(5000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.pollHead());
   }
 
   ngOnDestroy(): void {
@@ -464,39 +475,55 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     return { role: m.role === "user" ? "user" : "assistant", text: m.content };
   }
 
-  private loadLatestVersion(): void {
+  /**
+   * Load world.sdf at `rev` (default: the project's head) into the viewport
+   * and editor, discarding unsaved editor changes. Content that hasn't
+   * changed is not reassigned, so polling and our own thumbnail commits
+   * don't re-render the scene.
+   */
+  private loadLatestVersion(rev?: string): void {
     if (!this.project) return;
-    // Pull the project's current world.sdf from fuel-server's git
-    // repo so the gzweb viewport seeds itself with whatever the agent
-    // has built so far. A 404 means "no world.sdf yet" (project never
-    // produced or never persisted SDF); anything else is a real error.
-    // Log both cases — the 404 is invaluable when debugging "I had a
-    // saved project, why is it empty?".
     const name = this.project.id;
-    this.service.getProjectFile(name, "tip", "world.sdf").subscribe({
+    const at = rev || this.project.head_rev || "tip";
+    this.service.getProjectFile(name, at, "world.sdf").subscribe({
       next: (sdf) => {
-        this.worldSDF = sdf;
-        // eslint-disable-next-line no-console
-        console.log(
-          `ai-builder: loaded world.sdf for "${name}" (${sdf?.length ?? 0} bytes)`,
-        );
+        this.worldRev = at === "tip" ? "" : at;
+        this.worldDirty = false;
+        if (sdf !== this.worldSDF) this.worldSDF = sdf;
       },
       error: (err) => {
         if (err?.status === 404) {
-          // eslint-disable-next-line no-console
-          console.log(
-            `ai-builder: no saved world.sdf yet for "${name}" — start chatting to build one`,
-          );
+          // No world.sdf yet: the agent creates it on the first build.
+          this.worldRev = at === "tip" ? "" : at;
           return;
         }
-        // eslint-disable-next-line no-console
-        console.warn(
-          `ai-builder: could not load world.sdf for "${name}":`,
-          err?.status,
-          err?.message ?? err,
-        );
+        this.notifyError(err, "Load world.sdf");
       },
     });
+  }
+
+  /** Reload the world when the project's head moved since we last looked. */
+  private pollHead(): void {
+    if (!this.project || this.sending || this.worldDirty || document.hidden) {
+      return;
+    }
+    const known = this.project.head_rev;
+    this.service.getProject(this.project.id).subscribe({
+      next: (p) => {
+        if (!p.head_rev || p.head_rev === known) return;
+        this.project = p;
+        this.loadLatestVersion(p.head_rev);
+      },
+      error: () => {
+        // Transient; try again on the next tick.
+      },
+    });
+  }
+
+  /** The SDF editor changed the text: keep it until Save writes it. */
+  onEditorChange(sdf: string): void {
+    this.worldSDF = sdf;
+    this.worldDirty = true;
   }
 
   async sendMessage(): Promise<void> {
@@ -519,6 +546,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     const controller = new AbortController();
     this.currentAbort = controller;
+    this.projectChangedThisTurn = false;
 
     try {
       const stream = this.service.streamChat(this.project.id, text, token, {
@@ -545,6 +573,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
       }
       this.sending = false;
       this.currentAbort = undefined;
+      if (this.projectChangedThisTurn) this.refreshThumbnail();
     }
   }
 
@@ -571,25 +600,33 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         });
         break;
       case "tool_result":
-        // Backend-initiated auto-save (Q-MCP-14): the chat handler
-        // invokes project_save_world_sdf every Nth sdf_update and
-        // forwards the tool_result event through the SSE stream. Key
-        // the "Saved ago" indicator off that event — the frontend no
-        // longer drives saves itself (Q-MCP-1: during a build the
-        // frontend stays out of the write path).
-        if (ev.tool === "project_save_world_sdf") {
-          this.lastSavedAt = Date.now();
-          this.autoSaving = false;
-          this.refreshThumbnail();
-        }
         this.log.push({
           role: "tool",
           text: `← ${ev.tool} returned`,
           toolName: ev.tool,
         });
         break;
-      case "sdf_update":
-        if (ev.sdf) this.worldSDF = ev.sdf;
+      case "project_changed":
+        // The agent wrote a project file; it is already committed.
+        this.lastSavedAt = Date.now();
+        this.projectChangedThisTurn = true;
+        if (this.project && ev.rev) {
+          this.project = { ...this.project, head_rev: ev.rev };
+        }
+        if (ev.path === "world.sdf") {
+          if (this.worldDirty) {
+            this.snack
+              .open(
+                "The agent changed world.sdf while you have unsaved editor changes. Saving them will be refused until you reload.",
+                "Reload",
+                { duration: 10000 },
+              )
+              .onAction()
+              .subscribe(() => this.loadLatestVersion());
+          } else {
+            this.loadLatestVersion(ev.rev);
+          }
+        }
         break;
       case "error":
         this.showChatError(ev.error || "error");
@@ -646,7 +683,6 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
    * first successful save so nothing renders.
    */
   autoSavedLabel(): string {
-    if (this.autoSaving) return "Saving…";
     if (!this.lastSavedAt) return "";
     const secs = Math.max(
       1,
@@ -671,26 +707,52 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.showExecution = !this.showExecution;
   }
 
+  /**
+   * Save a labeled version. Unsaved editor changes are written first,
+   * based on the revision they were loaded from; fuel-server refuses the
+   * write (409) if the agent or another session changed world.sdf since.
+   */
   saveVersion(): void {
-    if (!this.project || !this.worldSDF) return;
+    if (!this.project) return;
     const ref = this.dialog.open<
       SaveVersionDialogComponent,
       unknown,
       string | undefined
     >(SaveVersionDialogComponent, { width: "440px" });
     ref.afterClosed().subscribe((msg) => {
-      if (msg === undefined || !this.project || !this.worldSDF) return;
-      // Labeled save goes through fuel-server's MCP endpoint
-      // (project_save_world_sdf). Auto-saves during chat use the same
-      // tool internally; this is the explicit user-triggered version.
-      this.service
-        .saveProjectWorld(this.project.id, this.worldSDF, msg)
+      if (msg === undefined || !this.project) return;
+      const name = this.project.id;
+      const write$: Observable<unknown> = this.worldDirty
+        ? this.service.writeProjectFile(name, "world.sdf", this.worldSDF, {
+            baseRev: this.worldRev,
+          })
+        : of(null);
+      write$
+        .pipe(switchMap(() => this.service.checkpoint(name, msg)))
         .subscribe({
-          next: () => {
+          next: (res) => {
+            this.worldDirty = false;
+            this.worldRev = res.rev;
+            if (this.project)
+              this.project = { ...this.project, head_rev: res.rev };
+            this.lastSavedAt = Date.now();
             this.snack.open("Saved.", "Dismiss", { duration: 2000 });
             this.refreshThumbnail();
           },
-          error: (err) => this.notifyError(err, "Save"),
+          error: (err) => {
+            if (err?.status === 409) {
+              this.snack
+                .open(
+                  "world.sdf changed since you loaded it (probably the agent). Reload to get the latest; your unsaved edits will be discarded.",
+                  "Reload",
+                  { duration: 10000 },
+                )
+                .onAction()
+                .subscribe(() => this.loadLatestVersion());
+              return;
+            }
+            this.notifyError(err, "Save");
+          },
         });
     });
   }
@@ -752,6 +814,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
       .subscribe({
         next: (sdf) => {
           this.worldSDF = sdf;
+          this.worldDirty = true;
           this.snack.open(
             `Restored v${v.version} into editor. Save to lock it in as a new version.`,
             "Dismiss",

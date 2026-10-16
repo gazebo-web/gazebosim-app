@@ -111,47 +111,39 @@ describe("AiBuilderService", () => {
     req.flush(null);
   });
 
-  it("saveProjectWorld POSTs an MCP tools/call to fuel-server /mcp with squash_autosaves=true by default", () => {
-    service.saveProjectWorld("p1", "<sdf/>", "first").subscribe();
-    const req = http.expectOne((r) => r.url.endsWith("/1.0/mcp"));
-    expect(req.request.method).toBe("POST");
-    expect(req.request.body.method).toBe("tools/call");
-    expect(req.request.body.params.name).toBe("project_save_world_sdf");
-    expect(req.request.body.params.arguments.name).toBe("p1");
-    expect(req.request.body.params.arguments.sdf).toBe("<sdf/>");
-    expect(req.request.body.params.arguments.commit_message).toBe("first");
-    expect(req.request.body.params.arguments.squash_autosaves).toBe(true);
-    req.flush({
-      jsonrpc: "2.0",
-      id: 1,
-      result: {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({
-              version: 2,
-              commit_message: "first",
-              squashed: true,
-            }),
-          },
-        ],
-      },
-    });
+  it("writeProjectFile PUTs content and base_rev to /projects/p/files/path", () => {
+    service
+      .writeProjectFile("p1", "models/cart/model.sdf", "<sdf/>", {
+        baseRev: "abc",
+      })
+      .subscribe((r) => expect(r.rev).toBe("def"));
+    const req = http.expectOne((r) =>
+      r.url.endsWith("/1.0/projects/p1/files/models/cart/model.sdf"),
+    );
+    expect(req.request.method).toBe("PUT");
+    expect(req.request.body.content).toBe("<sdf/>");
+    expect(req.request.body.base_rev).toBe("abc");
+    req.flush({ version: 4, rev: "def" });
   });
 
-  it("saveProjectWorld can disable squashing for non-manual callers", () => {
-    service
-      .saveProjectWorld("p1", "<sdf/>", "auto-save", { squashAutoSaves: false })
-      .subscribe();
-    const req = http.expectOne((r) => r.url.endsWith("/1.0/mcp"));
-    expect(req.request.body.params.arguments.squash_autosaves).toBe(false);
-    req.flush({
-      jsonrpc: "2.0",
-      id: 1,
-      result: {
-        content: [{ type: "text", text: JSON.stringify({ version: 3 }) }],
-      },
+  it("checkpoint POSTs the label to /projects/p/checkpoint", () => {
+    service.checkpoint("p1", "Wall placed").subscribe((r) => {
+      expect(r.squashed).toBe(3);
     });
+    const req = http.expectOne((r) =>
+      r.url.endsWith("/1.0/projects/p1/checkpoint"),
+    );
+    expect(req.request.method).toBe("POST");
+    expect(req.request.body.message).toBe("Wall placed");
+    req.flush({ version: 5, rev: "ghi", squashed: 3 });
+  });
+
+  it("validateSDF POSTs to fuel-server /sdf/validate", () => {
+    service.validateSDF("<sdf/>").subscribe((r) => expect(r.valid).toBe(false));
+    const req = http.expectOne((r) => r.url.endsWith("/1.0/sdf/validate"));
+    expect(req.request.method).toBe("POST");
+    expect(req.request.body.sdf).toBe("<sdf/>");
+    req.flush({ valid: false, errors: [{ message: "x", line: 1 }] });
   });
 
   it("listVersions GETs fuel-server /projects/p/versions", () => {
