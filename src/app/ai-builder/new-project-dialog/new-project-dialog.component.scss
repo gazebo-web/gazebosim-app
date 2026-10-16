@@ -1,9 +1,23 @@
-.full {
+// Encapsulation is disabled on this component so these rules apply to the
+// CDK-overlay-rendered dialog element. They're scoped with
+// `.new-project-dialog-content` to avoid leaking into other dialogs.
+
+// Outline-appearance form fields float their label above the top border.
+// mat-dialog-content has minimal top padding by default, which clips the
+// first field's label.
+.new-project-dialog-content {
+  // Overshoot a bit to be safe across themes.
+  padding-top: 20px !important;
+  // Give the top the same overflow breathing room the label needs.
+  overflow-y: visible;
+}
+
+.new-project-dialog-content .full {
   width: 100%;
   margin-bottom: 12px;
 }
 
-.hint {
+.new-project-dialog-content .hint {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.6);
   margin: 0;

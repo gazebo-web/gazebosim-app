@@ -1,0 +1,73 @@
+<div class="sdf-editor-shell">
+  <div class="search-bar">
+    <span
+      class="error-badge"
+      [class.error-badge--has-errors]="errors.length > 0"
+      [class.error-badge--valid]="errors.length === 0 && !!value.trim()"
+      [title]="errors.length ? errors[0].message : ''"
+      *ngIf="errorCountLabel()"
+    >
+      <mat-icon class="badge-icon">{{
+        errors.length ? "error_outline" : "check_circle_outline"
+      }}</mat-icon>
+      {{ errorCountLabel() }}
+    </span>
+    <mat-icon class="search-icon">search</mat-icon>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Find in SDF…"
+      [(ngModel)]="searchQuery"
+      (input)="onSearchInput()"
+      (keydown.enter)="next($event)"
+      (keydown.shift.enter)="prev($event)"
+      spellcheck="false"
+    />
+    <span class="match-count">{{ matchCountLabel() }}</span>
+    <button
+      type="button"
+      class="nav-btn"
+      title="Previous match (Shift+Enter)"
+      (click)="prev()"
+      [disabled]="!matches.length"
+    >
+      <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+    <button
+      type="button"
+      class="nav-btn"
+      title="Next match (Enter)"
+      (click)="next()"
+      [disabled]="!matches.length"
+    >
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+  </div>
+
+  <div class="editor-body">
+    <div class="line-numbers" #gutter>
+      <div
+        *ngFor="let n of lineNumbers"
+        class="line-number"
+        [class.has-error]="lineHasError(n)"
+        [title]="lineErrorMessages(n)"
+      >
+        <span
+          class="error-mark"
+          *ngIf="lineHasError(n)"
+          aria-hidden="true"
+        ></span>
+        <span class="line-number-text">{{ n }}</span>
+      </div>
+    </div>
+    <textarea
+      #ta
+      class="sdf-textarea"
+      spellcheck="false"
+      placeholder="Generated SDF will appear here."
+      [ngModel]="value"
+      (ngModelChange)="onInput($event)"
+      (scroll)="onScroll()"
+    ></textarea>
+  </div>
+</div>

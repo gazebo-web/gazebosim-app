@@ -9,6 +9,12 @@
       <mat-icon>link</mat-icon>
       <span class="gz-label">Gazebo: {{ gazeboStatusLabel }}</span>
     </button>
+    <span class="save-indicator" *ngIf="autoSavedLabel()">
+      <mat-icon class="save-icon">{{
+        autoSaving ? "sync" : "cloud_done"
+      }}</mat-icon>
+      {{ autoSavedLabel() }}
+    </span>
     <div class="spacer"></div>
     <button mat-button (click)="toggleHistory()">
       <mat-icon>history</mat-icon>
@@ -40,8 +46,6 @@
     </button>
   </div>
 
-  <div *ngIf="error" class="error">{{ error }}</div>
-
   <div class="layout">
     <!-- Left column: history sidebar (toggleable) + chat panel -->
     <div class="left-column">
@@ -53,53 +57,155 @@
       ></ai-builder-version-history>
 
       <div class="chat-panel">
-        <div class="messages">
+        <div class="messages" #messagesList>
           <div
             *ngFor="let entry of log"
             class="message"
             [class.user]="entry.role === 'user'"
             [class.assistant]="entry.role === 'assistant'"
             [class.tool]="entry.role === 'tool'"
+            [class.expandable]="isEntryExpandable(entry)"
+            [class.expanded]="entry.expanded"
           >
-            <div class="role">{{ entry.role }}</div>
-            <div class="content">{{ entry.text }}</div>
+            <div class="message-header" (click)="toggleEntry(entry)">
+              <span class="role">{{ entry.role }}</span>
+              <span class="summary">{{ entrySummary(entry) }}</span>
+              <mat-icon *ngIf="isEntryExpandable(entry)" class="chevron">{{
+                entry.expanded ? "expand_less" : "expand_more"
+              }}</mat-icon>
+            </div>
+            <div class="content" *ngIf="entry.expanded">{{ entry.text }}</div>
           </div>
           <div *ngIf="currentAssistant" class="message assistant streaming">
-            <div class="role">assistant</div>
+            <div class="message-header">
+              <span class="role">assistant</span>
+              <span class="summary streaming-dot">…streaming</span>
+            </div>
             <div class="content">{{ currentAssistant }}</div>
+          </div>
+          <!-- Thinking indicator: visible from the moment the user submits
+               a turn until either the first assistant token arrives (then
+               the streaming bubble above takes over) or the turn ends. -->
+          <div
+            *ngIf="sending && !currentAssistant"
+            class="message assistant thinking"
+            aria-live="polite"
+          >
+            <div class="message-header">
+              <span class="role">assistant</span>
+              <span class="summary">
+                Thinking<span class="dots"
+                  ><span>.</span><span>.</span><span>.</span></span
+                >
+              </span>
+            </div>
           </div>
         </div>
         <div class="input">
           <textarea
             [(ngModel)]="draftMessage"
             rows="3"
-            placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'…"
-            (keydown.control.enter)="sendMessage()"
+            placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'… (Shift+Enter for a newline, Up for history)"
+            (keydown.enter)="$event.preventDefault(); sendMessage()"
+            (keydown)="onChatKeyDown($event)"
             [disabled]="sending"
           ></textarea>
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="sendMessage()"
-            [disabled]="sending || !draftMessage.trim()"
-          >
-            <mat-icon>send</mat-icon>
-          </button>
+          <div class="input-footer">
+            <button
+              mat-button
+              type="button"
+              class="llm-chip"
+              [matMenuTriggerFor]="providerMenu"
+              [disabled]="sending || !availableKeys.length"
+            >
+              <span class="chip-label">{{
+                selectedProvider || "Provider"
+              }}</span>
+              <mat-icon class="chip-caret">arrow_drop_down</mat-icon>
+            </button>
+            <mat-menu #providerMenu="matMenu" yPosition="above">
+              <button
+                mat-menu-item
+                *ngFor="let k of availableKeys"
+                (click)="onProviderChange(k.provider)"
+              >
+                {{ k.provider }}
+              </button>
+            </mat-menu>
+
+            <button
+              mat-button
+              type="button"
+              class="llm-chip"
+              [matMenuTriggerFor]="modelMenu"
+              [disabled]="sending || loadingModels || !availableModels.length"
+            >
+              <span class="chip-label">{{
+                selectedModel ? modelLabel(selectedModel) : "Model"
+              }}</span>
+              <mat-icon class="chip-caret">arrow_drop_down</mat-icon>
+            </button>
+            <mat-menu #modelMenu="matMenu" yPosition="above">
+              <button
+                mat-menu-item
+                *ngFor="let m of availableModels"
+                (click)="onModelChange(m.id)"
+              >
+                {{ m.display_name }}
+              </button>
+            </mat-menu>
+
+            <span class="footer-spacer"></span>
+            <!-- One control for two states: while a turn is in flight
+                 (sending=true) it's a stop button; otherwise it submits
+                 the draft. The disabled gate flips with the role: send
+                 needs draft text, stop is always live. -->
+            <button
+              *ngIf="!sending"
+              mat-icon-button
+              color="primary"
+              class="send-btn"
+              (click)="sendMessage()"
+              [disabled]="!draftMessage.trim()"
+              aria-label="Send"
+            >
+              <mat-icon>send</mat-icon>
+            </button>
+            <button
+              *ngIf="sending"
+              mat-icon-button
+              color="warn"
+              class="send-btn stop-btn"
+              (click)="stopMessage()"
+              aria-label="Stop"
+              title="Stop the agent"
+            >
+              <mat-icon>stop</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Right column: viewport + optional SDF panel -->
-    <div class="right-column">
+    <div class="right-column" #rightColumn>
       <ai-builder-viewport [sdf]="worldSDF"></ai-builder-viewport>
 
-      <div class="sdf-panel" *ngIf="showSDF">
-        <textarea
-          [(ngModel)]="worldSDF"
-          class="sdf-editor"
-          spellcheck="false"
-          placeholder="Generated SDF will appear here."
-        ></textarea>
+      <div
+        *ngIf="showSDF"
+        class="splitter"
+        [class.splitter--dragging]="splitterDragging"
+        (mousedown)="onSplitterMouseDown($event)"
+        title="Drag to resize"
+      ></div>
+      <div
+        class="sdf-panel"
+        *ngIf="showSDF"
+        [style.flex]="
+          sdfPanelHeightPx ? '0 0 ' + sdfPanelHeightPx + 'px' : null
+        "
+      >
+        <ai-builder-sdf-editor [(value)]="worldSDF"></ai-builder-sdf-editor>
       </div>
 
       <ai-builder-execution-panel

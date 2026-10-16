@@ -7,7 +7,11 @@
 @if (authService.isAuthenticated()) {
   <div class="fx-layout-row fx-layout-align-center-start page-content-inner">
     <div class="fx-flex fx-flex-gt-xs-60 fx-flex-lt-sm-100">
-      <mat-tab-group dynamicHeight [selectedIndex]="selected.value">
+      <mat-tab-group
+        dynamicHeight
+        [selectedIndex]="selected.value"
+        (selectedTabChange)="onTabChange($event)"
+      >
         <mat-tab label="Account">
           <div class="tab-content">
             <div class="fx-layout-column fx-layout-align-space-between-start">
@@ -229,6 +233,29 @@
         </mat-tab>
         <mat-tab label="AI Builder">
           <div class="tab-content">
+            <!-- PAT requirement banner: external MCP agents need a fuel-
+                 server access token to authenticate. The Access Tokens
+                 tab has the full create/list/revoke UI; this banner just
+                 nudges the user there so they don't miss it. Suppressed
+                 once the user has at least one token, and during the
+                 initial fetch so it doesn't flash on page load. -->
+            <div
+              class="ai-builder-pat-banner"
+              *ngIf="accessTokensLoaded && !hasAccessToken()"
+            >
+              <mat-icon class="banner-icon">info</mat-icon>
+              <span class="banner-text">
+                An Access Token is needed for agents to authenticate with Fuel.
+              </span>
+              <a
+                mat-stroked-button
+                color="primary"
+                routerLink="/settings/access-tokens"
+              >
+                Access Tokens
+              </a>
+            </div>
+
             <ai-builder-llm-settings></ai-builder-llm-settings>
           </div>
         </mat-tab>

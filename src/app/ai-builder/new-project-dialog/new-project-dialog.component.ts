@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewEncapsulation } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 
 export interface NewProjectResult {
@@ -18,6 +18,11 @@ const GAZEBO_TO_SDF_ROS: Record<string, { sdf: string; ros: string }> = {
   selector: "new-project-dialog",
   templateUrl: "./new-project-dialog.component.html",
   styleUrls: ["./new-project-dialog.component.scss"],
+  // Dialogs render in a CDK overlay outside this component's DOM, so
+  // Angular's emulated view encapsulation wouldn't apply the scoped
+  // styles. Disable encapsulation and scope via the `.new-project-dialog`
+  // class below.
+  encapsulation: ViewEncapsulation.None,
   standalone: false,
 })
 export class NewProjectDialogComponent {

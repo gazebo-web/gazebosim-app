@@ -1,10 +1,30 @@
+// The component host is a flex item placed into .right-column; claim
+// all remaining space so the 3D canvas fills the panel.
+:host {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
 .viewport-container {
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
   width: 100%;
-  min-height: 300px;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
   background: #222;
   overflow: hidden;
+}
+
+// gzweb's Scene appends its <canvas> as a child of our container.
+// Stretch the canvas to the container box so OrbitControls pick up
+// mouse events across the whole right panel.
+.viewport-container > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .empty {

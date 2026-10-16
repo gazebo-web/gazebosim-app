@@ -1,35 +1,58 @@
 .llm-settings {
-  max-width: 640px;
+  width: 100%;
   margin: 16px 0;
 }
 
-.full {
-  width: 100%;
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 12px;
 }
 
-.telemetry {
-  margin-top: 12px;
-}
-
-.telemetry label {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.hint {
-  margin-top: 4px;
-  font-size: 12px;
+.loading {
+  padding: 12px 0;
   color: rgba(0, 0, 0, 0.6);
 }
 
 .error {
   color: #c00;
-  margin-top: 8px;
+  padding: 8px 0;
 }
 
-.success {
-  color: #090;
-  margin-top: 8px;
+table.keys {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.keys th,
+table.keys td {
+  padding: 8px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: left;
+  font-size: 14px;
+}
+
+table.keys th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 500;
+}
+
+table.keys td.mono {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+}
+
+table.keys th.actions,
+table.keys td.actions {
+  width: 40px;
+  text-align: right;
+}
+
+table.keys tr.empty-row td {
+  padding: 16px 8px;
+  color: rgba(0, 0, 0, 0.6);
+  font-style: italic;
+  text-align: center;
 }

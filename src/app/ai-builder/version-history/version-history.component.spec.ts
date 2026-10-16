@@ -37,23 +37,21 @@ describe("VersionHistoryComponent", () => {
     });
 
     const req = http.expectOne((r) =>
-      r.url.endsWith("/1.0/ai-builder/projects/proj-1/versions"),
+      r.url.endsWith("/projects/proj-1/versions"),
     );
     req.flush([
       {
-        id: "v1",
-        project_id: "proj-1",
-        version: 1,
-        world_sdf: "<sdf/>",
-        commit_message: "first",
+        version: 2,
+        commit_hash: "cafe",
+        commit_message: "second",
+        author: "nate",
         created_at: "",
       },
       {
-        id: "v2",
-        project_id: "proj-1",
-        version: 2,
-        world_sdf: "<sdf v=2/>",
-        commit_message: "second",
+        version: 1,
+        commit_hash: "beef",
+        commit_message: "first",
+        author: "nate",
         created_at: "",
       },
     ]);
@@ -64,11 +62,10 @@ describe("VersionHistoryComponent", () => {
     let emitted: any = null;
     fixture.componentInstance.restore.subscribe((v) => (emitted = v));
     const version = {
-      id: "v1",
-      project_id: "p",
       version: 1,
-      world_sdf: "<sdf/>",
+      commit_hash: "beef",
       commit_message: "m",
+      author: "nate",
       created_at: "",
     };
     fixture.componentInstance.restoreVersion(version);

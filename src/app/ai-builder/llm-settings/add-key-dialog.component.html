@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Add LLM API Key</h2>
+<mat-dialog-content>
+  <p class="hint">
+    Your API key is encrypted on the server and used only to proxy your AI
+    Builder chat requests to the provider.
+  </p>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Provider</mat-label>
+    <mat-select [(ngModel)]="provider">
+      <mat-option *ngFor="let p of providers" [value]="p.value">
+        {{ p.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full" *ngIf="needsKey">
+    <mat-label>API key</mat-label>
+    <input
+      matInput
+      type="password"
+      [(ngModel)]="apiKey"
+      placeholder="paste your key"
+    />
+  </mat-form-field>
+
+  <mat-form-field
+    appearance="outline"
+    class="full"
+    *ngIf="provider === 'ollama'"
+  >
+    <mat-label>Ollama endpoint (optional)</mat-label>
+    <input
+      matInput
+      [(ngModel)]="endpoint"
+      placeholder="http://localhost:11434"
+    />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="submit()"
+    [disabled]="!canSubmit"
+  >
+    Save
+  </button>
+</mat-dialog-actions>

@@ -6,12 +6,13 @@ import {
   FormGroupDirective,
   Validators,
 } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 
 import {
   NewOrganizationDialogComponent,
@@ -26,15 +27,19 @@ import { AccessTokenDialogComponent } from "./access-token-dialog.component";
 import { PaginatedAccessToken } from "./paginated-access-token";
 
 /**
- * Enum of tabs the Settings component has. This allows easier navigation via fragments.
+ * Maps URL-friendly tab slugs to the mat-tab-group index. Keep this in
+ * lockstep with the order of <mat-tab> elements in settings.component.html.
  */
-enum Tabs {
-  account,
-  access_tokens,
-  credits,
-  organizations,
-  labs,
-}
+const TAB_SLUGS = [
+  "account",
+  "access-tokens",
+  "credits",
+  "organizations",
+  "ai-builder",
+  "labs",
+] as const;
+
+const DEFAULT_TAB = "account";
 
 @Component({
   selector: "gz-settings",
@@ -96,6 +101,15 @@ export class SettingsComponent implements OnInit {
   public paginatedAccessTokens = new PaginatedAccessToken();
 
   /**
+   * True once the first access-token fetch has resolved successfully.
+   * Used by the AI Builder tab's PAT banner to avoid flashing the
+   * "needs an access token" prompt while the request is still in flight
+   * (or while the network is down — we don't want to falsely tell a
+   * user with tokens that they have none).
+   */
+  public accessTokensLoaded: boolean = false;
+
+  /**
    * The paginator for the access tokens.
    */
   @ViewChild(MatPaginator) public accessTokenPaginator: MatPaginator;
@@ -125,6 +139,7 @@ export class SettingsComponent implements OnInit {
     public userService: UserService,
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   /**
@@ -141,9 +156,12 @@ export class SettingsComponent implements OnInit {
       this.organizationList = this.authService.userProfile.orgs.sort();
     }
 
-    /* Select the tab indicated by the URL fragment. */
-    this.route.fragment.subscribe((fragment) => {
-      this.selected.setValue(Tabs[fragment]);
+    /* Select the tab indicated by the URL path segment, e.g.
+       /settings/ai-builder → tab index 4. */
+    this.route.paramMap.subscribe((params) => {
+      const slug = params.get("tab") ?? DEFAULT_TAB;
+      const idx = TAB_SLUGS.indexOf(slug as (typeof TAB_SLUGS)[number]);
+      this.selected.setValue(idx >= 0 ? idx : 0);
     });
     if (window.screen.width <= 600) {
       this.activeAccessTokensColumns = ["name", "revoke"];
@@ -164,6 +182,16 @@ export class SettingsComponent implements OnInit {
    */
   public onToggleGzWebFeature(event: MatSlideToggleChange): void {
     localStorage.setItem("experimental_gzweb", event.checked.toString());
+  }
+
+  /**
+   * Update the URL when the user switches tabs so each tab is a
+   * shareable/bookmarkable link. Uses replaceUrl so the browser's back
+   * button doesn't collect one history entry per tab click.
+   */
+  public onTabChange(event: MatTabChangeEvent): void {
+    const slug = TAB_SLUGS[event.index] ?? DEFAULT_TAB;
+    this.router.navigate(["/settings", slug], { replaceUrl: true });
   }
 
   /**
@@ -322,11 +350,25 @@ export class SettingsComponent implements OnInit {
           this.activeAccessTokens = new MatTableDataSource(
             response.accessTokens,
           );
+          this.accessTokensLoaded = true;
         },
         (error) => {
+          // Deliberately don't set accessTokensLoaded here — a transient
+          // failure shouldn't make the AI Builder tab claim the user has
+          // no tokens.
           this.snackBar.open(error.message, "Go it");
         },
       );
+  }
+
+  /**
+   * Whether the authenticated user has at least one access token. Used
+   * by the AI Builder tab to decide whether to show the "needs an
+   * access token" banner. Returns false until the first successful
+   * fetch lands so the banner doesn't flicker on page load.
+   */
+  public hasAccessToken(): boolean {
+    return this.paginatedAccessTokens.totalCount > 0;
   }
 
   /**

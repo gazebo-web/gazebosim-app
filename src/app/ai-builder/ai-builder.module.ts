@@ -21,6 +21,8 @@ import { GazeboConnectionDialogComponent } from "./gazebo-connection-dialog/gaze
 import { GitHubExportDialogComponent } from "./github-export-dialog/github-export-dialog.component";
 import { LlmSettingsModule } from "./llm-settings/llm-settings.module";
 import { NewProjectDialogComponent } from "./new-project-dialog/new-project-dialog.component";
+import { SaveVersionDialogComponent } from "./save-version-dialog/save-version-dialog.component";
+import { AiBuilderSDFEditorComponent } from "./sdf-editor/ai-builder-sdf-editor.component";
 import { VersionHistoryComponent } from "./version-history/version-history.component";
 
 @NgModule({
@@ -32,6 +34,8 @@ import { VersionHistoryComponent } from "./version-history/version-history.compo
     GazeboConnectionDialogComponent,
     GitHubExportDialogComponent,
     NewProjectDialogComponent,
+    SaveVersionDialogComponent,
+    AiBuilderSDFEditorComponent,
     VersionHistoryComponent,
   ],
   imports: [

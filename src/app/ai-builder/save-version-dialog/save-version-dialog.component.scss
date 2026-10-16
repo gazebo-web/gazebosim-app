@@ -1,0 +1,19 @@
+.save-version-dialog-title {
+  margin-bottom: 4px;
+}
+
+.save-version-dialog-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 360px;
+}
+
+.save-version-dialog-content .hint {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0 0 12px 0;
+}
+
+.save-version-dialog-content .full {
+  width: 100%;
+}

@@ -179,14 +179,23 @@ const routes: Routes = [
     },
   },
   {
-    path: "ai-builder",
+    path: "settings/:tab",
+    component: SettingsComponent,
+    data: {
+      titlebarTitle: "Settings",
+      titlebarSubtitle: "",
+      title: "Settings",
+    },
+  },
+  {
+    path: "projects",
     canActivate: [AuthGuard],
     loadChildren: () =>
       import("./ai-builder/ai-builder.module").then((m) => m.AiBuilderModule),
     data: {
-      titlebarTitle: "AI Builder",
+      titlebarTitle: "Projects",
       titlebarSubtitle: "",
-      title: "AI Builder",
+      title: "Projects",
     },
   },
   {

@@ -1,0 +1,179 @@
+// Match the textarea's typographic rhythm exactly so the gutter line
+// numbers track the textarea lines pixel-for-pixel. Any divergence here
+// (different font, line-height, padding-top) shows up as the gutter
+// drifting from the textarea as you scroll.
+$editor-font: "SF Mono", Menlo, Consolas, monospace;
+$editor-font-size: 12px;
+$editor-line-height: 1.5;
+$editor-padding-y: 8px;
+
+.sdf-editor-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fafafa;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: #f0f0f0;
+  flex: 0 0 auto;
+}
+
+.search-icon {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.error-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.error-badge--has-errors {
+  background: rgba(229, 57, 53, 0.12);
+  color: #c62828;
+}
+
+.error-badge--valid {
+  background: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+}
+
+.badge-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+}
+
+.search-input:focus {
+  border-color: rgba(33, 150, 243, 0.5);
+}
+
+.match-count {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  min-width: 64px;
+  text-align: right;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 3px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.nav-btn:hover:not([disabled]) {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.nav-btn[disabled] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.nav-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.editor-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.line-numbers {
+  flex: 0 0 auto;
+  // Width grows with line count via padding only; the digits themselves
+  // are right-aligned so 1- to 4-digit transitions don't jiggle.
+  min-width: 36px;
+  padding: $editor-padding-y 6px $editor-padding-y 8px;
+  font-family: $editor-font;
+  font-size: $editor-font-size;
+  line-height: $editor-line-height;
+  text-align: right;
+  color: rgba(0, 0, 0, 0.4);
+  background: #f3f3f3;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  user-select: none;
+}
+
+.line-number {
+  position: relative;
+  height: $editor-font-size * $editor-line-height;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.line-number.has-error {
+  color: #c62828;
+}
+
+// Solid red dot in the gutter, sized small enough to coexist with the
+// digits without pushing them around. Sits to the left of the number.
+.error-mark {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e53935;
+  flex: 0 0 auto;
+}
+
+.line-number-text {
+  flex: 0 0 auto;
+}
+
+.sdf-textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: $editor-padding-y 12px;
+  font-family: $editor-font;
+  font-size: $editor-font-size;
+  line-height: $editor-line-height;
+  border: none;
+  resize: none;
+  outline: none;
+  background: #fafafa;
+  white-space: pre;
+  overflow: auto;
+}

@@ -82,6 +82,14 @@
             >
               World
             </button>
+
+            <button
+              mat-menu-item
+              routerLink="/projects"
+              routerLinkActive="active"
+            >
+              Project
+            </button>
           </mat-menu>
           <!-- Login/logout and other user options -->
           <button
@@ -201,6 +209,13 @@
             class="nav-link"
           >
             Collections
+          </a>
+          <a
+            routerLink="/projects"
+            [class.active]="isRouteActive('projects')"
+            class="nav-link"
+          >
+            Projects
           </a>
           <a
             routerLink="/visualization"

@@ -46,3 +46,36 @@ mat-list-item:hover .hover-display {
 h1 {
   padding-top: 2em;
 }
+
+// PAT-required banner inside the "AI Builder" tab. The full create /
+// list / revoke flow lives on the Access Tokens tab; this is a one-
+// line nudge so users coming to AI Builder for the first time don't
+// miss the requirement.
+.ai-builder-pat-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: 6px;
+  color: #0d47a1;
+  flex-wrap: wrap;
+}
+
+.ai-builder-pat-banner .banner-icon {
+  flex: 0 0 auto;
+  color: #1976d2;
+}
+
+.ai-builder-pat-banner .banner-text {
+  flex: 1 1 240px;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.ai-builder-pat-banner a[mat-stroked-button] {
+  flex: 0 0 auto;
+}

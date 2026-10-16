@@ -46,6 +46,7 @@ $custom-theme: mat.m2-define-light-theme(
 );
 
 @include mat.all-component-themes($custom-theme);
+@include mat.typography-hierarchy($custom-theme);
 
 html,
 body {
@@ -182,4 +183,15 @@ mat-sidenav {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+
+// Global cursor + selection lock while the AI Builder splitter is being
+// dragged. Set on <body> by the AI Builder component on mousedown and
+// removed on mouseup. The cursor override keeps `ns-resize` even when
+// the pointer leaves the splitter strip; the user-select lock keeps
+// the user's drag from accidentally selecting text in nearby panels.
+body.ai-builder-splitter-active,
+body.ai-builder-splitter-active * {
+  cursor: ns-resize !important;
+  user-select: none !important;
 }

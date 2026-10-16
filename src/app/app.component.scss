@@ -211,3 +211,21 @@ $total-header-height: calc(#{$header-height-top} + #{$header-height-bottom});
   font-size: 0.85rem;
   margin-top: auto; // Push to bottom if content is short
 }
+
+// The AI Builder editor runs viewport-pinned (host height = 100vh -
+// header). The global copyright strip would push the wrapper past
+// 100vh and reintroduce a body scroll bar, so hide it on this route.
+// `ai-builder ~ .copyright` targets the copyright sibling that the
+// router-outlet inserts the ai-builder component next to.
+ai-builder ~ .copyright {
+  display: none;
+}
+
+// Belt-and-braces: while the AI Builder is on screen, lock the wrapper
+// to exactly 100vh and clip overflow. Without this, any sub-pixel
+// rounding (high-DPI displays, zoom) on the calc'd host height could
+// re-introduce a body scrollbar even with the copyright hidden.
+.wrapper:has(ai-builder) {
+  height: 100vh;
+  overflow: hidden;
+}

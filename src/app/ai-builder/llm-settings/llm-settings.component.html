@@ -1,88 +1,51 @@
 <mat-card class="llm-settings">
   <mat-card-header>
-    <mat-card-title>AI Builder · LLM Provider</mat-card-title>
+    <mat-card-title>AI Builder · API Keys</mat-card-title>
     <mat-card-subtitle>
-      Your API key is encrypted on the server and only used to proxy AI Builder
-      requests.
+      Encrypted on the server, used only to proxy your AI Builder chats.
     </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content *ngIf="!loading">
-    <mat-form-field appearance="outline" class="full">
-      <mat-label>Provider</mat-label>
-      <mat-select [(ngModel)]="provider" (selectionChange)="onProviderChange()">
-        <mat-option value="anthropic">Anthropic</mat-option>
-        <mat-option value="openai">OpenAI</mat-option>
-        <mat-option value="gemini">Google Gemini</mat-option>
-        <mat-option value="ollama">Ollama (local)</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full">
-      <mat-label>Model</mat-label>
-      <mat-select [(ngModel)]="model">
-        <mat-option
-          *ngFor="let preset of modelPresets | slice: 0"
-          [value]="preset.model"
-          [hidden]="preset.provider !== provider"
-        >
-          {{ preset.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="outline"
-      class="full"
-      *ngIf="provider !== 'ollama'"
-    >
-      <mat-label>API key</mat-label>
-      <input
-        matInput
-        type="password"
-        [(ngModel)]="apiKey"
-        [placeholder]="maskedKey || 'paste your key'"
-      />
-      <mat-hint *ngIf="maskedKey"
-        >Current: {{ maskedKey }} — leave blank to keep.</mat-hint
-      >
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="outline"
-      class="full"
-      *ngIf="provider === 'ollama'"
-    >
-      <mat-label>Ollama endpoint</mat-label>
-      <input
-        matInput
-        [(ngModel)]="endpoint"
-        placeholder="http://localhost:11434"
-      />
-    </mat-form-field>
-
-    <div class="telemetry">
-      <label>
-        <input type="checkbox" [(ngModel)]="telemetryOptIn" />
-        Help improve AI Builder by sharing anonymized usage.
-      </label>
-      <p class="hint">
-        Opt-in. We log prompts, tool calls, and validation failures to refine
-        the system prompt and tools. Never shared with third parties.
-      </p>
+  <mat-card-content>
+    <div class="toolbar">
+      <button mat-raised-button color="primary" (click)="addKey()">
+        <mat-icon>add</mat-icon> Add Key
+      </button>
     </div>
 
+    <div *ngIf="loading" class="loading">Loading…</div>
     <div *ngIf="error" class="error">{{ error }}</div>
-    <div *ngIf="saved" class="success">Saved.</div>
+
+    <table class="keys" *ngIf="!loading">
+      <thead>
+        <tr>
+          <th>Provider</th>
+          <th>Created</th>
+          <th>Key</th>
+          <th class="actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let k of keys">
+          <td>{{ providerLabel(k.provider) }}</td>
+          <td>{{ k.created_at | date: "medium" }}</td>
+          <td class="mono">{{ k.api_key_masked || "—" }}</td>
+          <td class="actions">
+            <button
+              mat-icon-button
+              aria-label="Delete key"
+              (click)="deleteKey(k)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="keys.length === 0" class="empty-row">
+          <td colspan="4">
+            You haven't added any LLM API keys yet. Click
+            <strong>Add Key</strong> to get started.
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </mat-card-content>
-  <mat-card-actions align="end">
-    <button mat-button (click)="remove()" *ngIf="maskedKey">Remove</button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="save()"
-      [disabled]="saving"
-    >
-      {{ saving ? "Saving…" : "Save" }}
-    </button>
-  </mat-card-actions>
 </mat-card>

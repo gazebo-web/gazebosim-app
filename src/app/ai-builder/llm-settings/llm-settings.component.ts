@@ -1,32 +1,24 @@
 import { Component, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 import { AuthService } from "../../auth/auth.service";
-import { AiBuilderService, LLMConfig } from "../ai-builder.service";
+import { ConfirmationDialogComponent } from "../../confirmation-dialog/confirmation-dialog.component";
+import { AiBuilderService, LLMKey, LLMKeyInput } from "../ai-builder.service";
+import { AddKeyDialogComponent } from "./add-key-dialog.component";
 
-interface ModelPreset {
-  provider: string;
-  model: string;
-  label: string;
-}
+const PROVIDER_LABELS: Record<string, string> = {
+  anthropic: "Anthropic (Claude)",
+  openai: "OpenAI",
+  gemini: "Google Gemini",
+  ollama: "Ollama (local)",
+};
 
-const MODEL_PRESETS: ModelPreset[] = [
-  { provider: "anthropic", model: "claude-opus-4-7", label: "Claude Opus 4.7" },
-  {
-    provider: "anthropic",
-    model: "claude-sonnet-4-6",
-    label: "Claude Sonnet 4.6",
-  },
-  {
-    provider: "anthropic",
-    model: "claude-haiku-4-5",
-    label: "Claude Haiku 4.5",
-  },
-  { provider: "openai", model: "gpt-4o", label: "GPT-4o" },
-  { provider: "openai", model: "gpt-4o-mini", label: "GPT-4o mini" },
-  { provider: "gemini", model: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-  { provider: "ollama", model: "llama3.1:8b", label: "Ollama (llama3.1:8b)" },
-];
-
+/**
+ * Manages the user's LLM API keys: lists them, lets the user add a new one,
+ * and delete existing keys. Used on both the Settings page and the AI Builder
+ * project list page.
+ */
 @Component({
   selector: "ai-builder-llm-settings",
   templateUrl: "./llm-settings.component.html",
@@ -34,43 +26,19 @@ const MODEL_PRESETS: ModelPreset[] = [
   standalone: false,
 })
 export class LlmSettingsComponent implements OnInit {
-  readonly modelPresets = MODEL_PRESETS;
   loading = true;
-  saving = false;
-  saved = false;
   error = "";
-
-  provider = "anthropic";
-  model = "claude-sonnet-4-6";
-  apiKey = "";
-  endpoint = "";
-  telemetryOptIn = false;
-  maskedKey = "";
+  keys: LLMKey[] = [];
 
   constructor(
     private service: AiBuilderService,
     private auth: AuthService,
+    private dialog: MatDialog,
+    private snack: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
-    const user = this.username();
-    if (!user) {
-      this.loading = false;
-      return;
-    }
-    this.service.getLLMConfig(user).subscribe({
-      next: (cfg) => {
-        if (cfg.provider) {
-          this.provider = cfg.provider;
-          this.model = cfg.model;
-          this.endpoint = cfg.endpoint || "";
-          this.maskedKey = cfg.api_key_masked || "";
-          this.telemetryOptIn = !!cfg.telemetry_opt_in;
-        }
-        this.loading = false;
-      },
-      error: () => (this.loading = false),
-    });
+    this.reload();
   }
 
   private username(): string {
@@ -80,61 +48,92 @@ export class LlmSettingsComponent implements OnInit {
     );
   }
 
-  onProviderChange(): void {
-    // Suggest a sensible model for the new provider.
-    const first = MODEL_PRESETS.find((p) => p.provider === this.provider);
-    if (first) this.model = first.model;
-  }
-
-  save(): void {
+  reload(): void {
     const user = this.username();
     if (!user) {
-      this.error = "You must be signed in to save LLM settings.";
+      this.loading = false;
+      this.keys = [];
       return;
     }
-    this.saving = true;
-    this.saved = false;
-    const body: Partial<LLMConfig> & { api_key?: string } = {
-      provider: this.provider,
-      model: this.model,
-      endpoint: this.endpoint,
-      telemetry_opt_in: this.telemetryOptIn,
-    };
-    if (this.apiKey.trim()) body.api_key = this.apiKey.trim();
-    this.service.putLLMConfig(user, body).subscribe({
-      next: (cfg) => {
-        this.maskedKey = cfg.api_key_masked || this.maskedKey;
-        this.apiKey = "";
-        this.saved = true;
-        this.saving = false;
+    this.loading = true;
+    this.service.listLLMKeys(user).subscribe({
+      next: (keys) => {
+        this.keys = keys || [];
+        this.loading = false;
       },
       error: (err) => {
-        this.error = err?.message || "failed to save";
-        this.saving = false;
+        this.error = this.describeError(err);
+        this.loading = false;
       },
     });
   }
 
-  remove(): void {
+  providerLabel(p: string): string {
+    return PROVIDER_LABELS[p] || p;
+  }
+
+  addKey(): void {
+    const user = this.username();
+    if (!user) {
+      this.error = "You must be signed in to add a key.";
+      return;
+    }
+    const ref = this.dialog.open(AddKeyDialogComponent, { width: "480px" });
+    ref.afterClosed().subscribe((result: LLMKeyInput | null) => {
+      if (!result) return;
+      this.service.addLLMKey(user, result).subscribe({
+        next: () => {
+          this.snack.open("Key saved.", "Dismiss", { duration: 2000 });
+          this.reload();
+        },
+        error: (err) => (this.error = this.describeError(err)),
+      });
+    });
+  }
+
+  deleteKey(key: LLMKey): void {
     const user = this.username();
     if (!user) return;
-    if (
-      !confirm(
-        "Remove your stored LLM configuration? Your API key will be deleted.",
-      )
-    )
-      return;
-    this.service.deleteLLMConfig(user).subscribe({
-      next: () => {
-        this.provider = "anthropic";
-        this.model = "claude-sonnet-4-6";
-        this.apiKey = "";
-        this.endpoint = "";
-        this.maskedKey = "";
-        this.telemetryOptIn = false;
-        this.saved = false;
+    const label = this.providerLabel(key.provider);
+
+    const ref = this.dialog.open<
+      ConfirmationDialogComponent,
+      unknown,
+      boolean | undefined
+    >(ConfirmationDialogComponent, {
+      width: "420px",
+      data: {
+        title: "Delete API Key",
+        message: `Delete your <strong>${label}</strong> key? This can't be undone.`,
+        buttonText: "Delete",
+        hasInput: false,
       },
-      error: (err) => (this.error = err?.message || "failed to remove"),
     });
+
+    ref.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.service.deleteLLMKey(user, key.provider).subscribe({
+        next: () => {
+          this.snack.open("Key removed.", "Dismiss", { duration: 2000 });
+          this.reload();
+        },
+        error: (err) => (this.error = this.describeError(err)),
+      });
+    });
+  }
+
+  private describeError(err: unknown): string {
+    const e = err as {
+      status?: number;
+      error?: { error?: string } | string;
+      message?: string;
+    };
+    if (e?.error && typeof e.error === "object" && e.error.error) {
+      return `${e.status ?? "?"}: ${e.error.error}`;
+    }
+    if (typeof e?.error === "string" && e.error) {
+      return `${e.status ?? "?"}: ${e.error}`;
+    }
+    return e?.message || "request failed";
   }
 }

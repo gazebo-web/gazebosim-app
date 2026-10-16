@@ -1,0 +1,22 @@
+<h2 mat-dialog-title class="save-version-dialog-title">Save version</h2>
+
+<mat-dialog-content class="save-version-dialog-content">
+  <p class="hint">
+    Label this snapshot. Recent auto-saves are collapsed into this commit.
+  </p>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Commit message</mat-label>
+    <input
+      matInput
+      cdkFocusInitial
+      [(ngModel)]="message"
+      (keydown.enter)="save()"
+      maxlength="200"
+    />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>
