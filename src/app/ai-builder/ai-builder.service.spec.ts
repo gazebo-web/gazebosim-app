@@ -116,7 +116,7 @@ describe("AiBuilderService", () => {
     const req = http.expectOne((r) => r.url.endsWith("/1.0/mcp"));
     expect(req.request.method).toBe("POST");
     expect(req.request.body.method).toBe("tools/call");
-    expect(req.request.body.params.name).toBe("project.save_world_sdf");
+    expect(req.request.body.params.name).toBe("project_save_world_sdf");
     expect(req.request.body.params.arguments.name).toBe("p1");
     expect(req.request.body.params.arguments.sdf).toBe("<sdf/>");
     expect(req.request.body.params.arguments.commit_message).toBe("first");

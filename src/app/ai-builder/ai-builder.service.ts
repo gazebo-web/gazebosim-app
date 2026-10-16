@@ -224,7 +224,7 @@ export class AiBuilderService {
 
   /**
    * Save a project's world SDF as a labeled commit via the
-   * project.save_world_sdf MCP tool. By default passes
+   * project_save_world_sdf MCP tool. By default passes
    * `squash_autosaves: true` — the manual Save button is the user
    * saying "this is the canonical state", so the server collapses any
    * preceding run of chat-engine auto-saves into this one labeled
@@ -241,7 +241,7 @@ export class AiBuilderService {
     commit_message: string;
     squashed?: boolean;
   }> {
-    return this.callMCPTool("project.save_world_sdf", {
+    return this.callMCPTool("project_save_world_sdf", {
       name: nameOrId,
       sdf,
       commit_message: commitMessage,

@@ -94,7 +94,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   showExecution = false;
 
   // Auto-save state. When the chat engine emits an sdf_update event we
-  // snapshot the world through project.save_world_sdf; lastSavedAt is
+  // snapshot the world through project_save_world_sdf; lastSavedAt is
   // used to render "saved X seconds ago" in the header.
   lastSavedAt: number | null = null;
   autoSaving = false;
@@ -572,12 +572,12 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         break;
       case "tool_result":
         // Backend-initiated auto-save (Q-MCP-14): the chat handler
-        // invokes project.save_world_sdf every Nth sdf_update and
+        // invokes project_save_world_sdf every Nth sdf_update and
         // forwards the tool_result event through the SSE stream. Key
         // the "Saved ago" indicator off that event — the frontend no
         // longer drives saves itself (Q-MCP-1: during a build the
         // frontend stays out of the write path).
-        if (ev.tool === "project.save_world_sdf") {
+        if (ev.tool === "project_save_world_sdf") {
           this.lastSavedAt = Date.now();
           this.autoSaving = false;
           this.refreshThumbnail();
@@ -681,7 +681,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     ref.afterClosed().subscribe((msg) => {
       if (msg === undefined || !this.project || !this.worldSDF) return;
       // Labeled save goes through fuel-server's MCP endpoint
-      // (project.save_world_sdf). Auto-saves during chat use the same
+      // (project_save_world_sdf). Auto-saves during chat use the same
       // tool internally; this is the explicit user-triggered version.
       this.service
         .saveProjectWorld(this.project.id, this.worldSDF, msg)
