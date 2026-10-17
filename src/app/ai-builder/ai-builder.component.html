@@ -189,8 +189,31 @@
 
     <!-- Right column: viewport + optional SDF panel -->
     <div class="right-column" #rightColumn>
+      <div class="model-strip" *ngIf="projectModels.length">
+        <button
+          mat-stroked-button
+          class="model-chip"
+          [class.model-chip--active]="!previewModel"
+          (click)="selectPreview(null)"
+        >
+          World
+        </button>
+        <button
+          mat-stroked-button
+          *ngFor="let m of projectModels"
+          class="model-chip"
+          [class.model-chip--active]="previewModel === m.name"
+          [title]="m.description || m.uri"
+          (click)="selectPreview(m.name)"
+        >
+          {{ m.name }}
+        </button>
+      </div>
       <ai-builder-viewport
-        [sdf]="worldSDF"
+        [sdf]="previewModel ? previewSDF : worldSDF"
+        [sdfPath]="
+          previewModel ? 'models/' + previewModel + '/model.sdf' : 'world.sdf'
+        "
         [fileBase]="fileBase"
       ></ai-builder-viewport>
 

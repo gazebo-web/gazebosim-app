@@ -19,6 +19,7 @@ import {
   ChatMessage,
   LLMKey,
   ModelInfo,
+  ProjectModel,
   ProjectVersion,
 } from "./ai-builder.service";
 import {
@@ -104,6 +105,11 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   fileBase = "";
   private fileBaseRev = "";
   private fileBaseExpires = 0;
+  // The project's custom models. Selecting one previews it alone in the
+  // viewport (previewSDF); null shows the world.
+  projectModels: ProjectModel[] = [];
+  previewModel: string | null = null;
+  previewSDF = "";
   lastSavedAt: number | null = null;
   // Set when the agent changed the project during a turn; the thumbnail
   // is refreshed once when the turn ends rather than after every edit.
@@ -491,6 +497,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     const name = this.project.id;
     const at = rev || this.project.head_rev || "tip";
     this.refreshFileBase(at === "tip" ? "" : at);
+    this.refreshModels(at);
     this.service.getProjectFile(name, at, "world.sdf").subscribe({
       next: (sdf) => {
         this.worldRev = at === "tip" ? "" : at;
@@ -506,6 +513,43 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.notifyError(err, "Load world.sdf");
       },
     });
+  }
+
+  /** Reload the model list at `rev`, and the previewed model with it. */
+  private refreshModels(rev: string): void {
+    if (!this.project) return;
+    this.service
+      .listProjectModels(this.project.id, rev === "tip" ? undefined : rev)
+      .subscribe({
+        next: (models) => {
+          this.projectModels = models;
+          if (this.previewModel) {
+            const still = models.some((m) => m.name === this.previewModel);
+            this.selectPreview(still ? this.previewModel : null, rev);
+          }
+        },
+        error: () => {
+          // Listing is best effort; the world still renders.
+        },
+      });
+  }
+
+  /** Preview one project model alone in the viewport, or the world (null). */
+  selectPreview(model: string | null, rev?: string): void {
+    if (!model || !this.project) {
+      this.previewModel = null;
+      return;
+    }
+    const at = rev || this.project.head_rev || "tip";
+    this.service
+      .getProjectFile(this.project.id, at, `models/${model}/model.sdf`)
+      .subscribe({
+        next: (sdf) => {
+          this.previewSDF = sdf;
+          this.previewModel = model;
+        },
+        error: (err) => this.notifyError(err, `Load ${model}`),
+      });
   }
 
   /**
@@ -794,6 +838,8 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
    * back to the placeholder image so the UI never blocks on this.
    */
   private async refreshThumbnail(): Promise<void> {
+    // The thumbnail is of the world, not a previewed model.
+    if (this.previewModel) return;
     if (!this.project) {
       // eslint-disable-next-line no-console
       console.warn("[thumbnail] no project; skipping");

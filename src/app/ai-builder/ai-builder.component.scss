@@ -385,6 +385,28 @@ ai-builder-viewport {
   min-height: 0;
 }
 
+// Project models above the viewport: World plus one chip per model.
+.model-strip {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  padding: 0 0 8px;
+  overflow-x: auto;
+
+  .model-chip {
+    flex: 0 0 auto;
+    min-width: 0;
+    height: 28px;
+    padding: 0 10px;
+    font-size: 13px;
+    line-height: 28px;
+  }
+
+  .model-chip--active {
+    background: var(--mat-sys-secondary-container, rgba(0, 0, 0, 0.08));
+  }
+}
+
 .splitter {
   flex: 0 0 6px;
   cursor: ns-resize;
