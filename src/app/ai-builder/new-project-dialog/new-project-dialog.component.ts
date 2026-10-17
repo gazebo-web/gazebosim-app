@@ -9,9 +9,11 @@ export interface NewProjectResult {
   ros2_distro: string;
 }
 
+// Releases new projects can target; Harmonic is the oldest supported. The
+// server sets the SDF version and ROS 2 distro from the release, so these
+// are only for display.
 const GAZEBO_TO_SDF_ROS: Record<string, { sdf: string; ros: string }> = {
   Harmonic: { sdf: "1.9", ros: "Jazzy" },
-  Fortress: { sdf: "1.8", ros: "Humble" },
 };
 
 @Component({
