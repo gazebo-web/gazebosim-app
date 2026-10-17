@@ -12,6 +12,8 @@ import {
 
 import { AssetViewer, AssetViewerConfig } from "gzweb";
 
+import { resolveProjectUris } from "./project-uris";
+
 /**
  * Private-state hooks we reach into on the AssetViewer so we can swap
  * SDF content without destroying the WebGL context. The public API only
@@ -36,6 +38,11 @@ interface InternalAssetViewer {
   sdfParser?: {
     usingFilesUrls: boolean;
     enablePBR: boolean;
+    // File URLs collected from included models, matched by file name when
+    // their meshes load, and the per-URI include cache. Both are reset
+    // when the signed file base changes, so stale URLs aren't reused.
+    customUrls: string[];
+    pendingModels: Map<string, unknown>;
     // Direct in-memory parse path. Returns the Object3D synchronously
     // (it builds geometries from the XML; mesh / texture URLs inside
     // the SDF are fetched asynchronously by Three.js loaders).
@@ -69,12 +76,20 @@ export class AiBuilderViewportComponent
   implements AfterViewInit, OnChanges, OnDestroy
 {
   @Input() sdf = "";
+  /**
+   * Signed, read-only base URL for the project revision (see
+   * project-uris.ts). Project models and meshes load through it.
+   */
+  @Input() fileBase = "";
+  /** Project path of `sdf`; relative URIs resolve against its folder. */
+  @Input() sdfPath = "world.sdf";
 
   @ViewChild("container", { static: true })
   container!: ElementRef<HTMLDivElement>;
 
   private viewer?: AssetViewer;
   private viewerReady = false;
+  private parsedBase = "";
   private resizeObserver?: ResizeObserver;
   private readonly containerId = `ai-builder-viewport-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -106,7 +121,7 @@ export class AiBuilderViewportComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["sdf"] && this.viewerReady) {
+    if ((changes["sdf"] || changes["fileBase"]) && this.viewerReady) {
       this.render(this.sdf);
     }
   }
@@ -177,14 +192,19 @@ export class AiBuilderViewportComponent
     const v = this.viewer as unknown as InternalAssetViewer | undefined;
     if (!v || !v.sdfParser || !v.scene) return;
     try {
-      // No URL fetch path: the SDF is in memory, so let the parser
-      // build the Object3D from text directly. usingFilesUrls=false
-      // tells SDFParser to use its default MATERIAL_ROOT for any
-      // mesh/texture references; full http URLs (e.g. Fuel includes)
-      // resolve normally either way.
-      v.sdfParser.usingFilesUrls = false;
+      // The SDF is parsed from memory. Project references become signed
+      // URLs; with usingFilesUrls the parser loads meshes by URL, looking
+      // up included models' files (Fuel or project) in customUrls.
+      if (this.fileBase !== this.parsedBase) {
+        v.sdfParser.customUrls = [];
+        v.sdfParser.pendingModels = new Map();
+        this.parsedBase = this.fileBase;
+      }
+      v.sdfParser.usingFilesUrls = true;
       v.sdfParser.enablePBR = !!v.shouldUsePBR;
-      const obj = v.sdfParser.spawnFromSDF(sdf);
+      const obj = v.sdfParser.spawnFromSDF(
+        resolveProjectUris(sdf, this.fileBase, this.sdfPath),
+      );
       if (obj) {
         v.resource = obj;
         v.scene.add(obj);

@@ -102,6 +102,13 @@ export interface ChatEvent {
 }
 
 /** The commit a project write produced (fuel-server WriteResult). */
+/** A signed, read-only base path for one project revision's files. */
+export interface ProjectFileUrl {
+  base_path: string;
+  rev: string;
+  expires_at: string;
+}
+
 export interface WriteResult {
   version: number;
   rev: string;
@@ -204,6 +211,30 @@ export class AiBuilderService {
         ProjectVersion[] | null
       >(`${this.fuelProjects}/${encodeURIComponent(nameOrId)}/versions`)
       .pipe(map((list) => list ?? []));
+  }
+
+  /**
+   * Sign a read-only URL for a revision's files (default: head). The
+   * viewport loads project models and meshes through it, since gzweb
+   * can't attach our Authorization header to only our own requests.
+   * Returns the absolute base URL plus the resolved revision.
+   */
+  getFileUrl(
+    nameOrId: string,
+    rev?: string,
+  ): Observable<ProjectFileUrl & { base_url: string }> {
+    const params: Record<string, string> = rev ? { rev } : {};
+    return this.http
+      .get<ProjectFileUrl>(
+        `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/file-url`,
+        { params },
+      )
+      .pipe(
+        map((u) => ({
+          ...u,
+          base_url: `${environment.API_HOST}${u.base_path}`,
+        })),
+      );
   }
 
   /**

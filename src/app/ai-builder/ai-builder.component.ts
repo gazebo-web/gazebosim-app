@@ -99,6 +99,11 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   // edits not yet written. lastSavedAt drives the "Saved Xs ago" chip.
   private worldRev = "";
   worldDirty = false;
+  // Signed base URL the viewport loads project models and meshes from,
+  // for fileBaseRev; refreshed when the head moves or it nears expiry.
+  fileBase = "";
+  private fileBaseRev = "";
+  private fileBaseExpires = 0;
   lastSavedAt: number | null = null;
   // Set when the agent changed the project during a turn; the thumbnail
   // is refreshed once when the turn ends rather than after every edit.
@@ -485,6 +490,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (!this.project) return;
     const name = this.project.id;
     const at = rev || this.project.head_rev || "tip";
+    this.refreshFileBase(at === "tip" ? "" : at);
     this.service.getProjectFile(name, at, "world.sdf").subscribe({
       next: (sdf) => {
         this.worldRev = at === "tip" ? "" : at;
@@ -502,8 +508,32 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     });
   }
 
+  /**
+   * Point the viewport at signed URLs for `rev` (default head), unless the
+   * current ones are for that revision and not about to expire.
+   */
+  private refreshFileBase(rev: string): void {
+    if (!this.project) return;
+    const fresh = Date.now() < this.fileBaseExpires - 5 * 60_000;
+    if (fresh && rev && rev === this.fileBaseRev) return;
+    this.service.getFileUrl(this.project.id, rev || undefined).subscribe({
+      next: (u) => {
+        this.fileBaseRev = u.rev;
+        this.fileBaseExpires = Date.parse(u.expires_at);
+        if (u.base_url !== this.fileBase) this.fileBase = u.base_url;
+      },
+      error: () => {
+        // A project with no commits yet has nothing to sign; the next
+        // head change retries.
+      },
+    });
+  }
+
   /** Reload the world when the project's head moved since we last looked. */
   private pollHead(): void {
+    if (this.project && Date.now() > this.fileBaseExpires - 5 * 60_000) {
+      this.refreshFileBase(this.fileBaseRev);
+    }
     if (!this.project || this.sending || this.worldDirty || document.hidden) {
       return;
     }

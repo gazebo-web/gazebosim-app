@@ -189,7 +189,10 @@
 
     <!-- Right column: viewport + optional SDF panel -->
     <div class="right-column" #rightColumn>
-      <ai-builder-viewport [sdf]="worldSDF"></ai-builder-viewport>
+      <ai-builder-viewport
+        [sdf]="worldSDF"
+        [fileBase]="fileBase"
+      ></ai-builder-viewport>
 
       <div
         *ngIf="showSDF"
