@@ -49,3 +49,17 @@
   max-width: 320px;
   text-align: center;
 }
+
+// Follow toggle, over the canvas (which gzweb appends after it).
+.follow {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.follow--on {
+  color: #ffb300;
+}

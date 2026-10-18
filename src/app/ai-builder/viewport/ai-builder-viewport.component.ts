@@ -11,8 +11,42 @@ import {
 } from "@angular/core";
 
 import { AssetViewer, AssetViewerConfig } from "gzweb";
+import {
+  Box3,
+  Box3Helper,
+  Color,
+  LineBasicMaterial,
+  Object3D,
+  PerspectiveCamera,
+  Scene,
+  Sphere,
+  Vector3,
+} from "three";
 
 import { resolveProjectUris } from "./project-uris";
+import { changedObjects } from "./scene-diff";
+
+/**
+ * A change the agent just made, for the viewport to point out once the
+ * new world renders. `seq` increases with each change; `models` lists
+ * project models whose files changed (their includes count as changed
+ * even when world.sdf didn't).
+ */
+export interface ViewportSpotlight {
+  seq: number;
+  models: string[];
+  at: number;
+}
+
+// How long a spotlight stays pending, waiting for its world to render.
+const SPOTLIGHT_PENDING_MS = 60_000;
+// Highlight timing: the camera eases toward the changed objects for
+// MOVE_MS, the outline holds for HOLD_MS, then fades out over FADE_MS.
+const MOVE_MS = 1500;
+const HOLD_MS = 2500;
+const FADE_MS = 1000;
+const HIGHLIGHT_COLOR = 0xffb300;
+const FOLLOW_KEY = "aiBuilder.followAgent";
 
 /**
  * Private-state hooks we reach into on the AssetViewer so we can swap
@@ -27,6 +61,10 @@ import { resolveProjectUris } from "./project-uris";
  */
 interface InternalAssetViewer {
   scene?: {
+    // The Three.js scene, camera and OrbitControls gzweb renders with.
+    scene?: Scene;
+    camera?: PerspectiveCamera;
+    controls?: { target: Vector3 };
     add(o: unknown): void;
     remove(o: unknown): void;
     // Trigger an immediate render. Required for canvas snapshot capture
@@ -48,7 +86,7 @@ interface InternalAssetViewer {
     // the SDF are fetched asynchronously by Three.js loaders).
     spawnFromSDF(sdf: string): unknown;
   };
-  resource?: unknown;
+  resource?: Object3D;
   isScaled?: boolean;
   shouldUsePBR?: boolean;
 }
@@ -65,6 +103,10 @@ interface InternalAssetViewer {
  * keep the same AssetViewer instance across updates and swap just the
  * resource object, so the camera / grid / lighting survive and we don't
  * burn a WebGL context per auto-save.
+ *
+ * Watching the agent: when the parent passes a `spotlight` for a change
+ * the agent made, the next world render outlines the objects that changed
+ * and, while "follow" is on, eases the camera toward them.
  */
 @Component({
   selector: "ai-builder-viewport",
@@ -83,6 +125,11 @@ export class AiBuilderViewportComponent
   @Input() fileBase = "";
   /** Project path of `sdf`; relative URIs resolve against its folder. */
   @Input() sdfPath = "world.sdf";
+  /** The agent's latest change to point out (see ViewportSpotlight). */
+  @Input() spotlight: ViewportSpotlight | null = null;
+
+  /** Move the camera to what the agent changes; the user can turn it off. */
+  follow = true;
 
   @ViewChild("container", { static: true })
   container!: ElementRef<HTMLDivElement>;
@@ -91,9 +138,28 @@ export class AiBuilderViewportComponent
   private viewerReady = false;
   private parsedBase = "";
   private resizeObserver?: ResizeObserver;
+  // The world text last rendered, to diff the next one against.
+  private lastWorld = "";
+  private spotlightSeq = 0;
+  private endHighlight?: () => void;
   private readonly containerId = `ai-builder-viewport-${Math.random().toString(36).slice(2, 9)}`;
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) {
+    try {
+      this.follow = localStorage.getItem(FOLLOW_KEY) !== "off";
+    } catch {
+      /* storage unavailable; keep the default */
+    }
+  }
+
+  toggleFollow(): void {
+    this.follow = !this.follow;
+    try {
+      localStorage.setItem(FOLLOW_KEY, this.follow ? "on" : "off");
+    } catch {
+      /* storage unavailable; the choice lasts this page view */
+    }
+  }
 
   ngAfterViewInit(): void {
     this.container.nativeElement.id = this.containerId;
@@ -127,6 +193,7 @@ export class AiBuilderViewportComponent
   }
 
   ngOnDestroy(): void {
+    this.endHighlight?.();
     this.resizeObserver?.disconnect();
     this.destroyViewer();
   }
@@ -174,6 +241,106 @@ export class AiBuilderViewportComponent
     // OrbitControls camera state intact across auto-saves.
     this.removeCurrentResource();
     this.parseSDFIntoViewer(sdf);
+    if (this.sdfPath === "world.sdf") {
+      const prev = this.lastWorld;
+      this.lastWorld = sdf;
+      this.showSpotlight(prev, sdf);
+    }
+  }
+
+  /**
+   * Point out what the pending spotlight changed between `prev` and
+   * `next`. A render that shows no change (the signed base moved before
+   * the new world text arrived) leaves the spotlight pending for the next.
+   */
+  private showSpotlight(prev: string, next: string): void {
+    const s = this.spotlight;
+    if (!s || s.seq <= this.spotlightSeq) return;
+    if (Date.now() - s.at > SPOTLIGHT_PENDING_MS) return;
+    const names = changedObjects(prev, next, s.models);
+    if (!names.length) return;
+    this.spotlightSeq = s.seq;
+    this.ngZone.runOutsideAngular(() => this.highlight(names));
+  }
+
+  /**
+   * Outline the named top-level objects and, while following, ease the
+   * camera to frame them. Included models and meshes load asynchronously,
+   * so their boxes are re-measured every frame until the outline fades.
+   */
+  private highlight(names: string[]): void {
+    this.endHighlight?.();
+    const v = this.viewer as unknown as InternalAssetViewer | undefined;
+    const three = v?.scene?.scene;
+    const camera = v?.scene?.camera;
+    const controls = v?.scene?.controls;
+    if (!v || !three || !camera || !controls) return;
+
+    const want = new Set(names);
+    const helpers = new Map<string, Box3Helper>();
+    const canvas = this.container.nativeElement.querySelector("canvas");
+    // The user taking the camera stops this highlight from moving it.
+    let userMoved = false;
+    const onUser = () => (userMoved = true);
+    canvas?.addEventListener("pointerdown", onUser);
+    canvas?.addEventListener("wheel", onUser, { passive: true });
+
+    let frame = 0;
+    let last = performance.now();
+    const start = last;
+    const end = () => {
+      cancelAnimationFrame(frame);
+      canvas?.removeEventListener("pointerdown", onUser);
+      canvas?.removeEventListener("wheel", onUser);
+      helpers.forEach((h) => {
+        three.remove(h);
+        h.geometry.dispose();
+        (h.material as LineBasicMaterial).dispose();
+      });
+      helpers.clear();
+      if (this.endHighlight === end) this.endHighlight = undefined;
+    };
+    this.endHighlight = end;
+
+    const tick = (now: number) => {
+      const t = now - start;
+      const dt = now - last;
+      last = now;
+      const union = new Box3();
+      for (const obj of v.resource?.children ?? []) {
+        if (!want.has(obj.name)) continue;
+        const box = new Box3().setFromObject(obj);
+        if (box.isEmpty()) continue;
+        union.union(box);
+        let h = helpers.get(obj.name);
+        if (!h) {
+          h = new Box3Helper(box, new Color(HIGHLIGHT_COLOR));
+          h.name = "AI_BUILDER_HIGHLIGHT";
+          const m = h.material as LineBasicMaterial;
+          m.transparent = true;
+          m.depthTest = false;
+          h.renderOrder = 999;
+          three.add(h);
+          helpers.set(obj.name, h);
+        } else {
+          h.box.copy(box);
+        }
+      }
+      const fade = t < HOLD_MS ? 1 : Math.max(0, 1 - (t - HOLD_MS) / FADE_MS);
+      const pulse = 0.75 + 0.25 * Math.sin(t / 150);
+      helpers.forEach(
+        (h) => ((h.material as LineBasicMaterial).opacity = fade * pulse),
+      );
+      if (this.follow && !userMoved && t < MOVE_MS && !union.isEmpty()) {
+        easeCamera(camera, controls.target, union, dt);
+      }
+      if (t < HOLD_MS + FADE_MS) {
+        frame = requestAnimationFrame(tick);
+      } else {
+        end();
+      }
+    };
+    frame = requestAnimationFrame(tick);
   }
 
   private removeCurrentResource(): void {
@@ -293,6 +460,7 @@ export class AiBuilderViewportComponent
   }
 
   private destroyViewer(): void {
+    this.endHighlight?.();
     if (this.viewer) {
       try {
         this.viewer.destroy();
@@ -302,4 +470,30 @@ export class AiBuilderViewportComponent
       this.viewer = undefined;
     }
   }
+}
+
+/**
+ * Move the camera a step (for `dtMs`) toward framing `box`: the box's
+ * center becomes the orbit target, at a distance that fits the box, from
+ * the current viewing direction but no flatter than about 20 degrees.
+ */
+function easeCamera(
+  camera: PerspectiveCamera,
+  target: Vector3,
+  box: Box3,
+  dtMs: number,
+): void {
+  const sphere = box.getBoundingSphere(new Sphere());
+  const halfFov = ((camera.fov || 60) * Math.PI) / 360;
+  const distance = Math.max((sphere.radius / Math.sin(halfFov)) * 1.2, 3);
+  const dir = camera.position.clone().sub(target).normalize();
+  if (dir.lengthSq() === 0) dir.set(-1, -1, 1).normalize();
+  if (dir.z < 0.35) {
+    dir.z = 0.35;
+    dir.normalize();
+  }
+  const goal = sphere.center.clone().addScaledVector(dir, distance);
+  const k = 1 - Math.exp(-dtMs / 250);
+  target.lerp(sphere.center, k);
+  camera.position.lerp(goal, k);
 }

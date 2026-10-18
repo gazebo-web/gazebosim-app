@@ -31,7 +31,10 @@ import {
   GitHubExportResult,
 } from "./github-export-dialog/github-export-dialog.component";
 import { SaveVersionDialogComponent } from "./save-version-dialog/save-version-dialog.component";
-import { AiBuilderViewportComponent } from "./viewport/ai-builder-viewport.component";
+import {
+  AiBuilderViewportComponent,
+  ViewportSpotlight,
+} from "./viewport/ai-builder-viewport.component";
 
 interface ChatLogEntry {
   role: "user" | "assistant" | "tool";
@@ -114,6 +117,8 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   // Set when the agent changed the project during a turn; the thumbnail
   // is refreshed once when the turn ends rather than after every edit.
   private projectChangedThisTurn = false;
+  // The agent's latest change, for the viewport to point out.
+  spotlight: ViewportSpotlight | null = null;
 
   // AbortController for the in-flight chat fetch. Set when sendMessage
   // dispatches; cleared in the finally block when the turn ends. The
@@ -687,7 +692,13 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.project && ev.rev) {
           this.project = { ...this.project, head_rev: ev.rev };
         }
-        if (ev.path === "world.sdf") {
+        // A project model's files changed (not just its source code): the
+        // world shows it through an include, so reload and point it out.
+        const model = /^models\/([^/]+)\/(?!source\/)/.exec(ev.path || "")?.[1];
+        if (model && !this.worldDirty) {
+          this.spotlightChange([model]);
+          this.loadLatestVersion(ev.rev);
+        } else if (ev.path === "world.sdf") {
           if (this.worldDirty) {
             this.snack
               .open(
@@ -698,6 +709,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
               .onAction()
               .subscribe(() => this.loadLatestVersion());
           } else {
+            this.spotlightChange([]);
             this.loadLatestVersion(ev.rev);
           }
         }
@@ -706,6 +718,14 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.showChatError(ev.error || "error");
         break;
     }
+  }
+
+  private spotlightChange(models: string[]): void {
+    this.spotlight = {
+      seq: (this.spotlight?.seq || 0) + 1,
+      models,
+      at: Date.now(),
+    };
   }
 
   private showChatError(message: string): void {

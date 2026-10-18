@@ -5,4 +5,20 @@
       The 3D preview will appear here once the assistant generates an SDF world.
     </p>
   </div>
+  <button
+    *ngIf="sdf"
+    mat-icon-button
+    type="button"
+    class="follow"
+    [class.follow--on]="follow"
+    (click)="toggleFollow()"
+    [attr.aria-pressed]="follow"
+    [title]="
+      follow
+        ? 'The camera follows what the assistant builds. Click to stop.'
+        : 'The camera stays put. Click to follow what the assistant builds.'
+    "
+  >
+    <mat-icon>{{ follow ? "videocam" : "videocam_off" }}</mat-icon>
+  </button>
 </div>
