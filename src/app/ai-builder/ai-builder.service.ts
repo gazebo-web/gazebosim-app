@@ -59,6 +59,16 @@ export interface ChatSession {
   project_id: string;
   messages: ChatMessage[];
   created_at: string;
+  /** A turn still running: follow it with followChat. Its messages are
+   * not in `messages`; its events replay them. */
+  active_turn?: ChatTurn;
+}
+
+/** One message and the agent's work on it, which runs on the server. */
+export interface ChatTurn {
+  turn_id: string;
+  status: "running" | "done" | "failed" | "cancelled";
+  message: string;
 }
 
 export interface LLMKey {
@@ -95,6 +105,8 @@ export interface ChatEvent {
   input?: unknown;
   result?: unknown;
   error?: string;
+  /** done: how the turn ended (done, failed or cancelled). */
+  status?: string;
   /** project_changed: the file written and the new revision. */
   path?: string;
   rev?: string;
@@ -394,8 +406,12 @@ export class AiBuilderService {
 
   // --- Export ---
 
-  exportZipURL(projectId: string): string {
-    return `${this.apiBase}/projects/${projectId}/export/zip`;
+  /** The project's files at HEAD as a zip (fuel-server). */
+  exportZip(projectId: string): Observable<Blob> {
+    return this.http.get(
+      `${this.fuelProjects}/${encodeURIComponent(projectId)}/export.zip`,
+      { responseType: "blob" },
+    );
   }
 
   exportToGitHub(
@@ -506,7 +522,12 @@ export class AiBuilderService {
     projectId: string,
     message: string,
     authToken: string,
-    opts?: { provider?: string; model?: string; signal?: AbortSignal },
+    opts?: {
+      provider?: string;
+      model?: string;
+      signal?: AbortSignal;
+      onTurn?: (turnId: string) => void;
+    },
   ): AsyncGenerator<ChatEvent> {
     const resp = await fetch(`${this.apiBase}/projects/${projectId}/chat`, {
       method: "POST",
@@ -521,10 +542,55 @@ export class AiBuilderService {
       }),
       signal: opts?.signal,
     });
+    yield* this.readEvents(resp, opts?.onTurn);
+  }
+
+  /**
+   * Follow a turn that is already running (after a page reload, say),
+   * from the start or after an event id.
+   */
+  async *followChat(
+    projectId: string,
+    turnId: string,
+    authToken: string,
+    opts?: { after?: string; signal?: AbortSignal },
+  ): AsyncGenerator<ChatEvent> {
+    const q = new URLSearchParams({ turn: turnId });
+    if (opts?.after) q.set("after", opts.after);
+    const resp = await fetch(
+      `${this.apiBase}/projects/${projectId}/chat/stream?${q}`,
+      {
+        headers: { Authorization: `Bearer ${authToken}` },
+        signal: opts?.signal,
+      },
+    );
+    yield* this.readEvents(resp);
+  }
+
+  /** Stop a running turn; its stream then ends with a cancelled done. */
+  cancelChat(projectId: string, turnId: string): Observable<unknown> {
+    return this.http.post(
+      `${this.apiBase}/projects/${projectId}/chat/${turnId}/cancel`,
+      {},
+    );
+  }
+
+  private async *readEvents(
+    resp: Response,
+    onTurn?: (turnId: string) => void,
+  ): AsyncGenerator<ChatEvent> {
     if (!resp.ok || !resp.body) {
-      yield { type: "error", error: `HTTP ${resp.status}` };
+      let error = `HTTP ${resp.status}`;
+      try {
+        error = (await resp.json()).error || error;
+      } catch {
+        // not JSON; keep the status
+      }
+      yield { type: "error", error };
       return;
     }
+    const turnId = resp.headers.get("X-Turn-ID");
+    if (turnId) onTurn?.(turnId);
 
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();

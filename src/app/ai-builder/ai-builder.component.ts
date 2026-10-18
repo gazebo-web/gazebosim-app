@@ -114,9 +114,10 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   // The agent's latest change, for the viewport to point out.
   spotlight: ViewportSpotlight | null = null;
 
-  // AbortController for the in-flight chat fetch. Set when sendMessage
-  // dispatches; cleared in the finally block when the turn ends. The
-  // template's stop button calls stopMessage() to abort.
+  // The running turn and the AbortController of the stream following it.
+  // The turn runs on the server, so closing the stream doesn't stop it:
+  // the stop button cancels the turn, and a reloaded page follows it.
+  private currentTurn?: string;
   private currentAbort?: AbortController;
 
   // LLM selection: list of providers the user has keys for, and the
@@ -154,6 +155,8 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     // If the user destroys the page mid-drag (e.g. navigating away),
     // make sure we don't leave document-level listeners dangling.
     this.endSplitterDrag();
+    // Leaving the page stops following the turn, not the turn itself.
+    this.currentAbort?.abort();
   }
 
   /**
@@ -471,6 +474,11 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
               m.role === "tool_result",
           )
           .map((m) => this.toLogEntry(m));
+        const turn = session.active_turn;
+        if (turn && !this.sending) {
+          this.log.push({ role: "user", text: turn.message });
+          this.followTurn(turn.turn_id);
+        }
       },
       error: () => {
         // Ignore — new sessions may have no history.
@@ -578,17 +586,42 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.currentAssistant = "";
 
     const token = localStorage.getItem("token") || "dev-user";
-
     const controller = new AbortController();
-    this.currentAbort = controller;
-    this.projectChangedThisTurn = false;
-
-    try {
-      const stream = this.service.streamChat(this.project.id, text, token, {
+    await this.consume(
+      this.service.streamChat(this.project.id, text, token, {
         provider: this.selectedProvider || undefined,
         model: this.selectedModel || undefined,
         signal: controller.signal,
-      });
+        onTurn: (id) => (this.currentTurn = id),
+      }),
+      controller,
+    );
+  }
+
+  /** Show a turn that was already running when the page loaded. */
+  private async followTurn(turnId: string): Promise<void> {
+    if (!this.project) return;
+    this.sending = true;
+    this.currentAssistant = "";
+    this.currentTurn = turnId;
+    const token = localStorage.getItem("token") || "dev-user";
+    const controller = new AbortController();
+    await this.consume(
+      this.service.followChat(this.project.id, turnId, token, {
+        signal: controller.signal,
+      }),
+      controller,
+    );
+  }
+
+  /** Show a turn's events until it ends or the stream is aborted. */
+  private async consume(
+    stream: AsyncGenerator<ChatEvent>,
+    controller: AbortController,
+  ): Promise<void> {
+    this.currentAbort = controller;
+    this.projectChangedThisTurn = false;
+    try {
       for await (const ev of stream) {
         this.handleEvent(ev);
       }
@@ -608,18 +641,23 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
       }
       this.sending = false;
       this.currentAbort = undefined;
+      this.currentTurn = undefined;
       if (this.projectChangedThisTurn) this.refreshThumbnail();
     }
   }
 
   /**
-   * Cancel the in-flight chat turn. Aborts the fetch, which closes the
-   * SSE socket; the server's request context dies and the chat engine
-   * tears down its LLM provider call. The for-await loop in sendMessage
-   * then exits via the AbortError catch path.
+   * Stop the running turn. The server cancels it and its stream ends with
+   * a cancelled done event. Without a turn id yet, just drop the stream.
    */
   stopMessage(): void {
-    this.currentAbort?.abort();
+    if (!this.project || !this.currentTurn) {
+      this.currentAbort?.abort();
+      return;
+    }
+    this.service.cancelChat(this.project.id, this.currentTurn).subscribe({
+      error: () => this.currentAbort?.abort(),
+    });
   }
 
   private handleEvent(ev: ChatEvent): void {
@@ -672,6 +710,13 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         break;
       case "error":
         this.showChatError(ev.error || "error");
+        break;
+      case "done":
+        if (ev.status === "cancelled") {
+          this.log.push({ role: "tool", text: "Stopped." });
+        } else if (ev.status === "failed" && ev.error) {
+          this.showChatError(ev.error);
+        }
         break;
     }
   }
@@ -911,7 +956,18 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   downloadZip(): void {
     if (!this.project) return;
-    window.open(this.service.exportZipURL(this.project.id), "_blank");
+    const name = this.project.id;
+    this.service.exportZip(name).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${name}.zip`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (err) => this.notifyError(err, "Download ZIP"),
+    });
   }
 
   pushToGitHub(): void {
