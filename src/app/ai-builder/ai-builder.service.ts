@@ -102,21 +102,6 @@ export interface ChatEvent {
 }
 
 /** The commit a project write produced (fuel-server WriteResult). */
-/** A custom model in the project (models/<name>/). */
-export interface ProjectModel {
-  name: string;
-  uri: string;
-  path: string;
-  description?: string;
-  static?: boolean;
-  links?: number;
-  joints?: number;
-  generated?: boolean;
-  preview?: string;
-  files: number;
-  problem?: string;
-}
-
 /** A signed, read-only base path for one project revision's files. */
 export interface ProjectFileUrl {
   base_path: string;
@@ -226,22 +211,6 @@ export class AiBuilderService {
         ProjectVersion[] | null
       >(`${this.fuelProjects}/${encodeURIComponent(nameOrId)}/versions`)
       .pipe(map((list) => list ?? []));
-  }
-
-  /** The project's custom models at `rev` (default: head). */
-  listProjectModels(
-    nameOrId: string,
-    rev?: string,
-  ): Observable<ProjectModel[]> {
-    const params: Record<string, string> = rev ? { rev } : {};
-    return this.http
-      .get<{
-        rev: string;
-        models: ProjectModel[] | null;
-      }>(`${this.fuelProjects}/${encodeURIComponent(nameOrId)}/models`, {
-        params,
-      })
-      .pipe(map((r) => r.models ?? []));
   }
 
   /**
