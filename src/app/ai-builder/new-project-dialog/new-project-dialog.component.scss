@@ -1,6 +1,19 @@
 // Encapsulation is disabled on this component so these rules apply to the
-// CDK-overlay-rendered dialog element. They're scoped with
-// `.new-project-dialog-content` to avoid leaking into other dialogs.
+// CDK-overlay-rendered dialog element. They're scoped with the
+// `.new-project-dialog-*` classes to avoid leaking into other dialogs.
+//
+// Title, spacing and button order follow the site's dialogs
+// (collection-dialog, bibtex-dialog).
+
+.new-project-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .title-icon {
+    opacity: 0.7;
+  }
+}
 
 // Outline-appearance form fields float their label above the top border.
 // mat-dialog-content has minimal top padding by default, which clips the
@@ -19,6 +32,12 @@
 
 .new-project-dialog-content .hint {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: #888;
   margin: 0;
+}
+
+// Cancel on the left, the primary action on the right.
+.new-project-dialog-actions {
+  display: flex !important;
+  justify-content: space-between !important;
 }

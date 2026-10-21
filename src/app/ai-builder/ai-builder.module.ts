@@ -10,6 +10,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule } from "@angular/router";
 
 import { AiBuilderRoutingModule } from "./ai-builder-routing.module";
@@ -54,6 +55,7 @@ import { VersionHistoryComponent } from "./version-history/version-history.compo
     MatMenuModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatTooltipModule,
     RouterModule,
   ],
 })

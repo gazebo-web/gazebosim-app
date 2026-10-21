@@ -1,3 +1,5 @@
+@use "../design" as gz;
+
 .execution-panel {
   display: flex;
   flex-direction: column;
@@ -10,29 +12,37 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #fafafa;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-bottom: 1px solid gz.$divider;
+}
+
+.run-btn {
+  @include gz.accent-flat-button;
 }
 
 .label {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: gz.$text-subtle;
 }
 
 .entry {
   flex: 1;
   padding: 6px 8px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border: 1px solid gz.$border;
+  border-radius: 8px;
+  outline: none;
   font-family: "SF Mono", Menlo, Consolas, monospace;
   font-size: 12px;
+}
+
+.entry:focus {
+  border-color: gz.$accent;
 }
 
 .exit {
   font-family: "SF Mono", Menlo, Consolas, monospace;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: gz.$text-subtle;
 }
 
 .output {

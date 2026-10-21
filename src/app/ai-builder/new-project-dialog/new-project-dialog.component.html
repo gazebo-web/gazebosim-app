@@ -1,4 +1,7 @@
-<h2 mat-dialog-title class="new-project-dialog-title">New Project</h2>
+<h2 mat-dialog-title class="new-project-dialog-title">
+  <mat-icon class="title-icon" aria-hidden="true">add_circle_outline</mat-icon>
+  New Project
+</h2>
 
 <mat-dialog-content class="new-project-dialog-content">
   <mat-form-field appearance="outline" class="full">
@@ -25,8 +28,8 @@
   </p>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()">Cancel</button>
+<mat-dialog-actions class="new-project-dialog-actions">
+  <button mat-button color="primary" (click)="cancel()">Cancel</button>
   <button
     mat-raised-button
     color="primary"

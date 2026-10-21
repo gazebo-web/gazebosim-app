@@ -1,3 +1,11 @@
+@use "design" as gz;
+
+// The project page follows the site design (model, world and collection
+// pages): blue page title with a muted line under it, a consolidated
+// action bar, and white rounded panes on the light grey page. Unlike
+// those pages it is a workspace, so it fills the viewport instead of
+// scrolling: chat/files on the left, the live 3D viewport on the right.
+
 .ai-builder {
   display: flex;
   flex-direction: column;
@@ -8,6 +16,9 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  // Comfortable page padding, full width (no max-width: it's a workspace).
+  padding: 12px 24px 20px;
+  box-sizing: border-box;
 }
 
 // Angular view-encapsulation hosts the component inside an <ai-builder>
@@ -35,38 +46,225 @@
   min-height: 0;
 }
 
-.header {
+/* --- Header --- */
+.project-header {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  row-gap: 8px;
-  gap: 16px;
-  padding: 12px 24px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background: #fafafa;
+  gap: 12px;
+  margin-bottom: 1em;
   flex-shrink: 0;
 }
 
-.header h2 {
-  margin: 0;
-  font-size: 18px;
+.header-title-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.meta {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+.page-title {
+  @include gz.page-title;
 }
 
-.spacer {
+.header-spacer {
   flex: 1;
 }
 
-.error {
-  padding: 12px 24px;
-  background: #fee;
-  color: #c00;
+// Muted line under the title, styled like the "By <owner>" line.
+.project-subtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  row-gap: 2px;
+  margin: 2px 0 0;
+  color: gz.$text-muted;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.02em;
 }
 
+.save-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: gz.$text-subtle;
+  letter-spacing: normal;
+}
+
+.save-indicator .save-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+}
+
+.visibility-badge {
+  display: inline-block;
+  flex-shrink: 0;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
+  background: #e8f5e9;
+  color: #2e7d32;
+
+  &.badge-private {
+    background: #ececec;
+    color: #757575;
+  }
+}
+
+/* --- Action bar --- */
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  flex-shrink: 0;
+}
+
+.action-btn-row {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid gz.$border;
+  border-radius: gz.$radius;
+  overflow: hidden;
+}
+
+.action-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: gz.$text;
+  font-size: 14px;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  &:hover:not([disabled]) {
+    background: gz.$hover-bg;
+    color: #111;
+  }
+
+  &:focus-visible {
+    outline: 2px solid gz.$accent;
+    outline-offset: -2px;
+  }
+
+  &[disabled] {
+    opacity: 0.38;
+    cursor: default;
+  }
+
+  // Toggled panels (Versions, SDF) stay highlighted while shown.
+  &.active,
+  &.active:hover:not([disabled]) {
+    background: gz.$accent-tint;
+    color: gz.$accent;
+  }
+
+  &.connected mat-icon {
+    color: #2e7d32;
+  }
+
+  // The primary action: filled orange.
+  &.action-primary {
+    color: #fff;
+    background: gz.$accent;
+
+    &:hover:not([disabled]) {
+      background: gz.$accent-hover;
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline-color: #fff;
+    }
+
+    // Disabled, it is plainly unavailable rather than a pale orange that
+    // reads like the toggled Versions and SDF items.
+    &[disabled] {
+      background: transparent;
+      color: gz.$text;
+    }
+  }
+}
+
+.action-label {
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action-item .action-caret {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-left: -4px;
+  color: gz.$text-subtle;
+}
+
+.action-sep {
+  width: 1px;
+  background: gz.$border;
+  flex-shrink: 0;
+}
+
+// The Gazebo item shows the connection URL; give it a little more room.
+.gz-btn {
+  flex: 1.6;
+}
+
+.action-meta {
+  display: flex;
+  gap: 20px;
+  min-height: 20px;
+  margin-top: 6px;
+  padding: 0 2px;
+  justify-content: flex-end;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: gz.$text-subtle;
+
+  &.unsaved {
+    color: gz.$accent-hover;
+  }
+}
+
+.meta-icon {
+  font-size: 14px;
+  height: 14px;
+  width: 14px;
+  line-height: 14px;
+}
+
+/* --- Workspace --- */
 .layout {
   display: grid;
   grid-template-columns: minmax(320px, 480px) 1fr;
@@ -76,6 +274,7 @@
   // grow unbounded — pushes the row taller than the viewport, which
   // pushes the chat bar off the bottom.
   grid-template-rows: minmax(0, 1fr);
+  gap: gz.$gap;
   flex: 1;
   min-height: 0;
 }
@@ -83,7 +282,7 @@
 .left-column {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  gap: gz.$gap;
   min-height: 0;
   min-width: 0;
   // Clamp: if anything inside mis-behaves (unbounded flex child, an
@@ -93,31 +292,60 @@
   overflow: hidden;
 }
 
-.history {
+// Version history, shown as a side pane above the chat.
+.history-pane {
+  @include gz.pane;
+  padding: 16px 18px;
+  flex-shrink: 0;
   max-height: 280px;
   overflow-y: auto;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
+// One white pane holding the Chat / Files tabs.
+.work-pane {
+  @include gz.pane;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+// Tab bar matching the model page's mat-tab-group (color="accent").
 .left-tabs {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  border-bottom: 1px solid gz.$divider;
 
   button {
     flex: 1;
-    padding: 8px 0;
+    height: 48px;
+    padding: 0 24px;
     border: none;
     border-bottom: 2px solid transparent;
     background: none;
     font: inherit;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
     color: rgba(0, 0, 0, 0.6);
     cursor: pointer;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
+
+    &:hover {
+      background: rgba(255, 87, 34, 0.04);
+    }
+
+    &:focus-visible {
+      outline: 2px solid gz.$tab-accent;
+      outline-offset: -2px;
+    }
 
     &.active {
-      color: #1976d2;
-      border-bottom-color: #1976d2;
-      font-weight: 500;
+      color: gz.$tab-accent;
+      border-bottom-color: gz.$tab-accent;
     }
   }
 }
@@ -132,74 +360,7 @@
   display: none !important;
 }
 
-.attachments {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 4px 0;
-
-  &.pending {
-    margin: 0 0 6px;
-  }
-}
-
-.attachment {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  max-width: 200px;
-  padding: 2px 6px 2px 2px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  background: #fff;
-  font-size: 12px;
-
-  img {
-    width: 28px;
-    height: 28px;
-    object-fit: cover;
-    border-radius: 3px;
-  }
-
-  mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    color: rgba(0, 0, 0, 0.5);
-  }
-
-  &.uploading {
-    padding: 6px 8px;
-    color: rgba(0, 0, 0, 0.6);
-  }
-
-  .remove {
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-    display: inline-flex;
-
-    mat-icon {
-      font-size: 16px;
-      width: 16px;
-      height: 16px;
-    }
-  }
-}
-
-.attachment-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.chat-panel.dragging {
-  outline: 2px dashed #1976d2;
-  outline-offset: -4px;
-  background: rgba(25, 118, 210, 0.04);
-}
-
+/* --- Chat --- */
 .chat-panel {
   display: flex;
   flex-direction: column;
@@ -211,34 +372,84 @@
   overflow: hidden;
 }
 
-.gz-btn {
-  max-width: 280px;
+.chat-panel.dragging {
+  outline: 2px dashed gz.$accent;
+  outline-offset: -6px;
+  background: rgba(245, 129, 19, 0.04);
 }
 
-.gz-label {
-  display: inline-block;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: bottom;
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 2px;
+
+  &.pending {
+    margin: 0 0 6px;
+  }
 }
 
-.save-indicator {
+.attachment {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  max-width: 200px;
+  padding: 2px 8px 2px 2px;
+  border: 1px solid gz.$border;
+  border-radius: 8px;
+  background: #fff;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.55);
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.04);
+  color: gz.$text;
+
+  img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: gz.$media-bg;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: gz.$text-subtle;
+  }
+
+  &.uploading {
+    padding: 6px 10px;
+    color: gz.$text-muted;
+  }
+
+  .remove {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    border-radius: 50%;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      transition: color 0.15s ease;
+    }
+
+    &:hover mat-icon {
+      color: gz.$accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid gz.$accent;
+    }
+  }
 }
 
-.save-indicator .save-icon {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
+.attachment-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .messages {
@@ -250,9 +461,11 @@
 
 .message {
   margin-bottom: 8px;
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
   font-size: 14px;
+  color: #333;
 }
 
 // Header is always a single row: role label + collapsed summary
@@ -271,12 +484,17 @@
   cursor: pointer;
 }
 
+.message.expandable:hover {
+  border-color: gz.$border;
+}
+
 .message .role {
   font-size: 10px;
+  font-weight: 600;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.5);
+  color: gz.$text-subtle;
   flex: 0 0 auto;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .message .summary {
@@ -293,7 +511,7 @@
   font-size: 18px;
   width: 18px;
   height: 18px;
-  color: rgba(0, 0, 0, 0.45);
+  color: gz.$icon-muted;
 }
 
 .message .content {
@@ -303,21 +521,28 @@
   font-family: inherit;
 }
 
+// Roles: the user's messages carry a soft orange tint, the assistant's
+// are white with a hairline border, tool calls are grey and monospaced.
 .message.user {
-  background: #e3f2fd;
+  background: gz.$accent-tint;
+  border-color: gz.$accent-tint-border;
+}
+
+.message.user .role {
+  color: gz.$accent-hover;
 }
 
 .message.assistant {
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-color: gz.$border;
 }
 
 .message.assistant.streaming {
-  border-color: #1976d2;
+  border-color: gz.$accent;
 }
 
 .message.assistant.streaming .summary.streaming-dot {
-  color: rgba(25, 118, 210, 0.8);
+  color: gz.$accent-hover;
   font-style: italic;
 }
 
@@ -325,11 +550,11 @@
 // streaming bubble so the user reads them as one continuous state, with
 // three dots that fade in sequence to convey activity.
 .message.assistant.thinking {
-  border-color: #1976d2;
+  border-color: gz.$accent;
 }
 
 .message.assistant.thinking .summary {
-  color: rgba(25, 118, 210, 0.85);
+  color: gz.$accent-hover;
   font-style: italic;
   display: inline-flex;
   align-items: baseline;
@@ -364,8 +589,9 @@
 }
 
 .message.tool {
-  background: #fafafa;
-  color: rgba(0, 0, 0, 0.7);
+  background: gz.$row-hover-bg;
+  border-color: gz.$divider;
+  color: gz.$text-muted;
 }
 
 .message.tool .summary,
@@ -374,19 +600,25 @@
   font-size: 12px;
 }
 
+/* --- Chat input --- */
 .input {
   display: flex;
   flex-direction: column;
-  margin: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 10px;
+  flex-shrink: 0;
+  margin: 0 12px 12px;
+  border: 1px solid gz.$border;
+  border-radius: gz.$radius;
   background: #fff;
   overflow: hidden;
   transition: border-color 120ms ease;
 }
 
 .input:focus-within {
-  border-color: #1976d2;
+  border-color: gz.$accent;
+}
+
+.input .attachments.pending {
+  margin: 8px 10px 0;
 }
 
 .input textarea {
@@ -397,8 +629,13 @@
   resize: none;
   font-family: inherit;
   font-size: 14px;
+  color: #333;
   background: transparent;
   box-sizing: border-box;
+
+  &::placeholder {
+    color: gz.$text-subtle;
+  }
 }
 
 .input-footer {
@@ -406,21 +643,50 @@
   align-items: center;
   gap: 4px;
   padding: 4px 6px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid gz.$divider;
 }
 
 .input-footer .footer-spacer {
   flex: 1;
 }
 
+.input-footer .attach-btn {
+  color: gz.$text-muted;
+  --mat-icon-button-icon-color: #{gz.$text-muted};
+
+  &:hover:not([disabled]) {
+    color: gz.$accent;
+    --mat-icon-button-icon-color: #{gz.$accent};
+  }
+}
+
+// Provider / model pickers, as small outlined chips.
 .input-footer .llm-chip {
   min-width: 0;
-  padding: 0 8px;
+  padding: 0 4px 0 10px;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.7);
-  line-height: 28px;
+  color: gz.$text;
+  line-height: 26px;
   height: 28px;
+  border: 1px solid gz.$border;
+  border-radius: 14px;
+  --mat-button-text-container-shape: 14px;
+  --mat-button-text-label-text-color: #{gz.$text};
+  --mat-button-text-state-layer-color: #{gz.$accent};
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not([disabled]) {
+    border-color: gz.$accent;
+    color: gz.$accent;
+    --mat-button-text-label-text-color: #{gz.$accent};
+  }
+
+  &[disabled] {
+    border-color: gz.$divider;
+  }
 }
 
 .input-footer .llm-chip .chip-label {
@@ -435,8 +701,9 @@
   font-size: 18px;
   width: 18px;
   height: 18px;
-  margin-left: 2px;
-  color: rgba(0, 0, 0, 0.5);
+  margin-left: 0;
+  margin-right: 0;
+  color: gz.$text-subtle;
 }
 
 // Compact send/stop button. Setting width/height alone shrinks the
@@ -454,6 +721,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.15s ease;
+}
+
+// Send: a filled orange circle, the chat's primary action.
+.input-footer .send-btn:not(.stop-btn) {
+  background: gz.$accent;
+  color: #fff;
+  --mat-icon-button-icon-color: #fff;
+  --mat-icon-button-state-layer-color: #fff;
+
+  &:hover:not([disabled]) {
+    background: gz.$accent-hover;
+  }
+
+  &[disabled] {
+    background: gz.$border;
+    color: #fff;
+    --mat-icon-button-disabled-icon-color: #fff;
+  }
 }
 
 // The mat-icon glyph is 24px by default, which crowds a 32px button
@@ -465,71 +751,137 @@
   line-height: 18px;
 }
 
+/* --- Right column: viewport, SDF editor, execution output --- */
 .right-column {
   display: flex;
   flex-direction: column;
   min-height: 0;
   min-width: 0;
-  // Match the visual bottom inset of the left column. The chat input
-  // has `margin: 12px` so its bottom edge sits 12px above the row's
-  // bottom; mirroring that here makes the viewport's bottom edge line
-  // up with the chat input's bottom edge.
-  padding-bottom: 12px;
 }
 
-// The viewport takes the right column by default. When the SDF or
+// Media panel, like the model page's gallery: light grey, rounded,
+// clipped. It takes the right column by default; when the SDF or
 // execution panels are toggled on they slide in below it with a fixed
-// basis; the viewport keeps flex:1 so it always fills the remainder.
+// basis and the viewport keeps flex:1 so it always fills the remainder.
+.media-panel {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  background: gz.$media-bg;
+  border-radius: gz.$radius;
+  overflow: hidden;
+}
+
 ai-builder-viewport {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
 }
 
+// The splitter is the gap between the viewport and the SDF panel, with
+// a small grip in the middle that turns orange while hovered or dragged.
 .splitter {
-  flex: 0 0 6px;
+  flex: 0 0 gz.$gap;
   cursor: ns-resize;
-  background: rgba(0, 0, 0, 0.08);
+  background: transparent;
   position: relative;
-  transition: background-color 120ms ease;
-  // Slightly extend the hit area without changing layout — a 6px
-  // strip is fiddly to grab; the negative margin/positive border
-  // gives the user a 12px hit zone while keeping the visual line
-  // where it is.
+  // Slightly extend the hit area without changing layout so the strip
+  // is easy to grab.
   &::before {
     content: "";
     position: absolute;
     inset: -3px 0;
   }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    margin: -2px 0 0 -20px;
+    border-radius: 2px;
+    background: #d0d0d0;
+    transition:
+      background-color 120ms ease,
+      width 120ms ease,
+      margin 120ms ease;
+  }
 }
 
-.splitter:hover,
-.splitter--dragging {
-  background: #1976d2;
+.splitter:hover::after,
+.splitter--dragging::after {
+  width: 64px;
+  margin-left: -32px;
+  background: gz.$accent;
 }
 
 .sdf-panel {
+  @include gz.pane;
   // Default height when the user hasn't dragged the splitter yet.
   // Overridden via inline style once a drag pins a pixel value.
   flex: 0 0 30%;
   min-height: 120px;
+  overflow: hidden;
+}
+
+ai-builder-sdf-editor {
+  display: block;
+  height: 100%;
 }
 
 .exec-panel {
+  @include gz.pane;
   display: block;
   flex: 0 0 30%;
   min-height: 180px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: gz.$gap;
+  overflow: hidden;
 }
 
-.sdf-editor {
-  width: 100%;
-  height: 100%;
-  padding: 12px;
-  font-family: "SF Mono", Menlo, Consolas, monospace;
-  font-size: 12px;
-  border: none;
-  resize: none;
-  outline: none;
-  background: #fafafa;
+/* --- Responsive --- */
+// Hide action labels on narrow screens; the icons carry tooltips.
+@media screen and (max-width: 700px) {
+  .action-label {
+    display: none;
+  }
+
+  .action-item .action-caret {
+    display: none;
+  }
+
+  .ai-builder {
+    padding: 8px 12px 12px;
+  }
+}
+
+// Stack the columns under ~900px. The page itself can't scroll on this
+// route (app.component.scss locks the wrapper), so the workspace scrolls
+// inside the host and each column gets a fixed height.
+@media screen and (max-width: 899px) {
+  .ai-builder {
+    overflow-y: auto;
+  }
+
+  .layout {
+    flex: 0 0 auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  .left-column {
+    height: 70vh;
+  }
+
+  .right-column {
+    height: 60vh;
+  }
+
+  .action-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 }

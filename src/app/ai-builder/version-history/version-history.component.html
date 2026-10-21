@@ -1,7 +1,16 @@
 <div class="version-history">
   <div class="header">
-    <h3>Versions</h3>
-    <button mat-icon-button (click)="reload()" aria-label="Refresh">
+    <h3 class="side-pane-title">
+      <mat-icon aria-hidden="true">history</mat-icon>
+      Versions
+    </h3>
+    <button
+      mat-icon-button
+      class="refresh-btn"
+      (click)="reload()"
+      aria-label="Refresh"
+      title="Refresh"
+    >
       <mat-icon>refresh</mat-icon>
     </button>
   </div>
@@ -13,12 +22,25 @@
 
   <ul class="list" *ngIf="!loading && versions.length > 0">
     <li *ngFor="let v of versions" class="item">
-      <div class="row">
-        <strong>v{{ v.version }}</strong>
-        <span class="date">{{ v.created_at | date: "short" }}</span>
+      <div class="item-text">
+        <div class="row">
+          <strong class="ver">v{{ v.version }}</strong>
+          <span class="date">{{ v.created_at | date: "short" }}</span>
+        </div>
+        <div
+          class="message"
+          *ngIf="v.commit_message"
+          [title]="v.commit_message"
+        >
+          {{ v.commit_message }}
+        </div>
       </div>
-      <div class="message" *ngIf="v.commit_message">{{ v.commit_message }}</div>
-      <button mat-button size="small" (click)="restoreVersion(v)">
+      <button
+        mat-button
+        size="small"
+        class="restore-btn"
+        (click)="restoreVersion(v)"
+      >
         Restore
       </button>
     </li>

@@ -1,21 +1,41 @@
+@use "../design" as gz;
+
+// Rendered inside a white .side-pane on the project page; the list uses
+// the compact row style of the model page's file list.
 .version-history {
-  padding: 8px 12px;
   font-size: 13px;
+  color: gz.$text;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin: -6px -8px 6px 0;
 }
 
-.header h3 {
+.side-pane-title {
+  @include gz.side-pane-title;
   margin: 0;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(0, 0, 0, 0.6);
+}
+
+.refresh-btn {
+  --mat-icon-button-state-layer-size: 32px;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  color: gz.$text-subtle;
+  --mat-icon-button-icon-color: #{gz.$text-subtle};
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    --mat-icon-button-icon-color: #{gz.$accent};
+  }
 }
 
 .list {
@@ -25,28 +45,71 @@
 }
 
 .item {
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 4px 8px;
+  margin: 0 -8px;
+  border-bottom: 1px solid gz.$divider;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: gz.$row-hover-bg;
+  }
+}
+
+.item-text {
+  flex: 1;
+  min-width: 0;
 }
 
 .row {
   display: flex;
-  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ver {
+  font-weight: 500;
+  color: #333;
 }
 
 .date {
-  color: rgba(0, 0, 0, 0.5);
+  color: gz.$text-subtle;
   font-size: 12px;
 }
 
 .message {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.7);
-  margin: 2px 0 6px;
+  color: gz.$text-muted;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.restore-btn {
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  --mat-button-text-container-height: 28px;
+  --mat-button-text-label-text-color: #{gz.$text};
+  --mat-button-text-state-layer-color: #{gz.$accent};
+
+  &:hover {
+    --mat-button-text-label-text-color: #{gz.$accent};
+  }
 }
 
 .loading,
 .empty {
-  padding: 12px 0;
-  color: rgba(0, 0, 0, 0.6);
+  padding: 8px 0 2px;
+  color: gz.$text-subtle;
 }

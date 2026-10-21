@@ -1,59 +1,82 @@
-<div class="project-list-page">
-  <div class="header">
-    <h1>Projects</h1>
-    <button mat-raised-button color="primary" (click)="newProject()">
+<div class="page-content-inner project-list-page mat-typography">
+  <div class="list-header">
+    <div class="page-title">
+      <mat-icon svgIcon="gz-world" aria-hidden="true"></mat-icon>
+      <h1>Projects</h1>
+    </div>
+    <span class="header-spacer"></span>
+    <button mat-flat-button class="new-project-btn" (click)="newProject()">
       <mat-icon>add</mat-icon> New Project
     </button>
   </div>
 
-  <div *ngIf="loading" class="loading">Loading…</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 
-  <div *ngIf="!loading && projects.length === 0" class="empty">
-    <p>
-      You don't have any projects yet. Create one to start building a simulation
-      with natural language.
-    </p>
-    <p>
-      First-time users: make sure you've set your LLM API key in
-      <a routerLink="/settings">Settings</a>.
-    </p>
+  <div
+    class="fx-layout-row-wrap fx-layout-align-center-start fx-fill"
+    *ngIf="!loading && projects.length > 0"
+  >
+    <div
+      *ngFor="let p of projects"
+      class="item-card fx-flex fx-flex-xs-100 fx-flex-sm-50 fx-flex-md-25"
+    >
+      <mat-card
+        appearance="outlined"
+        class="project-card"
+        (click)="open(p)"
+        (keydown.enter)="open(p)"
+        tabindex="0"
+      >
+        <mat-card-header>
+          <div class="title-container">
+            <mat-card-title [title]="p.name">{{ p.name }}</mat-card-title>
+            <mat-card-subtitle>
+              Gazebo {{ p.gazebo_version }} · SDF {{ p.sdf_version }} · ROS 2
+              {{ p.ros2_distro }}
+            </mat-card-subtitle>
+          </div>
+        </mat-card-header>
+
+        <div class="thumbnail-container" [matTooltip]="p.description || ''">
+          <img
+            class="thumbnail"
+            [src]="thumbnailFor(p)"
+            [alt]="p.name + ' thumbnail'"
+            loading="lazy"
+          />
+        </div>
+
+        <mat-card-actions>
+          <span class="meta">
+            <mat-icon class="meta-icon">schedule</mat-icon>
+            Updated {{ p.updated_at | date: "MMM d, y" }}
+          </span>
+          <span class="actions-spacer"></span>
+          <button
+            mat-icon-button
+            class="delete-btn"
+            (click)="delete(p, $event)"
+            (keydown.enter)="$event.stopPropagation()"
+            aria-label="Delete project"
+            matTooltip="Delete project"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
 
-  <div class="grid" *ngIf="!loading && projects.length > 0">
-    <mat-card
-      *ngFor="let p of projects"
-      class="project-card"
-      (click)="open(p)"
-      tabindex="0"
-    >
-      <div class="thumbnail">
-        <img
-          [src]="thumbnailFor(p)"
-          [alt]="p.name + ' thumbnail'"
-          loading="lazy"
-        />
-      </div>
-      <mat-card-header>
-        <mat-card-title>{{ p.name }}</mat-card-title>
-        <mat-card-subtitle>
-          {{ p.gazebo_version }} · SDF {{ p.sdf_version }} · ROS 2
-          {{ p.ros2_distro }}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p *ngIf="p.description">{{ p.description }}</p>
-        <p class="meta">Updated {{ p.updated_at | date: "medium" }}</p>
-      </mat-card-content>
-      <mat-card-actions align="end">
-        <button
-          mat-icon-button
-          (click)="delete(p, $event)"
-          aria-label="Delete project"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-card-actions>
-    </mat-card>
+  <div class="loading-footer">
+    <div *ngIf="loading" id="html-spinner"></div>
+
+    <div *ngIf="!loading && projects.length === 0" class="empty">
+      <h3>No projects yet.</h3>
+      <p>
+        Create one to start building a simulation with natural language.
+        First-time users: make sure you've set your LLM API key in
+        <a class="color-link" routerLink="/settings">Settings</a>.
+      </p>
+    </div>
   </div>
 </div>

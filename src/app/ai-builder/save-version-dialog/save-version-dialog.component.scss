@@ -1,5 +1,17 @@
+// Encapsulation is disabled on this component (the dialog renders in the
+// CDK overlay); rules are scoped with the `.save-version-dialog-*`
+// classes. Title, spacing and button order follow the site's dialogs
+// (collection-dialog, bibtex-dialog).
+
 .save-version-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 4px;
+
+  .title-icon {
+    opacity: 0.7;
+  }
 }
 
 .save-version-dialog-content {
@@ -10,10 +22,16 @@
 
 .save-version-dialog-content .hint {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: #888;
   margin: 0 0 12px 0;
 }
 
 .save-version-dialog-content .full {
   width: 100%;
+}
+
+// Cancel on the left, the primary action on the right.
+.save-version-dialog-actions {
+  display: flex !important;
+  justify-content: space-between !important;
 }

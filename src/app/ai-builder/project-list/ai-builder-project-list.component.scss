@@ -1,66 +1,161 @@
+@use "../design" as gz;
+
+// Matches the site's resource list pages (gz-fuel-resource-list) and
+// cards (gz-item-card), which this lazy module can't use directly.
+
 .project-list-page {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+}
+
+.list-header {
+  display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 1.5em;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
+// Same look as gz-page-title.
+.page-title {
+  @include gz.page-title;
 }
 
-.project-card {
-  cursor: pointer;
+.header-spacer {
+  flex: 1;
+}
+
+.new-project-btn {
+  @include gz.accent-flat-button;
+  flex-shrink: 0;
+}
+
+/* --- Cards, as in gz-item-card --- */
+.item-card {
+  min-width: 12em;
+  width: 25%;
+  max-width: 20em;
+}
+
+/* At this breakpoint, the flex helper classes override max-width.
+   We don't want this behavior. */
+@media screen and (min-width: 1280px) {
+  .item-card {
+    flex: none !important;
+  }
+}
+
+mat-card.mat-mdc-card {
+  margin: 10px;
   transition:
-    transform 120ms ease-out,
-    box-shadow 120ms ease-out;
-  overflow: hidden;
-  padding-top: 0;
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid gz.$accent;
+    outline-offset: 2px;
+  }
 }
 
-.project-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+.title-container {
+  width: 100%;
+  min-width: 0;
+}
+
+mat-card-title,
+mat-card-subtitle {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+mat-card-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+mat-card-subtitle {
+  margin-bottom: 1rem;
+}
+
+.thumbnail-container {
+  aspect-ratio: 16 / 9;
+  background: gz.$media-bg;
 }
 
 .thumbnail {
-  // 16:9 banner across the top of the card, ahead of mat-card-header.
+  display: block;
+  width: 100%;
   aspect-ratio: 16 / 9;
-  width: calc(100% + 32px);
-  margin: -16px -16px 12px -16px;
-  background: #1c2733;
-  overflow: hidden;
+  object-fit: cover;
 }
 
-.thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+mat-card-actions {
+  display: flex;
+  align-items: center;
 }
 
 .meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding-left: 8px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
-  margin-top: 8px;
+  color: gz.$text-subtle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.loading,
-.error,
+.meta-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+  height: 14px;
+  width: 14px;
+  line-height: 14px;
+}
+
+.actions-spacer {
+  flex: 1;
+}
+
+.delete-btn {
+  flex-shrink: 0;
+  color: gz.$icon-muted;
+  --mat-icon-button-icon-color: #{gz.$icon-muted};
+
+  &:hover {
+    --mat-icon-button-icon-color: #e53935;
+  }
+}
+
+/* --- Loading, empty and error states, as in gz-fuel-resource-list --- */
+.loading-footer {
+  padding: 2em;
+  align-items: center;
+}
+
 .empty {
-  padding: 32px;
   text-align: center;
-  color: rgba(0, 0, 0, 0.6);
+  color: gz.$text-muted;
+
+  p {
+    max-width: 520px;
+    margin: 0 auto;
+    color: gz.$text-subtle;
+  }
 }
 
 .error {
-  color: #c00;
+  padding: 12px 16px;
+  margin: 0 10px 1em;
+  border-radius: gz.$radius;
+  background: #fdecea;
+  color: #c62828;
 }

@@ -8,8 +8,8 @@
       [disabled]="running"
     />
     <button
-      mat-raised-button
-      color="primary"
+      mat-flat-button
+      class="run-btn"
       (click)="run()"
       [disabled]="running || !entryCommand.trim()"
     >

@@ -1,111 +1,239 @@
 <div class="ai-builder" *ngIf="project">
-  <div class="header">
-    <h2>{{ project.name }}</h2>
-    <div class="meta">
-      {{ project.gazebo_version }} · SDF {{ project.sdf_version }} · ROS 2
-      {{ project.ros2_distro }}
+  <!-- Header -->
+  <div class="project-header">
+    <div class="header-title-block">
+      <div class="page-title">
+        <mat-icon svgIcon="gz-world" aria-hidden="true"></mat-icon>
+        <h1>{{ project.name }}</h1>
+      </div>
+      <h4 class="project-subtitle">
+        <span class="release"
+          >Gazebo {{ project.gazebo_version }} · SDF {{ project.sdf_version }} ·
+          ROS 2 {{ project.ros2_distro }}</span
+        >
+        <span class="save-indicator" *ngIf="autoSavedLabel()">
+          <mat-icon class="save-icon">{{
+            autoSaving ? "sync" : "cloud_done"
+          }}</mat-icon>
+          {{ autoSavedLabel() }}
+        </span>
+      </h4>
     </div>
-    <button mat-button (click)="configureGazebo()" class="gz-btn">
-      <mat-icon>link</mat-icon>
-      <span class="gz-label">Gazebo: {{ gazeboStatusLabel }}</span>
-    </button>
-    <span class="save-indicator" *ngIf="autoSavedLabel()">
-      <mat-icon class="save-icon">{{
-        autoSaving ? "sync" : "cloud_done"
-      }}</mat-icon>
-      {{ autoSavedLabel() }}
+    <span class="header-spacer"></span>
+    <span
+      class="visibility-badge badge-private"
+      matTooltip="Projects are only visible to you"
+    >
+      Private
     </span>
-    <div class="spacer"></div>
-    <button mat-button (click)="toggleHistory()">
-      <mat-icon>history</mat-icon>
-      {{ showHistory ? "Hide history" : "Versions" }}
-    </button>
-    <button mat-button (click)="toggleSDF()">
-      <mat-icon>code</mat-icon> {{ showSDF ? "Hide SDF" : "Show SDF" }}
-    </button>
-    <button mat-button (click)="saveVersion()" [disabled]="!worldSDF">
-      <mat-icon>save</mat-icon> Save
-    </button>
-    <button mat-button [matMenuTriggerFor]="exportMenu">
-      <mat-icon>file_download</mat-icon> Export
-    </button>
-    <mat-menu #exportMenu="matMenu">
-      <button mat-menu-item (click)="downloadZip()">
-        <mat-icon>folder_zip</mat-icon>Download ZIP
+  </div>
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <div class="action-btn-row" role="toolbar" aria-label="Project actions">
+      <button
+        type="button"
+        class="action-item action-primary"
+        (click)="saveVersion()"
+        [disabled]="!worldSDF"
+        matTooltip="Save a labeled version"
+      >
+        <mat-icon>save</mat-icon>
+        <span class="action-label">Save</span>
       </button>
-    </mat-menu>
-    <button mat-button (click)="clearChat()">
-      <mat-icon>delete_sweep</mat-icon> Clear chat
-    </button>
+      <div class="action-sep"></div>
+      <button
+        type="button"
+        class="action-item"
+        [class.active]="showHistory"
+        [attr.aria-pressed]="showHistory"
+        (click)="toggleHistory()"
+        [matTooltip]="showHistory ? 'Hide history' : 'Show saved versions'"
+      >
+        <mat-icon>history</mat-icon>
+        <span class="action-label">Versions</span>
+      </button>
+      <div class="action-sep"></div>
+      <button
+        type="button"
+        class="action-item"
+        [class.active]="showSDF"
+        [attr.aria-pressed]="showSDF"
+        (click)="toggleSDF()"
+        [matTooltip]="showSDF ? 'Hide SDF' : 'Show SDF'"
+      >
+        <mat-icon>code</mat-icon>
+        <span class="action-label">SDF</span>
+      </button>
+      <div class="action-sep"></div>
+      <button
+        type="button"
+        class="action-item"
+        [matMenuTriggerFor]="exportMenu"
+        matTooltip="Export the project"
+      >
+        <mat-icon>file_download</mat-icon>
+        <span class="action-label">Export</span>
+        <mat-icon class="action-caret">arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #exportMenu="matMenu">
+        <button mat-menu-item (click)="downloadZip()">
+          <mat-icon>folder_zip</mat-icon>Download ZIP
+        </button>
+      </mat-menu>
+      <div class="action-sep"></div>
+      <button
+        type="button"
+        class="action-item gz-btn"
+        [class.connected]="!!project.gazebo_ws_url"
+        (click)="configureGazebo()"
+        [matTooltip]="'Gazebo: ' + gazeboStatusLabel"
+      >
+        <mat-icon>{{ project.gazebo_ws_url ? "link" : "link_off" }}</mat-icon>
+        <span class="action-label gz-label"
+          >Gazebo: {{ gazeboStatusLabel }}</span
+        >
+      </button>
+      <div class="action-sep"></div>
+      <button
+        type="button"
+        class="action-item"
+        (click)="clearChat()"
+        matTooltip="Clear the chat"
+      >
+        <mat-icon>delete_sweep</mat-icon>
+        <span class="action-label">Clear chat</span>
+      </button>
+    </div>
+
+    <div class="action-meta">
+      <span class="meta-item unsaved" *ngIf="worldDirty">
+        <mat-icon class="meta-icon">edit</mat-icon>
+        Unsaved edits
+      </span>
+      <span class="meta-item" *ngIf="project.updated_at">
+        <mat-icon class="meta-icon">schedule</mat-icon>
+        Last modified {{ project.updated_at | date }}
+      </span>
+    </div>
   </div>
 
   <div class="layout">
-    <!-- Left column: history sidebar (toggleable) + chat panel -->
+    <!-- Left column: history pane (toggleable) + chat/files pane -->
     <div class="left-column">
-      <ai-builder-version-history
-        *ngIf="showHistory"
-        class="history"
-        [projectId]="project.id"
-        (restore)="restoreVersion($event)"
-      ></ai-builder-version-history>
-
-      <div class="left-tabs" role="tablist">
-        <button
-          type="button"
-          role="tab"
-          [class.active]="leftTab === 'chat'"
-          [attr.aria-selected]="leftTab === 'chat'"
-          (click)="showTab('chat')"
-        >
-          Chat
-        </button>
-        <button
-          type="button"
-          role="tab"
-          [class.active]="leftTab === 'files'"
-          [attr.aria-selected]="leftTab === 'files'"
-          (click)="showTab('files')"
-        >
-          Files
-        </button>
+      <div class="side-pane history-pane" *ngIf="showHistory">
+        <ai-builder-version-history
+          class="history"
+          [projectId]="project.id"
+          (restore)="restoreVersion($event)"
+        ></ai-builder-version-history>
       </div>
 
-      <ai-builder-files
-        *ngIf="leftTab === 'files'"
-        class="files-panel"
-        [projectId]="project.id"
-        (attach)="attachAsset($event)"
-        (deleted)="onAssetDeleted($event)"
-      ></ai-builder-files>
-
-      <div
-        class="chat-panel"
-        [class.hidden-tab]="leftTab !== 'chat'"
-        [class.dragging]="chatDragging"
-        (dragenter)="onChatDragEnter($event)"
-        (dragover)="onChatDragOver($event)"
-        (dragleave)="onChatDragLeave($event)"
-        (drop)="onChatDrop($event)"
-      >
-        <div class="messages" #messagesList>
-          <div
-            *ngFor="let entry of log"
-            class="message"
-            [class.user]="entry.role === 'user'"
-            [class.assistant]="entry.role === 'assistant'"
-            [class.tool]="entry.role === 'tool'"
-            [class.expandable]="isEntryExpandable(entry)"
-            [class.expanded]="entry.expanded"
+      <div class="work-pane">
+        <div class="left-tabs" role="tablist" aria-label="Chat and files">
+          <button
+            type="button"
+            role="tab"
+            [class.active]="leftTab === 'chat'"
+            [attr.aria-selected]="leftTab === 'chat'"
+            (click)="showTab('chat')"
           >
-            <div class="message-header" (click)="toggleEntry(entry)">
-              <span class="role">{{ entry.role }}</span>
-              <span class="summary">{{ entrySummary(entry) }}</span>
-              <mat-icon *ngIf="isEntryExpandable(entry)" class="chevron">{{
-                entry.expanded ? "expand_less" : "expand_more"
-              }}</mat-icon>
+            Chat
+          </button>
+          <button
+            type="button"
+            role="tab"
+            [class.active]="leftTab === 'files'"
+            [attr.aria-selected]="leftTab === 'files'"
+            (click)="showTab('files')"
+          >
+            Files
+          </button>
+        </div>
+
+        <ai-builder-files
+          *ngIf="leftTab === 'files'"
+          class="files-panel"
+          role="tabpanel"
+          [projectId]="project.id"
+          (attach)="attachAsset($event)"
+          (deleted)="onAssetDeleted($event)"
+        ></ai-builder-files>
+
+        <div
+          class="chat-panel"
+          role="tabpanel"
+          [class.hidden-tab]="leftTab !== 'chat'"
+          [class.dragging]="chatDragging"
+          (dragenter)="onChatDragEnter($event)"
+          (dragover)="onChatDragOver($event)"
+          (dragleave)="onChatDragLeave($event)"
+          (drop)="onChatDrop($event)"
+        >
+          <div class="messages" #messagesList>
+            <div
+              *ngFor="let entry of log"
+              class="message"
+              [class.user]="entry.role === 'user'"
+              [class.assistant]="entry.role === 'assistant'"
+              [class.tool]="entry.role === 'tool'"
+              [class.expandable]="isEntryExpandable(entry)"
+              [class.expanded]="entry.expanded"
+            >
+              <div class="message-header" (click)="toggleEntry(entry)">
+                <span class="role">{{ entry.role }}</span>
+                <span class="summary">{{ entrySummary(entry) }}</span>
+                <mat-icon *ngIf="isEntryExpandable(entry)" class="chevron">{{
+                  entry.expanded ? "expand_less" : "expand_more"
+                }}</mat-icon>
+              </div>
+              <div class="attachments" *ngIf="entry.attachments?.length">
+                <span class="attachment" *ngFor="let a of entry.attachments">
+                  <img
+                    *ngIf="attachmentThumb(a) as src"
+                    [src]="src"
+                    [alt]="a.name"
+                    (error)="thumbFailed(a.id)"
+                  />
+                  <mat-icon *ngIf="!attachmentThumb(a)">{{
+                    attachmentIcon(a.kind)
+                  }}</mat-icon>
+                  <span class="attachment-name">{{ a.name }}</span>
+                </span>
+              </div>
+              <div class="content" *ngIf="entry.expanded">{{ entry.text }}</div>
             </div>
-            <div class="attachments" *ngIf="entry.attachments?.length">
-              <span class="attachment" *ngFor="let a of entry.attachments">
+            <div *ngIf="currentAssistant" class="message assistant streaming">
+              <div class="message-header">
+                <span class="role">assistant</span>
+                <span class="summary streaming-dot">…streaming</span>
+              </div>
+              <div class="content">{{ currentAssistant }}</div>
+            </div>
+            <!-- Thinking indicator: visible from the moment the user submits
+                 a turn until either the first assistant token arrives (then
+                 the streaming bubble above takes over) or the turn ends. -->
+            <div
+              *ngIf="sending && !currentAssistant"
+              class="message assistant thinking"
+              aria-live="polite"
+            >
+              <div class="message-header">
+                <span class="role">assistant</span>
+                <span class="summary">
+                  Thinking<span class="dots"
+                    ><span>.</span><span>.</span><span>.</span></span
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="input">
+            <div
+              class="attachments pending"
+              *ngIf="pendingAttachments.length || attachProgress !== null"
+            >
+              <span class="attachment" *ngFor="let a of pendingAttachments">
                 <img
                   *ngIf="attachmentThumb(a) as src"
                   [src]="src"
@@ -116,174 +244,129 @@
                   attachmentIcon(a.kind)
                 }}</mat-icon>
                 <span class="attachment-name">{{ a.name }}</span>
-              </span>
-            </div>
-            <div class="content" *ngIf="entry.expanded">{{ entry.text }}</div>
-          </div>
-          <div *ngIf="currentAssistant" class="message assistant streaming">
-            <div class="message-header">
-              <span class="role">assistant</span>
-              <span class="summary streaming-dot">…streaming</span>
-            </div>
-            <div class="content">{{ currentAssistant }}</div>
-          </div>
-          <!-- Thinking indicator: visible from the moment the user submits
-               a turn until either the first assistant token arrives (then
-               the streaming bubble above takes over) or the turn ends. -->
-          <div
-            *ngIf="sending && !currentAssistant"
-            class="message assistant thinking"
-            aria-live="polite"
-          >
-            <div class="message-header">
-              <span class="role">assistant</span>
-              <span class="summary">
-                Thinking<span class="dots"
-                  ><span>.</span><span>.</span><span>.</span></span
+                <button
+                  type="button"
+                  class="remove"
+                  (click)="removeAttachment(a)"
+                  aria-label="Remove attachment"
                 >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </span>
+              <span
+                class="attachment uploading"
+                *ngIf="attachProgress !== null"
+                aria-live="polite"
+              >
+                {{
+                  attachProgress < 1
+                    ? "Uploading " +
+                      (attachProgress * 100 | number: "1.0-0") +
+                      "%"
+                    : "Processing…"
+                }}
               </span>
             </div>
-          </div>
-        </div>
-        <div class="input">
-          <div
-            class="attachments pending"
-            *ngIf="pendingAttachments.length || attachProgress !== null"
-          >
-            <span class="attachment" *ngFor="let a of pendingAttachments">
-              <img
-                *ngIf="attachmentThumb(a) as src"
-                [src]="src"
-                [alt]="a.name"
-                (error)="thumbFailed(a.id)"
+            <textarea
+              (paste)="onChatPaste($event)"
+              [(ngModel)]="draftMessage"
+              rows="3"
+              placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'. Drop or paste photos, floor plans and meshes here. (Shift+Enter for a newline, Up for history)"
+              (keydown.enter)="$event.preventDefault(); sendMessage()"
+              (keydown)="onChatKeyDown($event)"
+              [disabled]="sending"
+            ></textarea>
+            <div class="input-footer">
+              <input
+                #attachPicker
+                type="file"
+                multiple
+                hidden
+                [accept]="assetAccept"
+                (change)="onAttachPick($event)"
               />
-              <mat-icon *ngIf="!attachmentThumb(a)">{{
-                attachmentIcon(a.kind)
-              }}</mat-icon>
-              <span class="attachment-name">{{ a.name }}</span>
               <button
+                mat-icon-button
                 type="button"
-                class="remove"
-                (click)="removeAttachment(a)"
-                aria-label="Remove attachment"
+                class="attach-btn"
+                (click)="attachPicker.click()"
+                [disabled]="sending || attachProgress !== null"
+                aria-label="Attach files"
+                title="Attach photos, drawings, floor plans or meshes"
               >
-                <mat-icon>close</mat-icon>
+                <mat-icon>attach_file</mat-icon>
               </button>
-            </span>
-            <span
-              class="attachment uploading"
-              *ngIf="attachProgress !== null"
-              aria-live="polite"
-            >
-              {{
-                attachProgress < 1
-                  ? "Uploading " +
-                    (attachProgress * 100 | number: "1.0-0") +
-                    "%"
-                  : "Processing…"
-              }}
-            </span>
-          </div>
-          <textarea
-            (paste)="onChatPaste($event)"
-            [(ngModel)]="draftMessage"
-            rows="3"
-            placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'. Drop or paste photos, floor plans and meshes here. (Shift+Enter for a newline, Up for history)"
-            (keydown.enter)="$event.preventDefault(); sendMessage()"
-            (keydown)="onChatKeyDown($event)"
-            [disabled]="sending"
-          ></textarea>
-          <div class="input-footer">
-            <input
-              #attachPicker
-              type="file"
-              multiple
-              hidden
-              [accept]="assetAccept"
-              (change)="onAttachPick($event)"
-            />
-            <button
-              mat-icon-button
-              type="button"
-              class="attach-btn"
-              (click)="attachPicker.click()"
-              [disabled]="sending || attachProgress !== null"
-              aria-label="Attach files"
-              title="Attach photos, drawings, floor plans or meshes"
-            >
-              <mat-icon>attach_file</mat-icon>
-            </button>
-            <button
-              mat-button
-              type="button"
-              class="llm-chip"
-              [matMenuTriggerFor]="providerMenu"
-              [disabled]="sending || !availableKeys.length"
-            >
-              <span class="chip-label">{{
-                selectedProvider || "Provider"
-              }}</span>
-              <mat-icon class="chip-caret">arrow_drop_down</mat-icon>
-            </button>
-            <mat-menu #providerMenu="matMenu" yPosition="above">
               <button
-                mat-menu-item
-                *ngFor="let k of availableKeys"
-                (click)="onProviderChange(k.provider)"
+                mat-button
+                type="button"
+                class="llm-chip"
+                [matMenuTriggerFor]="providerMenu"
+                [disabled]="sending || !availableKeys.length"
               >
-                {{ k.provider }}
+                <span class="chip-label">{{
+                  selectedProvider || "Provider"
+                }}</span>
+                <mat-icon class="chip-caret">arrow_drop_down</mat-icon>
               </button>
-            </mat-menu>
+              <mat-menu #providerMenu="matMenu" yPosition="above">
+                <button
+                  mat-menu-item
+                  *ngFor="let k of availableKeys"
+                  (click)="onProviderChange(k.provider)"
+                >
+                  {{ k.provider }}
+                </button>
+              </mat-menu>
 
-            <button
-              mat-button
-              type="button"
-              class="llm-chip"
-              [matMenuTriggerFor]="modelMenu"
-              [disabled]="sending || loadingModels || !availableModels.length"
-            >
-              <span class="chip-label">{{
-                selectedModel ? modelLabel(selectedModel) : "Model"
-              }}</span>
-              <mat-icon class="chip-caret">arrow_drop_down</mat-icon>
-            </button>
-            <mat-menu #modelMenu="matMenu" yPosition="above">
               <button
-                mat-menu-item
-                *ngFor="let m of availableModels"
-                (click)="onModelChange(m.id)"
+                mat-button
+                type="button"
+                class="llm-chip"
+                [matMenuTriggerFor]="modelMenu"
+                [disabled]="sending || loadingModels || !availableModels.length"
               >
-                {{ m.display_name }}
+                <span class="chip-label">{{
+                  selectedModel ? modelLabel(selectedModel) : "Model"
+                }}</span>
+                <mat-icon class="chip-caret">arrow_drop_down</mat-icon>
               </button>
-            </mat-menu>
+              <mat-menu #modelMenu="matMenu" yPosition="above">
+                <button
+                  mat-menu-item
+                  *ngFor="let m of availableModels"
+                  (click)="onModelChange(m.id)"
+                >
+                  {{ m.display_name }}
+                </button>
+              </mat-menu>
 
-            <span class="footer-spacer"></span>
-            <!-- One control for two states: while a turn is in flight
-                 (sending=true) it's a stop button; otherwise it submits
-                 the draft. The disabled gate flips with the role: send
-                 needs draft text, stop is always live. -->
-            <button
-              *ngIf="!sending"
-              mat-icon-button
-              color="primary"
-              class="send-btn"
-              (click)="sendMessage()"
-              [disabled]="!canSend()"
-              aria-label="Send"
-            >
-              <mat-icon>send</mat-icon>
-            </button>
-            <button
-              *ngIf="sending"
-              mat-icon-button
-              color="warn"
-              class="send-btn stop-btn"
-              (click)="stopMessage()"
-              aria-label="Stop"
-              title="Stop the agent"
-            >
-              <mat-icon>stop</mat-icon>
-            </button>
+              <span class="footer-spacer"></span>
+              <!-- One control for two states: while a turn is in flight
+                   (sending=true) it's a stop button; otherwise it submits
+                   the draft. The disabled gate flips with the role: send
+                   needs draft text, stop is always live. -->
+              <button
+                *ngIf="!sending"
+                mat-icon-button
+                class="send-btn"
+                (click)="sendMessage()"
+                [disabled]="!canSend()"
+                aria-label="Send"
+              >
+                <mat-icon>send</mat-icon>
+              </button>
+              <button
+                *ngIf="sending"
+                mat-icon-button
+                color="warn"
+                class="send-btn stop-btn"
+                (click)="stopMessage()"
+                aria-label="Stop"
+                title="Stop the agent"
+              >
+                <mat-icon>stop</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -291,11 +374,13 @@
 
     <!-- Right column: viewport + optional SDF panel -->
     <div class="right-column" #rightColumn>
-      <ai-builder-viewport
-        [sdf]="worldSDF"
-        [fileBase]="fileBase"
-        [spotlight]="spotlight"
-      ></ai-builder-viewport>
+      <div class="media-panel">
+        <ai-builder-viewport
+          [sdf]="worldSDF"
+          [fileBase]="fileBase"
+          [spotlight]="spotlight"
+        ></ai-builder-viewport>
+      </div>
 
       <div
         *ngIf="showSDF"
