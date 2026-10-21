@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -7,9 +8,19 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Subject, filter, takeUntil } from "rxjs";
+import {
+  EMPTY,
+  Subject,
+  catchError,
+  filter,
+  firstValueFrom,
+  interval,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import {
   ASSET_ACCEPT,
@@ -32,6 +43,9 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() projectId = "";
   /** The user chose to attach a file to their next chat message. */
   @Output() attach = new EventEmitter<ProjectAsset>();
+  /** A file was deleted; emits its id. */
+  @Output() deleted = new EventEmitter<string>();
+  @ViewChild("renameInput") private renameInput?: ElementRef<HTMLInputElement>;
 
   readonly accept = ASSET_ACCEPT;
   assets: ProjectAsset[] = [];
@@ -40,6 +54,9 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
   /** Upload progress 0-1 while uploading, else null. */
   progress: number | null = null;
   dragging = false;
+  // dragenter/dragleave fire for every child crossed; count them so the
+  // outline doesn't flicker.
+  private dragDepth = 0;
   renaming: string | null = null;
   renameValue = "";
   confirmDelete: string | null = null;
@@ -58,6 +75,32 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(() => this.reload());
+    // Show processing results as they finish.
+    interval(5000)
+      .pipe(
+        filter(
+          () =>
+            !document.hidden &&
+            this.assets.some((a) => a.status === "processing"),
+        ),
+        switchMap(() =>
+          this.service.listAssets(this.projectId).pipe(catchError(() => EMPTY)),
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((list) => (this.assets = list));
+    // The thumbnail URLs are signed for an hour; the service hands out a
+    // new base 5 minutes before that, so check more often than that.
+    interval(4 * 60_000)
+      .pipe(
+        switchMap(() =>
+          this.service.assetsBase(this.projectId).pipe(catchError(() => EMPTY)),
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((b) => {
+        if (b !== this.base) this.base = b;
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -100,8 +143,26 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
       : null;
   }
 
-  downloadUrl(a: ProjectAsset): string {
-    return `${this.base}/${a.id}/original?download=1`;
+  /**
+   * Download the original. The link is built now from a fresh signed
+   * base, so an expired one never sends the app to an error page.
+   */
+  async download(a: ProjectAsset): Promise<void> {
+    try {
+      const base = await firstValueFrom(
+        this.service.assetsBase(this.projectId),
+      );
+      const link = document.createElement("a");
+      link.href = `${base}/${a.id}/original?download=1`;
+      link.download = a.name;
+      link.click();
+    } catch (err) {
+      this.snack.open(
+        `Download failed: ${this.service.assetError(err)}`,
+        "Dismiss",
+        { duration: 6000 },
+      );
+    }
   }
 
   icon(a: ProjectAsset): string {
@@ -133,20 +194,40 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
     this.upload(files);
   }
 
-  onDragOver(ev: DragEvent): void {
+  onDragEnter(ev: DragEvent): void {
     if (!ev.dataTransfer?.types.includes("Files")) return;
-    ev.preventDefault();
+    this.dragDepth++;
     this.dragging = true;
   }
 
-  onDrop(ev: DragEvent): void {
+  onDragOver(ev: DragEvent): void {
+    if (!ev.dataTransfer?.types.includes("Files")) return;
     ev.preventDefault();
+  }
+
+  onDragLeave(ev: DragEvent): void {
+    if (!ev.dataTransfer?.types.includes("Files")) return;
+    this.dragDepth = Math.max(0, this.dragDepth - 1);
+    if (!this.dragDepth) this.dragging = false;
+  }
+
+  onDrop(ev: DragEvent): void {
+    // Dropped text goes into the rename box as usual.
+    if (!ev.dataTransfer?.types.includes("Files")) return;
+    ev.preventDefault();
+    this.dragDepth = 0;
     this.dragging = false;
-    this.upload(Array.from(ev.dataTransfer?.files ?? []));
+    this.upload(Array.from(ev.dataTransfer.files));
   }
 
   async upload(files: File[]): Promise<void> {
-    if (!files.length || this.progress !== null) return;
+    if (!files.length) return;
+    if (this.progress !== null) {
+      this.snack.open("Wait for the current upload to finish", "Dismiss", {
+        duration: 4000,
+      });
+      return;
+    }
     this.progress = 0;
     try {
       const added = await this.service.uploadAssetsWithProgress(
@@ -175,14 +256,31 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
   startRename(a: ProjectAsset): void {
     this.renaming = a.id;
     this.renameValue = a.name;
+    // After the menu has closed and given focus back to its button.
+    setTimeout(() => {
+      const input = this.renameInput?.nativeElement;
+      input?.focus();
+      input?.select();
+    });
+  }
+
+  cancelRename(): void {
+    this.renaming = null;
+    this.renameValue = "";
   }
 
   finishRename(a: ProjectAsset): void {
+    // Escape, or the blur that follows Enter, already ended it.
+    if (this.renaming !== a.id) return;
     const name = this.renameValue.trim();
     this.renaming = null;
     if (!name || name === a.name) return;
     this.service.renameAsset(this.projectId, a.id, name).subscribe({
-      next: (updated) => (a.name = updated.name),
+      // The list may have been reloaded meanwhile.
+      next: (updated) =>
+        (this.assets = this.assets.map((x) =>
+          x.id === updated.id ? updated : x,
+        )),
       error: (err) =>
         this.snack.open(
           `Rename failed: ${this.service.assetError(err)}`,
@@ -199,10 +297,29 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.confirmDelete = null;
     this.service.deleteAsset(this.projectId, a.id).subscribe({
-      next: () => (this.assets = this.assets.filter((x) => x.id !== a.id)),
+      next: () => {
+        this.assets = this.assets.filter((x) => x.id !== a.id);
+        this.deleted.emit(a.id);
+      },
       error: (err) =>
         this.snack.open(
           `Delete failed: ${this.service.assetError(err)}`,
+          "Dismiss",
+          { duration: 6000 },
+        ),
+    });
+  }
+
+  /** Process a file whose processing failed again. */
+  retry(a: ProjectAsset): void {
+    this.service.retryAsset(this.projectId, a.id).subscribe({
+      next: (updated) =>
+        (this.assets = this.assets.map((x) =>
+          x.id === updated.id ? updated : x,
+        )),
+      error: (err) =>
+        this.snack.open(
+          `Retry failed: ${this.service.assetError(err)}`,
           "Dismiss",
           { duration: 6000 },
         ),

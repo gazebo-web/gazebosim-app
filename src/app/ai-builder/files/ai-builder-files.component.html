@@ -1,8 +1,9 @@
 <div
   class="files"
   [class.dragging]="dragging"
+  (dragenter)="onDragEnter($event)"
   (dragover)="onDragOver($event)"
-  (dragleave)="dragging = false"
+  (dragleave)="onDragLeave($event)"
   (drop)="onDrop($event)"
 >
   <div class="header">
@@ -35,7 +36,7 @@
   <div class="progress" *ngIf="progress !== null">
     <div class="bar" [style.width.%]="progress * 100"></div>
   </div>
-  <div class="processing" *ngIf="progress === 1">
+  <div class="processing" *ngIf="progress === 1" aria-live="polite">
     Processing: making pictures of the files…
   </div>
 
@@ -52,13 +53,13 @@
       </div>
       <div class="body">
         <input
+          #renameInput
           *ngIf="renaming === a.id; else nameText"
           class="rename"
           [(ngModel)]="renameValue"
           (keydown.enter)="finishRename(a)"
-          (keydown.escape)="renaming = null"
+          (keydown.escape)="cancelRename()"
           (blur)="finishRename(a)"
-          autofocus
         />
         <ng-template #nameText>
           <div class="name" [title]="a.name">{{ a.name }}</div>
@@ -73,20 +74,23 @@
         mat-icon-button
         class="menu-btn"
         [matMenuTriggerFor]="menu"
-        aria-label="File actions"
+        [attr.aria-label]="'Actions for ' + a.name"
       >
         <mat-icon>more_vert</mat-icon>
       </button>
-      <mat-menu #menu="matMenu">
+      <mat-menu #menu="matMenu" (closed)="confirmDelete = null">
         <button mat-menu-item (click)="attach.emit(a)">
           <mat-icon>attach_file</mat-icon>Attach to chat
         </button>
         <button mat-menu-item (click)="startRename(a)">
           <mat-icon>edit</mat-icon>Rename
         </button>
-        <a mat-menu-item [href]="downloadUrl(a)" [attr.download]="a.name">
+        <button mat-menu-item (click)="download(a)">
           <mat-icon>download</mat-icon>Download
-        </a>
+        </button>
+        <button mat-menu-item *ngIf="a.status === 'failed'" (click)="retry(a)">
+          <mat-icon>refresh</mat-icon>Retry
+        </button>
         <button
           mat-menu-item
           (click)="$event.stopPropagation(); remove(a)"

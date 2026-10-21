@@ -90,6 +90,9 @@ export interface ProjectAsset {
 export const ASSET_ACCEPT =
   ".png,.jpg,.jpeg,.webp,.pdf,.svg,.dxf,.glb,.obj,.stl,.dae,.zip";
 
+/** Most project files one chat message can carry (the server refuses more). */
+export const MAX_ATTACHMENTS = 10;
+
 export interface ChatSession {
   id: string;
   project_id: string;
@@ -468,6 +471,14 @@ export class AiBuilderService {
   assetError(err: any): string {
     return (
       err?.error?.msg || err?.error?.error || err?.message || "request failed"
+    );
+  }
+
+  /** Re-run processing of a file whose processing failed. */
+  retryAsset(nameOrId: string, id: string): Observable<ProjectAsset> {
+    return this.http.post<ProjectAsset>(
+      `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets/${id}/retry`,
+      null,
     );
   }
 

@@ -49,18 +49,22 @@
         (restore)="restoreVersion($event)"
       ></ai-builder-version-history>
 
-      <div class="left-tabs">
+      <div class="left-tabs" role="tablist">
         <button
           type="button"
+          role="tab"
           [class.active]="leftTab === 'chat'"
-          (click)="leftTab = 'chat'"
+          [attr.aria-selected]="leftTab === 'chat'"
+          (click)="showTab('chat')"
         >
           Chat
         </button>
         <button
           type="button"
+          role="tab"
           [class.active]="leftTab === 'files'"
-          (click)="leftTab = 'files'"
+          [attr.aria-selected]="leftTab === 'files'"
+          (click)="showTab('files')"
         >
           Files
         </button>
@@ -71,14 +75,16 @@
         class="files-panel"
         [projectId]="project.id"
         (attach)="attachAsset($event)"
+        (deleted)="onAssetDeleted($event)"
       ></ai-builder-files>
 
       <div
         class="chat-panel"
         [class.hidden-tab]="leftTab !== 'chat'"
         [class.dragging]="chatDragging"
+        (dragenter)="onChatDragEnter($event)"
         (dragover)="onChatDragOver($event)"
-        (dragleave)="chatDragging = false"
+        (dragleave)="onChatDragLeave($event)"
         (drop)="onChatDrop($event)"
       >
         <div class="messages" #messagesList>
@@ -149,6 +155,7 @@
                 *ngIf="attachmentThumb(a) as src"
                 [src]="src"
                 [alt]="a.name"
+                (error)="thumbFailed(a.id)"
               />
               <mat-icon *ngIf="!attachmentThumb(a)">{{
                 attachmentIcon(a.kind)
@@ -163,7 +170,11 @@
                 <mat-icon>close</mat-icon>
               </button>
             </span>
-            <span class="attachment uploading" *ngIf="attachProgress !== null">
+            <span
+              class="attachment uploading"
+              *ngIf="attachProgress !== null"
+              aria-live="polite"
+            >
               {{
                 attachProgress < 1
                   ? "Uploading " +

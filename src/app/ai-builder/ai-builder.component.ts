@@ -2,6 +2,7 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -20,6 +21,7 @@ import {
   ChatEvent,
   ChatMessage,
   LLMKey,
+  MAX_ATTACHMENTS,
   ModelInfo,
   ProjectAsset,
   ProjectVersion,
@@ -103,6 +105,9 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   pendingAttachments: ProjectAsset[] = [];
   attachProgress: number | null = null;
   chatDragging = false;
+  // dragenter/dragleave fire for every child crossed; count them so the
+  // outline doesn't flicker.
+  private chatDragDepth = 0;
   readonly assetAccept = ASSET_ACCEPT;
   // Signed base URL for the project's file thumbnails.
   assetsBase = "";
@@ -149,6 +154,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     private auth: AuthService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
+    private zone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -162,6 +168,17 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     interval(5000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.pollHead());
+    // The thumbnail URLs are signed for an hour; the service hands out a
+    // new base 5 minutes before that, so check more often than that.
+    interval(4 * 60_000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.refreshAssetsBase());
+    // A file dropped outside the drop zones would otherwise make the
+    // browser open it in place of the app.
+    this.zone.runOutsideAngular(() => {
+      document.addEventListener("dragover", this.blockFileDrop);
+      document.addEventListener("drop", this.blockFileDrop);
+    });
   }
 
   ngOnDestroy(): void {
@@ -170,6 +187,8 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     // If the user destroys the page mid-drag (e.g. navigating away),
     // make sure we don't leave document-level listeners dangling.
     this.endSplitterDrag();
+    document.removeEventListener("dragover", this.blockFileDrop);
+    document.removeEventListener("drop", this.blockFileDrop);
     // Leaving the page stops following the turn, not the turn itself.
     this.currentAbort?.abort();
   }
@@ -465,16 +484,23 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     });
   }
 
+  /** Show the chat or the files; the chat opens scrolled to the newest. */
+  showTab(tab: "chat" | "files"): void {
+    if (tab === "chat" && this.leftTab !== "chat") this.lastScrollKey = "";
+    this.leftTab = tab;
+  }
+
   private loadProject(id: string): void {
+    // Nothing of the previous project carries over.
+    this.pendingAttachments = [];
+    this.attachProgress = null;
+    this.assetsBase = "";
+    this.noThumb.clear();
+    this.showTab("chat");
     this.service.getProject(id).subscribe({
       next: (p) => {
         this.project = p;
-        this.service.assetsBase(p.id).subscribe({
-          next: (b) => (this.assetsBase = b),
-          error: () => {
-            // Thumbnails fall back to icons.
-          },
-        });
+        this.refreshAssetsBase();
         this.loadHistory();
         this.loadLatestVersion();
         this.loadAvailableKeys();
@@ -533,6 +559,31 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.noThumb.add(id);
   }
 
+  /** Pick up a new signed base for thumbnails before the old one expires. */
+  private refreshAssetsBase(): void {
+    const id = this.project?.id;
+    if (!id) return;
+    this.service.assetsBase(id).subscribe({
+      next: (b) => {
+        if (this.project?.id !== id || b === this.assetsBase) return;
+        this.assetsBase = b;
+        // Thumbnails that failed with the old base may load now.
+        this.noThumb.clear();
+      },
+      error: () => {
+        // Thumbnails fall back to icons.
+      },
+    });
+  }
+
+  private blockFileDrop = (ev: DragEvent): void => {
+    if (ev.defaultPrevented || !ev.dataTransfer?.types.includes("Files")) {
+      return;
+    }
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = "none";
+  };
+
   attachmentIcon(kind: string): string {
     return (
       {
@@ -546,10 +597,19 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   /** Attach an already-uploaded file (from the Files panel). */
   attachAsset(a: ProjectAsset): void {
-    this.leftTab = "chat";
-    if (!this.pendingAttachments.some((x) => x.id === a.id)) {
-      this.pendingAttachments.push(a);
+    this.showTab("chat");
+    if (this.pendingAttachments.some((x) => x.id === a.id)) return;
+    if (this.pendingAttachments.length >= MAX_ATTACHMENTS) {
+      this.tooManyAttachments();
+      return;
     }
+    this.pendingAttachments.push(a);
+  }
+
+  private tooManyAttachments(): void {
+    this.snack.open(`At most ${MAX_ATTACHMENTS} files per message`, "Dismiss", {
+      duration: 4000,
+    });
   }
 
   removeAttachment(a: ProjectAsset): void {
@@ -565,22 +625,38 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.uploadAttachments(files);
   }
 
-  onChatDragOver(ev: DragEvent): void {
+  onChatDragEnter(ev: DragEvent): void {
     if (!ev.dataTransfer?.types.includes("Files")) return;
-    ev.preventDefault();
+    this.chatDragDepth++;
     this.chatDragging = true;
   }
 
-  onChatDrop(ev: DragEvent): void {
+  onChatDragOver(ev: DragEvent): void {
+    if (!ev.dataTransfer?.types.includes("Files")) return;
     ev.preventDefault();
-    this.chatDragging = false;
-    this.uploadAttachments(Array.from(ev.dataTransfer?.files ?? []));
   }
 
-  /** Pasted images (screenshots) become attachments. */
+  onChatDragLeave(ev: DragEvent): void {
+    if (!ev.dataTransfer?.types.includes("Files")) return;
+    this.chatDragDepth = Math.max(0, this.chatDragDepth - 1);
+    if (!this.chatDragDepth) this.chatDragging = false;
+  }
+
+  onChatDrop(ev: DragEvent): void {
+    // Dropped text goes into the textarea as usual.
+    if (!ev.dataTransfer?.types.includes("Files")) return;
+    ev.preventDefault();
+    this.chatDragDepth = 0;
+    this.chatDragging = false;
+    this.uploadAttachments(Array.from(ev.dataTransfer.files));
+  }
+
+  /** Pasted images (screenshots) become attachments; text pastes as text. */
   onChatPaste(ev: ClipboardEvent): void {
     const files = Array.from(ev.clipboardData?.files ?? []);
-    if (!files.length) return;
+    if (!files.length || ev.clipboardData?.types.includes("text/plain")) {
+      return;
+    }
     ev.preventDefault();
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     this.uploadAttachments(
@@ -595,15 +671,33 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private async uploadAttachments(files: File[]): Promise<void> {
-    if (!this.project || !files.length || this.attachProgress !== null) return;
+    if (!this.project || !files.length) return;
+    if (this.attachProgress !== null) {
+      this.snack.open("Wait for the current upload to finish", "Dismiss", {
+        duration: 4000,
+      });
+      return;
+    }
+    const room = MAX_ATTACHMENTS - this.pendingAttachments.length;
+    if (files.length > room) {
+      this.tooManyAttachments();
+      if (room <= 0) return;
+      files = files.slice(0, room);
+    }
+    // The user may switch projects while this uploads.
+    const id = this.project.id;
     this.attachProgress = 0;
     try {
       const added = await this.service.uploadAssetsWithProgress(
-        this.project.id,
+        id,
         files,
-        (f) => (this.attachProgress = f),
+        (f) => {
+          if (this.project?.id === id) this.attachProgress = f;
+        },
       );
-      for (const a of added) this.attachAsset(a);
+      if (this.project?.id === id) {
+        for (const a of added) this.attachAsset(a);
+      }
     } catch (err) {
       this.snack.open(
         `Upload failed: ${this.service.assetError(err)}`,
@@ -611,8 +705,15 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         { duration: 8000 },
       );
     } finally {
-      this.attachProgress = null;
+      if (this.project?.id === id) this.attachProgress = null;
     }
+  }
+
+  /** A file was deleted in the Files panel: it can't be sent any more. */
+  onAssetDeleted(id: string): void {
+    this.pendingAttachments = this.pendingAttachments.filter(
+      (x) => x.id !== id,
+    );
   }
 
   /**
@@ -705,7 +806,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.draftMessage = "";
     this.pendingAttachments = [];
     this.sending = true;
-    this.log.push({
+    const bubble: ChatLogEntry = {
       role: "user",
       text,
       attachments: attachments.map((a) => ({
@@ -713,7 +814,8 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         name: a.name,
         kind: a.kind,
       })),
-    });
+    };
+    this.log.push(bubble);
     // Append to prompt history (skip exact duplicates of the most
     // recent entry, like bash's HISTCONTROL=ignoredups). Reset the
     // cursor so the next Up press starts from the new newest entry.
@@ -735,6 +837,13 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         onTurn: (id) => (this.currentTurn = id),
       }),
       controller,
+      () => {
+        // The server refused the message (too many files, a file that
+        // was deleted...) or never got it: give it back to edit.
+        this.log = this.log.filter((e) => e !== bubble);
+        this.draftMessage = text;
+        this.pendingAttachments = attachments;
+      },
     );
   }
 
@@ -754,18 +863,29 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     );
   }
 
-  /** Show a turn's events until it ends or the stream is aborted. */
+  /**
+   * Show a turn's events until it ends or the stream is aborted.
+   * `onNotStarted` runs when the stream fails before the server started
+   * a turn (no turn id, no events).
+   */
   private async consume(
     stream: AsyncGenerator<ChatEvent>,
     controller: AbortController,
+    onNotStarted?: () => void,
   ): Promise<void> {
     this.currentAbort = controller;
     this.projectChangedThisTurn = false;
+    let started = false;
     try {
       for await (const ev of stream) {
+        if (!started && !this.currentTurn && ev.type === "error") {
+          onNotStarted?.();
+        }
+        started = true;
         this.handleEvent(ev);
       }
     } catch (err: any) {
+      if (!started && !this.currentTurn) onNotStarted?.();
       // AbortError is a deliberate user cancellation — don't show a
       // toast for it. Anything else is a real failure.
       if (
