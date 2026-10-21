@@ -520,10 +520,17 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   // --- Attaching project files to a message ---
 
-  attachmentThumb(a: { id: string; kind: string }): string | null {
-    return this.assetsBase && (a.kind === "image" || a.kind === "texture")
-      ? `${this.assetsBase}/${a.id}/thumb.jpg`
-      : null;
+  // Files whose thumbnail failed to load (none was made); they show an icon.
+  private noThumb = new Set<string>();
+
+  attachmentThumb(a: { id: string; views?: string[] }): string | null {
+    if (!this.assetsBase || this.noThumb.has(a.id)) return null;
+    if (a.views && !a.views.includes("thumb.jpg")) return null;
+    return `${this.assetsBase}/${a.id}/thumb.jpg`;
+  }
+
+  thumbFailed(id: string): void {
+    this.noThumb.add(id);
   }
 
   attachmentIcon(kind: string): string {

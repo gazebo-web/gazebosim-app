@@ -35,6 +35,9 @@
   <div class="progress" *ngIf="progress !== null">
     <div class="bar" [style.width.%]="progress * 100"></div>
   </div>
+  <div class="processing" *ngIf="progress === 1">
+    Processing: making pictures of the files…
+  </div>
 
   <div class="empty" *ngIf="!loading && !assets.length">
     <mat-icon>cloud_upload</mat-icon>
