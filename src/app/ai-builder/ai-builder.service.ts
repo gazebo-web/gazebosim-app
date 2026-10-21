@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpEvent, HttpEventType } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, catchError, map, of } from "rxjs";
+import { Observable, Subject, catchError, map, of, shareReplay } from "rxjs";
 
 import { environment } from "../../environments/environment";
 
@@ -51,8 +51,44 @@ export interface ChatMessage {
   content: string;
   tool_name?: string;
   tool_id?: string;
+  /** Project files attached to a user message. */
+  attachments?: ChatAttachment[];
   timestamp: string;
 }
+
+/** A project file as attached to a chat message. */
+export interface ChatAttachment {
+  id: string;
+  name: string;
+  kind: string;
+  summary?: string;
+}
+
+/**
+ * A project file: something the user uploaded for the AI to build from
+ * (a photo, drawing, floor plan, mesh or texture set). Kept beside the
+ * project, not in its versions, and never exported or published.
+ */
+export interface ProjectAsset {
+  id: string;
+  name: string;
+  kind: "image" | "document" | "drawing" | "mesh" | "texture";
+  mime: string;
+  size: number;
+  status: "processing" | "ready" | "failed";
+  error?: string;
+  /** What processing learned: width/height, pages, files in a zip... */
+  info: Record<string, unknown>;
+  /** Derived files beside "original", e.g. thumb.jpg. */
+  views: string[];
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** File types the upload accepts (the server checks content, not names). */
+export const ASSET_ACCEPT =
+  ".png,.jpg,.jpeg,.webp,.pdf,.svg,.dxf,.glb,.obj,.stl,.dae,.zip";
 
 export interface ChatSession {
   id: string;
@@ -355,6 +391,119 @@ export class AiBuilderService {
       );
   }
 
+  // --- Project files (fuel-server) ---
+
+  /** Emits a project name whenever its files change in this tab. */
+  readonly assetsChanged$ = new Subject<string>();
+  private assetsBases = new Map<
+    string,
+    { base: Observable<string>; expires: number }
+  >();
+
+  /**
+   * Upload files to a project. Emits upload progress events, then the
+   * response with the added files. `kind: "texture"` marks images as a
+   * material.
+   */
+  uploadAssets(
+    nameOrId: string,
+    files: File[],
+    kind?: string,
+  ): Observable<HttpEvent<ProjectAsset[]>> {
+    const form = new FormData();
+    for (const f of files) form.append("file", f, f.name);
+    if (kind) form.append("kind", kind);
+    return this.http.post<ProjectAsset[]>(
+      `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets`,
+      form,
+      { reportProgress: true, observe: "events" },
+    );
+  }
+
+  /**
+   * Upload files, reporting progress as a fraction; resolves with the
+   * added files and tells assetsChanged$.
+   */
+  uploadAssetsWithProgress(
+    nameOrId: string,
+    files: File[],
+    onProgress?: (fraction: number) => void,
+    kind?: string,
+  ): Promise<ProjectAsset[]> {
+    return new Promise((resolve, reject) => {
+      this.uploadAssets(nameOrId, files, kind).subscribe({
+        next: (ev) => {
+          if (ev.type === HttpEventType.UploadProgress && ev.total) {
+            onProgress?.(ev.loaded / ev.total);
+          } else if (ev.type === HttpEventType.Response) {
+            this.assetsChanged$.next(nameOrId);
+            resolve(ev.body ?? []);
+          }
+        },
+        error: reject,
+      });
+    });
+  }
+
+  listAssets(nameOrId: string): Observable<ProjectAsset[]> {
+    return this.http
+      .get<
+        ProjectAsset[] | null
+      >(`${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets`)
+      .pipe(map((l) => l ?? []));
+  }
+
+  renameAsset(
+    nameOrId: string,
+    id: string,
+    name: string,
+  ): Observable<ProjectAsset> {
+    return this.http.patch<ProjectAsset>(
+      `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets/${id}`,
+      { name },
+    );
+  }
+
+  /** The message of a failed project-file request, for the user. */
+  assetError(err: any): string {
+    return (
+      err?.error?.msg || err?.error?.error || err?.message || "request failed"
+    );
+  }
+
+  deleteAsset(nameOrId: string, id: string): Observable<unknown> {
+    return this.http.delete(
+      `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets/${id}`,
+    );
+  }
+
+  /**
+   * The signed base URL of a project's files, so <img> tags can show
+   * thumbnails without the Authorization header. Cached until shortly
+   * before it expires. Files are at `${base}/${id}/${file}`.
+   */
+  assetsBase(nameOrId: string): Observable<string> {
+    const cached = this.assetsBases.get(nameOrId);
+    if (cached && cached.expires > Date.now()) return cached.base;
+    const base = this.http
+      .get<{
+        base_path: string;
+        expires_at: string;
+      }>(`${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets-url`)
+      .pipe(
+        map((u) => {
+          this.assetsBases.set(nameOrId, {
+            base,
+            expires: new Date(u.expires_at).getTime() - 5 * 60_000,
+          });
+          return `${environment.API_HOST}${u.base_path}`;
+        }),
+        shareReplay(1),
+      );
+    this.assetsBases.set(nameOrId, { base, expires: Date.now() + 60_000 });
+    return base;
+  }
+
   // Personal Access Token CRUD lives on the existing /settings/access-
   // tokens page (UserService); the AI Builder tab links there via a
   // banner. No PAT methods here.
@@ -525,6 +674,8 @@ export class AiBuilderService {
     opts?: {
       provider?: string;
       model?: string;
+      /** Ids of project files to send with the message. */
+      attachments?: string[];
       signal?: AbortSignal;
       onTurn?: (turnId: string) => void;
     },
@@ -539,6 +690,7 @@ export class AiBuilderService {
         message,
         provider: opts?.provider || undefined,
         model: opts?.model || undefined,
+        attachments: opts?.attachments?.length ? opts.attachments : undefined,
       }),
       signal: opts?.signal,
     });

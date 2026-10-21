@@ -1,0 +1,146 @@
+.files {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 2px dashed transparent;
+
+  &.dragging {
+    border-color: #1976d2;
+    background: rgba(25, 118, 210, 0.05);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.hint {
+  margin: 6px 0 10px;
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 12px;
+}
+
+.progress {
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  margin-bottom: 8px;
+  overflow: hidden;
+
+  .bar {
+    height: 100%;
+    background: #1976d2;
+    transition: width 0.2s;
+  }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 40px 0;
+  color: rgba(0, 0, 0, 0.45);
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.card {
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.preview {
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f4;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.body {
+  padding: 6px 8px 8px;
+  padding-right: 28px;
+}
+
+.name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rename {
+  width: 100%;
+  font: inherit;
+}
+
+.meta {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 11px;
+}
+
+.status {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+
+  &.failed {
+    color: #c00;
+  }
+}
+
+.menu-btn {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  --mdc-icon-button-state-layer-size: 28px;
+  --mat-icon-button-state-layer-size: 28px;
+  padding: 2px;
+}
+
+.confirm {
+  color: #c00;
+}

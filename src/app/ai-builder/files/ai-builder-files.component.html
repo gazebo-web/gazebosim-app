@@ -1,0 +1,98 @@
+<div
+  class="files"
+  [class.dragging]="dragging"
+  (dragover)="onDragOver($event)"
+  (dragleave)="dragging = false"
+  (drop)="onDrop($event)"
+>
+  <div class="header">
+    <span class="title">Project files</span>
+    <span class="spacer"></span>
+    <input
+      #picker
+      type="file"
+      multiple
+      hidden
+      [accept]="accept"
+      (change)="onPick($event)"
+    />
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="picker.click()"
+      [disabled]="progress !== null"
+    >
+      <mat-icon>upload</mat-icon>
+      Upload
+    </button>
+  </div>
+  <p class="hint">
+    Photos, drawings, floor plans, meshes and textures for the AI to build from.
+    Files you attach are sent to your AI provider. They stay private and aren't
+    exported.
+  </p>
+
+  <div class="progress" *ngIf="progress !== null">
+    <div class="bar" [style.width.%]="progress * 100"></div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && !assets.length">
+    <mat-icon>cloud_upload</mat-icon>
+    <span>Drop files here</span>
+  </div>
+
+  <div class="grid">
+    <div class="card" *ngFor="let a of assets; trackBy: trackId">
+      <div class="preview">
+        <img *ngIf="thumb(a) as src" [src]="src" [alt]="a.name" />
+        <mat-icon *ngIf="!thumb(a)">{{ icon(a) }}</mat-icon>
+      </div>
+      <div class="body">
+        <input
+          *ngIf="renaming === a.id; else nameText"
+          class="rename"
+          [(ngModel)]="renameValue"
+          (keydown.enter)="finishRename(a)"
+          (keydown.escape)="renaming = null"
+          (blur)="finishRename(a)"
+          autofocus
+        />
+        <ng-template #nameText>
+          <div class="name" [title]="a.name">{{ a.name }}</div>
+        </ng-template>
+        <div class="meta">{{ describe(a) }}</div>
+        <div class="status failed" *ngIf="a.status === 'failed'">
+          {{ a.error || "Processing failed" }}
+        </div>
+        <div class="status" *ngIf="a.status === 'processing'">Processing…</div>
+      </div>
+      <button
+        mat-icon-button
+        class="menu-btn"
+        [matMenuTriggerFor]="menu"
+        aria-label="File actions"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="attach.emit(a)">
+          <mat-icon>attach_file</mat-icon>Attach to chat
+        </button>
+        <button mat-menu-item (click)="startRename(a)">
+          <mat-icon>edit</mat-icon>Rename
+        </button>
+        <a mat-menu-item [href]="downloadUrl(a)" [attr.download]="a.name">
+          <mat-icon>download</mat-icon>Download
+        </a>
+        <button
+          mat-menu-item
+          (click)="$event.stopPropagation(); remove(a)"
+          [class.confirm]="confirmDelete === a.id"
+        >
+          <mat-icon>delete</mat-icon>
+          {{ confirmDelete === a.id ? "Click again to delete" : "Delete" }}
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</div>

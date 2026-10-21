@@ -13,12 +13,15 @@ import { Observable, Subject, interval, of, switchMap, takeUntil } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
 import {
+  ASSET_ACCEPT,
   AiBuilderProject,
   AiBuilderService,
+  ChatAttachment,
   ChatEvent,
   ChatMessage,
   LLMKey,
   ModelInfo,
+  ProjectAsset,
   ProjectVersion,
 } from "./ai-builder.service";
 import {
@@ -39,6 +42,8 @@ interface ChatLogEntry {
   role: "user" | "assistant" | "tool";
   text: string;
   toolName?: string;
+  /** Project files sent with a user message. */
+  attachments?: ChatAttachment[];
   // UI-only state: whether the entry is expanded to show its full text.
   // Defaults to false; the first line is always shown as a summary and
   // multi-line entries render a chevron that flips this flag.
@@ -91,6 +96,16 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
   currentAssistant = "";
   draftMessage = "";
   sending = false;
+  // The left column shows the chat or the project's files.
+  leftTab: "chat" | "files" = "chat";
+  // Project files to send with the next message, and upload progress
+  // (0-1) for files dropped, pasted or picked in the chat.
+  pendingAttachments: ProjectAsset[] = [];
+  attachProgress: number | null = null;
+  chatDragging = false;
+  readonly assetAccept = ASSET_ACCEPT;
+  // Signed base URL for the project's file thumbnails.
+  assetsBase = "";
   worldSDF = "";
   showSDF = false;
   showHistory = false;
@@ -454,6 +469,12 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.service.getProject(id).subscribe({
       next: (p) => {
         this.project = p;
+        this.service.assetsBase(p.id).subscribe({
+          next: (b) => (this.assetsBase = b),
+          error: () => {
+            // Thumbnails fall back to icons.
+          },
+        });
         this.loadHistory();
         this.loadLatestVersion();
         this.loadAvailableKeys();
@@ -490,7 +511,101 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (m.role === "tool_result") {
       return { role: "tool", text: m.content, toolName: m.tool_name };
     }
-    return { role: m.role === "user" ? "user" : "assistant", text: m.content };
+    return {
+      role: m.role === "user" ? "user" : "assistant",
+      text: m.content,
+      attachments: m.attachments,
+    };
+  }
+
+  // --- Attaching project files to a message ---
+
+  attachmentThumb(a: { id: string; kind: string }): string | null {
+    return this.assetsBase && (a.kind === "image" || a.kind === "texture")
+      ? `${this.assetsBase}/${a.id}/thumb.jpg`
+      : null;
+  }
+
+  attachmentIcon(kind: string): string {
+    return (
+      {
+        document: "picture_as_pdf",
+        drawing: "architecture",
+        mesh: "view_in_ar",
+        texture: "texture",
+      }[kind] || "image"
+    );
+  }
+
+  /** Attach an already-uploaded file (from the Files panel). */
+  attachAsset(a: ProjectAsset): void {
+    this.leftTab = "chat";
+    if (!this.pendingAttachments.some((x) => x.id === a.id)) {
+      this.pendingAttachments.push(a);
+    }
+  }
+
+  removeAttachment(a: ProjectAsset): void {
+    this.pendingAttachments = this.pendingAttachments.filter(
+      (x) => x.id !== a.id,
+    );
+  }
+
+  onAttachPick(ev: Event): void {
+    const input = ev.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = "";
+    this.uploadAttachments(files);
+  }
+
+  onChatDragOver(ev: DragEvent): void {
+    if (!ev.dataTransfer?.types.includes("Files")) return;
+    ev.preventDefault();
+    this.chatDragging = true;
+  }
+
+  onChatDrop(ev: DragEvent): void {
+    ev.preventDefault();
+    this.chatDragging = false;
+    this.uploadAttachments(Array.from(ev.dataTransfer?.files ?? []));
+  }
+
+  /** Pasted images (screenshots) become attachments. */
+  onChatPaste(ev: ClipboardEvent): void {
+    const files = Array.from(ev.clipboardData?.files ?? []);
+    if (!files.length) return;
+    ev.preventDefault();
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    this.uploadAttachments(
+      files.map((f, i) =>
+        f.name && f.name !== "image.png"
+          ? f
+          : new File([f], `pasted-${stamp}${i ? "-" + i : ""}.png`, {
+              type: f.type,
+            }),
+      ),
+    );
+  }
+
+  private async uploadAttachments(files: File[]): Promise<void> {
+    if (!this.project || !files.length || this.attachProgress !== null) return;
+    this.attachProgress = 0;
+    try {
+      const added = await this.service.uploadAssetsWithProgress(
+        this.project.id,
+        files,
+        (f) => (this.attachProgress = f),
+      );
+      for (const a of added) this.attachAsset(a);
+    } catch (err) {
+      this.snack.open(
+        `Upload failed: ${this.service.assetError(err)}`,
+        "Dismiss",
+        { duration: 8000 },
+      );
+    } finally {
+      this.attachProgress = null;
+    }
   }
 
   /**
@@ -569,16 +684,33 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.worldDirty = true;
   }
 
+  canSend(): boolean {
+    return (
+      (!!this.draftMessage.trim() || this.pendingAttachments.length > 0) &&
+      this.attachProgress === null
+    );
+  }
+
   async sendMessage(): Promise<void> {
-    if (!this.project || !this.draftMessage.trim() || this.sending) return;
+    if (!this.project || !this.canSend() || this.sending) return;
     const text = this.draftMessage.trim();
+    const attachments = this.pendingAttachments;
     this.draftMessage = "";
+    this.pendingAttachments = [];
     this.sending = true;
-    this.log.push({ role: "user", text });
+    this.log.push({
+      role: "user",
+      text,
+      attachments: attachments.map((a) => ({
+        id: a.id,
+        name: a.name,
+        kind: a.kind,
+      })),
+    });
     // Append to prompt history (skip exact duplicates of the most
     // recent entry, like bash's HISTCONTROL=ignoredups). Reset the
     // cursor so the next Up press starts from the new newest entry.
-    if (this.promptHistory[this.promptHistory.length - 1] !== text) {
+    if (text && this.promptHistory[this.promptHistory.length - 1] !== text) {
       this.promptHistory.push(text);
     }
     this.historyCursor = -1;
@@ -591,6 +723,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.service.streamChat(this.project.id, text, token, {
         provider: this.selectedProvider || undefined,
         model: this.selectedModel || undefined,
+        attachments: attachments.map((a) => a.id),
         signal: controller.signal,
         onTurn: (id) => (this.currentTurn = id),
       }),

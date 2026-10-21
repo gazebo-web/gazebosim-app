@@ -17,6 +17,7 @@ import { AiBuilderComponent } from "./ai-builder.component";
 import { AiBuilderProjectListComponent } from "./project-list/ai-builder-project-list.component";
 import { AiBuilderViewportComponent } from "./viewport/ai-builder-viewport.component";
 import { ExecutionPanelComponent } from "./execution-panel/execution-panel.component";
+import { AiBuilderFilesComponent } from "./files/ai-builder-files.component";
 import { GazeboConnectionDialogComponent } from "./gazebo-connection-dialog/gazebo-connection-dialog.component";
 import { GitHubExportDialogComponent } from "./github-export-dialog/github-export-dialog.component";
 import { LlmSettingsModule } from "./llm-settings/llm-settings.module";
@@ -31,6 +32,7 @@ import { VersionHistoryComponent } from "./version-history/version-history.compo
     AiBuilderProjectListComponent,
     AiBuilderViewportComponent,
     ExecutionPanelComponent,
+    AiBuilderFilesComponent,
     GazeboConnectionDialogComponent,
     GitHubExportDialogComponent,
     NewProjectDialogComponent,

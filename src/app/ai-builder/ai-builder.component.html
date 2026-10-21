@@ -49,7 +49,38 @@
         (restore)="restoreVersion($event)"
       ></ai-builder-version-history>
 
-      <div class="chat-panel">
+      <div class="left-tabs">
+        <button
+          type="button"
+          [class.active]="leftTab === 'chat'"
+          (click)="leftTab = 'chat'"
+        >
+          Chat
+        </button>
+        <button
+          type="button"
+          [class.active]="leftTab === 'files'"
+          (click)="leftTab = 'files'"
+        >
+          Files
+        </button>
+      </div>
+
+      <ai-builder-files
+        *ngIf="leftTab === 'files'"
+        class="files-panel"
+        [projectId]="project.id"
+        (attach)="attachAsset($event)"
+      ></ai-builder-files>
+
+      <div
+        class="chat-panel"
+        [class.hidden-tab]="leftTab !== 'chat'"
+        [class.dragging]="chatDragging"
+        (dragover)="onChatDragOver($event)"
+        (dragleave)="chatDragging = false"
+        (drop)="onChatDrop($event)"
+      >
         <div class="messages" #messagesList>
           <div
             *ngFor="let entry of log"
@@ -66,6 +97,19 @@
               <mat-icon *ngIf="isEntryExpandable(entry)" class="chevron">{{
                 entry.expanded ? "expand_less" : "expand_more"
               }}</mat-icon>
+            </div>
+            <div class="attachments" *ngIf="entry.attachments?.length">
+              <span class="attachment" *ngFor="let a of entry.attachments">
+                <img
+                  *ngIf="attachmentThumb(a) as src"
+                  [src]="src"
+                  [alt]="a.name"
+                />
+                <mat-icon *ngIf="!attachmentThumb(a)">{{
+                  attachmentIcon(a.kind)
+                }}</mat-icon>
+                <span class="attachment-name">{{ a.name }}</span>
+              </span>
             </div>
             <div class="content" *ngIf="entry.expanded">{{ entry.text }}</div>
           </div>
@@ -95,15 +139,62 @@
           </div>
         </div>
         <div class="input">
+          <div
+            class="attachments pending"
+            *ngIf="pendingAttachments.length || attachProgress !== null"
+          >
+            <span class="attachment" *ngFor="let a of pendingAttachments">
+              <img
+                *ngIf="attachmentThumb(a) as src"
+                [src]="src"
+                [alt]="a.name"
+              />
+              <mat-icon *ngIf="!attachmentThumb(a)">{{
+                attachmentIcon(a.kind)
+              }}</mat-icon>
+              <span class="attachment-name">{{ a.name }}</span>
+              <button
+                type="button"
+                class="remove"
+                (click)="removeAttachment(a)"
+                aria-label="Remove attachment"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </span>
+            <span class="attachment uploading" *ngIf="attachProgress !== null">
+              Uploading {{ attachProgress * 100 | number: "1.0-0" }}%
+            </span>
+          </div>
           <textarea
+            (paste)="onChatPaste($event)"
             [(ngModel)]="draftMessage"
             rows="3"
-            placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'… (Shift+Enter for a newline, Up for history)"
+            placeholder="Describe what you want to build, e.g. 'a warehouse with a forklift and an AMR'. Drop or paste photos, floor plans and meshes here. (Shift+Enter for a newline, Up for history)"
             (keydown.enter)="$event.preventDefault(); sendMessage()"
             (keydown)="onChatKeyDown($event)"
             [disabled]="sending"
           ></textarea>
           <div class="input-footer">
+            <input
+              #attachPicker
+              type="file"
+              multiple
+              hidden
+              [accept]="assetAccept"
+              (change)="onAttachPick($event)"
+            />
+            <button
+              mat-icon-button
+              type="button"
+              class="attach-btn"
+              (click)="attachPicker.click()"
+              [disabled]="sending || attachProgress !== null"
+              aria-label="Attach files"
+              title="Attach photos, drawings, floor plans or meshes"
+            >
+              <mat-icon>attach_file</mat-icon>
+            </button>
             <button
               mat-button
               type="button"
@@ -159,7 +250,7 @@
               color="primary"
               class="send-btn"
               (click)="sendMessage()"
-              [disabled]="!draftMessage.trim()"
+              [disabled]="!canSend()"
               aria-label="Send"
             >
               <mat-icon>send</mat-icon>
