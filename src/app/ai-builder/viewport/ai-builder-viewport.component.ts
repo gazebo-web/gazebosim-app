@@ -59,6 +59,27 @@ const FOLLOW_KEY = "aiBuilder.followAgent";
  * that renames these fields produces a compiler error instead of silent
  * breakage.
  */
+// The names gzweb gives its model-preview lights (addModelLighting).
+const MODEL_LIGHT_NAMES = ["__model_light1__", "__model_light2__"];
+
+// Gazebo's ambient light when a world sets none.
+const DEFAULT_AMBIENT: [number, number, number] = [0.4, 0.4, 0.4];
+
+/** The world's <scene><ambient> color, or Gazebo's default. */
+export function sceneAmbient(sdf: string): [number, number, number] {
+  const scene = /<scene\b[^>]*>([\s\S]*?)<\/scene>/.exec(sdf)?.[1];
+  const ambient = scene && /<ambient>([^<]*)<\/ambient>/.exec(scene)?.[1];
+  const v = (ambient || "").trim().split(/\s+/).map(Number);
+  if (v.length < 3 || v.slice(0, 3).some((x) => !isFinite(x))) {
+    return DEFAULT_AMBIENT;
+  }
+  return [v[0], v[1], v[2]].map((x) => Math.min(1, Math.max(0, x))) as [
+    number,
+    number,
+    number,
+  ];
+}
+
 interface InternalAssetViewer {
   scene?: {
     // The Three.js scene, camera and OrbitControls gzweb renders with.
@@ -67,6 +88,10 @@ interface InternalAssetViewer {
     controls?: { target: Vector3 };
     add(o: unknown): void;
     remove(o: unknown): void;
+    // The scene's ambient light, and gzweb's lighting rig for previewing a
+    // single model (four directional lights and a brighter ambient).
+    ambient?: { color: { setRGB(r: number, g: number, b: number): void } };
+    addModelLighting?(): void;
     // Trigger an immediate render. Required for canvas snapshot capture
     // because gzweb's WebGLRenderer is created without
     // preserveDrawingBuffer — between RAFs the drawing buffer is cleared,
@@ -141,6 +166,8 @@ export class AiBuilderViewportComponent
   // The world text last rendered, to diff the next one against.
   private lastWorld = "";
   private spotlightSeq = 0;
+  // Whether gzweb's model-preview lights are in the scene.
+  private modelLighting = false;
   private endHighlight?: () => void;
   private readonly containerId = `ai-builder-viewport-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -209,7 +236,10 @@ export class AiBuilderViewportComponent
     if (!this.viewer) {
       const config: AssetViewerConfig = {
         elementId: this.containerId,
-        addModelLighting: true,
+        // gzweb's model-preview lights go on top of a world's own lights
+        // and wash it out, so they are added only when the SDF has no
+        // lights of its own (applyLighting).
+        addModelLighting: false,
         // Only scale single-model previews; whole-world scenes already
         // have positions set by the SDF itself.
         scaleModel: /<model/.test(sdf) && !/<world/.test(sdf),
@@ -241,11 +271,41 @@ export class AiBuilderViewportComponent
     // OrbitControls camera state intact across auto-saves.
     this.removeCurrentResource();
     this.parseSDFIntoViewer(sdf);
+    this.applyLighting(sdf);
     if (this.sdfPath === "world.sdf") {
       const prev = this.lastWorld;
       this.lastWorld = sdf;
       this.showSpotlight(prev, sdf);
     }
+  }
+
+  /**
+   * Light the scene as Gazebo would: a world with lights gets only those
+   * lights and its <scene><ambient> (Gazebo's default 0.4 when unset); a
+   * model, or a world with no lights, gets gzweb's model-preview rig so
+   * it isn't black.
+   */
+  private applyLighting(sdf: string): void {
+    const scene = (this.viewer as unknown as InternalAssetViewer | undefined)
+      ?.scene;
+    if (!scene?.ambient) return;
+    const hasLights = /<light[\s>]/.test(sdf);
+    if (!hasLights) {
+      if (!this.modelLighting) {
+        scene.addModelLighting?.();
+        this.modelLighting = true;
+      }
+      return;
+    }
+    if (this.modelLighting) {
+      for (const name of MODEL_LIGHT_NAMES) {
+        let o: unknown;
+        while ((o = scene.scene?.getObjectByName(name))) scene.remove(o);
+      }
+      this.modelLighting = false;
+    }
+    const [r, g, b] = sceneAmbient(sdf);
+    scene.ambient.color.setRGB(r, g, b);
   }
 
   /**
