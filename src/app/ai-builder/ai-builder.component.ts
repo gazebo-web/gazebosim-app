@@ -591,6 +591,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         drawing: "architecture",
         mesh: "view_in_ar",
         texture: "texture",
+        model: "category",
       }[kind] || "image"
     );
   }
@@ -688,7 +689,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
     const id = this.project.id;
     this.attachProgress = 0;
     try {
-      const added = await this.service.uploadAssetsWithProgress(
+      const res = await this.service.uploadAssetsWithProgress(
         id,
         files,
         (f) => {
@@ -696,7 +697,13 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         },
       );
       if (this.project?.id === id) {
-        for (const a of added) this.attachAsset(a);
+        for (const a of res.assets) this.attachAsset(a);
+        // A zip may have added many files, or skipped some: say so.
+        if (res.assets.length > 1 || res.skipped?.length) {
+          this.snack.open(this.service.uploadSummary(res), "Dismiss", {
+            duration: 8000,
+          });
+        }
       }
     } catch (err) {
       this.snack.open(

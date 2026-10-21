@@ -72,7 +72,9 @@ export interface ChatAttachment {
 export interface ProjectAsset {
   id: string;
   name: string;
-  kind: "image" | "document" | "drawing" | "mesh" | "texture";
+  /** model: a Gazebo model folder from a zip, already a project model
+   * (info.uri is its model:// URI). */
+  kind: "image" | "document" | "drawing" | "mesh" | "texture" | "model";
   mime: string;
   size: number;
   status: "processing" | "ready" | "failed";
@@ -87,6 +89,13 @@ export interface ProjectAsset {
 }
 
 /** File types the upload accepts (the server checks content, not names). */
+/** What an upload added; a zip of several files adds each of them (and its
+ * Gazebo models), and names the files it skipped. */
+export interface AddAssetsResult {
+  assets: ProjectAsset[];
+  skipped?: string[];
+}
+
 export const ASSET_ACCEPT =
   ".png,.jpg,.jpeg,.webp,.pdf,.svg,.dxf,.glb,.obj,.stl,.dae,.zip";
 
@@ -412,11 +421,11 @@ export class AiBuilderService {
     nameOrId: string,
     files: File[],
     kind?: string,
-  ): Observable<HttpEvent<ProjectAsset[]>> {
+  ): Observable<HttpEvent<AddAssetsResult>> {
     const form = new FormData();
     for (const f of files) form.append("file", f, f.name);
     if (kind) form.append("kind", kind);
-    return this.http.post<ProjectAsset[]>(
+    return this.http.post<AddAssetsResult>(
       `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets`,
       form,
       { reportProgress: true, observe: "events" },
@@ -432,7 +441,7 @@ export class AiBuilderService {
     files: File[],
     onProgress?: (fraction: number) => void,
     kind?: string,
-  ): Promise<ProjectAsset[]> {
+  ): Promise<AddAssetsResult> {
     return new Promise((resolve, reject) => {
       this.uploadAssets(nameOrId, files, kind).subscribe({
         next: (ev) => {
@@ -440,7 +449,7 @@ export class AiBuilderService {
             onProgress?.(ev.loaded / ev.total);
           } else if (ev.type === HttpEventType.Response) {
             this.assetsChanged$.next(nameOrId);
-            resolve(ev.body ?? []);
+            resolve(ev.body ?? { assets: [] });
           }
         },
         error: reject,
@@ -465,6 +474,24 @@ export class AiBuilderService {
       `${this.fuelProjects}/${encodeURIComponent(nameOrId)}/assets/${id}`,
       { name },
     );
+  }
+
+  /** A short note of what an upload added and skipped, for a snack bar. */
+  uploadSummary(res: AddAssetsResult): string {
+    const a = res.assets;
+    const models = a.filter((x) => x.kind === "model").length;
+    let msg = a.length === 1 ? `Added ${a[0].name}` : `Added ${a.length} files`;
+    if (models > 1 || (models === 1 && a.length > 1)) {
+      msg += ` (${models} Gazebo model${models > 1 ? "s" : ""})`;
+    }
+    const skipped = res.skipped ?? [];
+    if (skipped.length) {
+      msg += `; skipped ${skipped.length} that can't be used (${skipped
+        .slice(0, 3)
+        .map((s) => s.split("/").pop())
+        .join(", ")}${skipped.length > 3 ? ", …" : ""})`;
+    }
+    return msg;
   }
 
   /** The message of a failed project-file request, for the user. */

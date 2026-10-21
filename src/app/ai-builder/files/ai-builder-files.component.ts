@@ -175,13 +175,15 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
         return "view_in_ar";
       case "texture":
         return "texture";
+      case "model":
+        return "category";
       default:
         return "image";
     }
   }
 
   describe(a: ProjectAsset): string {
-    const parts: string[] = [a.kind];
+    const parts: string[] = [a.kind === "model" ? "Gazebo model" : a.kind];
     if (a.info?.["width"]) parts.push(`${a.info["width"]}×${a.info["height"]}`);
     parts.push(formatSize(a.size));
     return parts.join(" · ");
@@ -230,17 +232,15 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.progress = 0;
     try {
-      const added = await this.service.uploadAssetsWithProgress(
+      const res = await this.service.uploadAssetsWithProgress(
         this.projectId,
         files,
         (f) => (this.progress = f),
       );
       this.snack.open(
-        added.length === 1
-          ? `Added ${added[0].name}`
-          : `Added ${added.length} files`,
-        undefined,
-        { duration: 3000 },
+        this.service.uploadSummary(res),
+        res.skipped?.length ? "Dismiss" : undefined,
+        { duration: res.skipped?.length ? 8000 : 3000 },
       );
     } catch (err) {
       this.snack.open(
