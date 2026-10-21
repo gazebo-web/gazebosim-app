@@ -23,11 +23,11 @@ import {
 import { CollectionDialogComponent } from "../collection/dialog/collection-dialog.component";
 import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.component";
 import { ReportDialogComponent } from "../fuel-resource/report-dialog/report-dialog.component";
+import { BibtexDialogComponent } from "../model/bibtex-dialog/bibtex-dialog.component";
 import { World } from "./world";
 import { WorldService } from "./world.service";
 import { SdfViewerComponent } from "../model/sdfviewer/sdfviewer.component";
 import * as FileSaver from "file-saver";
-import { PageEvent } from "@angular/material/paginator";
 
 @Component({
   selector: "gz-world",
@@ -84,6 +84,21 @@ export class WorldComponent implements OnInit, OnDestroy {
   public paginatedCollections: PaginatedCollection;
 
   /**
+   * Items per page for the Collections tab.
+   */
+  public readonly COLLECTIONS_PER_PAGE = 8;
+
+  /**
+   * Current page index (0-based) for the Collections tab.
+   */
+  public collectionPage: number = 0;
+
+  /**
+   * Array of page indices used to render dot indicators in the Collections tab.
+   */
+  public collectionPages: number[] = [];
+
+  /**
    * Subscription to the Collection Dialog. Used to see the result of it.
    */
   public collectionDialogSubscription: Subscription;
@@ -116,7 +131,7 @@ export class WorldComponent implements OnInit, OnDestroy {
   /**
    * Are we rendering sdfviewer scene.
    */
-  private view3d: boolean;
+  public view3d: boolean;
 
   /**
    * Reference to the <div> that can be toggled fullscreen.
@@ -220,7 +235,7 @@ export class WorldComponent implements OnInit, OnDestroy {
     this.bibTex += `\n\torganization={Open Robotics},`;
     this.bibTex += `\n\tdate={${date.getFullYear()}},`;
     this.bibTex += `\n\tmonth={${monthNames[date.getMonth()]}},`;
-    this.bibTex += `\n\tday={${date.getDay()}},`;
+    this.bibTex += `\n\tday={${date.getDate()}},`;
     this.bibTex += `\n\tauthor={${this.world.owner}},`;
     this.bibTex += `\n\turl={${url}},\n}`;
 
@@ -457,6 +472,8 @@ export class WorldComponent implements OnInit, OnDestroy {
    */
   public addToCollection(): void {
     const dialogOps = {
+      width: "380px",
+      maxWidth: "90vw",
       data: {
         ownerList: [
           this.authService.userProfile.username,
@@ -561,20 +578,22 @@ export class WorldComponent implements OnInit, OnDestroy {
   /**
    * Load the collections that have this World.
    *
-   * @param event Optional. The page event that contains the pagination data of collections to load.
+   * @param pageIndex Zero-based page index to load.
    */
-  public loadCollections(event?: PageEvent): void {
-    const params = event
-      ? {
-          page: event.pageIndex + 1,
-          per_page: event.pageSize,
-        }
-      : {};
+  public loadCollections(pageIndex: number = 0): void {
+    const params = {
+      page: pageIndex + 1,
+      per_page: this.COLLECTIONS_PER_PAGE,
+    };
     this.collectionService.getAssetCollections(this.world, params).subscribe({
       next: (response) => {
-        // DEVNOTE: This change is not reflected in the Client URL.
+        this.collectionPage = pageIndex;
         this.paginatedCollections = response;
         this.collections = response.collections;
+        const total = Math.ceil(
+          response.totalCount / this.COLLECTIONS_PER_PAGE,
+        );
+        this.collectionPages = Array.from({ length: total }, (_, i) => i);
       },
       error: (error) => {
         this.snackBar.open(error.message, "Got it");
@@ -615,22 +634,12 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Callback for the bibtex copy button. Copies the bibtex to the clipboard.
+   * Opens a dialog showing the BibTeX citation for this world.
    */
-  public copyBibtex(): void {
-    const selBox = document.createElement("textarea");
-    selBox.style.position = "fixed";
-    selBox.style.left = "0";
-    selBox.style.top = "0";
-    selBox.style.opacity = "0";
-    selBox.value = this.bibTex;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(selBox);
-    this.snackBar.open("Bibtex copied to clipboard.", "", {
-      duration: 2000,
+  public openBibtex(): void {
+    this.dialog.open(BibtexDialogComponent, {
+      data: { bibtex: this.bibTex },
+      autoFocus: false,
     });
   }
 
@@ -668,27 +677,23 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Callback for the copy SDF button. Copies the current URL to the clipboard.
+   * Callback for the SDF snippet button. Copies an SDF include snippet to the clipboard.
    */
-  public copyWorldURL(): void {
-    const selBox = document.createElement("textarea");
+  public async copySdfInclude(): Promise<void> {
     const url = decodeURIComponent(
       this.worldService.getBaseUrl(this.world.owner, this.world.name),
     );
-    selBox.style.position = "fixed";
-    selBox.style.left = "0";
-    selBox.style.top = "0";
-    selBox.style.opacity = "0";
-    selBox.value = `"${url}"`;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand("copy");
-    document.body.removeChild(selBox);
-    this.snackBar.open("SDF world URI copied to clipboard.", "", {
-      duration: 2000,
-    });
+    const snippet = `<include>\n<uri>\n${url}\n</uri>\n</include>`;
+    try {
+      await navigator.clipboard.writeText(snippet);
+      this.snackBar.open("SDF include snippet copied to clipboard.", "", {
+        duration: 2000,
+      });
+    } catch {
+      this.snackBar.open("Failed to copy SDF snippet to clipboard.", "Got it");
+    }
   }
+
   /**
    * Extract files that contain no children from the File Tree nodes.
    *

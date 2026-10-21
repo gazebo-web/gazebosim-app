@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 3001",
+    "start": "dotenv -e .env -- ng serve --port 3001",
     "build": "ng build",
     "build:prod": "ng build --configuration=production",
     "build:staging": "ng build --configuration=development",
@@ -49,6 +49,7 @@
     "@angular/cli": "~21.1.4",
     "@angular/compiler-cli": "^21.1.4",
     "@types/jasmine": "~4.0.0",
+    "dotenv-cli": "^11.0.0",
     "husky": "^9.1.7",
     "jasmine-core": "~4.1.0",
     "karma": "~6.3.0",

@@ -1,109 +1,94 @@
-<div
-  class="mat-typography content fx-layout-column fx-layout-align-start-center"
->
-  <h1 mat-dialog-title>Add to collection</h1>
-  <mat-accordion>
-    <mat-expansion-panel [expanded]="true" (opened)="openOption(0)">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Existing</mat-panel-title>
-        <mat-panel-description>
-          Add this model to an existing collection
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+<h1 mat-dialog-title class="mat-typography">Add to Collection</h1>
 
-      <form class="fx-layout-row">
-        <div class="fx-fill fx-layout-column-xs fx-layout-row-gt-xs">
-          <mat-form-field class="collection-input">
-            <input
-              matInput
-              placeholder="Collection"
-              [matAutocomplete]="auto"
-              [formControl]="collectionAddInputForm"
-            />
+<div mat-dialog-content class="mat-typography">
+  <!-- Search filter -->
+  <mat-form-field class="search-field">
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      matInput
+      placeholder="Filter collections…"
+      [(ngModel)]="searchText"
+      (ngModelChange)="filterCollections($event)"
+    />
+  </mat-form-field>
 
-            <mat-autocomplete
-              #auto="matAutocomplete"
-              [displayWith]="getCollectionName()"
-            >
-              @for (collection of collectionList | async; track collection) {
-                <mat-option [value]="collection"
-                  >{{ collection.name }} by {{ collection.owner }}
-                </mat-option>
-              }
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
-      </form>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel (opened)="openOption(1)">
-      <mat-expansion-panel-header>
-        <mat-panel-title>New</mat-panel-title>
-        <mat-panel-description>
-          Create a new collection and include this model.
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <form class="fx-layout-column">
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="Collection name"
-            [formControl]="collectionNameInputForm"
-            required
-          />
-          <mat-error>{{ getCollectionNameError() }}</mat-error>
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-select
-            [(ngModel)]="owner"
-            name="ownerList"
-            placeholder="Owner"
-            required
-          >
-            @for (owner of collectionOwnerList; track owner; let i = $index) {
-              <mat-option [value]="i">{{ owner }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field>
-          <textarea
-            [(ngModel)]="collectionDescription"
-            name="description"
-            matInput
-            placeholder="Description"
-          >
-          </textarea>
-        </mat-form-field>
-
-        <div class="fx-layout-row fx-fill gap-20">
-          <p>Privacy</p>
-          <mat-radio-group [formControl]="privacyInputForm">
-            @for (
-              p of collectionService.getPermissionList();
-              track p;
-              let i = $index
-            ) {
-              <mat-radio-button [value]="i" [checked]="p === 'Public'">{{
-                p
-              }}</mat-radio-button>
-            }
-          </mat-radio-group>
-        </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-
+  <!-- New Collection row (pinned at top) -->
   <div
-    mat-dialog-actions
-    class="fx-layout-row fx-layout-align-space-between-space-between fx-fill"
+    class="option-row"
+    [class.selected]="creatingNew"
+    (click)="activateCreate()"
   >
-    <button mat-button mat-dialog-close color="primary">Cancel</button>
-
-    <button mat-raised-button (click)="submit()" color="primary">
-      {{ options[option] }}
+    <mat-icon class="check-icon">{{
+      creatingNew ? "radio_button_checked" : "radio_button_unchecked"
+    }}</mat-icon>
+    <mat-icon class="row-icon">add</mat-icon>
+    @if (!creatingNew) {
+      <span class="new-collection-label">New Collection</span>
+    } @else {
+      <input
+        class="new-collection-input"
+        placeholder="Collection name"
+        [formControl]="collectionNameInputForm"
+        (keydown.enter)="submit()"
+        (click)="$event.stopPropagation()"
+        #newNameInput
+      />
+    }
+    <button
+      mat-icon-button
+      class="privacy-btn"
+      type="button"
+      (click)="$event.stopPropagation(); togglePrivacy()"
+      [matTooltip]="isPrivate ? 'Private' : 'Public'"
+    >
+      <mat-icon>{{ isPrivate ? "lock" : "public" }}</mat-icon>
     </button>
   </div>
+  @if (collectionNameInputForm.hasError("duplicated")) {
+    <div class="create-error">This collection already exists.</div>
+  }
+
+  <!-- Collection list -->
+  <div class="collection-list">
+    @if (loadingCollections) {
+      <div class="list-empty">
+        <div id="html-spinner"></div>
+      </div>
+    } @else if (filteredCollections.length === 0) {
+      <div class="list-empty">
+        <span class="list-empty-text">No collections found.</span>
+      </div>
+    } @else {
+      @for (col of filteredCollections; track col) {
+        <div
+          class="option-row"
+          [class.selected]="selectedCollection === col && !creatingNew"
+          (click)="selectCollection(col)"
+        >
+          <mat-icon class="check-icon">{{
+            selectedCollection === col && !creatingNew
+              ? "radio_button_checked"
+              : "radio_button_unchecked"
+          }}</mat-icon>
+          <mat-icon class="row-icon">collections_bookmark</mat-icon>
+          <div class="row-text">
+            <span class="row-name">{{ col.name }}</span>
+            <span class="row-owner">{{ col.owner }}</span>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button mat-dialog-close color="primary">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="!canSubmit() || busy"
+    (click)="submit()"
+  >
+    Add
+  </button>
 </div>

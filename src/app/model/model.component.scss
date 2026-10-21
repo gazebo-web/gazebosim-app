@@ -1,135 +1,56 @@
-gz-gallery {
-  width: 100%;
-  height: 100%;
-}
+/* ===================================================
+   Model Detail Page — Redesigned Styles
+   =================================================== */
 
+/* --- Content container --- */
 .content {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.row-left {
-  flex: 0 1 80%;
-  position: relative;
+/* --- Header --- */
+.model-header {
+  margin-bottom: 1.5em;
 }
 
-.row-right {
-  display: block;
-  flex: 0 0 20%;
-  min-width: 15em;
+.header-spacer {
+  flex: 1;
 }
 
-.padding {
-  padding: 0.5em;
-  box-sizing: border-box;
-}
+.header-flag-btn {
+  color: #aaa;
+  transition: color 0.2s ease;
 
-.avatar {
-  width: 64px;
-  height: 64px;
-  font-size: 64px;
-  padding-right: 10px;
-}
-
-.model-name {
-  color: #03a9f4;
-}
-
-.model-name h1 {
-  margin: 10px 0 !important;
-  text-align: left;
-}
-
-.header-dropdown {
-  max-width: 30%;
-}
-
-/* Classes related to the File List */
-.list-container h4.mat-line {
-  font-size: medium;
-}
-
-.list-container span.mat-line {
-  font-size: small;
-  color: gray;
-}
-
-.list-divider {
-  border-bottom: 1px solid #dedede;
-}
-
-.list-divider:last-child {
-  border: none;
-}
-
-/* This styles the first chip. Taken from the Angular Material repository. */
-.mat-chip {
-  margin-left: 8px;
-  margin-bottom: 8px;
-}
-
-/* To style subsequent chips. Taken from the Angular Material repository. */
-.mat-chip:not(.mat-basic-chip) + .mat-chip:not(.mat-basic-chip) {
-  margin-bottom: 8px;
-}
-
-/* Statistics related */
-.action-buttons {
-  display: flex;
-  justify-content: space-around;
-  padding-bottom: 0.5em;
-}
-
-.stat-item {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.stat-field {
-  white-space: initial;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.stat-value {
-  white-space: initial;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  text-align: right;
-}
-
-.font-x-large {
-  font-size: x-large;
-  text-align: center;
-}
-
-.bottom-row-container {
-  position: relative;
-  margin-bottom: 2em;
-  width: 100%;
-}
-
-/* Media query to position Tags outside the Flex flow. */
-@media screen and (min-width: 960px) {
-  .tags-container {
-    width: 30%;
-    position: absolute;
-    right: 0;
-  }
-
-  .bottom-left-section {
-    width: 70%;
+  &:hover {
+    color: #e53935;
   }
 }
 
-/* Classes that make the gallery keep an aspect ratio. */
+.owner-attribution {
+  color: #666;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+
+/* --- Gallery Section (full-width) --- */
+.gallery-section {
+  position: relative;
+  margin-bottom: 1.5em;
+}
+
 .gallery-container-outer {
   height: 0;
   width: 100%;
-  /* Aspect Ratio: 16:9. 9/16 = 0.5625 */
+  /* 16:9 aspect ratio */
   padding-top: 56.25%;
   position: relative;
   overflow: hidden;
+  border-radius: 12px;
+  box-shadow: none;
+  background: #f5f5f5;
 }
 
 .gallery-container-inner {
@@ -140,54 +61,642 @@ gz-gallery {
   height: 100%;
 }
 
-.sdfviewer {
-  position: absolute;
-  left: 0;
-  top: 0;
+gz-gallery {
   width: 100%;
   height: 100%;
-  z-index: 1001;
 }
 
-.button3d {
-  top: 2em;
-  right: 2em;
+/* 3D viewer controls */
+.viewer-controls {
   position: absolute;
+  top: 1em;
+  right: 1em;
   z-index: 1002;
-  color: #dd2c00;
+  display: flex;
+  gap: 6px;
 }
 
-.buttonFullscreen {
-  top: 2em;
-  right: 6em;
+.viewer-btn {
+  color: #000 !important;
+  background: transparent !important;
+  border: none !important;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    color: #f58113 !important;
+
+    background: transparent !important;
+  }
+
+  /* Remove Material hover overlay and ripple */
+  .mat-mdc-button-persistent-ripple,
+  .mat-ripple {
+    display: none !important;
+  }
+
+  &::before {
+    display: none !important;
+  }
+}
+
+/* 3D viewer container fills the full gallery panel */
+.sdfviewer-container {
   position: absolute;
-  z-index: 1002;
-  color: #dd2c00;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.buttonResetView {
-  top: 2em;
-  right: 10em;
-  position: absolute;
-  z-index: 1002;
-  color: #dd2c00;
+.sdfviewer {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-/* Media query to increase the size of the gallery in mobile views.
-   Otherwise, the gallery images are too small. */
+/* Increase gallery size on small screens */
 @media screen and (max-width: 599px) {
   .gallery-container-outer {
     padding-top: calc(56.25% + 5em);
+    border-radius: 8px;
+  }
+}
+
+/* --- Action Bar --- */
+.action-bar {
+  margin-bottom: 1.5em;
+  padding: 0.75em 0;
+}
+
+.action-bar-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.action-btn-row {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.action-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #444;
+  font-size: 14px;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  &:hover:not([disabled]) {
+    background: #f5f5f5;
+    color: #111;
+  }
+
+  &[disabled] {
+    opacity: 0.38;
+    cursor: default;
+  }
+
+  &.liked mat-icon {
+    color: #e53935;
+  }
+
+  &.download-btn {
+    color: #fff;
+    background: #f58113;
+
+    &:hover {
+      background: #d9700f;
+      color: #fff;
+    }
+  }
+}
+
+.action-label {
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: inherit;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.action-sep {
+  width: 1px;
+  background: #e0e0e0;
+  flex-shrink: 0;
+}
+
+.action-version-item {
+  cursor: default;
+
+  &:hover {
+    background: transparent !important;
+  }
+}
+
+.action-version-select {
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hide labels on narrow screens */
+@media screen and (max-width: 700px) {
+  .action-label {
+    display: none;
+  }
+}
+
+.action-meta {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+  padding: 0 2px;
+  justify-content: flex-end;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #888;
+}
+
+.meta-icon {
+  font-size: 14px !important;
+  height: 14px !important;
+  width: 14px !important;
+  line-height: 14px !important;
+}
+
+@media screen and (max-width: 599px) {
+  .action-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+/* --- Tabs Section --- */
+.bottom-row-container {
+  position: relative;
+  margin-bottom: 2em;
+  width: 100%;
+  min-height: 620px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  background: transparent;
+}
+
+.bottom-left-pane {
+  flex: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.bottom-right-pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.side-pane {
+  padding: 16px 18px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+
+.side-pane-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.side-pane-title-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  line-height: 16px;
+}
+
+/* Hide the icon rendered inside gz-categories/gz-tags when in a side pane */
+.side-pane ::ng-deep gz-categories .fx-layout-row > mat-icon,
+.side-pane ::ng-deep gz-tags .fx-layout-row > mat-icon {
+  display: none;
+}
+
+/* Space between tags chips */
+.side-pane ::ng-deep gz-tags mat-chip {
+  margin: 2px;
+}
+
+/* Neutralize margin-align offset inside inline panes */
+.side-pane-inline ::ng-deep .margin-align {
+  margin-top: 0;
+}
+
+/* Inline layout: title and content on the same line, content wraps within its area */
+.side-pane-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+
+  .side-pane-title {
+    flex-shrink: 0;
+    margin-bottom: 0;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  gz-categories,
+  gz-tags {
+    flex: 1;
+    min-width: 0;
   }
 }
 
 .tab-container {
-  min-height: 10em;
   width: 100%;
+  height: 100%;
+
+  /* Make the tab body wrapper fill remaining height and scroll */
+  .mat-mdc-tab-body-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .mat-mdc-tab-body-content {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .bottom-row-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .bottom-left-pane {
+    height: 500px;
+  }
+
+  .bottom-right-pane {
+    overflow-y: visible;
+  }
 }
 
 .tab-body {
-  padding: 10px;
+  padding: 20px 24px;
+}
+
+.collections-tab-body {
+  position: relative;
+  padding: 8px 12px 80px; // bottom padding reserves space for the absolutely-positioned nav
+
+  // Shrink card internals so 2 rows of 4 fit inside the tab box (~572px available)
+  ::ng-deep gz-item-card {
+    // Tight card margin
+    mat-card.mat-mdc-card {
+      margin: 4px;
+    }
+
+    // Compact header: less padding, smaller text
+    mat-card-header {
+      padding: 8px 8px 0 8px;
+    }
+
+    mat-card-title,
+    mat-card-subtitle {
+      font-size: 12px !important;
+    }
+
+    // Tighten subtitle bottom gap
+    mat-card-subtitle {
+      margin-bottom: 4px !important;
+    }
+
+    // Taller crop ratio keeps image visible but shorter overall
+    .thumbnail-container {
+      aspect-ratio: 4 / 3;
+    }
+
+    .thumbnail {
+      aspect-ratio: 4 / 3;
+    }
+
+    // Hide the empty actions bar
+    mat-card-actions {
+      display: none;
+    }
+  }
+}
+
+.collection-card {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* --- Collections prev/next nav (gallery style) — pinned to bottom --- */
+.collections-page-nav {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.col-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  .material-icons {
+    font-size: 26px;
+    color: #333;
+    line-height: 1;
+  }
+
+  &:hover:not(:disabled):not(.disabled) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.06);
+  }
+
+  &:disabled,
+  &.disabled {
+    background: #f0f0f0;
+    cursor: default;
+    box-shadow: none;
+
+    .material-icons {
+      color: #bbb;
+    }
+  }
+}
+
+.col-dot-strip {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.col-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &.active {
+    background: #1976d2;
+    transform: scale(1.3);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* --- File List --- */
+.list-container {
+  // Remove Material's default top/bottom padding on the list
+  ::ng-deep .mat-mdc-list-base {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  // Collapse each item to a single tight row
+  ::ng-deep .mat-mdc-list-item {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 8px !important;
+  }
+
+  // Vertically center all content (icon + text + meta) within the row
+  ::ng-deep .mdc-list-item__content {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+  }
+
+  // File icon — smaller and muted
+  [matListItemIcon] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    height: 16px !important;
+    width: 16px !important;
+    line-height: 1 !important;
+    color: #aaa;
+    margin-right: 8px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  [matListItemTitle] {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Shrink the download icon button
+  ::ng-deep [matListItemMeta] {
+    min-width: 0 !important;
+    width: 28px !important;
+    height: 28px !important;
+    line-height: 28px !important;
+    padding: 0 !important;
+
+    mat-icon {
+      font-size: 16px !important;
+      height: 16px !important;
+      width: 16px !important;
+    }
+  }
+}
+
+.list-divider {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.list-divider:last-child {
+  border: none;
+}
+
+.file-item {
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+}
+
+/* --- Info Panel (license & visibility) --- */
+.info-panel {
+  background: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.visibility-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
+  background: #e8f5e9;
+  color: #2e7d32;
+
+  &.badge-private {
+    background: #f5f5f5;
+    color: #757575;
+  }
+}
+
+.license-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Bibtex Section --- */
+.bibtex-section {
+  margin-top: 4px;
+}
+
+.bibtex-label {
+  font-weight: 500;
+  font-size: 0.95em;
+  color: #555;
+}
+
+pre.bibtex {
+  margin: 8px 0 0 0;
+  padding: 14px 16px;
+  background: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: auto;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: #ccc;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    color: #03a9f4;
+  }
+}
+
+/* --- Misc --- */
+.font-x-large {
+  font-size: x-large;
+  text-align: center;
+}
+
+/* Chip styles */
+.mat-chip {
+  margin-left: 8px;
+  margin-bottom: 8px;
+}
+
+.mat-chip:not(.mat-basic-chip) + .mat-chip:not(.mat-basic-chip) {
+  margin-bottom: 8px;
+}
+
+/* Legacy classes (kept for any remaining references) */
+.avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 64px;
+  padding-right: 10px;
 }
 
 .drag-button {
@@ -197,13 +706,4 @@ gz-gallery {
   border-radius: 20%;
   padding: 0.5em;
   box-sizing: content-box;
-}
-
-pre.bibtex {
-  margin: 0px;
-}
-
-.bibtex:hover {
-  cursor: pointer;
-  color: #03a9f4;
 }

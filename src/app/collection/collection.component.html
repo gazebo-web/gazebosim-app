@@ -1,172 +1,304 @@
-<div class="fx-layout-column fx-layout-align-start-center">
-  @if (collection?.getThumbnail()) {
-    <div class="banner">
-      @if (collection?.getThumbnail().url | gzAuthHeader | async; as result) {
-        <img [src]="result" alt="Collection Banner" />
-      }
-    </div>
-  }
-
-  <div class="header fx-layout-row fx-layout-align-space-between fx-fill">
-    <div class="fx-flex-30">
-      <gz-page-title
-        [title]="collection.name"
-        icon="collections"
-      ></gz-page-title>
-      <h4>
-        By
-        <a
-          class="color-link"
-          routerLink="/{{ collection?.owner }}"
-          routerLinkActive="active"
-          >{{ collection?.owner }}</a
+<div class="page-content-inner fx-flex fx-layout-align-center">
+  <div class="content mat-typography">
+    <!-- Header -->
+    <div class="collection-header">
+      <div class="fx-layout-row fx-layout-align-start-center">
+        <div class="fx-layout-column">
+          <gz-page-title
+            [title]="collection.name"
+            icon="collections"
+          ></gz-page-title>
+          <h4 class="owner-attribution">
+            By
+            <a class="color-link" routerLink="/{{ collection?.owner }}">{{
+              collection?.owner
+            }}</a>
+          </h4>
+        </div>
+        <span class="header-spacer"></span>
+        <span
+          class="visibility-badge"
+          [class.badge-private]="collection.private"
+          [matTooltip]="
+            collection.private
+              ? 'This collection is private'
+              : 'This collection is public'
+          "
         >
-      </h4>
+          {{ collection.private ? "Private" : "Public" }}
+        </span>
+      </div>
     </div>
 
-    <div class="fx-layout-align-center-center fx-flex-40">
-      <mat-form-field [floatLabel]="'never'" class="fx-fill">
-        <mat-label>Search in collection</mat-label>
-        <input
-          #search
-          matInput
-          class="search"
-          type="search"
-          (keyup.enter)="onSearch(search.value)"
-        />
-        <mat-icon matPrefix id="search-icon">search</mat-icon>
-      </mat-form-field>
-    </div>
-
-    <div class="fx-layout-row-wrap fx-layout-align-end buttons fx-flex-30">
-      <button
-        mat-icon-button
-        [matMenuTriggerFor]="downloadDialog"
-        #menuTrigger
-        title="Download this collection."
-      >
-        <mat-icon>file_download</mat-icon>
-      </button>
-      <mat-menu #downloadDialog="matMenu">
+    <!-- Banner (full-width 16:9) -->
+    <div class="gallery-section">
+      <div class="gallery-container-outer">
         <div
-          class="fx-layout-column download-link"
-          (click)="$event.stopPropagation()"
+          class="gallery-container-inner fx-layout-column fx-layout-align-center-center"
         >
-          <h1>Collection Download</h1>
-          <h3>Run this command using the script below</h3>
-          <div
-            class="fx-layout-row fx-layout-align-center-center command gap-20"
-          >
-            <pre>{{ downloadCommand }}</pre>
-            <button
-              mat-icon-button
-              title="Copy command"
-              (click)="copyDownloadCommand()"
-            >
-              <mat-icon>content_copy</mat-icon>
-            </button>
-          </div>
-          <a href="assets/scripts/download_collection.py" download
-            >Download script</a
-          >
+          @if (collection?.hasThumbnail()) {
+            @if (
+              collection?.getThumbnail().url | gzAuthHeader | async;
+              as result
+            ) {
+              <img class="banner-img" [src]="result" alt="Collection Banner" />
+            }
+          } @else {
+            <div class="fx-layout-row fx-layout-align-center-center">
+              <span class="mat-typography font-x-large"
+                >This collection has no thumbnail.</span
+              >
+            </div>
+          }
         </div>
-      </mat-menu>
+      </div>
+    </div>
 
-      <button
-        mat-icon-button
-        [disabled]="!authService.isAuthenticated()"
-        [title]="getCopyButtonTitle()"
-        (click)="copyCollection()"
-      >
-        <mat-icon>content_copy</mat-icon>
-      </button>
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="action-bar-inner">
+        <div class="action-btn-row">
+          <!-- Download -->
+          <button
+            class="action-item download-btn"
+            [matMenuTriggerFor]="downloadDialog"
+            #menuTrigger
+            matTooltip="Download this collection"
+          >
+            <mat-icon>file_download</mat-icon>
+            <span class="action-label">Download</span>
+          </button>
+          <mat-menu #downloadDialog="matMenu">
+            <div
+              class="fx-layout-column download-link"
+              (click)="$event.stopPropagation()"
+            >
+              <h1>Collection Download</h1>
+              <h3>Run this command using the script below</h3>
+              <div
+                class="fx-layout-row fx-layout-align-center-center command gap-20"
+              >
+                <pre>{{ downloadCommand }}</pre>
+                <button
+                  mat-icon-button
+                  title="Copy command"
+                  (click)="copyDownloadCommand()"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+              <a href="assets/scripts/download_collection.py" download
+                >Download script</a
+              >
+            </div>
+          </mat-menu>
+          <div class="action-sep"></div>
+          <!-- Clone -->
+          <button
+            class="action-item"
+            [disabled]="!authService.isAuthenticated()"
+            [matTooltip]="getCopyButtonTitle()"
+            (click)="copyCollection()"
+          >
+            <mat-icon>content_copy</mat-icon>
+            <span class="action-label">Clone</span>
+          </button>
+          <div class="action-sep"></div>
+          <!-- Cite / BibTeX -->
+          <button
+            class="action-item"
+            matTooltip="View BibTeX citation"
+            (click)="openBibtex()"
+          >
+            <mat-icon>format_quote</mat-icon>
+            <span class="action-label">Cite</span>
+          </button>
+          @if (canEdit) {
+            <div class="action-sep"></div>
+            <button
+              class="action-item"
+              matTooltip="Edit collection"
+              routerLink="/{{ collection?.owner }}/collections/{{
+                collection?.name
+              }}/edit"
+            >
+              <mat-icon>mode_edit</mat-icon>
+              <span class="action-label">Edit</span>
+            </button>
+            <div class="action-sep"></div>
+            <button
+              class="action-item"
+              matTooltip="Remove this collection"
+              (click)="removeCollection()"
+            >
+              <mat-icon>delete</mat-icon>
+              <span class="action-label">Delete</span>
+            </button>
+          }
+        </div>
 
-      <button
-        mat-icon-button
-        title="Copy Bibtex to clipboard"
-        (click)="copyBibtex()"
-      >
-        <mat-icon>library_books</mat-icon>
-      </button>
+        <div class="action-meta">
+          <span class="meta-item" matTooltip="Models">
+            <mat-icon class="meta-icon" svgIcon="gz-model"></mat-icon>
+            {{ paginatedModels?.totalCount }}
+          </span>
+          <span class="meta-item" matTooltip="Worlds">
+            <mat-icon class="meta-icon" svgIcon="gz-world"></mat-icon>
+            {{ paginatedWorlds?.totalCount }}
+          </span>
+          <span class="meta-item">
+            <mat-icon class="meta-icon">schedule</mat-icon>
+            Last modified {{ collection?.modifyDate | date }}
+          </span>
+        </div>
+      </div>
+    </div>
 
-      @if (canEdit) {
-        <button
-          mat-icon-button
-          title="Edit collection"
-          routerLink="/{{ collection?.owner }}/collections/{{
-            collection?.name
-          }}/edit"
-        >
-          <mat-icon>mode_edit</mat-icon>
-        </button>
-      }
-      @if (canEdit) {
-        <button
-          mat-icon-button
-          title="Remove this collection"
-          (click)="removeCollection()"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      }
+    <!-- Collection Description -->
+    <div class="description-box">
+      <div class="box-title">
+        <mat-icon class="box-title-icon">description</mat-icon>
+        Description
+      </div>
+      <gz-description [description]="collection?.description"></gz-description>
+    </div>
+
+    <!-- Models &amp; Worlds -->
+    <div class="resources-box">
+      <div class="resources-search">
+        <div class="search-bar">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            #search
+            type="text"
+            class="search-input"
+            placeholder="Search in collection..."
+            (keyup.enter)="onSearch(search.value)"
+          />
+        </div>
+      </div>
+
+      <div class="resources-columns">
+        <!-- Models (left) -->
+        <div class="resources-column">
+          <div class="box-title">
+            Models ({{ paginatedModels?.totalCount }})
+          </div>
+
+          @if (paginatedModels && paginatedModels.totalCount === 0) {
+            <div class="empty-state">
+              <p>No model</p>
+            </div>
+          } @else {
+            <div class="card-grid">
+              @for (model of collection?.models; track model) {
+                <gz-item-card
+                  class="card"
+                  [resource]="model"
+                  type="models"
+                  [removable]="canEdit"
+                  (removeClicked)="removeItem($event)"
+                >
+                </gz-item-card>
+              }
+            </div>
+
+            @if (modelPages.length > 1) {
+              <div class="pagination-container">
+                <button
+                  mat-mini-fab
+                  color="white"
+                  (click)="prevModelPage()"
+                  [disabled]="modelPage === 1"
+                  aria-label="Previous page"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <div class="pagination-dots">
+                  @for (p of modelPages; track p) {
+                    <span
+                      class="dot"
+                      [class.active]="modelPage === p"
+                      (click)="goToModelPage(p)"
+                    ></span>
+                  }
+                </div>
+
+                <button
+                  mat-mini-fab
+                  color="white"
+                  (click)="nextModelPage()"
+                  [disabled]="modelPage === modelPages.length"
+                  aria-label="Next page"
+                >
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Worlds (right) -->
+        <div class="resources-column">
+          <div class="box-title">
+            Worlds ({{ paginatedWorlds?.totalCount }})
+          </div>
+
+          @if (paginatedWorlds && paginatedWorlds.totalCount === 0) {
+            <div class="empty-state">
+              <p>No worlds</p>
+            </div>
+          } @else {
+            <div class="card-grid">
+              @for (world of collection?.worlds; track world) {
+                <gz-item-card
+                  class="card"
+                  [resource]="world"
+                  type="worlds"
+                  [removable]="canEdit"
+                  (removeClicked)="removeItem($event)"
+                >
+                </gz-item-card>
+              }
+            </div>
+
+            @if (worldPages.length > 1) {
+              <div class="pagination-container">
+                <button
+                  mat-mini-fab
+                  color="white"
+                  (click)="prevWorldPage()"
+                  [disabled]="worldPage === 1"
+                  aria-label="Previous page"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <div class="pagination-dots">
+                  @for (p of worldPages; track p) {
+                    <span
+                      class="dot"
+                      [class.active]="worldPage === p"
+                      (click)="goToWorldPage(p)"
+                    ></span>
+                  }
+                </div>
+
+                <button
+                  mat-mini-fab
+                  color="white"
+                  (click)="nextWorldPage()"
+                  [disabled]="worldPage === worldPages.length"
+                  aria-label="Next page"
+                >
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            }
+          }
+        </div>
+      </div>
     </div>
   </div>
-
-  <div class="header fx-layout-row fx-fill">
-    <gz-description [description]="collection?.description"></gz-description>
-  </div>
-
-  <mat-tab-group
-    dynamicHeight
-    class="fx-fill"
-    (selectedIndexChange)="setActiveTab($event)"
-  >
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <div class="fx-layout-row fx-layout-align-start-center gap-10">
-          <mat-icon svgIcon="gz-model"></mat-icon>
-          <span>Models ({{ paginatedModels?.totalCount }})</span>
-        </div>
-      </ng-template>
-
-      <div class="tab-content">
-        <gz-fuel-resource-list
-          class="fx-flex"
-          resourceType="models"
-          [resources]="collection.models"
-          [length]="paginatedModels?.totalCount"
-          [finished]="!paginatedModels?.hasNextPage()"
-          [removable]="canEdit"
-          [disabled]="activeTab !== 'models'"
-          (pageChange)="loadModels($event)"
-          (onRemoveItem)="removeItem($event)"
-        >
-        </gz-fuel-resource-list>
-      </div>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <div class="fx-layout-row fx-layout-align-start-center gap-10">
-          <mat-icon svgIcon="gz-world"></mat-icon>
-          <span>Worlds ({{ paginatedWorlds?.totalCount }})</span>
-        </div>
-      </ng-template>
-
-      <div class="tab-content">
-        <gz-fuel-resource-list
-          class="fx-flex"
-          resourceType="worlds"
-          [resources]="collection.worlds"
-          [length]="paginatedWorlds?.totalCount"
-          [finished]="!paginatedWorlds?.hasNextPage()"
-          [removable]="canEdit"
-          [disabled]="activeTab !== 'models'"
-          (pageChange)="loadWorlds($event)"
-          (onRemoveItem)="removeItem($event)"
-        >
-        </gz-fuel-resource-list>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
 </div>
