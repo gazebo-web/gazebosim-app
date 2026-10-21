@@ -592,6 +592,7 @@ export class AiBuilderComponent implements OnInit, OnDestroy, AfterViewChecked {
         mesh: "view_in_ar",
         texture: "texture",
         model: "category",
+        map: "map",
       }[kind] || "image"
     );
   }

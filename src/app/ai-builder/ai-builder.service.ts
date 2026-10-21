@@ -73,8 +73,9 @@ export interface ProjectAsset {
   id: string;
   name: string;
   /** model: a Gazebo model folder from a zip, already a project model
-   * (info.uri is its model:// URI). */
-  kind: "image" | "document" | "drawing" | "mesh" | "texture" | "model";
+   * (info.uri is its model:// URI). map: a SLAM occupancy map (its YAML
+   * and image), with info.resolution, info.origin and info.size_m. */
+  kind: "image" | "document" | "drawing" | "mesh" | "texture" | "model" | "map";
   mime: string;
   size: number;
   status: "processing" | "ready" | "failed";
@@ -97,7 +98,7 @@ export interface AddAssetsResult {
 }
 
 export const ASSET_ACCEPT =
-  ".png,.jpg,.jpeg,.webp,.pdf,.svg,.dxf,.glb,.obj,.stl,.dae,.zip";
+  ".png,.jpg,.jpeg,.webp,.pgm,.pdf,.svg,.dxf,.glb,.obj,.stl,.dae,.zip";
 
 /** Most project files one chat message can carry (the server refuses more). */
 export const MAX_ATTACHMENTS = 10;

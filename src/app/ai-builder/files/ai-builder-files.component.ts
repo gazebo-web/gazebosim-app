@@ -177,6 +177,8 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
         return "texture";
       case "model":
         return "category";
+      case "map":
+        return "map";
       default:
         return "image";
     }
@@ -184,7 +186,12 @@ export class AiBuilderFilesComponent implements OnInit, OnChanges, OnDestroy {
 
   describe(a: ProjectAsset): string {
     const parts: string[] = [a.kind === "model" ? "Gazebo model" : a.kind];
-    if (a.info?.["width"]) parts.push(`${a.info["width"]}×${a.info["height"]}`);
+    const size = a.info?.["size_m"] as number[] | undefined;
+    if (a.kind === "map" && size) {
+      parts.push(`${size[0]} × ${size[1]} m`);
+    } else if (a.info?.["width"]) {
+      parts.push(`${a.info["width"]}×${a.info["height"]}`);
+    }
     parts.push(formatSize(a.size));
     return parts.join(" · ");
   }
