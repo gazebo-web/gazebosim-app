@@ -9,12 +9,15 @@ export interface NewProjectResult {
   ros2_distro: string;
 }
 
-// Releases new projects can target; Harmonic is the oldest supported. The
-// server sets the SDF version and ROS 2 distro from the release, so these
-// are only for display.
+// Releases new projects can target, newest first; Jetty (with ROS 2
+// Lyrical) is the default and Harmonic the oldest supported. The server
+// sets the SDF version and ROS 2 distro from the release, so these are
+// only for display.
 const GAZEBO_TO_SDF_ROS: Record<string, { sdf: string; ros: string }> = {
+  Jetty: { sdf: "1.12", ros: "Lyrical" },
   Harmonic: { sdf: "1.9", ros: "Jazzy" },
 };
+const DEFAULT_RELEASE = "Jetty";
 
 @Component({
   selector: "new-project-dialog",
@@ -30,7 +33,7 @@ const GAZEBO_TO_SDF_ROS: Record<string, { sdf: string; ros: string }> = {
 export class NewProjectDialogComponent {
   name = "";
   description = "";
-  gazeboVersion = "Harmonic";
+  gazeboVersion = DEFAULT_RELEASE;
 
   readonly gazeboOptions = Object.keys(GAZEBO_TO_SDF_ROS);
 
@@ -39,11 +42,11 @@ export class NewProjectDialogComponent {
   ) {}
 
   get sdfVersion(): string {
-    return GAZEBO_TO_SDF_ROS[this.gazeboVersion]?.sdf || "1.9";
+    return GAZEBO_TO_SDF_ROS[this.gazeboVersion]?.sdf || "1.12";
   }
 
   get ros2Distro(): string {
-    return GAZEBO_TO_SDF_ROS[this.gazeboVersion]?.ros || "Jazzy";
+    return GAZEBO_TO_SDF_ROS[this.gazeboVersion]?.ros || "Lyrical";
   }
 
   cancel(): void {
