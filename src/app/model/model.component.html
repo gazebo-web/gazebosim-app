@@ -248,7 +248,7 @@
       <div class="bottom-left-pane">
         <mat-tab-group class="fx-flex tab-container" color="accent">
           <mat-tab label="Model Description">
-            <div class="fx-layout-column tab-body gap-20">
+            <div class="fx-layout-column detail-tab-body gap-20">
               <gz-description
                 [description]="model.description"
               ></gz-description>
@@ -257,7 +257,7 @@
 
           <mat-tab label="Model Files">
             @if (model?.files && model.files.length > 0) {
-              <div class="list-container tab-body">
+              <div class="list-container detail-tab-body">
                 <mat-list dense>
                   @for (file of model.files; track file) {
                     <mat-list-item
@@ -279,7 +279,7 @@
                 </mat-list>
               </div>
             } @else {
-              <div class="tab-body">
+              <div class="detail-tab-body">
                 <span
                   >There was a problem getting the files of this model.</span
                 >
@@ -289,7 +289,7 @@
 
           <mat-tab label="Collections">
             @if (collections && collections.length > 0) {
-              <div class="tab-body collections-tab-body">
+              <div class="detail-tab-body collections-tab-body">
                 <div
                   class="collection-cards-grid fx-layout-row-wrap fx-layout-align-center-start"
                 >
@@ -349,7 +349,7 @@
                 </div>
               </div>
             } @else {
-              <div class="tab-body">
+              <div class="detail-tab-body">
                 <span>This model doesn't belong to any collection yet.</span>
               </div>
             }

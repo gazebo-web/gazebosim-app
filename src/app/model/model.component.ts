@@ -33,7 +33,6 @@ import * as FileSaver from "file-saver";
 @Component({
   selector: "gz-model",
   templateUrl: "model.component.html",
-  styleUrls: ["model.component.scss"],
   standalone: false,
 })
 
