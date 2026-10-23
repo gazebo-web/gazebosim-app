@@ -73,7 +73,7 @@
     </mat-tab>
 
     <!-- Only members can list the users of an organization. -->
-    @if (authService.isMember(organization.name)) {
+    @if (users) {
       <mat-tab>
         <ng-template mat-tab-label>
           <div class="fx-layout-row fx-layout-align-start-center">

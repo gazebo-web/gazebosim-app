@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PageEvent } from "@angular/material/paginator";
 import { Subscription } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
 import {
@@ -116,6 +117,11 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   private usersRequested: boolean = false;
 
   /**
+   * Subscription to the request of the organization's users, if any.
+   */
+  private usersSubscription: Subscription;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data.
    * @param router The Router used to navigate.
    * @param authService Service used to get the logged in user's profile.
@@ -154,16 +160,25 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // Get the Organization's collections.
     this.loadCollections();
 
-    // Get the Organization's users. Only its members can list them, and the
-    // profile can arrive after the page loads, for example after a token renewal.
-    this.profileSubscription = this.authService.userProfile$.subscribe(() => {
-      if (
-        !this.usersRequested &&
-        this.authService.isMember(this.organization.name)
-      ) {
-        this.loadUsers();
-      }
-    });
+    // Get the Organization's users. Only its members can list them.
+    // The organization roles in the profile are cached at login, and other
+    // members may have added or removed this user since, so refresh them first.
+    // The profile can also change after the page loads, for example after a
+    // token renewal.
+    this.profileSubscription = this.authService
+      .refreshProfile()
+      .pipe(switchMap(() => this.authService.userProfile$))
+      .subscribe((profile) => {
+        if (this.authService.isMember(this.organization.name)) {
+          if (!this.usersRequested) {
+            this.loadUsers();
+          }
+        } else if (!profile || profile.username) {
+          // A profile without a username is temporary, while a renewed token
+          // gets its username. Otherwise the user isn't a member.
+          this.clearUsers();
+        }
+      });
   }
 
   /**
@@ -173,6 +188,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     if (this.profileSubscription) {
       this.profileSubscription.unsubscribe();
     }
+    this.clearUsers();
   }
 
   /**
@@ -180,15 +196,30 @@ export class OrganizationComponent implements OnInit, OnDestroy {
    */
   public loadUsers(): void {
     this.usersRequested = true;
-    this.organizationService.getOrganizationUsers(this.organization).subscribe(
-      (response) => {
-        this.users = response;
-      },
-      (error) => {
-        this.usersRequested = false;
-        this.snackBar.open(error.message, "Got it");
-      },
-    );
+    this.usersSubscription = this.organizationService
+      .getOrganizationUsers(this.organization)
+      .subscribe(
+        (response) => {
+          this.users = response;
+        },
+        (error) => {
+          this.usersRequested = false;
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+  }
+
+  /**
+   * Clear the Users of this Organization, and cancel their request if there is
+   * one.
+   */
+  private clearUsers(): void {
+    if (this.usersSubscription) {
+      this.usersSubscription.unsubscribe();
+      this.usersSubscription = undefined;
+    }
+    this.usersRequested = false;
+    this.users = undefined;
   }
 
   /**
@@ -386,6 +417,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
                   "profile",
                   JSON.stringify(this.authService.userProfile),
                 );
+                // Publish the change, which clears the users.
+                this.authService.setProfile(this.authService.userProfile);
               }
             },
             (error) => {
