@@ -1,7 +1,7 @@
-<div class="page-content-inner fx-flex fx-layout-align-center">
+<div class="detail-page page-content-inner fx-flex fx-layout-align-center">
   <div class="content mat-typography">
     <!-- Header -->
-    <div class="world-header">
+    <div class="detail-header">
       <div class="fx-layout-row fx-layout-align-start-center">
         <div class="fx-layout-column">
           <gz-page-title
@@ -70,41 +70,37 @@
           }
         }
       </div>
-      <div class="gallery-container-outer">
-        <div
-          class="gallery-container-inner fx-layout-column fx-layout-align-center-center"
-        >
-          @if (view3d) {
-            <!-- 3D viewer fills the entire gallery panel -->
-            <div #fullScreen class="sdfviewer-container">
-              <gz-sdfviewer
-                class="sdfviewer"
-                [resource]="world"
-                [currentVersion]="currentVersion"
-              >
-              </gz-sdfviewer>
+      <div class="gallery-box gallery-box-tall">
+        @if (view3d) {
+          <!-- 3D viewer fills the entire gallery panel -->
+          <div #fullScreen class="sdfviewer-container">
+            <gz-sdfviewer
+              class="sdfviewer"
+              [resource]="world"
+              [currentVersion]="currentVersion"
+            >
+            </gz-sdfviewer>
+          </div>
+        } @else {
+          @if (!galleryImages) {
+            <div class="fx-layout-column fx-layout-align-center-center">
+              <div id="html-spinner"></div>
+              <span class="mat-typography">Fetching images from server</span>
             </div>
-          } @else {
-            @if (!galleryImages) {
-              <div class="fx-layout-column fx-layout-align-center-center">
-                <div id="html-spinner"></div>
-                <span class="mat-typography">Fetching images from server</span>
-              </div>
-            }
-
-            @if (galleryImages && galleryImages.length == 0) {
-              <div class="fx-layout-row fx-layout-align-center-center">
-                <span class="mat-typography font-x-large"
-                  >This world has no thumbnails.</span
-                >
-              </div>
-            }
-
-            @if (galleryImages?.length > 0) {
-              <gz-gallery [images]="galleryImages"></gz-gallery>
-            }
           }
-        </div>
+
+          @if (galleryImages && galleryImages.length == 0) {
+            <div class="fx-layout-row fx-layout-align-center-center">
+              <span class="mat-typography font-x-large"
+                >This world has no thumbnails.</span
+              >
+            </div>
+          }
+
+          @if (galleryImages?.length > 0) {
+            <gz-gallery [images]="galleryImages"></gz-gallery>
+          }
+        }
       </div>
     </div>
 
@@ -243,7 +239,7 @@
       <div class="bottom-left-pane">
         <mat-tab-group class="fx-flex tab-container" color="accent">
           <mat-tab label="World Description">
-            <div class="fx-layout-column tab-body gap-20">
+            <div class="fx-layout-column detail-tab-body gap-20">
               <gz-description
                 [description]="world.description"
               ></gz-description>
@@ -252,7 +248,7 @@
 
           <mat-tab label="World Files">
             @if (world?.files && world.files.length > 0) {
-              <div class="list-container tab-body">
+              <div class="list-container detail-tab-body">
                 <mat-list dense>
                   @for (file of world.files; track file) {
                     <mat-list-item
@@ -274,7 +270,7 @@
                 </mat-list>
               </div>
             } @else {
-              <div class="tab-body">
+              <div class="detail-tab-body">
                 <span
                   >There was a problem getting the files of this world.</span
                 >
@@ -284,7 +280,7 @@
 
           <mat-tab label="Collections">
             @if (collections && collections.length > 0) {
-              <div class="tab-body collections-tab-body">
+              <div class="detail-tab-body collections-tab-body">
                 <div
                   class="collection-cards-grid fx-layout-row-wrap fx-layout-align-center-start"
                 >
@@ -344,7 +340,7 @@
                 </div>
               </div>
             } @else {
-              <div class="tab-body">
+              <div class="detail-tab-body">
                 <span>This world doesn't belong to any collection yet.</span>
               </div>
             }
