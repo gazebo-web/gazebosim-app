@@ -1,5 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from "@angular/common/http/testing";
 import {
   provideHttpClient,
   withInterceptorsFromDi,
@@ -82,5 +85,27 @@ describe("AuthService", () => {
       session({ username: "testUser", sysAdmin: true }),
     );
     expect(authService.isMember("testOrg")).toBe(true);
+  });
+
+  it("should set the fetched profile before publishing it", () => {
+    // A renewed token whose profile doesn't have the username yet.
+    const authService = createService(
+      session({ name: "Test User", orgRoles: {} }),
+    );
+    const httpMock = TestBed.inject(HttpTestingController);
+    const membership = [];
+    authService.userProfile$.subscribe(() =>
+      membership.push(authService.isMember("testOrg")),
+    );
+
+    httpMock
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush({
+        username: "testUser",
+        orgs: ["testOrg"],
+        orgRoles: { testOrg: "member" },
+      });
+
+    expect(membership[membership.length - 1]).toBe(true);
   });
 });

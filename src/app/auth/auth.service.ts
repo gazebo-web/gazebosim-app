@@ -105,9 +105,10 @@ export class AuthService {
    * @param profile The user profile to set.
    */
   public setProfile(profile: any): void {
-    // Update user profile subject
-    this.userProfile$.next(profile);
+    // Update user profile subject. Subscribers read the profile from this
+    // service, so set it first.
     this.userProfile = profile;
+    this.userProfile$.next(profile);
   }
 
   /**
