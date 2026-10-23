@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Meta } from "@angular/platform-browser";
+import { Subscription } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
 import { Collection } from "./collection";
@@ -70,6 +71,16 @@ export class CollectionComponent implements OnInit {
    * Number of pages of the collection's worlds.
    */
   public worldPageCount: number = 0;
+
+  /**
+   * The pending request for a page of models.
+   */
+  private modelsRequest: Subscription;
+
+  /**
+   * The pending request for a page of worlds.
+   */
+  private worldsRequest: Subscription;
 
   /**
    * Download command for this collection.
@@ -285,20 +296,24 @@ export class CollectionComponent implements OnInit {
    * @param page The 1-based page number to load.
    */
   public loadModels(page: number = 1): void {
-    this.collectionService
+    // Move the pager now, so fast clicks add up, and drop any older request.
+    // DEVNOTE: This change is not reflected in the Client URL.
+    const previousPage = this.modelPage;
+    this.modelPage = page;
+    this.modelsRequest?.unsubscribe();
+    this.modelsRequest = this.collectionService
       .getCollectionModels(this.collection.owner, this.collection.name, {
         page,
         per_page: this.RESOURCES_PER_PAGE,
       })
       .subscribe(
         (response) => {
-          // DEVNOTE: This change is not reflected in the Client URL.
-          this.modelPage = page;
           this.paginatedModels = response;
           this.collection.models = response.resources;
           this.modelPageCount = this.pageCount(response.totalCount);
         },
         (error) => {
+          this.modelPage = previousPage;
           this.snackBar.open(error.message, "Got it");
         },
       );
@@ -310,20 +325,24 @@ export class CollectionComponent implements OnInit {
    * @param page The 1-based page number to load.
    */
   public loadWorlds(page: number = 1): void {
-    this.collectionService
+    // Move the pager now, so fast clicks add up, and drop any older request.
+    // DEVNOTE: This change is not reflected in the Client URL.
+    const previousPage = this.worldPage;
+    this.worldPage = page;
+    this.worldsRequest?.unsubscribe();
+    this.worldsRequest = this.collectionService
       .getCollectionWorlds(this.collection.owner, this.collection.name, {
         page,
         per_page: this.RESOURCES_PER_PAGE,
       })
       .subscribe(
         (response) => {
-          // DEVNOTE: This change is not reflected in the Client URL.
-          this.worldPage = page;
           this.paginatedWorlds = response;
           this.collection.worlds = response.resources;
           this.worldPageCount = this.pageCount(response.totalCount);
         },
         (error) => {
+          this.worldPage = previousPage;
           this.snackBar.open(error.message, "Got it");
         },
       );
@@ -364,25 +383,20 @@ export class CollectionComponent implements OnInit {
         .removeAsset(this.collection.owner, this.collection.name, resource)
         .subscribe(
           (response) => {
-            // Determine from which list to remove the resource and update the counter.
-            let resourceList;
+            // Reload the page so it refills, or step back if it is now past the end.
             if (event.type === "models") {
-              resourceList = this.collection.models;
-              this.paginatedModels.totalCount--;
-              this.modelPageCount = this.pageCount(
-                this.paginatedModels.totalCount,
+              const lastPage = this.pageCount(
+                this.paginatedModels.totalCount - 1,
               );
+              this.loadModels(Math.max(1, Math.min(this.modelPage, lastPage)));
             }
             if (event.type === "worlds") {
-              resourceList = this.collection.worlds;
-              this.paginatedWorlds.totalCount--;
-              this.worldPageCount = this.pageCount(
-                this.paginatedWorlds.totalCount,
+              const lastPage = this.pageCount(
+                this.paginatedWorlds.totalCount - 1,
               );
+              this.loadWorlds(Math.max(1, Math.min(this.worldPage, lastPage)));
             }
 
-            const index = resourceList.indexOf(resource);
-            resourceList.splice(index, 1);
             this.snackBar.open(
               `${resource.name} was removed from ${this.collection.name}`,
               "Got it",

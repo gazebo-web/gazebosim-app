@@ -46,28 +46,41 @@
 
 .pager-dots {
   display: flex;
-  gap: 7px;
   align-items: center;
+  // Cancel the dots' extra side room, so the gap to the buttons stays 20px.
+  margin: 0 -3.5px;
 }
 
+// Each dot is a 15 x 24px button, easier to hit than the 8px dot drawn inside.
+// Buttons touch, so the dots are 15px apart.
 .pager-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 15px;
+  height: 24px;
   border: none;
   padding: 0;
-  background: rgba(0, 0, 0, 0.18);
+  background: none;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  &.active {
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.18);
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  &.active::before {
     background: tokens.$primary-dark;
     transform: scale(1.3);
   }
 
-  &:hover:not(.active) {
+  &:hover:not(.active)::before {
     background: rgba(0, 0, 0, 0.35);
   }
 }

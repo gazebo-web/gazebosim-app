@@ -20,7 +20,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { Observable, Subscription, of, throwError } from "rxjs";
+import { Observable, Subject, Subscription, of, throwError } from "rxjs";
 import { MarkdownModule } from "ngx-markdown";
 import * as FileSaver from "file-saver";
 
@@ -547,6 +547,23 @@ describe("ModelComponent", () => {
       component.model,
       { page: 2, per_page: 8 },
     );
+  });
+
+  it("should count fast page clicks and drop the older request", () => {
+    const collectionService = TestBed.inject(CollectionService);
+    const pending = new Subject<PaginatedCollection>();
+    spyOn(collectionService, "getAssetCollections").and.returnValue(pending);
+
+    component.collectionPage = 1;
+    component.loadCollections(2);
+    component.loadCollections(component.collectionPage + 1);
+
+    expect(component.collectionPage).toBe(3);
+    expect(collectionService.getAssetCollections).toHaveBeenCalledWith(
+      component.model,
+      { page: 3, per_page: 8 },
+    );
+    expect(pending.observers.length).toBe(1);
   });
 
   it("should keep the current collection page if loading a page fails", () => {

@@ -95,6 +95,11 @@ export class ModelComponent implements OnInit, OnDestroy {
   public collectionPage: number = 1;
 
   /**
+   * The pending request for a page of collections.
+   */
+  private collectionsRequest: Subscription;
+
+  /**
    * Number of pages of collections in the Collections tab.
    */
   public collectionPageCount: number = 0;
@@ -613,18 +618,24 @@ export class ModelComponent implements OnInit, OnDestroy {
       page,
       per_page: this.COLLECTIONS_PER_PAGE,
     };
-    this.collectionService.getAssetCollections(this.model, params).subscribe({
-      next: (response) => {
-        this.collectionPage = page;
-        this.collections = response.collections;
-        this.collectionPageCount = Math.ceil(
-          response.totalCount / this.COLLECTIONS_PER_PAGE,
-        );
-      },
-      error: (error) => {
-        this.snackBar.open(error.message, "Got it");
-      },
-    });
+    // Move the pager now, so fast clicks add up, and drop any older request.
+    const previousPage = this.collectionPage;
+    this.collectionPage = page;
+    this.collectionsRequest?.unsubscribe();
+    this.collectionsRequest = this.collectionService
+      .getAssetCollections(this.model, params)
+      .subscribe({
+        next: (response) => {
+          this.collections = response.collections;
+          this.collectionPageCount = Math.ceil(
+            response.totalCount / this.COLLECTIONS_PER_PAGE,
+          );
+        },
+        error: (error) => {
+          this.collectionPage = previousPage;
+          this.snackBar.open(error.message, "Got it");
+        },
+      });
   }
 
   /**
