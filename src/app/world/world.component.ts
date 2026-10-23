@@ -15,11 +15,7 @@ import { Subscription, forkJoin } from "rxjs";
 import { finalize, switchMap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
-import {
-  Collection,
-  CollectionService,
-  PaginatedCollection,
-} from "../collection";
+import { Collection, CollectionService } from "../collection";
 import { CollectionDialogComponent } from "../collection/dialog/collection-dialog.component";
 import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.component";
 import { ReportDialogComponent } from "../fuel-resource/report-dialog/report-dialog.component";
@@ -78,24 +74,24 @@ export class WorldComponent implements OnInit, OnDestroy {
   public collections: Collection[];
 
   /**
-   * The paginated Collections returned from the Server, required by the resource list component.
-   */
-  public paginatedCollections: PaginatedCollection;
-
-  /**
    * Items per page for the Collections tab.
    */
   public readonly COLLECTIONS_PER_PAGE = 8;
 
   /**
-   * Current page index (0-based) for the Collections tab.
+   * Current page (starting at 1) for the Collections tab.
    */
-  public collectionPage: number = 0;
+  public collectionPage: number = 1;
 
   /**
-   * Array of page indices used to render dot indicators in the Collections tab.
+   * The pending request for a page of collections.
    */
-  public collectionPages: number[] = [];
+  private collectionsRequest: Subscription;
+
+  /**
+   * Number of pages of collections in the Collections tab.
+   */
+  public collectionPageCount: number = 0;
 
   /**
    * Subscription to the Collection Dialog. Used to see the result of it.
@@ -577,27 +573,31 @@ export class WorldComponent implements OnInit, OnDestroy {
   /**
    * Load the collections that have this World.
    *
-   * @param pageIndex Zero-based page index to load.
+   * @param page The page to load, starting at 1.
    */
-  public loadCollections(pageIndex: number = 0): void {
+  public loadCollections(page: number = 1): void {
     const params = {
-      page: pageIndex + 1,
+      page,
       per_page: this.COLLECTIONS_PER_PAGE,
     };
-    this.collectionService.getAssetCollections(this.world, params).subscribe({
-      next: (response) => {
-        this.collectionPage = pageIndex;
-        this.paginatedCollections = response;
-        this.collections = response.collections;
-        const total = Math.ceil(
-          response.totalCount / this.COLLECTIONS_PER_PAGE,
-        );
-        this.collectionPages = Array.from({ length: total }, (_, i) => i);
-      },
-      error: (error) => {
-        this.snackBar.open(error.message, "Got it");
-      },
-    });
+    // Move the pager now, so fast clicks add up, and drop any older request.
+    const previousPage = this.collectionPage;
+    this.collectionPage = page;
+    this.collectionsRequest?.unsubscribe();
+    this.collectionsRequest = this.collectionService
+      .getAssetCollections(this.world, params)
+      .subscribe({
+        next: (response) => {
+          this.collections = response.collections;
+          this.collectionPageCount = Math.ceil(
+            response.totalCount / this.COLLECTIONS_PER_PAGE,
+          );
+        },
+        error: (error) => {
+          this.collectionPage = previousPage;
+          this.snackBar.open(error.message, "Got it");
+        },
+      });
   }
 
   /**

@@ -69,6 +69,11 @@ export class DashboardComponent implements OnInit {
   public page: number = 1;
 
   /**
+   * Number of pages of the sliding cards.
+   */
+  public readonly PAGE_COUNT = 5;
+
+  /**
    * Number of assets to fetch per type for the ranking pool.
    */
   private fetchCount: number = 20;
@@ -120,24 +125,6 @@ export class DashboardComponent implements OnInit {
   public goToPage(page: number): void {
     this.page = page;
     this.loadAssets();
-  }
-
-  /**
-   * Go to the previous page of assets.
-   */
-  public prevPage(): void {
-    if (this.page > 1) {
-      this.goToPage(this.page - 1);
-    }
-  }
-
-  /**
-   * Go to the next page of assets.
-   */
-  public nextPage(): void {
-    if (this.page < 5) {
-      this.goToPage(this.page + 1);
-    }
   }
 
   /**
