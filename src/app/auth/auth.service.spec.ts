@@ -108,4 +108,59 @@ describe("AuthService", () => {
 
     expect(membership[membership.length - 1]).toBe(true);
   });
+
+  it("should not refresh the profile of a logged out user", () => {
+    const authService = createService({});
+    const httpMock = TestBed.inject(HttpTestingController);
+    let done = false;
+    authService.refreshProfile().subscribe({ complete: () => (done = true) });
+    expect(done).toBe(true);
+    httpMock.expectNone(() => true);
+  });
+
+  it("should refresh the organization roles of the profile", () => {
+    const authService = createService(
+      session({
+        username: "testUser",
+        orgRoles: { oldOrg: "member" },
+        sysAdmin: true,
+      }),
+    );
+    const httpMock = TestBed.inject(HttpTestingController);
+    let done = false;
+    authService.refreshProfile().subscribe({ complete: () => (done = true) });
+    expect(done).toBe(false);
+
+    httpMock
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush({
+        username: "testUser",
+        orgs: ["newOrg"],
+        orgRoles: { newOrg: "admin" },
+        sysAdmin: false,
+      });
+
+    expect(done).toBe(true);
+    expect(authService.isMember("oldOrg")).toBe(false);
+    expect(authService.isMember("newOrg")).toBe(true);
+    expect(authService.userProfile.sysAdmin).toBe(false);
+    httpMock.verify();
+  });
+
+  it("should keep the profile if it can't be refreshed", () => {
+    const authService = createService(
+      session({ username: "testUser", orgRoles: { testOrg: "member" } }),
+    );
+    const httpMock = TestBed.inject(HttpTestingController);
+    spyOn(console, "error");
+    let done = false;
+    authService.refreshProfile().subscribe({ complete: () => (done = true) });
+
+    httpMock
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush("error", { status: 500, statusText: "Server Error" });
+
+    expect(done).toBe(true);
+    expect(authService.isMember("testOrg")).toBe(true);
+  });
 });

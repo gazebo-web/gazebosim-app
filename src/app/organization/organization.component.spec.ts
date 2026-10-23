@@ -3,7 +3,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MatCardModule } from "@angular/material/card";
 import { MatChipsModule } from "@angular/material/chips";
@@ -14,7 +17,7 @@ import { MatListModule } from "@angular/material/list";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTabsModule } from "@angular/material/tabs";
-import { of, throwError } from "rxjs";
+import { Subject, of, throwError } from "rxjs";
 
 import { AuthPipe } from "../auth/auth.pipe";
 import { AuthService } from "../auth/auth.service";
@@ -284,7 +287,134 @@ describe("OrganizationComponent", () => {
     component.ngOnDestroy();
   });
 
-  it(`should only show the users tab to members`, () => {
+  // Mock the local storage with a session of testUser, with the given roles.
+  function mockSession(orgRoles: { [org: string]: string }): void {
+    const storage = {
+      token: "test-token",
+      expires_at: JSON.stringify(Date.now() + 60000),
+      profile: JSON.stringify({ username: "testUser", orgRoles }),
+    };
+    spyOn(localStorage, "getItem").and.callFake((key) =>
+      key in storage ? storage[key] : null,
+    );
+    spyOn(localStorage, "setItem").and.callFake((key, value) => {
+      storage[key] = value;
+    });
+  }
+
+  // Respond to the profile request made when the page loads.
+  function respondToLogin(orgRoles: { [org: string]: string }): void {
+    TestBed.inject(HttpTestingController)
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush({ username: "testUser", orgs: Object.keys(orgRoles), orgRoles });
+  }
+
+  it(`should get the users of an organization the user was added to since login`, () => {
+    mockSession({});
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+    spy.and.returnValue(of(testUsers));
+
+    component.ngOnInit();
+    expect(spy).not.toHaveBeenCalled();
+
+    respondToLogin({ testOrgName: "member" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(component.users).toEqual(testUsers);
+
+    component.ngOnDestroy();
+  });
+
+  it(`should not get the users of an organization the user was removed from since login`, () => {
+    mockSession({ testOrgName: "member" });
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+
+    // The cached profile isn't used.
+    component.ngOnInit();
+    expect(spy).not.toHaveBeenCalled();
+
+    respondToLogin({});
+    expect(spy).not.toHaveBeenCalled();
+    expect(component.users).toBeUndefined();
+
+    component.ngOnDestroy();
+  });
+
+  it(`should use the cached profile if it can't be refreshed`, () => {
+    mockSession({ testOrgName: "member" });
+    spyOn(console, "error");
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+    spy.and.returnValue(of(testUsers));
+
+    component.ngOnInit();
+    TestBed.inject(HttpTestingController)
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush("error", { status: 500, statusText: "Server Error" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(component.users).toEqual(testUsers);
+
+    component.ngOnDestroy();
+  });
+
+  it(`should ignore a pending request of the users once the user is no longer a member`, () => {
+    const isMember = spyOn(authService, "isMember").and.returnValue(true);
+    const response = new Subject<any[]>();
+    spyOn(organizationService, "getOrganizationUsers").and.returnValue(
+      response,
+    );
+
+    component.ngOnInit();
+    isMember.and.returnValue(false);
+    authService.setProfile({ username: "testUser" });
+    response.next(testUsers);
+    expect(component.users).toBeUndefined();
+
+    component.ngOnDestroy();
+  });
+
+  it(`should keep the organization's users while a renewed token gets its username`, () => {
+    const isMember = spyOn(authService, "isMember").and.returnValue(true);
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+    spy.and.returnValue(of(testUsers));
+
+    component.ngOnInit();
+    expect(component.users).toEqual(testUsers);
+
+    // The renewed token's profile doesn't have the username yet.
+    isMember.and.returnValue(false);
+    authService.setProfile({ name: "Test User" });
+    expect(component.users).toEqual(testUsers);
+
+    // The username arrives.
+    isMember.and.returnValue(true);
+    authService.setProfile({ username: "testUser" });
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    component.ngOnDestroy();
+  });
+
+  it(`should clear the organization's users if the user is no longer a member`, () => {
+    const isMember = spyOn(authService, "isMember").and.returnValue(true);
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+    spy.and.returnValue(of(testUsers));
+
+    component.ngOnInit();
+    expect(component.users).toEqual(testUsers);
+
+    // Another member removed the user.
+    isMember.and.returnValue(false);
+    authService.setProfile({ username: "testUser" });
+    expect(component.users).toBeUndefined();
+
+    // The user was added back.
+    isMember.and.returnValue(true);
+    authService.setProfile({ username: "testUser" });
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(component.users).toEqual(testUsers);
+
+    component.ngOnDestroy();
+  });
+
+  it(`should only show the users tab once the users are loaded`, () => {
     const isMember = spyOn(authService, "isMember").and.returnValue(false);
     spyOn(modelService, "getOwnerList").and.returnValue(of(testModels));
     spyOn(worldService, "getOwnerList").and.returnValue(of(testWorlds));
