@@ -284,7 +284,7 @@ export class AuthService {
    */
   public isMember(org: string): boolean {
     return (
-      this.isAuthenticated() &&
+      !!this.isAuthenticated() &&
       (this.userProfile.sysAdmin === true || !!this.userProfile.orgRoles?.[org])
     );
   }
@@ -434,7 +434,7 @@ export class AuthService {
         localStorage.setItem("profile", JSON.stringify(profile));
 
         // Updates the Profile.
-        this.userProfile = profile;
+        this.setProfile(profile);
       }
     });
   }

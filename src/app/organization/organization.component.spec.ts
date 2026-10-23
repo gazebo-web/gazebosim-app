@@ -262,6 +262,58 @@ describe("OrganizationComponent", () => {
     expect(component.users).toBeUndefined();
   });
 
+  it(`should get the organization's users once the user is known to be a member`, () => {
+    const isMember = spyOn(authService, "isMember").and.returnValue(false);
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+    spy.and.returnValue(of(testUsers));
+
+    // The profile isn't known when the page loads.
+    component.ngOnInit();
+    expect(spy).not.toHaveBeenCalled();
+
+    // The profile arrives, for example after a token renewal.
+    isMember.and.returnValue(true);
+    authService.setProfile({ username: "testUser" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(component.users).toEqual(testUsers);
+
+    // Later profile updates don't fetch the users again.
+    authService.setProfile({ username: "testUser" });
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    component.ngOnDestroy();
+  });
+
+  it(`should only show the users tab to members`, () => {
+    const isMember = spyOn(authService, "isMember").and.returnValue(false);
+    spyOn(modelService, "getOwnerList").and.returnValue(of(testModels));
+    spyOn(worldService, "getOwnerList").and.returnValue(of(testWorlds));
+    spyOn(collectionService, "getOwnerCollectionList").and.returnValue(
+      of(testCollections),
+    );
+    spyOn(organizationService, "getOrganizationUsers").and.returnValue(
+      of(testUsers),
+    );
+    const tabLabels = () =>
+      Array.from(
+        fixture.nativeElement.querySelectorAll(".mdc-tab"),
+        (tab: HTMLElement) => tab.textContent.trim(),
+      );
+
+    fixture.detectChanges();
+    expect(tabLabels().length).toBe(3);
+    expect(tabLabels().some((label) => label.startsWith("Users"))).toBe(false);
+
+    isMember.and.returnValue(true);
+    authService.setProfile({ username: "testUser" });
+    // The app uses zone change detection, which refreshes the page once the
+    // profile request completes. The tests don't, so mark it explicitly.
+    fixture.componentRef.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+    expect(tabLabels().length).toBe(4);
+    expect(tabLabels()[3]).toContain("Users");
+  });
+
   it(`should load the next page of models`, () => {
     // Set up the organization first (needed by loadModels)
     component.organization = { name: "testOrgName" } as any;
