@@ -276,6 +276,20 @@ export class AuthService {
   }
 
   /**
+   * Return whether the authenticated user is a member of a given organization, with any role.
+   * System admins count as members, as the server lets them list any organization's users.
+   *
+   * @param org The organization name used to check membership.
+   * @returns A boolean indicating whether the authenticated user is a member or not.
+   */
+  public isMember(org: string): boolean {
+    return (
+      this.isAuthenticated() &&
+      (this.userProfile.sysAdmin === true || !!this.userProfile.orgRoles?.[org])
+    );
+  }
+
+  /**
    * Return whether the authenticated user can edit a given Fuel resource.
    *
    * Users have write access to a resource if:

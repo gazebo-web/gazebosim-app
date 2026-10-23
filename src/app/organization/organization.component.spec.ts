@@ -157,6 +157,7 @@ describe("OrganizationComponent", () => {
   });
 
   it("should get the organization from the resolved data", () => {
+    spyOn(authService, "isMember").and.returnValue(true);
     spyOn(modelService, "getOwnerList").and.callThrough();
     spyOn(worldService, "getOwnerList").and.callThrough();
     spyOn(organizationService, "getOrganizationUsers").and.callThrough();
@@ -235,6 +236,7 @@ describe("OrganizationComponent", () => {
 
   it(`should get the organization's users on the OnInit lifecycle hook`, () => {
     const snackBar = component.snackBar;
+    spyOn(authService, "isMember").and.returnValue(true);
     const spy = spyOn(organizationService, "getOrganizationUsers");
 
     // Test failure.
@@ -248,6 +250,16 @@ describe("OrganizationComponent", () => {
     spy.and.returnValue(of(testUsers));
     component.ngOnInit();
     expect(component.users).toEqual(testUsers);
+  });
+
+  it(`should not get the organization's users if not a member`, () => {
+    spyOn(authService, "isMember").and.returnValue(false);
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+
+    component.ngOnInit();
+    expect(authService.isMember).toHaveBeenCalledWith("testOrgName");
+    expect(spy).not.toHaveBeenCalled();
+    expect(component.users).toBeUndefined();
   });
 
   it(`should load the next page of models`, () => {

@@ -72,94 +72,97 @@
       </div>
     </mat-tab>
 
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <div class="fx-layout-row fx-layout-align-start-center">
-          <mat-icon>group</mat-icon>
-          <span>Users ({{ users?.length }})</span>
-        </div>
-      </ng-template>
+    <!-- Only members can list the users of an organization. -->
+    @if (authService.isMember(organization.name)) {
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <div class="fx-layout-row fx-layout-align-start-center">
+            <mat-icon>group</mat-icon>
+            <span>Users ({{ users?.length }})</span>
+          </div>
+        </ng-template>
 
-      <div class="tab-content">
-        @if (authService.hasWriteAccess(organization.name)) {
-          <form class="fx-layout-align-center" (ngSubmit)="addUser()">
-            <div
-              class="fx-fill fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md gap-1em fx-flex-gt-xs-60 fx-flex-lt-sm-80 fx-layout-align-lt-md-space-between fx-layout-gap-lt-md-0"
-            >
-              <mat-form-field class="fx-fill fx-flex">
-                <input
-                  matInput
-                  placeholder="Add username"
-                  [formControl]="usernameInputForm"
-                  required
-                />
-                @if (usernameInputForm.hasError("required")) {
-                  <mat-error> Please enter a username </mat-error>
-                }
-              </mat-form-field>
-              <mat-form-field>
-                <mat-select
-                  placeholder="Role"
-                  [formControl]="roleDropdownForm"
-                  required
-                >
-                  @for (role of roles; track role) {
-                    <mat-option [value]="role">
-                      {{ role }}
-                    </mat-option>
-                  }
-                </mat-select>
-                @if (roleDropdownForm.hasError("required")) {
-                  <mat-error> Please select a role </mat-error>
-                }
-              </mat-form-field>
-              <button
-                fxFlexAlign="start"
-                mat-raised-button
-                color="primary"
-                type="submit"
+        <div class="tab-content">
+          @if (authService.hasWriteAccess(organization.name)) {
+            <form class="fx-layout-align-center" (ngSubmit)="addUser()">
+              <div
+                class="fx-fill fx-flex fx-layout-row fx-layout-align-center fx-layout-row wrap-lt-md gap-1em fx-flex-gt-xs-60 fx-flex-lt-sm-80 fx-layout-align-lt-md-space-between fx-layout-gap-lt-md-0"
               >
-                Add User
-              </button>
-            </div>
-          </form>
-        }
-
-        <div class="fx-fill fx-layout-row fx-layout-align-center">
-          <mat-list class="fx-flex fx-flex-gt-xs-60 fx-flex-lt-sm-80">
-            @for (user of users; track user) {
-              <mat-list-item class="list-divider">
-                <div
-                  class="fx-layout-row fx-layout-align-start-baseline gap-10"
-                  matListItemTitle
-                >
-                  <a routerLink="/{{ user.username }}">{{ user.username }}</a>
-                  <mat-chip-list>
-                    @if (user.orgRoles) {
-                      <mat-chip color="primary" selected>{{
-                        user.orgRoles[organization.name]
-                      }}</mat-chip>
+                <mat-form-field class="fx-fill fx-flex">
+                  <input
+                    matInput
+                    placeholder="Add username"
+                    [formControl]="usernameInputForm"
+                    required
+                  />
+                  @if (usernameInputForm.hasError("required")) {
+                    <mat-error> Please enter a username </mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-select
+                    placeholder="Role"
+                    [formControl]="roleDropdownForm"
+                    required
+                  >
+                    @for (role of roles; track role) {
+                      <mat-option [value]="role">
+                        {{ role }}
+                      </mat-option>
                     }
-                  </mat-chip-list>
-                </div>
-                @if (canDisplayRemoveButton(user)) {
-                  <div matListItemMeta>
-                    <button
-                      mat-button
-                      color="primary"
-                      (click)="removeUser(user)"
-                      [disabled]="disableRemoveButton(user)"
-                      [title]="getRemoveButtonTooltip(user)"
-                    >
-                      {{ getRemoveButtonLabel(user) }}
-                    </button>
+                  </mat-select>
+                  @if (roleDropdownForm.hasError("required")) {
+                    <mat-error> Please select a role </mat-error>
+                  }
+                </mat-form-field>
+                <button
+                  fxFlexAlign="start"
+                  mat-raised-button
+                  color="primary"
+                  type="submit"
+                >
+                  Add User
+                </button>
+              </div>
+            </form>
+          }
+
+          <div class="fx-fill fx-layout-row fx-layout-align-center">
+            <mat-list class="fx-flex fx-flex-gt-xs-60 fx-flex-lt-sm-80">
+              @for (user of users; track user) {
+                <mat-list-item class="list-divider">
+                  <div
+                    class="fx-layout-row fx-layout-align-start-baseline gap-10"
+                    matListItemTitle
+                  >
+                    <a routerLink="/{{ user.username }}">{{ user.username }}</a>
+                    <mat-chip-list>
+                      @if (user.orgRoles) {
+                        <mat-chip color="primary" selected>{{
+                          user.orgRoles[organization.name]
+                        }}</mat-chip>
+                      }
+                    </mat-chip-list>
                   </div>
-                }
-              </mat-list-item>
-            }
-          </mat-list>
+                  @if (canDisplayRemoveButton(user)) {
+                    <div matListItemMeta>
+                      <button
+                        mat-button
+                        color="primary"
+                        (click)="removeUser(user)"
+                        [disabled]="disableRemoveButton(user)"
+                        [title]="getRemoveButtonTooltip(user)"
+                      >
+                        {{ getRemoveButtonLabel(user) }}
+                      </button>
+                    </div>
+                  }
+                </mat-list-item>
+              }
+            </mat-list>
+          </div>
         </div>
-      </div>
-    </mat-tab>
+      </mat-tab>
+    }
   </mat-tab-group>
 </div>

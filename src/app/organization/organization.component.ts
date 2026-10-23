@@ -143,15 +143,19 @@ export class OrganizationComponent implements OnInit {
     // Get the Organization's collections.
     this.loadCollections();
 
-    // Get the Organization's users.
-    this.organizationService.getOrganizationUsers(this.organization).subscribe(
-      (response) => {
-        this.users = response;
-      },
-      (error) => {
-        this.snackBar.open(error.message, "Got it");
-      },
-    );
+    // Get the Organization's users. Only its members can list them.
+    if (this.authService.isMember(this.organization.name)) {
+      this.organizationService
+        .getOrganizationUsers(this.organization)
+        .subscribe(
+          (response) => {
+            this.users = response;
+          },
+          (error) => {
+            this.snackBar.open(error.message, "Got it");
+          },
+        );
+    }
   }
 
   /**
