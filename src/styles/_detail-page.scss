@@ -1,0 +1,578 @@
+// Shared layout for the resource detail pages (model, world, collection).
+//
+// Add the `detail-page` class to the page's root element. Everything is scoped
+// under it so generic class names like `.content` don't leak into other pages.
+
+@use "tokens";
+
+.detail-page {
+  /* --- Content container --- */
+  .content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* --- Header --- */
+  .detail-header {
+    margin-bottom: 1.5em;
+  }
+
+  .header-spacer {
+    flex: 1;
+  }
+
+  .header-flag-btn {
+    color: tokens.$text-faint;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: tokens.$danger;
+    }
+  }
+
+  .owner-attribution {
+    color: tokens.$text-secondary;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+
+  .visibility-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: tokens.$radius-lg;
+    font-size: 0.85em;
+    font-weight: 500;
+    background: tokens.$success-surface;
+    color: tokens.$success;
+
+    &.badge-private {
+      background: tokens.$surface-muted;
+      color: tokens.$text-secondary;
+    }
+  }
+
+  /* --- Gallery (full-width 16:9) --- */
+  .gallery-section {
+    position: relative;
+    margin-bottom: 1.5em;
+    // Lets the mobile gallery height be expressed relative to its width (cqw).
+    container-type: inline-size;
+  }
+
+  .gallery-box {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: tokens.$radius-lg;
+    background: tokens.$surface-muted;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  gz-gallery {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 3D viewer controls */
+  .viewer-controls {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    z-index: 1002;
+    display: flex;
+    gap: 6px;
+  }
+
+  .viewer-btn {
+    color: tokens.$text-strong;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: tokens.$accent;
+    }
+  }
+
+  /* 3D viewer container fills the full gallery panel */
+  .sdfviewer-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sdfviewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @media screen and (max-width: tokens.$breakpoint-xs) {
+    .gallery-box {
+      border-radius: tokens.$radius-sm;
+
+      // Extra room for the gallery's thumbnail strip on small screens.
+      &.gallery-box-tall {
+        aspect-ratio: auto;
+        height: calc(56.25cqw + 5em);
+      }
+    }
+  }
+
+  /* --- Action Bar --- */
+  .action-bar {
+    margin-bottom: 1.5em;
+    padding: 0.75em 0;
+  }
+
+  .action-bar-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-btn-row {
+    @include tokens.panel;
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    border: 1px solid tokens.$border;
+    overflow: hidden;
+  }
+
+  .action-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: tokens.$text;
+    font-size: 14px;
+    font-family: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
+
+    mat-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+      flex-shrink: 0;
+    }
+
+    &:hover:not([disabled]) {
+      background: tokens.$hover-overlay;
+      color: tokens.$text-strong;
+    }
+
+    &[disabled] {
+      opacity: 0.38;
+      cursor: default;
+    }
+
+    &.liked mat-icon {
+      color: tokens.$danger;
+    }
+
+    &.download-btn {
+      color: tokens.$on-accent;
+      background: tokens.$accent;
+
+      &:hover {
+        background: tokens.$accent-hover;
+        color: tokens.$on-accent;
+      }
+    }
+  }
+
+  .action-label {
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .action-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: inherit;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .action-sep {
+    width: 1px;
+    background: tokens.$border;
+    flex-shrink: 0;
+  }
+
+  .action-version-select {
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media screen and (max-width: tokens.$breakpoint-sm) {
+    .action-label {
+      display: none;
+    }
+  }
+
+  .action-meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+    padding: 0 2px;
+    justify-content: flex-end;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: tokens.$text-muted;
+  }
+
+  .meta-icon {
+    font-size: 14px;
+    height: 14px;
+    width: 14px;
+    line-height: 14px;
+  }
+
+  @media screen and (max-width: tokens.$breakpoint-xs) {
+    .action-meta {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+
+  /* --- Bottom section: tabs (left) and info panes (right) --- */
+  .bottom-row-container {
+    position: relative;
+    margin-bottom: 2em;
+    width: 100%;
+    min-height: 620px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .bottom-left-pane {
+    @include tokens.panel;
+    flex: 2;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .bottom-right-pane {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+  }
+
+  .side-pane {
+    @include tokens.panel;
+    padding: 16px 18px;
+    flex-shrink: 0;
+  }
+
+  // Small uppercase section title, used in panes and panels.
+  .side-pane-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: tokens.$text-muted;
+    margin-bottom: 10px;
+  }
+
+  .side-pane-title-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+  }
+
+  // The pane title already has an icon, so hide the one inside gz-categories/gz-tags.
+  .side-pane gz-categories .fx-layout-row > mat-icon,
+  .side-pane gz-tags .fx-layout-row > mat-icon {
+    display: none;
+  }
+
+  .side-pane gz-tags mat-chip {
+    margin: 2px;
+  }
+
+  // Inline layout: title and content on the same line, content wraps within its area.
+  .side-pane-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+
+    .margin-align {
+      margin-top: 0;
+    }
+
+    .side-pane-title {
+      flex-shrink: 0;
+      margin-bottom: 0;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    gz-categories,
+    gz-tags {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .tab-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .detail-tab-body {
+    padding: 20px 24px;
+  }
+
+  @media screen and (max-width: tokens.$breakpoint-sm) {
+    .bottom-row-container {
+      flex-direction: column;
+      height: auto;
+    }
+
+    .bottom-left-pane {
+      height: 500px;
+    }
+
+    .bottom-right-pane {
+      overflow-y: visible;
+    }
+  }
+
+  /* --- Collections tab --- */
+  .collections-tab-body {
+    position: relative;
+    padding: 8px 12px 80px; // bottom padding reserves space for the absolutely-positioned nav
+
+    // Shrink card internals so 2 rows of 4 fit inside the tab box (~572px available)
+    gz-item-card {
+      // Tight card margin
+      mat-card.mat-mdc-card {
+        margin: 4px;
+      }
+
+      // Compact header: less padding, smaller text
+      mat-card-header {
+        padding: 8px 8px 0 8px;
+      }
+
+      mat-card-title,
+      mat-card-subtitle {
+        font-size: 12px;
+      }
+
+      // Tighten subtitle bottom gap
+      mat-card-subtitle {
+        margin-bottom: 4px;
+      }
+
+      // Taller crop ratio keeps image visible but shorter overall
+      .thumbnail-container {
+        aspect-ratio: 4 / 3;
+      }
+
+      .thumbnail {
+        aspect-ratio: 4 / 3;
+      }
+
+      // Hide the empty actions bar
+      mat-card-actions {
+        display: none;
+      }
+    }
+  }
+
+  .collection-card {
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* --- Collections prev/next nav (gallery style) — pinned to bottom --- */
+  .collections-page-nav {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .collection-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: tokens.$surface;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      background 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.15s ease;
+
+    .material-icons {
+      font-size: 26px;
+      color: #333;
+      line-height: 1;
+    }
+
+    &:hover:not(:disabled) {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transform: scale(1.06);
+    }
+
+    &:disabled {
+      background: tokens.$border-light;
+      cursor: default;
+      box-shadow: none;
+
+      .material-icons {
+        color: #bbb;
+      }
+    }
+  }
+
+  .collection-dot-strip {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .collection-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+
+    &.active {
+      background: #1976d2;
+      transform: scale(1.3);
+    }
+
+    &:hover:not(.active) {
+      background: rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  /* --- File List --- */
+  .list-container {
+    // Small, muted file icon
+    --mat-list-list-item-leading-icon-size: 16px;
+    --mat-list-list-item-leading-icon-color: #{tokens.$text-faint};
+    --mat-list-list-item-leading-icon-start-space: 8px;
+    --mat-list-list-item-leading-icon-end-space: 8px;
+
+    // Remove Material's default top/bottom padding on the list
+    .mat-mdc-list-base {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    // Material hard-codes a 56px height on one-line items with a leading icon,
+    // and there is no token for it. The extra class outranks Material's rule.
+    .file-item.mat-mdc-list-item {
+      height: 36px;
+      padding-right: 8px;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: tokens.$hover-overlay;
+      }
+    }
+
+    // Shrink the download icon button. Material defines the size token on the
+    // button itself, so it has to be overridden at the same level.
+    [matListItemMeta] {
+      --mat-icon-button-state-layer-size: 28px;
+      padding: 6px;
+
+      mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+    [matListItemTitle] {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .list-divider {
+    border-bottom: 1px solid tokens.$border-light;
+  }
+
+  .list-divider:last-child {
+    border: none;
+  }
+
+  /* --- License --- */
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .license-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* --- Misc --- */
+  .font-x-large {
+    font-size: x-large;
+    text-align: center;
+  }
+}

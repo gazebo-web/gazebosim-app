@@ -33,7 +33,6 @@ import * as FileSaver from "file-saver";
 @Component({
   selector: "gz-model",
   templateUrl: "model.component.html",
-  styleUrls: ["model.component.scss"],
   standalone: false,
 })
 
@@ -304,18 +303,21 @@ export class ModelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Callback for the link button. Copies the current URL to the clipboard.
+   * Callback for the SDF snippet button. Copies an SDF include snippet to the clipboard.
    */
-  public copySdfInclude(): void {
+  public async copySdfInclude(): Promise<void> {
     const url = decodeURIComponent(
       this.modelService.getBaseUrl(this.model.owner, this.model.name),
     );
     const snippet = `<include>\n<uri>\n${url}\n</uri>\n</include>`;
-    navigator.clipboard.writeText(snippet).then(() => {
+    try {
+      await navigator.clipboard.writeText(snippet);
       this.snackBar.open("SDF include snippet copied to clipboard.", "", {
         duration: 2000,
       });
-    });
+    } catch {
+      this.snackBar.open("Failed to copy SDF snippet to clipboard.", "Got it");
+    }
   }
 
   /**
@@ -616,13 +618,13 @@ export class ModelComponent implements OnInit, OnDestroy {
    * @param pageIndex Zero-based page index to load.
    */
   public loadCollections(pageIndex: number = 0): void {
-    this.collectionPage = pageIndex;
     const params = {
       page: pageIndex + 1,
       per_page: this.COLLECTIONS_PER_PAGE,
     };
     this.collectionService.getAssetCollections(this.model, params).subscribe({
       next: (response) => {
+        this.collectionPage = pageIndex;
         this.paginatedCollections = response;
         this.collections = response.collections;
         const total = Math.ceil(
