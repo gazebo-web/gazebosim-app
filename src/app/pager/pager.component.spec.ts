@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatIconModule } from "@angular/material/icon";
 
 import { PagerComponent } from "./pager.component";
 
@@ -25,8 +24,7 @@ describe("PagerComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatIconModule],
-      declarations: [PagerComponent],
+      imports: [PagerComponent],
     });
 
     fixture = TestBed.createComponent(PagerComponent);
@@ -37,7 +35,7 @@ describe("PagerComponent", () => {
   it("should show one dot per page when there are few pages", () => {
     setInputs(1, 3);
 
-    expect(component.dots).toEqual([1, 2, 3]);
+    expect(component.dots()).toEqual([1, 2, 3]);
     expect(queryAll(".pager-dot").length).toBe(3);
     expect(queryAll(".pager-label").length).toBe(0);
   });
@@ -45,22 +43,22 @@ describe("PagerComponent", () => {
   it("should show no dots when there are no pages", () => {
     setInputs(1, 0);
 
-    expect(component.dots).toEqual([]);
+    expect(component.dots()).toEqual([]);
   });
 
   it("should show a window of dots centered on the current page", () => {
     setInputs(20, 41);
 
-    expect(component.dots).toEqual([17, 18, 19, 20, 21, 22, 23]);
+    expect(component.dots()).toEqual([17, 18, 19, 20, 21, 22, 23]);
     expect(queryAll(".pager-label")[0].textContent.trim()).toBe("20 / 41");
   });
 
   it("should clamp the window of dots to the first and last pages", () => {
     setInputs(2, 41);
-    expect(component.dots).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(component.dots()).toEqual([1, 2, 3, 4, 5, 6, 7]);
 
     setInputs(41, 41);
-    expect(component.dots).toEqual([35, 36, 37, 38, 39, 40, 41]);
+    expect(component.dots()).toEqual([35, 36, 37, 38, 39, 40, 41]);
   });
 
   it("should mark the current page dot as active", () => {

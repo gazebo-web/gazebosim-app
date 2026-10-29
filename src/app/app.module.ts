@@ -197,7 +197,6 @@ import { WorldService } from "./world/world.service";
     NewWorldComponent,
     OrganizationComponent,
     PageNotFoundComponent,
-    PagerComponent,
     PageTitleComponent,
     ReportDialogComponent,
     SdfViewerComponent,
@@ -257,6 +256,7 @@ import { WorldService } from "./world/world.service";
     MatTooltipModule,
     MatToolbarModule,
     NgxStripeModule.forRoot(environment.STRIPE_PK),
+    PagerComponent,
     ReactiveFormsModule,
   ],
   providers: [
