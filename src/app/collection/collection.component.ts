@@ -1,9 +1,11 @@
 import { ActivatedRoute, Router } from "@angular/router";
 import { Component, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Meta } from "@angular/platform-browser";
-import { Subscription } from "rxjs";
+import { EMPTY, Observable, Subject } from "rxjs";
+import { catchError, switchMap, tap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
 import { Collection } from "./collection";
@@ -73,14 +75,24 @@ export class CollectionComponent implements OnInit {
   public worldPageCount: number = 0;
 
   /**
-   * The pending request for a page of models.
+   * Pages requested for the collection's models. Only the latest one is loaded.
    */
-  private modelsRequest: Subscription;
+  private modelPages = new Subject<number>();
 
   /**
-   * The pending request for a page of worlds.
+   * Pages requested for the collection's worlds. Only the latest one is loaded.
    */
-  private worldsRequest: Subscription;
+  private worldPages = new Subject<number>();
+
+  /**
+   * The page of models on screen, to go back to if a request fails.
+   */
+  private shownModelPage: number = 1;
+
+  /**
+   * The page of worlds on screen, to go back to if a request fails.
+   */
+  private shownWorldPage: number = 1;
 
   /**
    * Download command for this collection.
@@ -123,7 +135,50 @@ export class CollectionComponent implements OnInit {
     public snackBar: MatSnackBar,
     private worldService: WorldService,
     private metaService: Meta,
-  ) {}
+  ) {
+    // switchMap drops an older request when a newer page is asked for.
+    this.modelPages
+      .pipe(
+        switchMap((page) =>
+          this.latestPage(
+            this.collectionService.getCollectionModels(
+              this.collection.owner,
+              this.collection.name,
+              { page, per_page: this.RESOURCES_PER_PAGE },
+            ),
+            () => (this.shownModelPage = page),
+            () => (this.modelPage = this.shownModelPage),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((response) => {
+        this.paginatedModels = response;
+        this.collection.models = response.resources;
+        this.modelPageCount = this.pageCount(response.totalCount);
+      });
+
+    this.worldPages
+      .pipe(
+        switchMap((page) =>
+          this.latestPage(
+            this.collectionService.getCollectionWorlds(
+              this.collection.owner,
+              this.collection.name,
+              { page, per_page: this.RESOURCES_PER_PAGE },
+            ),
+            () => (this.shownWorldPage = page),
+            () => (this.worldPage = this.shownWorldPage),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((response) => {
+        this.paginatedWorlds = response;
+        this.collection.worlds = response.resources;
+        this.worldPageCount = this.pageCount(response.totalCount);
+      });
+  }
 
   /**
    * OnInit Lifecycle hook.
@@ -296,27 +351,10 @@ export class CollectionComponent implements OnInit {
    * @param page The 1-based page number to load.
    */
   public loadModels(page: number = 1): void {
-    // Move the pager now, so fast clicks add up, and drop any older request.
+    // Move the pager now, so fast clicks add up.
     // DEVNOTE: This change is not reflected in the Client URL.
-    const previousPage = this.modelPage;
     this.modelPage = page;
-    this.modelsRequest?.unsubscribe();
-    this.modelsRequest = this.collectionService
-      .getCollectionModels(this.collection.owner, this.collection.name, {
-        page,
-        per_page: this.RESOURCES_PER_PAGE,
-      })
-      .subscribe(
-        (response) => {
-          this.paginatedModels = response;
-          this.collection.models = response.resources;
-          this.modelPageCount = this.pageCount(response.totalCount);
-        },
-        (error) => {
-          this.modelPage = previousPage;
-          this.snackBar.open(error.message, "Got it");
-        },
-      );
+    this.modelPages.next(page);
   }
 
   /**
@@ -325,27 +363,33 @@ export class CollectionComponent implements OnInit {
    * @param page The 1-based page number to load.
    */
   public loadWorlds(page: number = 1): void {
-    // Move the pager now, so fast clicks add up, and drop any older request.
+    // Move the pager now, so fast clicks add up.
     // DEVNOTE: This change is not reflected in the Client URL.
-    const previousPage = this.worldPage;
     this.worldPage = page;
-    this.worldsRequest?.unsubscribe();
-    this.worldsRequest = this.collectionService
-      .getCollectionWorlds(this.collection.owner, this.collection.name, {
-        page,
-        per_page: this.RESOURCES_PER_PAGE,
-      })
-      .subscribe(
-        (response) => {
-          this.paginatedWorlds = response;
-          this.collection.worlds = response.resources;
-          this.worldPageCount = this.pageCount(response.totalCount);
-        },
-        (error) => {
-          this.worldPage = previousPage;
-          this.snackBar.open(error.message, "Got it");
-        },
-      );
+    this.worldPages.next(page);
+  }
+
+  /**
+   * Wraps a page request: records the page once it loads, and on failure
+   * moves the pager back and shows the error, so the page stream keeps going.
+   *
+   * @param request The request for a page.
+   * @param loaded Called when the page has loaded.
+   * @param failed Called when the request fails, to move the pager back.
+   */
+  private latestPage<T>(
+    request: Observable<T>,
+    loaded: () => void,
+    failed: () => void,
+  ): Observable<T> {
+    return request.pipe(
+      tap(loaded),
+      catchError((error) => {
+        failed();
+        this.snackBar.open(error.message, "Got it");
+        return EMPTY;
+      }),
+    );
   }
 
   /**

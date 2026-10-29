@@ -8,11 +8,12 @@ import {
 } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Meta, DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { Subscription, forkJoin } from "rxjs";
-import { finalize, switchMap } from "rxjs/operators";
+import { EMPTY, Subject, Subscription, forkJoin } from "rxjs";
+import { catchError, finalize, switchMap, tap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
 import { Collection, CollectionService } from "../collection";
@@ -84,9 +85,14 @@ export class WorldComponent implements OnInit, OnDestroy {
   public collectionPage: number = 1;
 
   /**
-   * The pending request for a page of collections.
+   * Pages requested for the Collections tab. Only the latest one is loaded.
    */
-  private collectionsRequest: Subscription;
+  private collectionPages = new Subject<number>();
+
+  /**
+   * The page of collections on screen, to go back to if a request fails.
+   */
+  private shownCollectionPage: number = 1;
 
   /**
    * Number of pages of collections in the Collections tab.
@@ -160,7 +166,34 @@ export class WorldComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private metaService: Meta,
     private sanitizer: DomSanitizer,
-  ) {}
+  ) {
+    // switchMap drops an older request when a newer page is asked for.
+    this.collectionPages
+      .pipe(
+        switchMap((page) =>
+          this.collectionService
+            .getAssetCollections(this.world, {
+              page,
+              per_page: this.COLLECTIONS_PER_PAGE,
+            })
+            .pipe(
+              tap(() => (this.shownCollectionPage = page)),
+              catchError((error) => {
+                this.collectionPage = this.shownCollectionPage;
+                this.snackBar.open(error.message, "Got it");
+                return EMPTY;
+              }),
+            ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((response) => {
+        this.collections = response.collections;
+        this.collectionPageCount = Math.ceil(
+          response.totalCount / this.COLLECTIONS_PER_PAGE,
+        );
+      });
+  }
 
   /**
    * OnInit Lifecycle hook.
@@ -576,28 +609,9 @@ export class WorldComponent implements OnInit, OnDestroy {
    * @param page The page to load, starting at 1.
    */
   public loadCollections(page: number = 1): void {
-    const params = {
-      page,
-      per_page: this.COLLECTIONS_PER_PAGE,
-    };
-    // Move the pager now, so fast clicks add up, and drop any older request.
-    const previousPage = this.collectionPage;
+    // Move the pager now, so fast clicks add up.
     this.collectionPage = page;
-    this.collectionsRequest?.unsubscribe();
-    this.collectionsRequest = this.collectionService
-      .getAssetCollections(this.world, params)
-      .subscribe({
-        next: (response) => {
-          this.collections = response.collections;
-          this.collectionPageCount = Math.ceil(
-            response.totalCount / this.COLLECTIONS_PER_PAGE,
-          );
-        },
-        error: (error) => {
-          this.collectionPage = previousPage;
-          this.snackBar.open(error.message, "Got it");
-        },
-      });
+    this.collectionPages.next(page);
   }
 
   /**

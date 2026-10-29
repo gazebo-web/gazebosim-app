@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideRouter } from "@angular/router";
+import { RouterLink, provideRouter } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 
@@ -31,7 +31,7 @@ describe("ItemCardComponent", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatCardModule, MatIconModule],
+      imports: [MatCardModule, MatIconModule, RouterLink],
       declarations: [AuthPipe, ItemCardComponent],
       providers: [
         provideHttpClient(),

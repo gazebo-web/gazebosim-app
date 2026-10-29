@@ -560,6 +560,22 @@ describe("WorldComponent", () => {
     expect(component.collectionPage).toBe(1);
   });
 
+  it("should go back to the page on screen if a later page fails", () => {
+    const collectionService = TestBed.inject(CollectionService);
+    const pending = new Subject<PaginatedCollection>();
+    spyOn(collectionService, "getAssetCollections").and.returnValues(
+      pending,
+      throwError(() => new Error("Network error")),
+    );
+
+    component.loadCollections(2);
+    component.loadCollections(3);
+
+    // Page 2 never loaded, so the pager goes back to page 1.
+    expect(component.collectionPage).toBe(1);
+    expect(pending.observers.length).toBe(0);
+  });
+
   it("should toggle the 3D viewer", () => {
     expect(component.view3d).toBeFalsy();
 
