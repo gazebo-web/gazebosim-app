@@ -15,7 +15,7 @@
   padding: 0;
   background: tokens.$surface;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  color: #333;
+  color: tokens.$text;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -38,7 +38,7 @@
 
   &:disabled {
     background: tokens.$border-light;
-    color: #bbb;
+    color: tokens.$text-faint;
     cursor: default;
     box-shadow: none;
   }
