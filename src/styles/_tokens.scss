@@ -8,6 +8,8 @@
 // Primary call-to-action (e.g. the Download button).
 $accent: #f58113;
 $accent-hover: #d9700f;
+// Text and icons drawn on an accent background.
+$on-accent: #fff;
 
 // Light-blue 800 from the primary theme palette (same as the global a:hover).
 $primary-dark: #0277bd;
@@ -21,6 +23,14 @@ $text-strong: #111;
 $text: #444;
 $text-secondary: #666;
 $text-muted: #888;
+// Decorative icons only; too light for text.
+$text-faint: #aaa;
+
+// Darkens whatever is behind a row or button on hover.
+$hover-overlay: rgba(0, 0, 0, 0.04);
+
+$success: #2e7d32;
+$success-surface: #e8f5e9;
 
 $danger: #e53935;
 

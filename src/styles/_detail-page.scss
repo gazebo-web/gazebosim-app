@@ -23,7 +23,7 @@
   }
 
   .header-flag-btn {
-    color: #aaa;
+    color: tokens.$text-faint;
     transition: color 0.2s ease;
 
     &:hover {
@@ -45,12 +45,12 @@
     border-radius: tokens.$radius-lg;
     font-size: 0.85em;
     font-weight: 500;
-    background: #e8f5e9;
-    color: #2e7d32;
+    background: tokens.$success-surface;
+    color: tokens.$success;
 
     &.badge-private {
       background: tokens.$surface-muted;
-      color: #757575;
+      color: tokens.$text-secondary;
     }
   }
 
@@ -90,7 +90,7 @@
   }
 
   .viewer-btn {
-    color: #000;
+    color: tokens.$text-strong;
     transition: color 0.2s ease;
 
     &:hover {
@@ -173,7 +173,7 @@
     }
 
     &:hover:not([disabled]) {
-      background: tokens.$surface-muted;
+      background: tokens.$hover-overlay;
       color: tokens.$text-strong;
     }
 
@@ -187,12 +187,12 @@
     }
 
     &.download-btn {
-      color: #fff;
+      color: tokens.$on-accent;
       background: tokens.$accent;
 
       &:hover {
         background: tokens.$accent-hover;
-        color: #fff;
+        color: tokens.$on-accent;
       }
     }
   }
@@ -504,7 +504,7 @@
   .list-container {
     // Small, muted file icon
     --mat-list-list-item-leading-icon-size: 16px;
-    --mat-list-list-item-leading-icon-color: #aaa;
+    --mat-list-list-item-leading-icon-color: #{tokens.$text-faint};
     --mat-list-list-item-leading-icon-start-space: 8px;
     --mat-list-list-item-leading-icon-end-space: 8px;
 
@@ -522,7 +522,7 @@
       transition: background 0.15s ease;
 
       &:hover {
-        background: #f8f9fa;
+        background: tokens.$hover-overlay;
       }
     }
 
