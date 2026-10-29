@@ -378,43 +378,6 @@
   .collections-tab-body {
     position: relative;
     padding: 8px 12px 80px; // bottom padding reserves space for the absolutely-positioned nav
-
-    // Shrink card internals so 2 rows of 4 fit inside the tab box (~572px available)
-    gz-item-card {
-      // Tight card margin
-      mat-card.mat-mdc-card {
-        margin: 4px;
-      }
-
-      // Compact header: less padding, smaller text
-      mat-card-header {
-        padding: 8px 8px 0 8px;
-      }
-
-      mat-card-title,
-      mat-card-subtitle {
-        font-size: 12px;
-      }
-
-      // Tighten subtitle bottom gap
-      mat-card-subtitle {
-        margin-bottom: 4px;
-      }
-
-      // Taller crop ratio keeps image visible but shorter overall
-      .thumbnail-container {
-        aspect-ratio: 4 / 3;
-      }
-
-      .thumbnail {
-        aspect-ratio: 4 / 3;
-      }
-
-      // Hide the empty actions bar
-      mat-card-actions {
-        display: none;
-      }
-    }
   }
 
   .collection-card {
@@ -422,82 +385,12 @@
     box-sizing: border-box;
   }
 
-  /* --- Collections prev/next nav (gallery style) — pinned to bottom --- */
+  /* --- Collections pager, pinned to the bottom of the tab --- */
   .collections-page-nav {
     position: absolute;
     bottom: 10px;
     left: 0;
     right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .collection-nav-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: none;
-    background: tokens.$surface;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition:
-      background 0.2s ease,
-      box-shadow 0.2s ease,
-      transform 0.15s ease;
-
-    .material-icons {
-      font-size: 26px;
-      color: #333;
-      line-height: 1;
-    }
-
-    &:hover:not(:disabled) {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      transform: scale(1.06);
-    }
-
-    &:disabled {
-      background: tokens.$border-light;
-      cursor: default;
-      box-shadow: none;
-
-      .material-icons {
-        color: #bbb;
-      }
-    }
-  }
-
-  .collection-dot-strip {
-    display: flex;
-    gap: 7px;
-    align-items: center;
-  }
-
-  .collection-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: none;
-    padding: 0;
-    background: rgba(0, 0, 0, 0.18);
-    cursor: pointer;
-    transition:
-      background 0.2s ease,
-      transform 0.2s ease;
-
-    &.active {
-      background: #1976d2;
-      transform: scale(1.3);
-    }
-
-    &:hover:not(.active) {
-      background: rgba(0, 0, 0, 0.35);
-    }
   }
 
   /* --- File List --- */

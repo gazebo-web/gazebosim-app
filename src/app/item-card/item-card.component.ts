@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  Output,
+  booleanAttribute,
+} from "@angular/core";
 import { AuthService } from "../auth/auth.service";
 
 @Component({
@@ -28,6 +35,13 @@ export class ItemCardComponent {
    * Indicates whether the remove button should be displayed or not.
    */
   @Input() public removable: boolean = false;
+
+  /**
+   * Displays a smaller card, for dense grids such as the Collections tab.
+   */
+  @Input({ transform: booleanAttribute })
+  @HostBinding("class.compact")
+  public compact: boolean = false;
 
   /**
    * Event emitted when the remove button is clicked.

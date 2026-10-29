@@ -8,18 +8,15 @@ import {
 } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { Meta, DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { Subscription, forkJoin } from "rxjs";
-import { finalize, switchMap } from "rxjs/operators";
+import { EMPTY, Subject, Subscription, forkJoin } from "rxjs";
+import { catchError, finalize, switchMap, tap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
-import {
-  Collection,
-  CollectionService,
-  PaginatedCollection,
-} from "../collection";
+import { Collection, CollectionService } from "../collection";
 import { CollectionDialogComponent } from "../collection/dialog/collection-dialog.component";
 import { CopyDialogComponent } from "../fuel-resource/copy-dialog/copy-dialog.component";
 import { ReportDialogComponent } from "../fuel-resource/report-dialog/report-dialog.component";
@@ -78,24 +75,29 @@ export class WorldComponent implements OnInit, OnDestroy {
   public collections: Collection[];
 
   /**
-   * The paginated Collections returned from the Server, required by the resource list component.
-   */
-  public paginatedCollections: PaginatedCollection;
-
-  /**
    * Items per page for the Collections tab.
    */
   public readonly COLLECTIONS_PER_PAGE = 8;
 
   /**
-   * Current page index (0-based) for the Collections tab.
+   * Current page (starting at 1) for the Collections tab.
    */
-  public collectionPage: number = 0;
+  public collectionPage: number = 1;
 
   /**
-   * Array of page indices used to render dot indicators in the Collections tab.
+   * Pages requested for the Collections tab. Only the latest one is loaded.
    */
-  public collectionPages: number[] = [];
+  private collectionPages = new Subject<number>();
+
+  /**
+   * The page of collections on screen, to go back to if a request fails.
+   */
+  private shownCollectionPage: number = 1;
+
+  /**
+   * Number of pages of collections in the Collections tab.
+   */
+  public collectionPageCount: number = 0;
 
   /**
    * Subscription to the Collection Dialog. Used to see the result of it.
@@ -164,7 +166,34 @@ export class WorldComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private metaService: Meta,
     private sanitizer: DomSanitizer,
-  ) {}
+  ) {
+    // switchMap drops an older request when a newer page is asked for.
+    this.collectionPages
+      .pipe(
+        switchMap((page) =>
+          this.collectionService
+            .getAssetCollections(this.world, {
+              page,
+              per_page: this.COLLECTIONS_PER_PAGE,
+            })
+            .pipe(
+              tap(() => (this.shownCollectionPage = page)),
+              catchError((error) => {
+                this.collectionPage = this.shownCollectionPage;
+                this.snackBar.open(error.message, "Got it");
+                return EMPTY;
+              }),
+            ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((response) => {
+        this.collections = response.collections;
+        this.collectionPageCount = Math.ceil(
+          response.totalCount / this.COLLECTIONS_PER_PAGE,
+        );
+      });
+  }
 
   /**
    * OnInit Lifecycle hook.
@@ -577,27 +606,12 @@ export class WorldComponent implements OnInit, OnDestroy {
   /**
    * Load the collections that have this World.
    *
-   * @param pageIndex Zero-based page index to load.
+   * @param page The page to load, starting at 1.
    */
-  public loadCollections(pageIndex: number = 0): void {
-    const params = {
-      page: pageIndex + 1,
-      per_page: this.COLLECTIONS_PER_PAGE,
-    };
-    this.collectionService.getAssetCollections(this.world, params).subscribe({
-      next: (response) => {
-        this.collectionPage = pageIndex;
-        this.paginatedCollections = response;
-        this.collections = response.collections;
-        const total = Math.ceil(
-          response.totalCount / this.COLLECTIONS_PER_PAGE,
-        );
-        this.collectionPages = Array.from({ length: total }, (_, i) => i);
-      },
-      error: (error) => {
-        this.snackBar.open(error.message, "Got it");
-      },
-    });
+  public loadCollections(page: number = 1): void {
+    // Move the pager now, so fast clicks add up.
+    this.collectionPage = page;
+    this.collectionPages.next(page);
   }
 
   /**
