@@ -28,7 +28,7 @@ export class PagerComponent {
   /**
    * The maximum number of page dots to display at once.
    */
-  public maxDots = input(7);
+  public readonly maxDots = 7;
 
   /**
    * Event emitted with the requested page number when the user changes pages.
@@ -41,7 +41,7 @@ export class PagerComponent {
    */
   public dots = computed(() => {
     const pageCount = this.pageCount();
-    const visible = Math.min(this.maxDots(), pageCount);
+    const visible = Math.min(this.maxDots, pageCount);
     const first = Math.min(
       Math.max(1, this.page() - Math.floor(visible / 2)),
       pageCount - visible + 1,
