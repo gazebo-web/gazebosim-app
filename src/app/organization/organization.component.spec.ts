@@ -5,6 +5,7 @@ import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/t
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   HttpTestingController,
+  TestRequest,
   provideHttpClientTesting,
 } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -302,11 +303,20 @@ describe("OrganizationComponent", () => {
     });
   }
 
+  // The profile request made when the page loads.
+  function expectLogin(): TestRequest {
+    return TestBed.inject(HttpTestingController).expectOne((req) =>
+      req.url.endsWith("/login"),
+    );
+  }
+
   // Respond to the profile request made when the page loads.
   function respondToLogin(orgRoles: { [org: string]: string }): void {
-    TestBed.inject(HttpTestingController)
-      .expectOne((req) => req.url.endsWith("/login"))
-      .flush({ username: "testUser", orgs: Object.keys(orgRoles), orgRoles });
+    expectLogin().flush({
+      username: "testUser",
+      orgs: Object.keys(orgRoles),
+      orgRoles,
+    });
   }
 
   it(`should get the users of an organization the user was added to since login`, () => {
@@ -346,9 +356,7 @@ describe("OrganizationComponent", () => {
     spy.and.returnValue(of(testUsers));
 
     component.ngOnInit();
-    TestBed.inject(HttpTestingController)
-      .expectOne((req) => req.url.endsWith("/login"))
-      .flush("error", { status: 500, statusText: "Server Error" });
+    expectLogin().flush("error", { status: 500, statusText: "Server Error" });
     expect(spy).toHaveBeenCalledTimes(1);
     expect(component.users).toEqual(testUsers);
 

@@ -175,4 +175,36 @@ describe("AuthService", () => {
     expect(done).toBe(true);
     expect(authService.isMember("testOrg")).toBe(true);
   });
+
+  it("should not publish a profile without a username", () => {
+    const authService = createService({});
+    const published = [];
+    authService.userProfile$.subscribe((profile) => published.push(profile));
+
+    authService.setProfile({ name: "Test User" });
+    expect(authService.userProfile).toEqual({ name: "Test User" });
+    expect(published).toEqual([null]);
+  });
+
+  it("should remove an organization from the profile", () => {
+    const authService = createService(
+      session({
+        username: "testUser",
+        orgs: ["testOrg", "otherOrg"],
+        orgRoles: { testOrg: "member", otherOrg: "owner" },
+      }),
+    );
+    const published = [];
+    authService.userProfile$.subscribe((profile) => published.push(profile));
+
+    authService.removeOrganization("missingOrg");
+    authService.removeOrganization("testOrg");
+    expect(authService.userProfile.orgs).toEqual(["otherOrg"]);
+    expect(authService.userProfile.orgRoles).toEqual({ otherOrg: "owner" });
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "profile",
+      JSON.stringify(authService.userProfile),
+    );
+    expect(published.length).toBe(3);
+  });
 });
