@@ -87,6 +87,18 @@ describe("AuthService", () => {
     expect(authService.isMember("testOrg")).toBe(true);
   });
 
+  it("should not publish a profile when none is stored", () => {
+    const storage = session({});
+    delete storage.profile;
+    const authService = createService(storage);
+    let emissions = 0;
+    authService.userProfile$.subscribe(() => {
+      emissions++;
+      authService.isMember("testOrg");
+    });
+    expect(emissions).toBe(1);
+  });
+
   it("should set the fetched profile before publishing it", () => {
     // A renewed token whose profile doesn't have the username yet.
     const authService = createService(

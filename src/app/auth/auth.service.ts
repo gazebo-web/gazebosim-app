@@ -196,9 +196,13 @@ export class AuthService {
       return false;
     }
 
-    // Make sure the user profile has been set
+    // Make sure the user profile has been set. Only publish a stored profile:
+    // subscribers may call this method, and publishing null would recurse.
     if (!this.userProfile) {
-      this.setProfile(JSON.parse(localStorage.getItem("profile")));
+      const profile = JSON.parse(localStorage.getItem("profile"));
+      if (profile) {
+        this.setProfile(profile);
+      }
     }
 
     // Check if user has username
