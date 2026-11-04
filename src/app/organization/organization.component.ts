@@ -1,9 +1,10 @@
 import { ActivatedRoute, Router } from "@angular/router";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PageEvent } from "@angular/material/paginator";
+import { Subscription } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
 import {
@@ -31,7 +32,7 @@ import { PaginatedWorlds } from "../world/paginated-worlds";
 /**
  * Organization Component displays the information regarding an organization.
  */
-export class OrganizationComponent implements OnInit {
+export class OrganizationComponent implements OnInit, OnDestroy {
   /**
    * The organization being displayed by the component. Comes from the Organization Resolver.
    */
@@ -105,6 +106,16 @@ export class OrganizationComponent implements OnInit {
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   /**
+   * Subscription to the user profile, used to know when the user is a member.
+   */
+  private profileSubscription: Subscription;
+
+  /**
+   * Whether the organization's users have been requested.
+   */
+  private usersRequested: boolean = false;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data.
    * @param router The Router used to navigate.
    * @param authService Service used to get the logged in user's profile.
@@ -143,12 +154,38 @@ export class OrganizationComponent implements OnInit {
     // Get the Organization's collections.
     this.loadCollections();
 
-    // Get the Organization's users.
+    // Get the Organization's users. Only its members can list them, and the
+    // profile can arrive after the page loads, for example after a token renewal.
+    this.profileSubscription = this.authService.userProfile$.subscribe(() => {
+      if (
+        !this.usersRequested &&
+        this.authService.isMember(this.organization.name)
+      ) {
+        this.loadUsers();
+      }
+    });
+  }
+
+  /**
+   * OnDestroy Lifecycle hook.
+   */
+  public ngOnDestroy(): void {
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Load the Users of this Organization.
+   */
+  public loadUsers(): void {
+    this.usersRequested = true;
     this.organizationService.getOrganizationUsers(this.organization).subscribe(
       (response) => {
         this.users = response;
       },
       (error) => {
+        this.usersRequested = false;
         this.snackBar.open(error.message, "Got it");
       },
     );
@@ -271,6 +308,7 @@ export class OrganizationComponent implements OnInit {
       .subscribe(
         (response) => {
           response.orgRoles = { [this.organization.name]: role };
+          this.users = this.users ?? [];
           this.users.push(response);
           // Sort by username.
           this.users.sort((userA, userB) => {

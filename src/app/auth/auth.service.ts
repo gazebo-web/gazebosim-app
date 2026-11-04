@@ -105,9 +105,10 @@ export class AuthService {
    * @param profile The user profile to set.
    */
   public setProfile(profile: any): void {
-    // Update user profile subject
-    this.userProfile$.next(profile);
+    // Update user profile subject. Subscribers read the profile from this
+    // service, so set it first.
     this.userProfile = profile;
+    this.userProfile$.next(profile);
   }
 
   /**
@@ -195,9 +196,13 @@ export class AuthService {
       return false;
     }
 
-    // Make sure the user profile has been set
+    // Make sure the user profile has been set. Only publish a stored profile:
+    // subscribers may call this method, and publishing null would recurse.
     if (!this.userProfile) {
-      this.setProfile(JSON.parse(localStorage.getItem("profile")));
+      const profile = JSON.parse(localStorage.getItem("profile"));
+      if (profile) {
+        this.setProfile(profile);
+      }
     }
 
     // Check if user has username
@@ -272,6 +277,20 @@ export class AuthService {
       this.isAuthenticated() &&
       (this.userProfile.orgRoles[org] === "owner" ||
         this.userProfile.orgRoles[org] === "admin")
+    );
+  }
+
+  /**
+   * Return whether the authenticated user is a member of a given organization, with any role.
+   * System admins count as members, as the server lets them list any organization's users.
+   *
+   * @param org The organization name used to check membership.
+   * @returns A boolean indicating whether the authenticated user is a member or not.
+   */
+  public isMember(org: string): boolean {
+    return (
+      !!this.isAuthenticated() &&
+      (this.userProfile.sysAdmin === true || !!this.userProfile.orgRoles?.[org])
     );
   }
 
@@ -420,7 +439,7 @@ export class AuthService {
         localStorage.setItem("profile", JSON.stringify(profile));
 
         // Updates the Profile.
-        this.userProfile = profile;
+        this.setProfile(profile);
       }
     });
   }
