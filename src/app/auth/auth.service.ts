@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpHeaders, HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subscription, of, timer } from "rxjs";
-import { mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap } from "rxjs/operators";
 
 import * as auth0 from "auth0-js";
 import { environment } from "../../environments/environment";
@@ -87,7 +87,7 @@ export class AuthService {
       if (token) {
         if (this.isTokenValid) {
           // We need to fetch the username and then reschedule the token renewal process.
-          this.fetchUsername();
+          this.fetchUsername().subscribe();
           this.scheduleRenewal();
         } else {
           // The token has expired, but we can try to renew it.
@@ -100,15 +100,18 @@ export class AuthService {
   /**
    * Set the user profile.
    *
-   * This will trigger the userProfile$ behavior subject.
+   * This will trigger the userProfile$ behavior subject, unless the profile has no username.
    *
    * @param profile The user profile to set.
    */
   public setProfile(profile: any): void {
-    // Update user profile subject. Subscribers read the profile from this
-    // service, so set it first.
+    // Subscribers read the profile from this service, so set it first.
     this.userProfile = profile;
-    this.userProfile$.next(profile);
+    // A profile without a username is incomplete, for example right after a
+    // token renewal. fetchUsername publishes it once the username arrives.
+    if (!profile || profile.username) {
+      this.userProfile$.next(profile);
+    }
   }
 
   /**
@@ -295,6 +298,33 @@ export class AuthService {
   }
 
   /**
+   * Refresh the profile of the authenticated user from the server, to get up to date organization
+   * roles. The userProfile$ stream emits the refreshed profile.
+   *
+   * @returns An observable that completes once the refresh is done, whether it succeeded or not.
+   * It completes right away when there is no authenticated user.
+   */
+  public refreshProfile(): Observable<void> {
+    if (!this.isAuthenticated()) {
+      return of(undefined);
+    }
+    return this.fetchUsername();
+  }
+
+  /**
+   * Remove an organization from the authenticated user's profile, once they left it.
+   *
+   * @param org The name of the organization.
+   */
+  public removeOrganization(org: string): void {
+    const profile = this.userProfile;
+    profile.orgs = (profile.orgs ?? []).filter((name) => name !== org);
+    delete profile.orgRoles?.[org];
+    localStorage.setItem("profile", JSON.stringify(profile));
+    this.setProfile(profile);
+  }
+
+  /**
    * Return whether the authenticated user can edit a given Fuel resource.
    *
    * Users have write access to a resource if:
@@ -347,7 +377,7 @@ export class AuthService {
 
     // Set the obtained profile. Fetch the username if necessary.
     if (!profile.username) {
-      this.fetchUsername();
+      this.fetchUsername().subscribe();
     } else {
       this.updateProfile();
     }
@@ -424,23 +454,31 @@ export class AuthService {
    *
    * When the token is renewed, a new profile is obtained. This profile does not contain the
    * username. This way, we can make sure the user is still authenticated with a renewed token.
+   *
+   * @returns An observable that sends the request when subscribed to, and completes once it is
+   * done, whether it succeeded or not.
    */
-  private fetchUsername(): void {
-    this.http.get(this.loginUrl).subscribe((response) => {
-      if (response["username"]) {
-        // Set the username and orgs to the profile.
+  private fetchUsername(): Observable<void> {
+    return this.http.get(this.loginUrl).pipe(
+      map((response) => {
+        // The profile is gone if the user logged out in the meantime.
         const profile = JSON.parse(localStorage.getItem("profile"));
-        profile.username = response["username"];
-        profile.orgs = response["orgs"];
-        profile.orgRoles = response["orgRoles"];
-        if (response["sysAdmin"]) {
-          profile.sysAdmin = response["sysAdmin"];
-        }
-        localStorage.setItem("profile", JSON.stringify(profile));
+        if (response["username"] && profile) {
+          // Set the username and orgs to the profile.
+          profile.username = response["username"];
+          profile.orgs = response["orgs"];
+          profile.orgRoles = response["orgRoles"];
+          profile.sysAdmin = response["sysAdmin"] === true;
+          localStorage.setItem("profile", JSON.stringify(profile));
 
-        // Updates the Profile.
-        this.setProfile(profile);
-      }
-    });
+          // Updates the Profile.
+          this.setProfile(profile);
+        }
+      }),
+      catchError((error) => {
+        console.error("Unable to fetch the user's profile", error);
+        return of(undefined);
+      }),
+    );
   }
 }

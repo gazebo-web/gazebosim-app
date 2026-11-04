@@ -203,17 +203,8 @@ export class SettingsComponent implements OnInit {
         this.organizationService
           .removeUserFromOrganization(org, username)
           .subscribe(
-            (response) => {
-              // Update the user profile.
-              // TODO(german-mas): Consider moving this update into an AuthenticatedUser class.
-              // See https://app.asana.com/0/719578238881157/756403371264694/f
-              const index = this.authService.userProfile.orgs.indexOf(orgName);
-              this.authService.userProfile.orgs.splice(index, 1);
-              delete this.authService.userProfile.orgRoles[orgName];
-              localStorage.setItem(
-                "profile",
-                JSON.stringify(this.authService.userProfile),
-              );
+            () => {
+              this.authService.removeOrganization(orgName);
             },
             (error) => {
               this.snackBar.open(`${error.message}`, "Got it");

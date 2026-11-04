@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PageEvent } from "@angular/material/paginator";
 import { Subscription } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 import { AuthService } from "../auth/auth.service";
 import {
@@ -116,6 +117,11 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   private usersRequested: boolean = false;
 
   /**
+   * Subscription to the request of the organization's users, if any.
+   */
+  private usersSubscription: Subscription;
+
+  /**
    * @param activatedRoute The current Activated Route to get associated the data.
    * @param router The Router used to navigate.
    * @param authService Service used to get the logged in user's profile.
@@ -154,25 +160,30 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // Get the Organization's collections.
     this.loadCollections();
 
-    // Get the Organization's users. Only its members can list them, and the
-    // profile can arrive after the page loads, for example after a token renewal.
-    this.profileSubscription = this.authService.userProfile$.subscribe(() => {
-      if (
-        !this.usersRequested &&
-        this.authService.isMember(this.organization.name)
-      ) {
-        this.loadUsers();
-      }
-    });
+    // Get the Organization's users. Only its members can list them.
+    // The organization roles in the profile are cached at login, and other
+    // members may have added or removed this user since, so refresh them first.
+    // The profile can also change after the page loads, for example after a
+    // token renewal.
+    this.profileSubscription = this.authService
+      .refreshProfile()
+      .pipe(switchMap(() => this.authService.userProfile$))
+      .subscribe(() => {
+        const member = this.authService.isMember(this.organization.name);
+        if (member && !this.usersRequested) {
+          this.loadUsers();
+        } else if (!member) {
+          this.clearUsers();
+        }
+      });
   }
 
   /**
    * OnDestroy Lifecycle hook.
    */
   public ngOnDestroy(): void {
-    if (this.profileSubscription) {
-      this.profileSubscription.unsubscribe();
-    }
+    this.profileSubscription?.unsubscribe();
+    this.usersSubscription?.unsubscribe();
   }
 
   /**
@@ -180,15 +191,27 @@ export class OrganizationComponent implements OnInit, OnDestroy {
    */
   public loadUsers(): void {
     this.usersRequested = true;
-    this.organizationService.getOrganizationUsers(this.organization).subscribe(
-      (response) => {
-        this.users = response;
-      },
-      (error) => {
-        this.usersRequested = false;
-        this.snackBar.open(error.message, "Got it");
-      },
-    );
+    this.usersSubscription = this.organizationService
+      .getOrganizationUsers(this.organization)
+      .subscribe(
+        (response) => {
+          this.users = response;
+        },
+        (error) => {
+          this.usersRequested = false;
+          this.snackBar.open(error.message, "Got it");
+        },
+      );
+  }
+
+  /**
+   * Clear the Users of this Organization, and cancel their request if there is
+   * one.
+   */
+  private clearUsers(): void {
+    this.usersSubscription?.unsubscribe();
+    this.usersRequested = false;
+    this.users = undefined;
   }
 
   /**
@@ -307,8 +330,11 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       .addUserToOrganization(this.organization, name, role)
       .subscribe(
         (response) => {
+          // The users are cleared once this user is no longer a member.
+          if (!this.users) {
+            return;
+          }
           response.orgRoles = { [this.organization.name]: role };
-          this.users = this.users ?? [];
           this.users.push(response);
           // Sort by username.
           this.users.sort((userA, userB) => {
@@ -374,18 +400,9 @@ export class OrganizationComponent implements OnInit, OnDestroy {
               });
 
               // If the removed user is the logged one, update their profile.
+              // Publishing the change clears the users.
               if (response.username === this.authService.userProfile.username) {
-                const index = this.authService.userProfile.orgs.indexOf(
-                  this.organization.name,
-                );
-                this.authService.userProfile.orgs.splice(index, 1);
-                delete this.authService.userProfile.orgRoles[
-                  this.organization.name
-                ];
-                localStorage.setItem(
-                  "profile",
-                  JSON.stringify(this.authService.userProfile),
-                );
+                this.authService.removeOrganization(this.organization.name);
               }
             },
             (error) => {

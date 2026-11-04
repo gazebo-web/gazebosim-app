@@ -120,4 +120,91 @@ describe("AuthService", () => {
 
     expect(membership[membership.length - 1]).toBe(true);
   });
+
+  it("should not refresh the profile of a logged out user", () => {
+    const authService = createService({});
+    const httpMock = TestBed.inject(HttpTestingController);
+    let done = false;
+    authService.refreshProfile().subscribe({ complete: () => (done = true) });
+    expect(done).toBe(true);
+    httpMock.expectNone(() => true);
+  });
+
+  it("should refresh the organization roles of the profile", () => {
+    const authService = createService(
+      session({
+        username: "testUser",
+        orgRoles: { oldOrg: "member" },
+        sysAdmin: true,
+      }),
+    );
+    const httpMock = TestBed.inject(HttpTestingController);
+    let done = false;
+    authService.refreshProfile().subscribe({ complete: () => (done = true) });
+    expect(done).toBe(false);
+
+    httpMock
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush({
+        username: "testUser",
+        orgs: ["newOrg"],
+        orgRoles: { newOrg: "admin" },
+        sysAdmin: false,
+      });
+
+    expect(done).toBe(true);
+    expect(authService.isMember("oldOrg")).toBe(false);
+    expect(authService.isMember("newOrg")).toBe(true);
+    expect(authService.userProfile.sysAdmin).toBe(false);
+    httpMock.verify();
+  });
+
+  it("should keep the profile if it can't be refreshed", () => {
+    const authService = createService(
+      session({ username: "testUser", orgRoles: { testOrg: "member" } }),
+    );
+    const httpMock = TestBed.inject(HttpTestingController);
+    spyOn(console, "error");
+    let done = false;
+    authService.refreshProfile().subscribe({ complete: () => (done = true) });
+
+    httpMock
+      .expectOne((req) => req.url.endsWith("/login"))
+      .flush("error", { status: 500, statusText: "Server Error" });
+
+    expect(done).toBe(true);
+    expect(authService.isMember("testOrg")).toBe(true);
+  });
+
+  it("should not publish a profile without a username", () => {
+    const authService = createService({});
+    const published = [];
+    authService.userProfile$.subscribe((profile) => published.push(profile));
+
+    authService.setProfile({ name: "Test User" });
+    expect(authService.userProfile).toEqual({ name: "Test User" });
+    expect(published).toEqual([null]);
+  });
+
+  it("should remove an organization from the profile", () => {
+    const authService = createService(
+      session({
+        username: "testUser",
+        orgs: ["testOrg", "otherOrg"],
+        orgRoles: { testOrg: "member", otherOrg: "owner" },
+      }),
+    );
+    const published = [];
+    authService.userProfile$.subscribe((profile) => published.push(profile));
+
+    authService.removeOrganization("missingOrg");
+    authService.removeOrganization("testOrg");
+    expect(authService.userProfile.orgs).toEqual(["otherOrg"]);
+    expect(authService.userProfile.orgRoles).toEqual({ otherOrg: "owner" });
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "profile",
+      JSON.stringify(authService.userProfile),
+    );
+    expect(published.length).toBe(3);
+  });
 });
