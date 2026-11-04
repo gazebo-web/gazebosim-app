@@ -541,6 +541,19 @@ describe("OrganizationComponent", () => {
     expect(snackBar._openedSnackBarRef).toBeNull();
   });
 
+  it(`should not show a user added after the users were cleared`, () => {
+    spyOn(organizationService, "addUserToOrganization").and.returnValue(of({}));
+
+    component.organization = testOrganization;
+    component.users = undefined;
+    component.usernameInputForm.setValue("correct");
+    component.roleDropdownForm.setValue("Member");
+    component.addUser();
+
+    expect(organizationService.addUserToOrganization).toHaveBeenCalled();
+    expect(component.users).toBeUndefined();
+  });
+
   it(`should open the user remove dialog`, () => {
     const confirmationDialog = component.dialog;
     component.users = testUsers;

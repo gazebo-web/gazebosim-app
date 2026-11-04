@@ -330,8 +330,11 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       .addUserToOrganization(this.organization, name, role)
       .subscribe(
         (response) => {
+          // The users are cleared once this user is no longer a member.
+          if (!this.users) {
+            return;
+          }
           response.orgRoles = { [this.organization.name]: role };
-          this.users = this.users ?? [];
           this.users.push(response);
           // Sort by username.
           this.users.sort((userA, userB) => {
