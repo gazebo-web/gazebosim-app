@@ -1,0 +1,49 @@
+// Shared design values for the gazebosim-app redesign.
+//
+// Use from a component stylesheet with:
+//   @use "../../styles/tokens";
+//   color: tokens.$text-muted;
+
+// --- Colors ---
+// Primary call-to-action (e.g. the Download button).
+$accent: #f58113;
+$accent-hover: #d9700f;
+// Text and icons drawn on an accent background.
+$on-accent: #fff;
+
+// Light-blue 800 from the primary theme palette (same as the global a:hover).
+$primary-dark: #0277bd;
+
+$surface: #fff;
+$surface-muted: #f5f5f5;
+$border: #e0e0e0;
+$border-light: #f0f0f0;
+
+$text-strong: #111;
+$text: #444;
+$text-secondary: #666;
+$text-muted: #888;
+// Decorative icons only; too light for text.
+$text-faint: #aaa;
+
+// Darkens whatever is behind a row or button on hover.
+$hover-overlay: rgba(0, 0, 0, 0.04);
+
+$success: #2e7d32;
+$success-surface: #e8f5e9;
+
+$danger: #e53935;
+
+// --- Shape ---
+$radius-lg: 12px;
+$radius-sm: 8px;
+
+// --- Breakpoints ---
+$breakpoint-xs: 599px;
+$breakpoint-sm: 700px;
+
+// White rounded card used for panels, panes and the action bar.
+@mixin panel {
+  background: $surface;
+  border-radius: $radius-lg;
+}

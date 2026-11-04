@@ -32,7 +32,6 @@ import * as FileSaver from "file-saver";
 @Component({
   selector: "gz-world",
   templateUrl: "world.component.html",
-  styleUrls: ["world.component.scss"],
   standalone: false,
 })
 
