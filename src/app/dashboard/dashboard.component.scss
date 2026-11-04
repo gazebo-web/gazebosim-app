@@ -264,33 +264,6 @@
 }
 
 // ─── Carousel Specific Styles ────────────────────────────────────────
-.pagination-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
+.dashboard-pager {
   margin-top: 32px;
-}
-
-.pagination-dots {
-  display: flex;
-  gap: 8px;
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: #bdbdbd;
-    }
-
-    &.active {
-      background-color: #0277bd;
-      transform: scale(1.2);
-    }
-  }
 }

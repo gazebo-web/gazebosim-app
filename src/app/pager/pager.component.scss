@@ -1,0 +1,93 @@
+@use "../../styles/tokens";
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.pager-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: tokens.$surface;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: tokens.$text;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  mat-icon {
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+  }
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.06);
+  }
+
+  &:disabled {
+    background: tokens.$border-light;
+    color: tokens.$text-faint;
+    cursor: default;
+    box-shadow: none;
+  }
+}
+
+.pager-dots {
+  display: flex;
+  align-items: center;
+  // Cancel the dots' extra side room, so the gap to the buttons stays 20px.
+  margin: 0 -3.5px;
+}
+
+// Each dot is a 15 x 24px button, easier to hit than the 8px dot drawn inside.
+// Buttons touch, so the dots are 15px apart.
+.pager-dot {
+  width: 15px;
+  height: 24px;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.18);
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  &.active::before {
+    background: tokens.$primary-dark;
+    transform: scale(1.3);
+  }
+
+  &:hover:not(.active)::before {
+    background: rgba(0, 0, 0, 0.35);
+  }
+}
+
+.pager-label {
+  font-size: 12px;
+  color: tokens.$text-muted;
+  min-width: 4em;
+  text-align: center;
+}

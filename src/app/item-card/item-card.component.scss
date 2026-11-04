@@ -46,3 +46,29 @@ mat-card-subtitle {
     color: gray;
   }
 }
+
+/* --- Compact variant --- */
+:host(.compact) {
+  mat-card.mat-mdc-card {
+    margin: 4px;
+  }
+
+  mat-card-header {
+    padding: 8px 8px 0 8px;
+  }
+
+  mat-card-title,
+  mat-card-subtitle {
+    font-size: 12px;
+  }
+
+  mat-card-subtitle {
+    margin-bottom: 4px;
+  }
+
+  // Taller crop keeps the image visible while making the card shorter.
+  .thumbnail-container,
+  .thumbnail {
+    aspect-ratio: 4 / 3;
+  }
+}

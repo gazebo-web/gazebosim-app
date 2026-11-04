@@ -286,58 +286,22 @@
                 >
                   @for (col of collections; track col) {
                     <gz-item-card
+                      compact
                       class="collection-card fx-flex fx-flex-xs-100 fx-flex-sm-50 fx-flex-md-25"
-                      resourceType="collections"
                       [resource]="col"
                       type="collections"
                     ></gz-item-card>
                   }
                 </div>
 
-                <div
-                  class="collections-page-nav"
-                  [style.visibility]="
-                    paginatedCollections &&
-                    paginatedCollections.totalCount > COLLECTIONS_PER_PAGE
-                      ? 'visible'
-                      : 'hidden'
-                  "
-                >
-                  <button
-                    class="collection-nav-btn"
-                    [disabled]="collectionPage === 0"
-                    (click)="loadCollections(collectionPage - 1)"
-                    aria-label="Previous page"
-                  >
-                    <span class="material-icons">navigate_before</span>
-                  </button>
-
-                  <div
-                    class="collection-dot-strip"
-                    role="tablist"
-                    aria-label="Collection page navigation"
-                  >
-                    @for (p of collectionPages; track p; let i = $index) {
-                      <button
-                        class="collection-dot"
-                        [class.active]="i === collectionPage"
-                        (click)="loadCollections(i)"
-                        [attr.aria-label]="'Page ' + (i + 1)"
-                        [attr.aria-selected]="i === collectionPage"
-                        role="tab"
-                      ></button>
-                    }
-                  </div>
-
-                  <button
-                    class="collection-nav-btn"
-                    [disabled]="!paginatedCollections.hasNextPage()"
-                    (click)="loadCollections(collectionPage + 1)"
-                    aria-label="Next page"
-                  >
-                    <span class="material-icons">navigate_next</span>
-                  </button>
-                </div>
+                @if (collectionPageCount > 1) {
+                  <gz-pager
+                    class="collections-page-nav"
+                    [page]="collectionPage"
+                    [pageCount]="collectionPageCount"
+                    (pageChange)="loadCollections($event)"
+                  ></gz-pager>
+                }
               </div>
             } @else {
               <div class="detail-tab-body">

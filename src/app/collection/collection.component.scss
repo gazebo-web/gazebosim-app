@@ -174,36 +174,9 @@
   }
 }
 
-.pagination-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
+.resources-pager {
   margin-top: 16px;
   flex-shrink: 0;
-}
-
-.pagination-dots {
-  display: flex;
-  gap: 8px;
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: tokens.$border;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: #bdbdbd;
-    }
-
-    &.active {
-      background-color: tokens.$primary-dark;
-      transform: scale(1.2);
-    }
-  }
 }
 
 @media screen and (max-width: 700px) {
