@@ -1,10 +1,10 @@
 import { ActivatedRoute, Router } from "@angular/router";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, DestroyRef, OnInit, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, Validators } from "@angular/forms";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { PageEvent } from "@angular/material/paginator";
-import { Subscription } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
 import {
@@ -32,7 +32,7 @@ import { PaginatedWorlds } from "../world/paginated-worlds";
 /**
  * Organization Component displays the information regarding an organization.
  */
-export class OrganizationComponent implements OnInit, OnDestroy {
+export class OrganizationComponent implements OnInit {
   /**
    * The organization being displayed by the component. Comes from the Organization Resolver.
    */
@@ -106,9 +106,9 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   /**
-   * Subscription to the user profile, used to know when the user is a member.
+   * Used to stop listening to the user profile when the component is destroyed.
    */
-  private profileSubscription: Subscription;
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Whether the organization's users have been requested.
@@ -156,23 +156,16 @@ export class OrganizationComponent implements OnInit, OnDestroy {
 
     // Get the Organization's users. Only its members can list them, and the
     // profile can arrive after the page loads, for example after a token renewal.
-    this.profileSubscription = this.authService.userProfile$.subscribe(() => {
-      if (
-        !this.usersRequested &&
-        this.authService.isMember(this.organization.name)
-      ) {
-        this.loadUsers();
-      }
-    });
-  }
-
-  /**
-   * OnDestroy Lifecycle hook.
-   */
-  public ngOnDestroy(): void {
-    if (this.profileSubscription) {
-      this.profileSubscription.unsubscribe();
-    }
+    this.authService.userProfile$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (
+          !this.usersRequested &&
+          this.authService.isMember(this.organization.name)
+        ) {
+          this.loadUsers();
+        }
+      });
   }
 
   /**

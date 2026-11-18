@@ -280,8 +280,18 @@ describe("OrganizationComponent", () => {
     // Later profile updates don't fetch the users again.
     authService.setProfile({ username: "testUser" });
     expect(spy).toHaveBeenCalledTimes(1);
+  });
 
-    component.ngOnDestroy();
+  it(`should stop listening to the profile when destroyed`, () => {
+    const isMember = spyOn(authService, "isMember").and.returnValue(false);
+    const spy = spyOn(organizationService, "getOrganizationUsers");
+
+    component.ngOnInit();
+    fixture.destroy();
+
+    isMember.and.returnValue(true);
+    authService.setProfile({ username: "testUser" });
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it(`should only show the users tab to members`, () => {
