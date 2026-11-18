@@ -11,6 +11,16 @@ import { RouterTestingModule } from "@angular/router/testing";
 
 import { AuthService } from "./auth.service";
 
+// The stored profile: the Auth0 user info plus the fields that /login adds.
+// auth0-js doesn't come with types.
+interface TestProfile {
+  name?: string;
+  username?: string;
+  orgs?: string[];
+  orgRoles?: { [org: string]: string };
+  sysAdmin?: boolean;
+}
+
 describe("AuthService", () => {
   // Mock the local storage with the given session data.
   function createService(storage: { [key: string]: string }): AuthService {
@@ -32,7 +42,7 @@ describe("AuthService", () => {
   }
 
   // Session data of a logged in user with the given profile.
-  function session(profile: any): { [key: string]: string } {
+  function session(profile: TestProfile): { [key: string]: string } {
     return {
       token: "test-token",
       expires_at: JSON.stringify(Date.now() + 60000),
